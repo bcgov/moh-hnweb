@@ -28,7 +28,7 @@ java -jar target/<jar-file-name>.jar
 To run using docker:
 ```
 docker build -t hnweb-api .
-docker run -p:9091:9090 hnweb-api
+docker run -p 9091:9090 hnweb-api
 ```
 
 # Swagger/OpenAPI
