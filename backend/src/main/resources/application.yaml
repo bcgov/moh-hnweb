@@ -1,0 +1,25 @@
+keycloak:
+  base-oauth-url: https://common-logon-dev.hlth.gov.bc.ca/auth/realms/v2_pos
+
+config:
+  # CORS header, should be HNWeb:
+  allowed-origins: "http://localhost:8080"
+
+spring:
+  profiles:
+    active: dev
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${keycloak.base-oauth-url}
+          jwk-set-uri: ${keycloak.base-oauth-url}/protocol/openid-connect/certs
+
+springdoc:
+  swagger-ui:
+    path: /docs/swagger-ui.html
+  api-docs:
+    path: /docs/api-docs
+
+server:
+  port: 9090
