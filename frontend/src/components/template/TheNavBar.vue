@@ -2,15 +2,11 @@
   <nav role="navigation">
     <div class="container">
       <ul>
-        <li id="users-link" :class="($route.name == 'UserSearch' || $route.name == 'UserUpdate' || $route.name == 'UserCreate') ? 'active' : 'inactive'">
-            <router-link to="/">Home</router-link>
-            <!--<router-link @click.native="resetAlert" :to="{ name: 'UserSearch'}">Users</router-link>-->
+        <li id="home-link" :class="($route.name == 'Home') ? 'active' : 'inactive'">
+            <router-link :to="{ name: 'Home'}">Home</router-link>
         </li>
-        <li id="admin-event-log-link" :class="$route.name == 'AdminEventLog' ? 'active' : 'inactive'">
-            <!--<router-link @click.native="resetAlert" :to="{ name: 'AdminEventLog'}">User History</router-link>-->
-        </li>
-        <li id="event-log-link" :class="$route.name == 'EventLog' ? 'active' : 'inactive'">
-            <!--<router-link @click.native="resetAlert" :to="{ name: 'EventLog'}">Login Events</router-link>-->
+        <li id="employees-link" :class="$route.name == 'Employees' ? 'active' : 'inactive'">
+            <router-link :to="{ name: 'Employees'}">Employees</router-link>
         </li>
       </ul>
     </div>
@@ -21,9 +17,9 @@
 export default {
   name: 'TheNavBar',
   methods: {
-    resetAlert: function () {
-      this.$store.commit("alert/dismissAlert");
-    }
+    // resetAlert: function () {
+    //   this.$store.commit("alert/dismissAlert");
+    // }
   }
 }
 </script>

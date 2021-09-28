@@ -3,5 +3,10 @@ node_modules
 dist
 dist-ssr
 *.local
-yarn.lock
+
 .vscode
+
+.yarn
+.yarnrc.yml
+yarn.lock
+yarn-error.log

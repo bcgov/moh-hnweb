@@ -1,8 +1,17 @@
-import '@bcgov/bc-sans/css/BCSans.css';
+import '@bcgov/bc-sans/css/BCSans.css'
 
-import { createApp } from 'vue';
+import { createApp } from 'vue'
 
-import App from './App.vue';
-import router from './router';
+import App from './App.vue'
+import keycloak from './keycloak'
+import router from './router'
 
-createApp(App).use(router).mount('#app')
+keycloak.onAuthSuccess = function () {
+  const app = createApp(App)
+  app.use(router)
+  app.config.globalProperties.$keycloak = keycloak
+
+  app.mount('#app')
+}
+
+
