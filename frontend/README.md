@@ -22,8 +22,22 @@ yarn
 yarn dev
 ```
 
+## Test
+```
+yarn build --mode test
+yarn serve
+```
+
 ## Production
 ```
 yarn build
 yarn serve
+```
+
+### Run your end-to-end tests
+
+In one tab, start the server with `yarn dev`. In another tab, run:
+
+```
+yarn test:e2e
 ```
