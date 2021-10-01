@@ -1,0 +1,24 @@
+{
+  "name": "hn-web",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "test:e2e": "testcafe chrome tests/e2e"
+  },
+  "dependencies": {
+    "@bcgov/bc-sans": "^1.0.1",
+    "@vitejs/plugin-legacy": "^1.5.3",
+    "keycloak-js": "^15.0.2",
+    "testcafe": "^1.16.0",
+    "testcafe-vue-selectors": "^3.1.1",
+    "vue": "^3.2.13",
+    "vue-router": "4",
+    "vuex": "^4.0.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.9.0",
+    "vite": "^2.5.10"
+  }
+}
