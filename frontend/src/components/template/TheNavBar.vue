@@ -5,6 +5,15 @@
         <li id="home-link" :class="($route.name == 'Home') ? 'active' : 'inactive'">
             <router-link :to="{ name: 'Home'}">Home</router-link>
         </li>
+        <li id="eligibility-link" :class="$route.path.startsWith('/eligibility') ? 'active' : 'inactive'">
+            <router-link :to="{ name: 'Eligibility'}">Eligibility</router-link>
+        </li>
+        <li id="coverage-link" :class="$route.name == 'Coverage' ? 'active' : 'inactive'">
+            <router-link :to="{ name: 'Coverage'}">Coverage</router-link>
+        </li>
+        <li id="employees-link" :class="$route.name == 'Help' ? 'active' : 'inactive'">
+            <router-link :to="{ name: 'Help'}">Help</router-link>
+        </li>
         <li id="employees-link" :class="$route.name == 'Employees' ? 'active' : 'inactive'">
             <router-link :to="{ name: 'Employees'}">Employees</router-link>
         </li>
