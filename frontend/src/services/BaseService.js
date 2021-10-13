@@ -2,7 +2,18 @@ import axios from 'axios';
 
 import keycloak from '../keycloak';
 
-function apiRequest() {
+export const resources = {
+    coverage: {
+      coverage: '/coverage',
+    },
+    eligibility: {
+      eligibility: '/eligibility',
+      checkEligibility: '/eligibility/checkEligibility',
+      phnEnquiry: '/eligibility/phnEnquiry'
+    }
+  }
+
+export function apiRequest() {
     function createAxios() {
         const baseURL = import.meta.env.VITE_SERVICE_URL;
         return axios.create({

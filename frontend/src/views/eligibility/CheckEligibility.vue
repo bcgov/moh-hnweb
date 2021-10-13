@@ -1,5 +1,5 @@
 <script setup>
-  import eligibiityClient from '../../client/eligibiityClient'
+  import EligibiityService from '../../services/EligibilityService'
 </script>
 <template>
   <div>
@@ -68,7 +68,7 @@
           }
           console.log('Submitting data')
           this.searched = true
-          eligibiityRepository.checkEligibility(this.phn, this.eligibiityDate)
+          EligibiityService.checkEligibility(this.phn, this.eligibiityDate)
             .then(response => {
               this.result = response.data
             })

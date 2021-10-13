@@ -8,16 +8,16 @@
 </script>
 
 <template>
-  <the-header></the-header>
-   <the-nav-bar></the-nav-bar>
-   <main>
-     <section class="content">
-       <!--<alert/>-->
-       <router-view></router-view>
-      </section>
-      <KeycloakDevTools v-if="dev"/>
-    </main>
-  <the-footer></the-footer>
+  <TheHeader/>
+  <TheNavBar/>
+  <main>
+    <section class="content">
+      <!--<alert/>-->
+      <router-view></router-view>
+    </section>
+    <KeycloakDevTools v-if="dev"/>
+  </main>
+  <TheFooter/>
 </template>
 
 <script>
