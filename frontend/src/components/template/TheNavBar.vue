@@ -3,19 +3,26 @@
     <div class="container">
       <ul>
         <li id="home-link" :class="($route.name == 'Home') ? 'active' : 'inactive'">
-            <router-link :to="{ name: 'Home'}">Home</router-link>
+          <router-link @click="resetAlert" :to="{ name: 'Home'}">Home</router-link>
         </li>
         <li id="eligibility-link" :class="$route.path.startsWith('/eligibility') ? 'active' : 'inactive'">
-            <router-link :to="{ name: 'Eligibility'}">Eligibility</router-link>
+          <div class="dropdown" :key="eligibilityDropdownKey" v-on:click="this.refreshEligibility()">
+            <router-link @click="resetAlert" :to="{ name: 'Eligibility'}">Eligibility</router-link>
+            <div class="dropdown-content">
+              <router-link @click="resetAlert" :class="($route.name == 'CheckEligibility') ? 'active' : 'inactive'" :to="{ name: 'CheckEligibility'}">Check Eligibility</router-link>
+              <router-link @click="resetAlert" :class="($route.name == 'PhnEnquiry') ? 'active' : 'inactive'" :to="{ name: 'PhnEnquiry'}">PHN Enquiry</router-link>
+              <router-link @click="resetAlert" :class="($route.name == 'CoverageStatusCheck') ? 'active' : 'inactive'" :to="{ name: 'CoverageStatusCheck'}">MSP Coverage Status Check</router-link>
+            </div>
+          </div>
         </li>
         <li id="coverage-link" :class="$route.name == 'Coverage' ? 'active' : 'inactive'">
-            <router-link :to="{ name: 'Coverage'}">Coverage</router-link>
+          <router-link @click="resetAlert" :to="{ name: 'Coverage'}">Coverage</router-link>
         </li>
-        <li id="employees-link" :class="$route.name == 'Help' ? 'active' : 'inactive'">
-            <router-link :to="{ name: 'Help'}">Help</router-link>
+        <li id="help-link" :class="$route.name == 'Help' ? 'active' : 'inactive'">
+            <router-link @click="resetAlert" :to="{ name: 'Help'}">Help</router-link>
         </li>
         <li id="employees-link" :class="$route.name == 'Employees' ? 'active' : 'inactive'">
-            <router-link :to="{ name: 'Employees'}">Employees</router-link>
+            <router-link @click="resetAlert" :to="{ name: 'Employees'}">Employees</router-link>
         </li>
       </ul>
     </div>
@@ -25,10 +32,19 @@
 <script>
 export default {
   name: 'TheNavBar',
+  data: function() {
+    return {
+      eligibilityDropdownKey: 0
+    }
+  },
+
   methods: {
-    // resetAlert: function () {
-    //   this.$store.commit("alert/dismissAlert");
-    // }
+    resetAlert: function () {
+      this.$store.commit('alert/dismissAlert');
+    },
+    refreshEligibility() {
+      this.eligibilityDropdownKey += 1
+    }
   }
 }
 </script>
@@ -78,4 +94,50 @@ nav .container ul li a {
 nav .container ul li a:focus {
     background-color: #496DA2;
 }
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  background-clip:  padding-box;
+  display: none;
+  position: absolute;
+  background-color: #496DA2;
+  min-width: 200px;
+  box-shadow: 0px 6px 6px 0px rgba(0,0,0,0.4);
+  z-index: 1;
+  width: fit-content;
+  white-space: nowrap;
+}
+
+/* Links inside the dropdown */
+nav .container ul li .dropdown-content a {
+  font-size: 14px;
+  font-weight: normal;
+}
+
+
+nav .container ul li .dropdown-content a.active {
+  font-weight: bold;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+  color: #ffffff;
+  background-color: #6583b0;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: table ;
+}
+
+.dropdown-content a:target {
+  display: none;
+}
+
 </style>

@@ -71,23 +71,3 @@ input {
 .select-table tr.v-data-table__empty-wrapper {
     cursor: default;
 }
-
-/* grids */
-.row {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: 100%;
-  }
-  
-  .col {
-    display: flex;
-    flex-direction: column;
-    flex-basis: 100%;
-    flex: 1;
-  }
-  
-  .col3 {
-    flex: 0 0 25%;
-    max-width: 25%;
-  }

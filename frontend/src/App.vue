@@ -5,6 +5,7 @@
   import TheHeader from './components/template/TheHeader.vue'
   import TheNavBar from './components/template/TheNavBar.vue'
   import KeycloakDevTools from './components/KeycloakDevTools.vue'
+  import Alert from './components/Alert.vue'
 </script>
 
 <template>
@@ -12,7 +13,7 @@
   <TheNavBar/>
   <main>
     <section class="content">
-      <!--<alert/>-->
+      <Alert/>
       <router-view></router-view>
     </section>
     <KeycloakDevTools v-if="dev"/>
