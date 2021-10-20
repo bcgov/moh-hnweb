@@ -6,7 +6,8 @@ import Home from './../views/Home.vue'
 import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
 import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
 import PhnEnquiry from './../views/eligibility/PhnEnquiry.vue'
-import CoverageHome from '../views/coverage/CoverageHome.vue'
+import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
+import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
 import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
 
 const routes = [
@@ -16,9 +17,14 @@ const routes = [
       component: Home
     },
     {
-        path: '/coverage',
-        name: 'Coverage',
-        component: CoverageHome
+        path: '/coverage/maintenance',
+        name: 'CoverageMaintenance',
+        component: CoverageMaintenanceHome
+    },
+    {
+        path: '/coverage/enrollment',
+        name: 'CoverageEnrollment',
+        component: CoverageEnrollmentHome
     },
     {
         path: '/eligibility',
@@ -46,10 +52,9 @@ const routes = [
         ]
     },
     {
-        path: '/employees',
-        name: 'Employees',
-        component: Employees,
-
+        path: '/managemployees',
+        name: 'ManageEmployees',
+        component: Employees
     },
     {
         path: '/help',

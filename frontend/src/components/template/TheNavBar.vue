@@ -15,14 +15,17 @@
             </div>
           </div>
         </li>
-        <li id="coverage-link" :class="$route.name == 'Coverage' ? 'active' : 'inactive'">
-          <router-link @click="resetAlert" :to="{ name: 'Coverage'}">Coverage</router-link>
+        <li id="coveragemaintenance-link" :class="$route.name == 'CoverageMaintenance' ? 'active' : 'inactive'">
+          <router-link @click="resetAlert" :to="{ name: 'CoverageMaintenance'}">Coverage Maintenance</router-link>
+        </li>
+        <li id="coverageenrollment-link" :class="$route.name == 'CoverageEnrollment' ? 'active' : 'inactive'">
+          <router-link @click="resetAlert" :to="{ name: 'CoverageEnrollment'}">Coverage Enrollment</router-link>
+        </li>
+        <li id="coverageenrollment-link" :class="$route.name == 'ManageEmployees' ? 'active' : 'inactive'">
+          <router-link @click="resetAlert" :to="{ name: 'ManageEmployees'}">Manage Employees</router-link>
         </li>
         <li id="help-link" :class="$route.name == 'Help' ? 'active' : 'inactive'">
             <router-link @click="resetAlert" :to="{ name: 'Help'}">Help</router-link>
-        </li>
-        <li id="employees-link" :class="$route.name == 'Employees' ? 'active' : 'inactive'">
-            <router-link @click="resetAlert" :to="{ name: 'Employees'}">Employees</router-link>
         </li>
       </ul>
     </div>
