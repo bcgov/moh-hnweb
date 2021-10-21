@@ -58,7 +58,7 @@ test.skip('Check validation passed info', async t => {
 		.click(CheckEligibilityPage.submitButton)
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
 
-		console.log("testcafe clicked submit button")
+		console.log("Check validation passed info")
 });
 
 test('Check submitbutton is clickable', async t => {
@@ -76,6 +76,6 @@ test('Check cancelButton is clickable', async t => {
         .expect(CheckEligibilityPage.phnInput.value).eql('')
         .expect(CheckEligibilityPage.eligibilityDate.value).eql('')	
 
-		console.log("testcafe clicked submit button")
+		console.log("testcafe clicked cancel button")
 });
 
