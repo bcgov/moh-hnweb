@@ -5,6 +5,7 @@ dist-ssr
 *.local
 
 .vscode
+.idea/
 
 .yarn
 .yarnrc.yml
