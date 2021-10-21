@@ -21,7 +21,7 @@
         <li id="coverageenrollment-link" :class="$route.name == 'CoverageEnrollment' ? 'active' : 'inactive'">
           <router-link @click="resetAlert" :to="{ name: 'CoverageEnrollment'}">Coverage Enrollment</router-link>
         </li>
-        <li id="coverageenrollment-link" :class="$route.name == 'ManageEmployees' ? 'active' : 'inactive'">
+        <li id="manageEmployees-link" :class="$route.name == 'ManageEmployees' ? 'active' : 'inactive'">
           <router-link @click="resetAlert" :to="{ name: 'ManageEmployees'}">Manage Employees</router-link>
         </li>
         <li id="help-link" :class="$route.name == 'Help' ? 'active' : 'inactive'">
