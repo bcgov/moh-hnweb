@@ -3,7 +3,7 @@ keycloak:
 
 config:
   # CORS header, should be HNWeb:
-  allowed-origins: "http://localhost:8080"
+  allowed-origins: http://localhost:3000
 
 spring:
   profiles:

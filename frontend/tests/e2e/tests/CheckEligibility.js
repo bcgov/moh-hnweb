@@ -3,6 +3,7 @@ import CheckEligibilityPage from '../pages/eligibility/CheckEligibilityPage';
 import {Role} from 'testcafe';
 
 const ERROR_MESSAGE = 'Please correct errors before submitting';
+const SUCCESS_MESSAGE = 'Search complete';
 const SITE_UNDER_TEST = 'http://localhost:3000/eligibility/checkEligibility'
 
 //TODO: import from roles/role.js
@@ -48,15 +49,14 @@ test('Error when no username', async t => {
         console.log("Error when no uesrname");
 });
 
-test.skip('Check validation passed info', async t => {
-	await t
+test('Check validation passed info', async t => {
+
+    await t
         .typeText(CheckEligibilityPage.phnInput, '123456')
-        .click(CheckEligibilityPage.eligibilityDate)
-        .wait(1000)
-        .typeText(CheckEligibilityPage.eligibilityDate,'10/10/2021') 
-        .expect(CheckEligibilityPage.eligibilityDate.value).eql('10/10/2021')
+        .typeText(CheckEligibilityPage.eligibilityDate,'2021-10-10')
+        .expect(CheckEligibilityPage.eligibilityDate.value).eql('2021-10-10')
 		.click(CheckEligibilityPage.submitButton)
-        .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
+        .expect(AlertPage.alertBannerText.textContent).contains(SUCCESS_MESSAGE)
 
 		console.log("Check validation passed info")
 });
