@@ -5,19 +5,20 @@
   import TheHeader from './components/template/TheHeader.vue'
   import TheNavBar from './components/template/TheNavBar.vue'
   import KeycloakDevTools from './components/KeycloakDevTools.vue'
+  import Alert from './components/Alert.vue'
 </script>
 
 <template>
-  <the-header></the-header>
-   <the-nav-bar></the-nav-bar>
-   <main>
-     <section class="content">
-       <!--<alert/>-->
-       <router-view></router-view>
-      </section>
-      <KeycloakDevTools v-if="dev"/>
-    </main>
-  <the-footer></the-footer>
+  <TheHeader/>
+  <TheNavBar/>
+  <main>
+    <section class="content">
+      <Alert/>
+      <router-view></router-view>
+    </section>
+    <KeycloakDevTools v-if="dev"/>
+  </main>
+  <TheFooter/>
 </template>
 
 <script>

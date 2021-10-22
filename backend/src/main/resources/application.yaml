@@ -1,9 +1,9 @@
 keycloak:
-  base-oauth-url: https://common-logon-dev.hlth.gov.bc.ca/auth/realms/v2_pos
+  base-oauth-url: https://common-logon-dev.hlth.gov.bc.ca/auth/realms/moh_applications
 
 config:
   # CORS header, should be HNWeb:
-  allowed-origins: "http://localhost:8080"
+  allowed-origins: http://localhost:3000
 
 spring:
   profiles:

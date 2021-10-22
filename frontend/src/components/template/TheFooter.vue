@@ -1,15 +1,19 @@
+<script setup>
+  import AppRow from '../grid/AppRow.vue'
+  import AppCol from '../grid/AppCol.vue'
+</script>
 <template>
   <footer class="primary">
     <div class="container">
-      <div class="row">
-        <div class="col col3">
+      <AppRow>
+        <AppCol class="col3">
           <ul>
             <li>
               <a href="https://www2.gov.bc.ca/gov/content/home/get-help-with-government-services" target="_blank">Contact Us</a>
             </li>
           </ul>
-        </div>
-        <div class="col col3">
+        </AppCol>
+        <AppCol class="col3">
           <ul>
             <li>
               <a href="http://www2.gov.bc.ca/gov/content/home/disclaimer" target="_blank">Disclaimer</a>
@@ -24,8 +28,8 @@
               <a href="http://www2.gov.bc.ca/gov/content/home/copyright" target="_blank">Copyright</a>
             </li>
           </ul>
-        </div>
-      </div>
+        </AppCol>
+      </AppRow>
     </div>
   </footer>
 </template>
@@ -69,25 +73,6 @@ footer li a:focus {
 }
 footer ul {
   padding: 0px;
-}
-
-.row {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  width: 100%;
-}
-
-.col {
-  display: flex;
-  flex-direction: column;
-  flex-basis: 100%;
-  flex: 1;
-}
-
-.col3 {
-  flex: 0 0 25%;
-  max-width: 25%;
 }
 
 </style>

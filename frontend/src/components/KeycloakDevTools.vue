@@ -4,7 +4,7 @@
         <div style="width: 20px">
           <input id="showKeycloakTools" type="checkbox" v-model="showKeycloakTools"/>
         </div>
-        <div style="padding-left: 15px">
+        <div style="color: rgba(0, 0, 0, 0.6); padding-left: 15px;">
           <label for ="showKeycloakTools">Keycloak Dev Tools</label>
         </div>
       </div>

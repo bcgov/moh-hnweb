@@ -1,11 +1,28 @@
 import HomePage from '../pages/HomePage.js';
+import {Role} from 'testcafe';
 
+const SITE_UNDER_TEST = 'http://localhost:3000'
+
+//TODO:import regularAccUser  from '../roles/roles';
+const regularAccUser = Role(SITE_UNDER_TEST, async t => {
+    await t
+        .click('#zocial-moh_idp')
+        .typeText('#username', 'hnweb1')
+        .typeText('#password', process.env.TESTCAFE_PASSWORD)
+        .click("#kc-login");
+});
 fixture(`Home Page`)
+.disablePageCaching `Test Home Page`
+    .beforeEach(async t => {
+        await t
+            .useRole(regularAccUser)
+    })
   .page('http://localhost:3000');
 
 test('Check Home tab is clickable ', async t => {	  
 	await t	       
-		.click(HomePage.homeLink);			  
+		.click(HomePage.homeLink);
+					  
 		console.log("testcafe clicked hometab ")
 });
 

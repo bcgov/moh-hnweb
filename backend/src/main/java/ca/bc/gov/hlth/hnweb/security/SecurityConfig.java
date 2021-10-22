@@ -33,7 +33,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         	.cors(Customizer.withDefaults())
             .authorizeRequests()
             .mvcMatchers(HttpMethod.GET, "/docs/**").permitAll()
-            // TODO (weskubo-cgi) Replace this with the correct role loaded from application.yaml
+            // TODO (weskubo-cgi) Replace these with the correct role loaded from application.yaml
+            .mvcMatchers(HttpMethod.GET,"/eligibility/**").fullyAuthenticated()
             .mvcMatchers(HttpMethod.GET,"/r41/**").hasRole("manage-clients")
             //.mvcMatchers(HttpMethod.GET, "/r41/**").permitAll()
             .mvcMatchers("/*").denyAll()
