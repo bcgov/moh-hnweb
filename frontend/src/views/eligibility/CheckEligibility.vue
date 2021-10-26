@@ -3,6 +3,7 @@
   import AppCol from '../../components/grid/AppCol.vue'
   import AppInput from '../../components/AppInput.vue'
   import AppRow from '../../components/grid/AppRow.vue'
+  import EligibilityService from '../../services/EligibilityService'
   import useVuelidate from '@vuelidate/core'
   import {validatePHN, VALIDATE_PHN_MESSAGE} from '../../util/validators'
   const v$ = useVuelidate()
@@ -86,7 +87,7 @@
               this.searching = false
               return
             }
-            this.result = (await EligibiityService.checkEligibility(this.phn, this.eligibilityDate)).data
+            this.result = (await EligibilityService.checkEligibility(this.phn, this.eligibilityDate)).data
             this.searched = true
             this.$store.commit('alert/setSuccessAlert', 'Search complete')
           } catch (err) {
