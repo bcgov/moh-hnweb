@@ -2,10 +2,13 @@ package ca.bc.gov.hlth.hnweb.controller;
 
 import java.io.IOException;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
@@ -28,7 +31,8 @@ import ca.uhn.hl7v2.util.Terser;
  * <ul>		 
  *
  */
-@RestController
+@RequestMapping("/enrollment")
+@RestController()
 public class EnrollmentController {
 	
 	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(EnrollmentController.class);
@@ -40,7 +44,7 @@ public class EnrollmentController {
 	private Parser parser;
 	
 	@PutMapping("/enrollsubscriber")
-	public EnrollSubscriberResponse enrollSubscriber(@RequestParam(name = "enrollSubscriberRequest", required = false) EnrollSubscriberRequest enrollSubscriberRequest) throws HL7Exception, IOException {
+	public EnrollSubscriberResponse enrollSubscriber(@Valid @RequestBody EnrollSubscriberRequest enrollSubscriberRequest) throws HL7Exception, IOException {
 		
 		LOGGER.info("Subscriber enroll request: {} ", enrollSubscriberRequest.getPhn());
 		
@@ -49,7 +53,7 @@ public class EnrollmentController {
 		String r50v2 = encodeR50ToV2(r50);
 		
 		//Send to R50 endpoint
-		String v2Response = enrollmentService.enrollSubscriber(r50v2);
+		String v2Response = enrollmentService.enrollSubscriber(r50);
 		Message message = parseR50v2ToAck(v2Response);
 		
 		//Convert R50 endpoint response to HN Web response
