@@ -1,20 +1,19 @@
 <template>
-  <label class="app-label" :for="for">{{title}}</label>
+  <label class="text_label">{{title}}</label>
 </template>
 
 <script>
   export default {
-    name: 'AppButton',
+    name: 'AppLabel',
     props: {
-      for: '',
-      title: ''
+      for: String,
+      title: String
     }
   }
 </script>
 
 <style>
-  .app-label {
-    font-size: 16px;
-    font-weight: 600;
+  .text_label {
+    display: flex;
   }
 </style>

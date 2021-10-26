@@ -1,8 +1,12 @@
 <template>
-  <input :class="styleClass" :id="id" :type="type" :value="modelValue" @input='$emit("update:modelValue", $event.target.value)'/>
+
+  <div class="text_label">
+    <label>{{label}}</label>
+  </div>
+  <input :class="styleClass" :type="type" :value="modelValue" @input='$emit("update:modelValue", $event.target.value)'/>
   
   <div class="error-text" v-for="error in errorValue.$errors">
-    {{error.$message}}
+    {{error.$message.replace('Value', label)}}
   </div>
   
 </template>
@@ -12,33 +16,45 @@ import useVuelidate from '@vuelidate/core'
 
   export default {
     name: 'AppInput',
-      setup () {
-        return {
-          v$: useVuelidate()
-        }
-      },
     props: {
-      id: '',
-      type: '',
-      modelValue: '',
-      errorValue: ''
+      errorValue: Object,
+      label: String,
+      modelValue: String,
+      type: {
+        type:  String,
+        default: 'text'
+      }
     },
     computed: {
       styleClass() {
-        return 'app-input ' + (this.errorValue.$error && 'error-input')
+        return 'text_input ' + (this.errorValue.$error && 'error-input')
       }
     }
   }
 </script>
 
 <style>
-  .app-input {
-    border: 1px rgb(133, 133, 133) solid;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 20px;
-    padding: 5px;
-    width: 200px;
+  .text_input {
+    font-family: ‘BCSans’, ‘Noto Sans’, Verdana, Arial, sans-serif;
+    font-size: 18px;
+  }
+
+  .text_input {
+    height: 34px;
+    border: 2px solid #606060;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    padding: 5px 5px 5px 7px;
+  }
+
+  .text_input[type="text"]:focus {
+    outline: 4px solid #3B99FC;
+    outline-offset: 1px;
+  }
+
+  .text_label {
+    display: flex;
   }
 
   .error-input {
@@ -48,5 +64,6 @@ import useVuelidate from '@vuelidate/core'
   
   .error-text {
     color: crimson;
+    margin-top: -15px;
   }
 </style>

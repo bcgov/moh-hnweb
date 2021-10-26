@@ -1,6 +1,5 @@
 <template>
   <router-link :class="styleClass($route.name)" :to="{ name: this.routeName}">{{title}}</router-link>
-  <!--<router-link :class="($route.name == this.routeName) ? 'active-tab' : 'inactive-tab'" :to="{ name: this.route}">{{title}}</router-link>-->
 </template>
 
 
@@ -8,8 +7,8 @@
   export default {
     name: "SubNavTab",
     props: {
-      routeName: '',
-      title: ''
+      routeName: String,
+      title: String
     },
     methods: {
       styleClass(currentRoute) {

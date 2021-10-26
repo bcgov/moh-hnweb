@@ -1,42 +1,112 @@
 <template>
-  <button class="app-button" :disabled="disabled" :type="type">{{title}}</button>
+  <button :class="styleClass" :disabled="disabled" :type="type"><slot/></button>
 </template>
 
 <script>
   export default {
     name: 'AppButton',
     props: {
-      disabled: false,
-      title: '',
-      type: ''
+      disabled: {
+        type: Boolean,
+        default: false
+      },
+      mode: {
+        type: String,
+        default: 'primary'
+      },
+      type: {
+        type: String,
+        default: 'submit'
+      }    
+    },
+    computed: {
+      styleClass() {
+        switch (this.mode) {
+        case 'primary':
+          return  'BC-Gov-PrimaryButton'
+        case 'secondary':
+          return 'BC-Gov-SecondaryButton'
+        default:
+          return 'BC-Gov-PrimaryButton'
+        }
+      }
     }
   }
 </script>
 <style scoped>
-  .app-button {
-    background-color: #38598a;
-    border: 0px;
-    box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);;     
-    color: #ffffff;
+  .BC-Gov-PrimaryButton {
+    background-color: #003366;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    padding: 12px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 16px; /* Mofified from Design System template */
+    font-family: ‘BCSans’, ‘Noto Sans’, Verdana, Arial, sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
     cursor: pointer;
-    font-weight: 600;
-    font-size: 14px;
-    border-radius: 7px;
-    margin: 2px;
-    min-width: 75px;
-    min-height: 35px;
-    transition: 0.3s;
+    margin: 4px; /* Added to Design System template */
   }
 
-  .app-button:disabled {
-    background-color: #999999;
+  .BC-Gov-PrimaryButton:hover {
+    text-decoration: underline;
+    opacity: 0.80;
   }
 
-  .app-button:disabled:hover {
-    opacity: 1.0;
+  :focus {
+    outline: 4px solid #3B99FC;
+    outline-offset: 1px;
   }
 
-  .app-button:hover {
-    opacity: 0.9;
+  .BC-Gov-PrimaryButton:active {
+    opacity: 1;
+  }
+
+  .BC-Gov-PrimaryButton:disabled {
+    background-color: #003366;
+    opacity: 0.3;
+    text-decoration: none;
+    cursor: not-allowed;
+  }
+
+  .BC-Gov-SecondaryButton {
+    background: none;
+    border-radius: 4px;
+    border: 2px solid #003366;
+    padding: 10px 30px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 16px; /* Mofified from Design System template */
+    Font-family: ‘BCSans’, ‘Noto Sans’, Verdana, Arial, sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    color: #003366;
+    margin: 4px; /* Added to Design System template */
+  }
+  .BC-Gov-SecondaryButton:hover {
+    opacity: 0.80;
+    text-decoration: underline;
+    background-color: #003366;
+    color: #FFFFFF;
+  }
+  :focus {
+    outline-offset: 1px;
+    outline: 4px solid #3B99FC;
+  }
+  .BC-Gov-SecondaryButton:active {
+    opacity: 1;
+  }
+
+  .BC-Gov-SecondaryButton:disabled {
+    background-color: white;
+    opacity: 0.3;
+    color: #003366;
+    text-decoration: none;
+    cursor: not-allowed;
   }
 </style>

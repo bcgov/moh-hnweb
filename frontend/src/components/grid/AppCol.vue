@@ -7,7 +7,7 @@
   export default {
     name: 'AppRow',
     props: {
-      class: ''
+      class: String
     },
     computed: {
       styleClass() {
