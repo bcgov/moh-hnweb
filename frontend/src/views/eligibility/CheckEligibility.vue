@@ -3,7 +3,6 @@
   import AppCol from '../../components/grid/AppCol.vue'
   import AppInput from '../../components/AppInput.vue'
   import AppRow from '../../components/grid/AppRow.vue'
-  import EligibiityService from '../../services/EligibilityService'
   import useVuelidate from '@vuelidate/core'
   import {validatePHN, VALIDATE_PHN_MESSAGE} from '../../util/validators'
   const v$ = useVuelidate()
@@ -29,7 +28,7 @@
   </div>
   <br/>
   <div v-if="searched">
-    <h2>Transaction Succesful</h2>
+    <h2>Transaction Successful</h2>
     <AppRow>
       <AppCol class="col3">PHN:</AppCol>
       <AppCol>{{result.phn}}</AppCol>
@@ -57,7 +56,7 @@
 </template>
 
 <script>
-  import { required, numeric, helpers } from '@vuelidate/validators'
+  import { required, helpers } from '@vuelidate/validators'
   
     export default {
       name: 'CheckEligibility', 
@@ -70,7 +69,7 @@
           searched: false,
           result: {
             phn: '',
-            beneficaryOnDateChecked: false,
+            beneficiaryOnDateChecked: false,
             coverageEndDate: '',
             reason: '',
             exclusionPeriodEndDate: ''

@@ -5,7 +5,7 @@ export function validatePHN(phn) {
     return true
   }
 
-  const PHNsigDigits = [2, 4, 8, 5, 10, 9, 7, 3]
+  const phnSigDigits = [2, 4, 8, 5, 10, 9, 7, 3]
   let checksum = 0
   let digit = 0
 
@@ -14,7 +14,7 @@ export function validatePHN(phn) {
   } else {
     for (let i = 1; i < 9; i++) {
         digit = Number(phn.charAt(i))
-        checksum += (digit * PHNsigDigits[i - 1]) % 11
+        checksum += (digit * phnSigDigits[i - 1]) % 11
     }
     checksum = 11 - checksum % 11
     if (Number(phn.charAt(9)) != checksum) {

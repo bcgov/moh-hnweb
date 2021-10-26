@@ -43,7 +43,7 @@
     text-align: center;
     text-decoration: none;
     display: block;
-    font-size: 16px; /* Mofified from Design System template */
+    font-size: 16px; /* Modified from Design System template */
     font-family: ‘BCSans’, ‘Noto Sans’, Verdana, Arial, sans-serif;
     font-weight: 700;
     letter-spacing: 1px;
@@ -80,7 +80,7 @@
     text-align: center;
     text-decoration: none;
     display: block;
-    font-size: 16px; /* Mofified from Design System template */
+    font-size: 16px; /* Modified from Design System template */
     Font-family: ‘BCSans’, ‘Noto Sans’, Verdana, Arial, sans-serif;
     font-weight: 700;
     letter-spacing: 1px;

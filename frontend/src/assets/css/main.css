@@ -10,7 +10,7 @@ main {
     max-width: 1320px;
     min-width: 1100px;
     width: 100%;
-    min-height: calc(100vh - 280px);
+    min-height: calc(100vh - 168px);
     margin: 0 auto;
     padding: 20px 60px 60px 60px;
     background-color: #FFFFFF;
