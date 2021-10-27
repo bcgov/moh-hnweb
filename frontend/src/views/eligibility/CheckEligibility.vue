@@ -2,38 +2,34 @@
   import AppButton from '../../components/AppButton.vue'
   import AppCol from '../../components/grid/AppCol.vue'
   import AppInput from '../../components/AppInput.vue'
-  import AppLabel from '../../components/AppLabel.vue'
   import AppRow from '../../components/grid/AppRow.vue'
-  import EligibiityService from '../../services/EligibilityService'
+  import EligibilityService from '../../services/EligibilityService'
   import useVuelidate from '@vuelidate/core'
+  import {validatePHN, VALIDATE_PHN_MESSAGE} from '../../util/validators'
   const v$ = useVuelidate()
 </script>
 <template>
   <div>
     <form @submit.prevent="submitForm">
        <AppRow>
-            <AppCol class="col2">
-              <AppLabel for="phn" title="PHN"/>
-            </AppCol>
-            <AppCol class="col3">
-              <AppInput :errorValue="v$.phn" id="phn" type="text" v-model="phn"/>
-            </AppCol>
+        <AppCol class="col3">
+          <AppInput :errorValue="v$.phn" label="PHN" type="text" v-model="phn"/>
+        </AppCol>
         </AppRow>
         <AppRow>
-            <AppCol class="col2">
-              <AppLabel for="eligibilityDate" title="Date to check"/>
-            </AppCol>
-            <AppCol class="col3">
-              <AppInput :errorValue="v$.eligibilityDate" id="eligibilityDate" type="date" v-model="eligibilityDate"/>
-            </AppCol>         
+          <AppCol class="col3">
+            <AppInput :errorValue="v$.eligibilityDate" label="Date to check" type="date" v-model="eligibilityDate"/>
+          </AppCol>         
        </AppRow>
-       <AppButton :disabled="searching" title="Submit" type="submit"/>
-       <AppButton @click="resetForm" title="Clear" type="button"/>
+       <AppRow>
+        <AppButton :disabled="searching" mode="primary" type="submit">Submit</AppButton>
+        <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
+       </AppRow>
     </form>
   </div>
   <br/>
   <div v-if="searched">
-    <h2>Transaction Succesful</h2>
+    <h2>Transaction Successful</h2>
     <AppRow>
       <AppCol class="col3">PHN:</AppCol>
       <AppCol>{{result.phn}}</AppCol>
@@ -56,12 +52,12 @@
     </AppRow>
     <br/>
     <p>Next Business Service:</p>
-    <button @click="$router.push('PhnEnquiry')">PHN Enquiry</button>
+    <AppButton @click="$router.push('PhnEnquiry')" mode="secondary" type="button">PHN Enquiry</AppButton>
   </div>
 </template>
 
 <script>
-  import { required, numeric } from '@vuelidate/validators'
+  import { required, helpers } from '@vuelidate/validators'
   
     export default {
       name: 'CheckEligibility', 
@@ -74,7 +70,7 @@
           searched: false,
           result: {
             phn: '',
-            beneficaryOnDateChecked: false,
+            beneficiaryOnDateChecked: false,
             coverageEndDate: '',
             reason: '',
             exclusionPeriodEndDate: ''
@@ -91,9 +87,9 @@
               this.searching = false
               return
             }
-            this.result = (await EligibiityService.checkEligibility(this.phn, this.eligibilityDate)).data
+            this.result = (await EligibilityService.checkEligibility(this.phn, this.eligibilityDate)).data
             this.searched = true
-            this.$store.commit('alert/setInfoAlert', 'Search complete')
+            this.$store.commit('alert/setSuccessAlert', 'Search complete')
           } catch (err) {
             this.$store.commit('alert/setErrorAlert', `${err}`)
           } finally {
@@ -111,7 +107,11 @@
       },
       validations () {
           return {
-            phn: { required, numeric },
+            phn: {
+              required,
+              validatePHN: helpers.withMessage(
+                VALIDATE_PHN_MESSAGE, validatePHN
+              ) },
             eligibilityDate: { required }
           }
       }

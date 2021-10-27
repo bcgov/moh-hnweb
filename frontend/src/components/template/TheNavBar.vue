@@ -7,7 +7,7 @@
         </li>
         <li id="eligibility-link" :class="$route.path.startsWith('/eligibility') ? 'active' : 'inactive'">
           <div class="dropdown" :key="eligibilityDropdownKey" v-on:click="this.refreshEligibility()">
-            <router-link @click="resetAlert" :to="{ name: 'Eligibility'}">Eligibility</router-link>
+            <router-link @click="resetAlert" :to="{ name: 'Eligibility'}">Eligibility & PHN</router-link>
             <div class="dropdown-content">
               <router-link @click="resetAlert" :class="($route.name == 'CheckEligibility') ? 'active' : 'inactive'" :to="{ name: 'CheckEligibility'}">Check Eligibility</router-link>
               <router-link @click="resetAlert" :class="($route.name == 'PhnEnquiry') ? 'active' : 'inactive'" :to="{ name: 'PhnEnquiry'}">PHN Enquiry</router-link>
@@ -15,13 +15,13 @@
             </div>
           </div>
         </li>
-        <li id="coveragemaintenance-link" :class="$route.name == 'CoverageMaintenance' ? 'active' : 'inactive'">
+        <li id="coverage-maintenance-link" :class="$route.name == 'CoverageMaintenance' ? 'active' : 'inactive'">
           <router-link @click="resetAlert" :to="{ name: 'CoverageMaintenance'}">Coverage Maintenance</router-link>
         </li>
-        <li id="coverageenrollment-link" :class="$route.name == 'CoverageEnrollment' ? 'active' : 'inactive'">
+        <li id="coverage-enrollment-link" :class="$route.name == 'CoverageEnrollment' ? 'active' : 'inactive'">
           <router-link @click="resetAlert" :to="{ name: 'CoverageEnrollment'}">Coverage Enrollment</router-link>
         </li>
-        <li id="manageEmployees-link" :class="$route.name == 'ManageEmployees' ? 'active' : 'inactive'">
+        <li id="manage-employees-link" :class="$route.name == 'ManageEmployees' ? 'active' : 'inactive'">
           <router-link @click="resetAlert" :to="{ name: 'ManageEmployees'}">Manage Employees</router-link>
         </li>
         <li id="help-link" :class="$route.name == 'Help' ? 'active' : 'inactive'">

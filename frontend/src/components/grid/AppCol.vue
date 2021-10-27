@@ -1,5 +1,5 @@
 <template>
-  <div :class="styleClass">
+  <div :class="colClass">
     <slot></slot>
   </div>
 </template>
@@ -7,10 +7,10 @@
   export default {
     name: 'AppRow',
     props: {
-      class: ''
+      class: String
     },
     computed: {
-      styleClass() {
+      colClass() {
         return 'col ' + this.class
       }
     }
