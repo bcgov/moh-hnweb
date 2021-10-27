@@ -53,7 +53,7 @@ public class EnrollmentController {
 		String r50v2 = encodeR50ToV2(r50);
 		
 		//Send to R50 endpoint
-		String v2Response = enrollmentService.enrollSubscriber(r50);
+		String v2Response = enrollmentService.enrollSubscriber(r50v2);
 		Message message = parseR50v2ToAck(v2Response);
 		
 		//Convert R50 endpoint response to HN Web response
