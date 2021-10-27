@@ -3,7 +3,7 @@
   <div class="text_label">
     <label>{{label}}</label>
   </div>
-  <input :class="styleClass" :type="type" :value="modelValue" @input='$emit("update:modelValue", $event.target.value)'/>
+  <input :class="inputClass" :type="type" :value="modelValue" @input='$emit("update:modelValue", $event.target.value)'/>
   
   <div class="error-text" v-for="error in errorValue.$errors">
     {{error.$message.replace('Value', label)}}
@@ -26,8 +26,11 @@ import useVuelidate from '@vuelidate/core'
       }
     },
     computed: {
-      styleClass() {
-        return 'text_input ' + (this.errorValue.$error && 'error-input')
+      inputClass() {
+        return {
+          'text_input': true,
+          'error-input' : this.errorValue.$error,
+        }
       }
     }
   }

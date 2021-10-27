@@ -1,5 +1,5 @@
 <template>
-  <button :class="styleClass" :disabled="disabled" :type="type"><slot/></button>
+  <button :class="buttonClass" :disabled="disabled" :type="type"><slot/></button>
 </template>
 
 <script>
@@ -20,14 +20,10 @@
       }    
     },
     computed: {
-      styleClass() {
-        switch (this.mode) {
-        case 'primary':
-          return  'BC-Gov-PrimaryButton'
-        case 'secondary':
-          return 'BC-Gov-SecondaryButton'
-        default:
-          return 'BC-Gov-PrimaryButton'
+      buttonClass() {
+        return {
+          'BC-Gov-PrimaryButton' : this.mode === 'primary' || this.mode === '',
+          'BC-Gov-SecondaryButton' : this.mode === 'secondary',
         }
       }
     }

@@ -1,5 +1,5 @@
 <template>
-  <router-link :class="styleClass($route.name)" :to="{ name: this.routeName}">{{title}}</router-link>
+  <router-link :class="navTabClass($route.name)" :to="{ name: this.routeName}">{{title}}</router-link>
 </template>
 
 
@@ -11,7 +11,7 @@
       title: String
     },
     methods: {
-      styleClass(currentRoute) {
+      navTabClass(currentRoute) {
         return (currentRoute === this.routeName) ? 'active-tab' : 'inactive-tab';
       }
     }
