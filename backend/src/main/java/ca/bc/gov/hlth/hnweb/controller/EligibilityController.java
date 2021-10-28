@@ -3,6 +3,8 @@ package ca.bc.gov.hlth.hnweb.controller;
 import java.util.Date;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,7 @@ import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
 @RequestMapping("/eligibility")
 @RestController
 public class EligibilityController {
-	private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(EligibilityController.class);
+	private static final Logger logger = LoggerFactory.getLogger(EligibilityController.class);
 
 	@GetMapping("/checkEligibility")
 	public ResponseEntity<CheckEligibilityResponse> checkEligibility(@RequestParam(name = "phn", required = true) String phn,
