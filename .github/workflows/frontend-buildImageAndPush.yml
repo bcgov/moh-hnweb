@@ -37,23 +37,13 @@ jobs:
       working-directory: ./frontend
       run: docker build . --file Dockerfile --tag ${{env.registry-url}}/${{env.image-name}}:${{env.image-tag}}
 
-    - name: Podman Login
-      # You may pin to the exact commit or the version.
-      # uses: redhat-actions/podman-login@4c93cb1ea36b10156ea541570dc69bc04dffe10e
-      uses: redhat-actions/podman-login@v1
-      with:
-        registry: ${{env.registry-url}}
-        username: github-actions-sa
-        password: ${{secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN}}
-        
-    - name: Push To Registry
-      # You may pin to the exact commit or the version.
-      # uses: redhat-actions/push-to-registry@42e9b87b012159b3b5329cb665f89d8473eb6813
-      uses: redhat-actions/push-to-registry@v2.4
-      with:
-        image: ${{env.image-name}}
-        tags: ${{env.image-tag}}
-        registry: ${{env.registry-url}}
+    - name: docker login
+      run: docker login -p ${{secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN}} -u github-actions-sa ${{env.registry-url}}
+      
+    - name: push the Docker image
+      run: docker push ${{env.registry-url}}/${{env.image-name}}:${{env.image-tag}}
+      
+
         
 
 
