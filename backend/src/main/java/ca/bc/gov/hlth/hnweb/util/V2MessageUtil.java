@@ -1,4 +1,4 @@
-package ca.bc.gov.hlth.hnweb.v2;
+package ca.bc.gov.hlth.hnweb.util;
 
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZHD;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIA;
@@ -13,7 +13,7 @@ import ca.uhn.hl7v2.model.v24.segment.PID;
  * Contains utility methods related to HL7 V2 messages
  *
  */
-public class V2MessageUtils {
+public class V2MessageUtil {
 
 	private static final String VISA_ISSUE = "VISA_ISSUE";
     private static final String VISA_XPIRY = "VISA_XPIRY";
