@@ -19,6 +19,18 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - name: Declare some variables
+      id: vars
+      shell: bash
+      run: |
+        echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"    
+
+    - name: Another step
+      run: |
+        echo "Branch: ${{ steps.vars.outputs.branch }}"
+        echo "Sha: ${{ steps.vars.outputs.sha_short }}"
+
     - uses: actions/checkout@v2
     - name: Build the Docker image
       working-directory: ./frontend
@@ -38,6 +50,26 @@ jobs:
         # Set current context's namespace to this, after logging in.
         namespace: c5839f-tools
 
-
+    - name: Push To Registry
+      # You may pin to the exact commit or the version.
+      # uses: redhat-actions/push-to-registry@42e9b87b012159b3b5329cb665f89d8473eb6813
+      uses: redhat-actions/push-to-registry@v2.4
+      with:
+        # Name of the image to push (e.g. username/imagename or imagename)
+        image: ${{env.repo-url}}/${{env.image-name}}:${{env.image-tag}}
+        # The tag or tags of the image to push. For multiple tags, seperate by whitespace. For example, "latest v1"
+        tags: commit-${{steps.vars.outputs.sha_short}} branch-${{steps.vars.outputs.branch}} 
+        # Hostname and optional namespace to push the image to (eg. quay.io/username or quay.io)
+        #registry: # optional
+        # Username to use as credential to authenticate to the registry
+        #username: # optional
+        # Password to use as credential to authenticate to the registry
+        #password: # optional
+        # Verify TLS certificates when contacting the registry
+        #tls-verify: # optional, default is true
+        # After copying the image, write the digest of the resulting image to the file. By default, the filename will be determined from the image and tag. The contents of this file are the digest output.
+        # digestfile: # optional
+        # Extra args to be passed to podman push. Separate arguments by newline. Do not use quotes - @actions/exec will do the quoting for you.
+        # extra-args: # optional
 
   
