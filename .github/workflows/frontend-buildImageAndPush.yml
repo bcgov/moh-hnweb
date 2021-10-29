@@ -58,7 +58,7 @@ jobs:
         # Name of the image to push (e.g. username/imagename or imagename)
         image: ${{env.repo-url}}/${{env.image-name}}:${{env.image-tag}}
         # The tag or tags of the image to push. For multiple tags, seperate by whitespace. For example, "latest v1"
-        tags: commit-${{steps.vars.outputs.sha_short}} branch-${{steps.vars.outputs.branch}} 
+        #tags: commit-${{steps.vars.outputs.sha_short}} branch-${{steps.vars.outputs.branch}} 
         # Hostname and optional namespace to push the image to (eg. quay.io/username or quay.io)
         registry: image-registry.apps.silver.devops.gov.bc.ca
         # Username to use as credential to authenticate to the registry
