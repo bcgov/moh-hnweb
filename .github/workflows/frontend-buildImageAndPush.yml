@@ -23,6 +23,7 @@ jobs:
       id: vars
       shell: bash
       run: |
+        pwd
         echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"    
 
@@ -56,11 +57,11 @@ jobs:
       uses: redhat-actions/push-to-registry@v2.4
       with:
         # Name of the image to push (e.g. username/imagename or imagename)
-        image: ${{env.repo-url}}/${{env.image-name}}:${{env.image-tag}}
+        image: ${{env.image-name}}
         # The tag or tags of the image to push. For multiple tags, seperate by whitespace. For example, "latest v1"
-        #tags: commit-${{steps.vars.outputs.sha_short}} branch-${{steps.vars.outputs.branch}} 
+        tags: ${{env.image-tag}}
         # Hostname and optional namespace to push the image to (eg. quay.io/username or quay.io)
-        registry: image-registry.apps.silver.devops.gov.bc.ca
+        registry: ${{env.repo-url}}
         # Username to use as credential to authenticate to the registry
         #username: # optional
         # Password to use as credential to authenticate to the registry
