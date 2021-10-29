@@ -1,5 +1,10 @@
 name: BuildAndPush
 
+env:
+  repo-url: 'image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools'
+  image-name: 'hnweb-frontend'
+  image-tag: 'GithubActions'
+
 on:
   push:
     branches:
@@ -12,11 +17,12 @@ jobs:
   
   buildAndPush:
     runs-on: ubuntu-latest
+    
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
       working-directory: ./frontend
-      run: docker build . --file Dockerfile --tag image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools/hnweb-frontend:$(date +%s)
+      run: docker build . --file Dockerfile --tag ${{env.repo-url}}/${{env.image-name}}:${{env.image-tag}}
     
     - name: OpenShift Login
       # You may pin to the exact commit or the version.
@@ -31,6 +37,7 @@ jobs:
         insecure_skip_tls_verify: true
         # Set current context's namespace to this, after logging in.
         namespace: c5839f-tools
-  
-    
+
+
+
   
