@@ -1,7 +1,7 @@
 name: BuildAndPush
 
 env:
-  repo-url: 'https://image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools'
+  repo-url: 'image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools'
   image-name: 'hnweb-frontend'
   image-tag: 'GithubActions'
 
@@ -61,7 +61,7 @@ jobs:
         # The tag or tags of the image to push. For multiple tags, seperate by whitespace. For example, "latest v1"
         tags: ${{env.image-tag}}
         # Hostname and optional namespace to push the image to (eg. quay.io/username or quay.io)
-        registry: ${{env.repo-url}}
+        registry: https://${{env.repo-url}}
         # Username to use as credential to authenticate to the registry
         username: github-actions-sa
         # Password to use as credential to authenticate to the registry
