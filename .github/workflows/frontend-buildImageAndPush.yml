@@ -1,7 +1,7 @@
 name: BuildAndPush
 
 env:
-  repo-url: 'image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools'
+  registry-url: 'image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools'
   image-name: 'hnweb-frontend'
   image-tag: 'GithubActions'
 
@@ -35,42 +35,26 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build the Docker image
       working-directory: ./frontend
-      run: docker build . --file Dockerfile --tag ${{env.repo-url}}/${{env.image-name}}:${{env.image-tag}}
-    
-    - name: OpenShift Login
-      # You may pin to the exact commit or the version.
-      # uses: redhat-actions/oc-login@11b98b2a0c4b972c9791d58edbf378ce0f060359
-      uses: redhat-actions/oc-login@v1.1
-      with:
-        # Openshift Server URL.
-        openshift_server_url: ${{secrets.C5839F_OPENSHIFT_SERVER}}
-        # Openshift Bearer Token. Store in a secret.
-        openshift_token: ${{secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN}}
-        # Skip TLS certificate verification when connecting to the cluster.
-        insecure_skip_tls_verify: true
-        # Set current context's namespace to this, after logging in.
-        namespace: c5839f-tools
+      run: docker build . --file Dockerfile --tag ${{env.registry-url}}/${{env.image-name}}:${{env.image-tag}}
 
+    - name: Podman Login
+      # You may pin to the exact commit or the version.
+      # uses: redhat-actions/podman-login@4c93cb1ea36b10156ea541570dc69bc04dffe10e
+      uses: redhat-actions/podman-login@v1
+      with:
+        registry: ${{env.registry-url}}
+        username: github-actions-sa
+        password: ${{secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN}}
+        
     - name: Push To Registry
       # You may pin to the exact commit or the version.
       # uses: redhat-actions/push-to-registry@42e9b87b012159b3b5329cb665f89d8473eb6813
       uses: redhat-actions/push-to-registry@v2.4
       with:
-        # Name of the image to push (e.g. username/imagename or imagename)
         image: ${{env.image-name}}
-        # The tag or tags of the image to push. For multiple tags, seperate by whitespace. For example, "latest v1"
         tags: ${{env.image-tag}}
-        # Hostname and optional namespace to push the image to (eg. quay.io/username or quay.io)
-        registry: https://${{env.repo-url}}
-        # Username to use as credential to authenticate to the registry
-        username: github-actions-sa
-        # Password to use as credential to authenticate to the registry
-        password: ${{secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN}}
-        # Verify TLS certificates when contacting the registry
-        #tls-verify: # optional, default is true
-        # After copying the image, write the digest of the resulting image to the file. By default, the filename will be determined from the image and tag. The contents of this file are the digest output.
-        # digestfile: # optional
-        # Extra args to be passed to podman push. Separate arguments by newline. Do not use quotes - @actions/exec will do the quoting for you.
-        # extra-args: # optional
+        registry: ${{env.registry-url}}
+        
+
 
   
