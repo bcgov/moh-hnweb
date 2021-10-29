@@ -32,7 +32,7 @@ public class EligibilityControllerTest {
 	private EligibilityService eligibilityServiceMock;
 
 	/**
-	 * Inject the service being tested using the standard @Autowired annotation.
+	 * Inject the Controller being tested using the standard @Autowired annotation.
 	 */
 	@Autowired
 	private EligibilityController eligibilityController;
@@ -83,7 +83,7 @@ public class EligibilityControllerTest {
 
 		// 4. Perform assertions
 		ResponseStatusException responseException = assertThrows(ResponseStatusException.class, () -> {
-        	ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(phn, eligibilityDate);
+        	eligibilityController.checkEligibility(phn, eligibilityDate);
         });
 		assertEquals(HttpStatus.BAD_REQUEST, responseException.getStatus());
 		assertEquals("Bad /checkEligibility request", responseException.getReason());
