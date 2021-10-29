@@ -1,7 +1,7 @@
 name: BuildAndPush
 
 env:
-  repo-url: 'image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools'
+  repo-url: 'https://image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools'
   image-name: 'hnweb-frontend'
   image-tag: 'GithubActions'
 
