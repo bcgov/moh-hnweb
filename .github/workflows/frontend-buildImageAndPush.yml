@@ -9,6 +9,7 @@ on:
     - 4241-hnweb-infrastructure
 
 jobs:
+  
   buildAndPush:
     runs-on: ubuntu-latest
     steps:
@@ -16,6 +17,22 @@ jobs:
     - name: Build the Docker image
       working-directory: ./frontend
       run: docker build . --file Dockerfile --tag image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools/hnweb-frontend:$(date +%s)
-
+    
+    - name: OpenShift Login
+      # You may pin to the exact commit or the version.
+      # uses: redhat-actions/oc-login@11b98b2a0c4b972c9791d58edbf378ce0f060359
+      uses: redhat-actions/oc-login@v1.1
+      with:
+        # Openshift Server URL.
+        openshift_server_url: ${{secrets.C5839F_OPENSHIFT_SERVER}}
+        # Openshift Bearer Token. Store in a secret.
+        openshift_token: ${{secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN}}
+        # Skip TLS certificate verification when connecting to the cluster.
+        insecure_skip_tls_verify: true
+        # Set current context's namespace to this, after logging in.
+        #namespace: c5839f-tools
+        # "By default, the cluster name is masked, since it can be used to derive the server URL. Set this to true to skip masking the cluster name."
+        #reveal_cluster_name: # optional, default is false
   
+    
   
