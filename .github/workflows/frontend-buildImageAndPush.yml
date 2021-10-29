@@ -30,6 +30,7 @@ jobs:
     - name: Push To Registry
     - uses: redhat-actions/push-to-registry@v2.4
       with:
+        # name of image as per docker build
         image: image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools/hnweb-frontend:$(date +%s) 
   
   
