@@ -23,3 +23,12 @@ springdoc:
 
 server:
   port: 9090
+  
+R50:
+  url: 
+  user: 
+    name: 
+    password: 
+  cert:
+    file: 
+    password: 

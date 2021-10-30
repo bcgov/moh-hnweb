@@ -41,6 +41,11 @@
 			<optional>true</optional>
 		</dependency>
 
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+
  		<!-- OpenAPI/Swagger -->
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -54,6 +59,12 @@
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
  		
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpclient</artifactId>
+		</dependency>		
+
  		<!-- HL7 -->
 		<dependency>
 			<groupId>ca.uhn.hapi</groupId>

@@ -4,6 +4,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### Cert Files ###
+**/keystore/
+
 ### STS ###
 .apt_generated
 .classpath
