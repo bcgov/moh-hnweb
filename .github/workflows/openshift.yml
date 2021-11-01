@@ -63,7 +63,7 @@ jobs:
     name: Build and deploy to OpenShift
     # ubuntu-20.04 can also be used.
     runs-on: ubuntu-18.04
-    environment: production
+    #environment: production
 
     outputs:
       ROUTE: ${{ steps.deploy-and-expose.outputs.route }}
@@ -128,7 +128,7 @@ jobs:
       with:
         image: ${{ env.APP_NAME }}
         tags: ${{ env.IMAGE_TAGS }}
-        context: ./frontend
+        workdir: ./frontend
         # If you don't have a Dockerfile/Containerfile, refer to https://github.com/redhat-actions/buildah-build#scratch-build-inputs
         # Or, perform a source-to-image build using https://github.com/redhat-actions/s2i-build
         # Otherwise, point this to your Dockerfile/Containerfile relative to the repository root.
