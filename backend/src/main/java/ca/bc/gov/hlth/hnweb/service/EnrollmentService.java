@@ -1,18 +1,14 @@
 package ca.bc.gov.hlth.hnweb.service;
 
 import java.io.IOException;
-import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
@@ -52,9 +48,6 @@ public class EnrollmentService {
 	@Value("${R50.cert.password}")
 	private String certPassword;
 
-	@Autowired
-	private RestTemplate enrollmentRestTemplate;
-
 	/**
 	 * Enrolls a subscriber by sending a HL7 V2 message to external enrollment service. It was the R50 message to create a V2 String and sends this
 	 * over Https using TLS. The endpoint also requires Basic Authentication. 
@@ -73,8 +66,7 @@ public class EnrollmentService {
 		String r50v2RequiredFormat = formatMessage(r50v2);
 		logger.debug("Updated V2 message:\n{}", r50v2RequiredFormat);
 		
-		ResponseEntity<String> response = postEnrollmentRequest(r50Url, r50v2RequiredFormat, transactionId);		
-//		ResponseEntity<String> response = sendEnrollmentRequest(r50v2RequiredFormat, transactionId);
+		ResponseEntity<String> response = postEnrollmentRequest(r50Url, r50v2RequiredFormat, transactionId);
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		
@@ -91,25 +83,6 @@ public class EnrollmentService {
                 .toEntity(String.class)
                 .block();
     }	
-	
-	/*
-	 * Uses a RestTemplate to post a request with the required headers and body 
-	 */
-	private ResponseEntity<String> sendEnrollmentRequest(String v2, String transactionId) {
-
-	    HttpHeaders headers = setRequestHeaders(transactionId);	    
-	    HttpEntity<String> entity = new HttpEntity<String>(v2, headers);	    
-	    return enrollmentRestTemplate.postForEntity(r50Url, entity, String.class);
-	}
-
-	private HttpHeaders setRequestHeaders(String transactionId) {
-		
-		HttpHeaders headers = new HttpHeaders();
-	    headers.setContentType(MediaType.TEXT_PLAIN);
-	    headers.setAccept(Collections.singletonList(MediaType.ALL));
-		headers.set(TRANSACTION_ID, transactionId);
-		return headers;
-	}
 	
     private String encodeR50ToV2(R50 r50) throws HL7Exception, IOException {
     	
