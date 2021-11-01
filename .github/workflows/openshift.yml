@@ -30,8 +30,8 @@ env:
   # 🖊️ EDIT your repository secrets to log into your OpenShift cluster and set up the context.
   # See https://github.com/redhat-actions/oc-login#readme for how to retrieve these values.
   # To get a permanent token, refer to https://github.com/redhat-actions/oc-login/wiki/Using-a-Service-Account-for-GitHub-Actions
-  OPENSHIFT_SERVER: ${{ env.C5839F_OPENSHIFT_SERVER }}
-  OPENSHIFT_TOKEN: ${{ env.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
+  OPENSHIFT_SERVER: ${{ secrets.C5839F_OPENSHIFT_SERVER }}
+  OPENSHIFT_TOKEN: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
   # 🖊️ EDIT to set the kube context's namespace after login. Leave blank to use your user's default namespace.
   OPENSHIFT_NAMESPACE: "c5839f-dev"
 
