@@ -10,7 +10,7 @@ RUN yarn build --mode $env
 #Trying underpriv niginx build
 FROM nginxinc/nginx-unprivileged:1.20 as production-stage
 WORKDIR /usr/share/nginx/html
-RUN rm -rf ./*
+#RUN rm -rf ./*
 COPY --from=build-stage /app/dist .
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
