@@ -45,9 +45,9 @@ env:
 
   # 🖊️ EDIT to change the image registry settings.
   # Registries such as GHCR, Quay.io, and Docker Hub are supported.
-  IMAGE_REGISTRY: image-registry.apps.silver.devops.gov.bc.ca/${{ env.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_USER }}
-  IMAGE_REGISTRY_USER: ${{ env.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_USER }}
-  IMAGE_REGISTRY_PASSWORD: ${{ env.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
+  IMAGE_REGISTRY: image-registry.apps.silver.devops.gov.bc.ca/${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_USER }}
+  IMAGE_REGISTRY_USER: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_USER }}
+  IMAGE_REGISTRY_PASSWORD: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
 
   # 🖊️ EDIT to specify custom tags for the container image, or default tags will be generated below.
   IMAGE_TAGS: "openshift-workflow"
@@ -85,7 +85,7 @@ jobs:
           }
           else {
             core.info("A registry password is required");
-            secrets["IMAGE_REGISTRY_PASSWORD"] = `${{ env.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}`;
+            secrets["IMAGE_REGISTRY_PASSWORD"] = `${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}`;
           }
 
           const missingSecrets = Object.entries(secrets).filter(([ name, value ]) => {
