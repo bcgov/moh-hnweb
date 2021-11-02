@@ -1,7 +1,12 @@
 package ca.bc.gov.hlth.hnweb.config;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 
 import javax.net.ssl.KeyManagerFactory;
 
@@ -18,6 +23,7 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import reactor.core.publisher.Mono;
@@ -48,9 +54,11 @@ public class WebClientConfig {
 	private String certPassword;
 
 	@Bean("enrollmentWebClient")
-    public WebClient enrollmentWebClient() {
+    public WebClient enrollmentWebClient() throws HNWebException {
 
-	    HttpClient httpClient= HttpClient.create().secure(t -> t.sslContext(getSSLContext()));
+		SslContext sslContext = getSSLContext();
+		
+	    HttpClient httpClient= HttpClient.create().secure(t -> t.sslContext(sslContext));
 		ClientHttpConnector connector= new ReactorClientHttpConnector(httpClient);
 	    
 		return WebClient.builder()
@@ -63,24 +71,22 @@ public class WebClientConfig {
                 .build();
     }
 
-	private SslContext getSSLContext() {
+	private SslContext getSSLContext() throws HNWebException {
 
-	    try {
-	        KeyStore keyStore = KeyStore.getInstance(KEY_STORE_TYPE_PKCS12);
-	        keyStore.load(new FileInputStream(certFile.getFile()), certPassword.toCharArray());
+		try {
+			KeyStore keyStore = KeyStore.getInstance(KEY_STORE_TYPE_PKCS12);
+			keyStore.load(new FileInputStream(certFile.getFile()), certPassword.toCharArray());
 
-	        KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KEY_MANAGER_FACTORY_TYPE_SUN_X509);
-	        keyManagerFactory.init(keyStore, certPassword.toCharArray());
-
-	        return SslContextBuilder.forClient()
-	                .keyManager(keyManagerFactory)
-	                .build();
-
-	    } catch (Exception e) {
-	        logger.error("Error creating Enroll Subscriber WebClient SSL Context.");	        
-	    }
-
-	    return null;
+			KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KEY_MANAGER_FACTORY_TYPE_SUN_X509);
+			keyManagerFactory.init(keyStore, certPassword.toCharArray());
+			
+			return SslContextBuilder.forClient()
+			        .keyManager(keyManagerFactory)
+			        .build();
+		} catch (IOException | CertificateException | UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException e) {
+	        logger.error("Error creating Enroll Subscriber SSL Context due to {}.", e.toString());
+	        throw new HNWebException("SSL Context for Enroll Subscriber could not be built, application will not start", e.getCause());
+		}
 	}
 	
     /*

@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,21 +31,6 @@ public class EnrollmentService {
 	@Autowired
 	private WebClient enrollmentWebClient;
 	
-	@Value("${R50.url}")
-	private String r50Url;
-
-	@Value("${R50.user.name}")
-	private String userName;
-
-	@Value("${R50.user.password}")
-	private String userPassword;
-
-	@Value("classpath:${R50.cert.file}")
-	private Resource certFile;
-
-	@Value("${R50.cert.password}")
-	private String certPassword;
-
 	/**
 	 * Enrolls a subscriber by sending a HL7 V2 message to external enrollment service. It was the R50 message to create a V2 String and sends this
 	 * over Https using TLS. The endpoint also requires Basic Authentication. 
@@ -66,14 +49,14 @@ public class EnrollmentService {
 		String r50v2RequiredFormat = formatMessage(r50v2);
 		logger.debug("Updated V2 message:\n{}", r50v2RequiredFormat);
 		
-		ResponseEntity<String> response = postEnrollmentRequest(r50Url, r50v2RequiredFormat, transactionId);
+		ResponseEntity<String> response = postEnrollmentRequest(r50v2RequiredFormat, transactionId);
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		
 		return parseR50v2ToAck(response.getBody());
 	}
 
-	private ResponseEntity<String> postEnrollmentRequest(String path, String data, String transactionId) {
+	private ResponseEntity<String> postEnrollmentRequest(String data, String transactionId) {
         return enrollmentWebClient
                 .post()
                 .contentType(MediaType.TEXT_PLAIN)
@@ -84,7 +67,7 @@ public class EnrollmentService {
                 .block();
     }	
 	
-    private String encodeR50ToV2(R50 r50) throws HL7Exception, IOException {
+    private String encodeR50ToV2(R50 r50) throws HL7Exception {
     	
     	// Encode the message using the default HAPI parser and return it as a String
     	String encodedMessage = parser.encode(r50);
@@ -115,8 +98,7 @@ public class EnrollmentService {
 	 * @return
 	 */
 	private String formatMessage(String r50v2) {
-		String r50v2RequiredFormat = r50v2.replaceFirst("\r", "||\r");
-		return r50v2RequiredFormat;
+		return  r50v2.replaceFirst("\r", "||\r");
 	}
 	
 }

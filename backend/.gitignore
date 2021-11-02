@@ -6,6 +6,7 @@ target/
 
 ### Cert Files ###
 **/keystore/
+**/application-*.yaml
 
 ### STS ###
 .apt_generated
