@@ -1,5 +1,10 @@
+import moment from 'moment'
+
 import { helpers } from '@vuelidate/validators'
 
+/**
+ * Validates that the PHN matches the accepted format.
+ */
 export function validatePHN(phn) {
   if (!helpers.req(phn)) {
     return true
@@ -21,7 +26,23 @@ export function validatePHN(phn) {
       return false
     }
   }
-  return true;
+  return true
 }
 
+/**
+ * Validates that the Date of Birth is not in the future.
+ */
+export function validateDOB(dateOfBirth) {
+  if (!helpers.req(dateOfBirth)) {
+    return true
+  }
+  console.log(dateOfBirth)
+  console.log(moment())
+  if (moment(dateOfBirth).isAfter(moment().startOf('day'))) {
+    return false
+  }
+  return true
+}
+
+export const VALIDATE_DOB_MESSAGE = "Date of Birth must not be in the future"
 export const VALIDATE_PHN_MESSAGE = "PHN format is invalid"
