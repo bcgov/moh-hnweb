@@ -1,0 +1,1 @@
+export const HN_WEB_DATE_FORMAT = 'YYYY-MM-DD'
