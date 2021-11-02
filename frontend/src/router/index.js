@@ -45,6 +45,11 @@ const routes = [
                 component: PhnEnquiry,
             },
             {
+                path: 'phnLookup',
+                name: 'PhnLookup',
+                component: PhnEnquiry,
+            },            
+            {
                 path: 'coverageStatusCheck',
                 name: 'CoverageStatusCheck',
                 component: CoverageStatusCheck,

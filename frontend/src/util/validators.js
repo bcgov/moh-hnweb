@@ -36,8 +36,6 @@ export function validateDOB(dateOfBirth) {
   if (!helpers.req(dateOfBirth)) {
     return true
   }
-  console.log(dateOfBirth)
-  console.log(moment())
   if (moment(dateOfBirth).isAfter(moment().startOf('day'))) {
     return false
   }
