@@ -90,19 +90,26 @@ const v$ = useVuelidate()
         <AppOutput label="Coverage End Reason" :value="result.coverageEndReason"/>
       </AppCol>
     </AppRow>    
+    <br/>
     <AppRow class="row">      
       <AppCol class="col12">
-        <p>Subsidy Insured Service: {{result.subsidyInsuredService}}</p>
+        <p>
+          <label>Subsidy Insured Service: </label>{{result.subsidyInsuredService}}
+        </p>
       </AppCol>    
     </AppRow>
     <AppRow class="row">  
       <AppCol class="col12">
-        <p>Date of Last Eye Examination: {{result.dateOfLastEyeExamination}}</p>
+        <p>
+          <label>Date of Last Eye Examination: </label>{{result.dateOfLastEyeExamination}}
+        </p>
       </AppCol>
     </AppRow>
     <AppRow class="row">      
       <AppCol class="col12">
-        <p>Patient Restriction: {{result.patientRestriction}}</p>
+        <p>
+          <label>Patient Restriction: </label>{{result.patientRestriction}}
+        </p>
       </AppCol>               
     </AppRow>
     <AppRow class="row">      
@@ -155,10 +162,10 @@ export default {
         //this.result = (await EligibilityService.checkCoverageStatus(this.phn, this.dateOfBirth, this.dateOfService, this.requestSubsidyInsuredService)).HN_WEB_DATE_FORMAT
         this.result = {
           phn: this.phn,
-          name: 'Homer Simpson',
-          dateOfBirth: this.dateOfBirth,
+          name: 'Simpson, Homer',
+          dateOfBirth: moment(this.dateOfBirth).format('YYYYMMDD'),
           gender: 'MALE',
-          dateOfService: this.dateOfService,
+          dateOfService: moment(this.dateOfService).format('YYYYMMDD'),
           eligibleOnDateOfService: 'YES',
           coverageEndDate: '20221212',
           coverageEndReason: '',
