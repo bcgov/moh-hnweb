@@ -61,4 +61,8 @@ export default {
     display: flex;
   }
 
+  .error-input {
+    border-color: crimson !important;
+  }
+
 </style>

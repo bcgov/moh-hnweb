@@ -83,4 +83,8 @@ input.dp__input {
   outline-offset: 1px;
 }
 
+.error-input input  {
+  border-color: crimson !important;
+}
+
 </style>
