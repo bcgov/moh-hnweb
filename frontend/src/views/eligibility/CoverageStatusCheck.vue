@@ -136,7 +136,7 @@ export default {
         subsidyInsuredService: '',
         dateOfLastEyeExamination: '',
         patientRestriction: '',
-        note: '',
+        carecardWarning: '',
       }
     }
   },
@@ -163,7 +163,7 @@ export default {
           subsidyInsuredService: 'THIS IS NOT AN INSURED BENEFIT',
           dateOfLastEyeExamination: 'MSP HAS NOT PAID FOR AN EYE EXAM FOR THIS PHN IN THE LAST 24 MTHS FROM TODAY\'S DATE',
           patientRestriction: 'NO RESTRICTION',
-          note: 'THIS PERSON HAS REQUESTED A REPLACEMENT BD SERVICES CARD. PLEASE CONFIRM IDENTITY.',
+          carecardWarning: 'THIS PERSON HAS REQUESTED A REPLACEMENT BD SERVICES CARD. PLEASE CONFIRM IDENTITY.',
 
         }
         this.searched = true

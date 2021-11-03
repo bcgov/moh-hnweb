@@ -71,8 +71,3 @@ input {
 .select-table tr.v-data-table__empty-wrapper {
     cursor: default;
 }
-
-/* Errors */
-.error-input, .error-input input  {
-  border-color: crimson !important;
-}
