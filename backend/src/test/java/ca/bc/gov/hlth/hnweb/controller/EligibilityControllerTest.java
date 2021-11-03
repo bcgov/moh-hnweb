@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,7 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
 import ca.bc.gov.hlth.hnweb.service.EligibilityService;
-import ca.uhn.hl7v2.HL7Exception;
 
 @SpringBootTest
 public class EligibilityControllerTest {
@@ -38,7 +36,7 @@ public class EligibilityControllerTest {
 	private EligibilityController eligibilityController;
 	
 	@Test
-	public void testCheckEligibility_success() throws HL7Exception, IOException, ParseException {
+	public void testCheckEligibility_success() throws ParseException {
 		// 1. Set up our test data
 		String phn = "9890608412";
 		Date eligibilityDate = new SimpleDateFormat("yyyy-MM-dd").parse("2021-10-01");
@@ -66,7 +64,7 @@ public class EligibilityControllerTest {
 	}
 	
 	@Test
-	public void testCheckEligibility_exception() throws HL7Exception, IOException, ParseException {
+	public void testCheckEligibility_exception() throws ParseException {
 		// 1. Set up our test data
 		String phn = "9890608411";
 		Date eligibilityDate = new SimpleDateFormat("yyyy-MM-dd").parse("2021-10-01");
