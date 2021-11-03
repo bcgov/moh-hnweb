@@ -29,7 +29,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 /* Customize the label (the container) */
 .checkbox {
@@ -86,13 +86,4 @@ export default {
   display: block;
 }
 
-.error-input {
-  border-color: crimson;
-  border-width: 2px;
-}
-
-.error-text {
-  color: crimson;
-  margin-top: -15px;
-}
 </style>

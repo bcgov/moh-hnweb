@@ -2,12 +2,15 @@
 
 import AppButton from '../../components/AppButton.vue'
 import AppCol from '../../components/grid/AppCol.vue'
+import AppDateInput from '../../components/AppDateInput.vue'
 import AppInput from '../../components/AppInput.vue'
 import AppRow from '../../components/grid/AppRow.vue'
+
 import EligibilityService from '../../services/EligibilityService'
 import useVuelidate from '@vuelidate/core'
 import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
+
 const v$ = useVuelidate()
 </script>
 <template>
@@ -15,17 +18,12 @@ const v$ = useVuelidate()
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
-          <AppInput :errorValue="v$.phn" label="PHN" type="text" v-model="phn" />
+          <AppInput :e-model="v$.phn" label="PHN" type="text" v-model="phn" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput
-            :errorValue="v$.eligibilityDate"
-            label="Date to check"
-            type="date"
-            v-model="eligibilityDate"
-          />
+          <AppDateInput v-model="eligibilityDate" label="Date to Check" :e-model="v$.eligibilityDate"/>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -70,7 +68,9 @@ export default {
   data() {
     return {
       phn: '',
-      eligibilityDate: '',
+      eligibilityDate: new Date(),
+      otherDate: new Date(),
+      date: null,
       searching: false,
       searched: false,
       result: {
@@ -84,6 +84,7 @@ export default {
   },
   methods: {
     async submitForm() {
+      console.log(`eligibilityDate ${this.eligibilityDate}`)
       this.searching = true
       try {
         const isValid = await this.v$.$validate()
@@ -103,7 +104,7 @@ export default {
     },
     resetForm() {
       this.phn = ''
-      this.eligibilityDate = ''
+      this.eligibilityDate = new Date()
       this.v$.$reset()
       this.$store.commit("alert/dismissAlert");
       this.searched = false
@@ -118,7 +119,8 @@ export default {
           VALIDATE_PHN_MESSAGE, validatePHN
         )
       },
-      eligibilityDate: { required }
+      eligibilityDate: { required },
+      otherDate: {required}
     }
   }
 }

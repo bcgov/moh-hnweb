@@ -1,44 +1,45 @@
+<script setup>
+import AppInputError from './AppInputError.vue'
+</script>
+
 <template>
 
   <div class="text_label">
     <label>{{label}}</label>
   </div>
+
   <input :class="inputClass" :type="type" :value="modelValue" @input='$emit("update:modelValue", $event.target.value)'/>
   
-  <div class="error-text" v-for="error in errorValue.$errors">
-    {{error.$message.replace('Value', label)}}
-  </div>
+  <AppInputError :e-model="eModel" :label="label"/>
   
 </template>
 
 <script>
-import useVuelidate from '@vuelidate/core'
-
-  export default {
-    name: 'AppInput',
-    props: {
-      errorValue: Object,
-      label: String,
-      modelValue: String,
-      type: {
-        type:  String,
-        default: 'text'
-      }
-    },
-    computed: {
-      inputClass() {
-        return {
-          'text_input': true,
-          'error-input' : this.errorValue.$error,
-        }
+export default {
+  name: 'AppInput',
+  props: {
+    eModel: Object,
+    label: String,
+    modelValue: String,
+    type: {
+      type:  String,
+      default: 'text'
+    }
+  },
+  computed: {
+    inputClass() {
+      return {
+        'text_input': true,
+        'error-input' : this.eModel.$error,
       }
     }
   }
+}
 </script>
 
-<style>
+<style scoped>
   .text_input {
-    font-family: ‘BCSans’, ‘Noto Sans’, Verdana, Arial, sans-serif;
+    font-family: 'BCSans', 'Noto Sans', Verdana, Arial, sans-serif;
     font-size: 18px;
   }
 
@@ -52,7 +53,7 @@ import useVuelidate from '@vuelidate/core'
   }
 
   .text_input[type="text"]:focus {
-    outline: 4px solid #3B99FC;
+    outline: 2px solid #3B99FC;
     outline-offset: 1px;
   }
 
@@ -60,13 +61,4 @@ import useVuelidate from '@vuelidate/core'
     display: flex;
   }
 
-  .error-input {
-    border-color: crimson;
-    border-width: 2px;
-  }
-  
-  .error-text {
-    color: crimson;
-    margin-top: -15px;
-  }
 </style>
