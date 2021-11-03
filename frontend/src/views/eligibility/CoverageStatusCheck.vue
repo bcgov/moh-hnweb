@@ -2,15 +2,16 @@
 import AppButton from '../../components/AppButton.vue'
 import AppCheckbox from '../../components/AppCheckbox.vue'
 import AppCol from '../../components/grid/AppCol.vue'
+import AppDateInput from '../../components/AppDateInput.vue'
 import AppInput from '../../components/AppInput.vue'
 import AppOutput from '../../components/AppOutput.vue'
 import AppRow from '../../components/grid/AppRow.vue'
 import EligibilityService from '../../services/EligibilityService'
 import useVuelidate from '@vuelidate/core'
 import { validateDOB, validatePHN, VALIDATE_DOB_MESSAGE, VALIDATE_PHN_MESSAGE } from '../../util/validators'
-import {HN_WEB_DATE_FORMAT} from '../../util/constants'
+import { OUTPUT_DATE_FORMAT } from '../../util/constants'
 import { required, helpers } from '@vuelidate/validators'
-import moment from 'moment';
+import dayjs from 'dayjs'
 const v$ = useVuelidate()
 </script>
 
@@ -19,27 +20,17 @@ const v$ = useVuelidate()
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
-          <AppInput :errorValue="v$.phn" label="PHN" type="text" v-model="phn" />
+          <AppInput :e-model="v$.phn" label="PHN" type="text" v-model="phn" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput
-            :errorValue="v$.dateOfBirth"
-            label="Date of Birth"
-            type="date"
-            v-model="dateOfBirth"
-          />
+          <AppDateInput :e-model="v$.dateOfBirth" label="Date Of Birth" v-model="dateOfBirth" />          
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput
-            :errorValue="v$.dateOfService"
-            label="Date of Service"
-            type="date"
-            v-model="dateOfService"
-          />
+          <AppDateInput :e-model="v$.dateOfService" label="Date Of Service" v-model="dateOfService" />          
         </AppCol>
       </AppRow>
       <AppRow>
@@ -126,8 +117,8 @@ export default {
   data() {
     return {
       phn: '',
-      dateOfBirth: '',
-      dateOfService: moment().format(HN_WEB_DATE_FORMAT),
+      dateOfBirth: undefined,
+      dateOfService: dayjs(),
       requestSubsidyInsuredService: false,
       requestLastEyeExam: false,
       requestPatientRestriction: false,
@@ -163,9 +154,9 @@ export default {
         this.result = {
           phn: this.phn,
           name: 'Simpson, Homer',
-          dateOfBirth: moment(this.dateOfBirth).format('YYYYMMDD'),
+          dateOfBirth: dayjs(this.dateOfBirth).format(OUTPUT_DATE_FORMAT),
           gender: 'MALE',
-          dateOfService: moment(this.dateOfService).format('YYYYMMDD'),
+          dateOfService: dayjs(this.dateOfService).format(OUTPUT_DATE_FORMAT),
           eligibleOnDateOfService: 'YES',
           coverageEndDate: '20221212',
           coverageEndReason: '',
@@ -186,7 +177,7 @@ export default {
     resetForm() {
       this.phn = ''
       this.dateOfBirth = ''
-      this.dateOfService = moment().format(HN_WEB_DATE_FORMAT),
+      this.dateOfService = dayjs(),
       this.v$.$reset()
       this.$store.commit("alert/dismissAlert");
       this.searched = false

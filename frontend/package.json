@@ -16,12 +16,13 @@
     "@vuelidate/core": "^2.0.0-alpha.27",
     "@vuelidate/validators": "^2.0.0-alpha.23",
     "axios": "^0.23.0",
+    "dayjs": "^1.10.7",
     "keycloak-js": "^15.0.2",
-    "moment": "^2.29.1",
     "testcafe": "^1.16.0",
     "testcafe-vue-selectors": "^3.1.1",
     "vue": "^3.2.13",
     "vue-router": "4",
+    "vue3-date-time-picker": "^2.3.2",
     "vuex": "next"
   },
   "devDependencies": {

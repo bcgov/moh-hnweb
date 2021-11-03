@@ -1,4 +1,4 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 import { helpers } from '@vuelidate/validators'
 
@@ -36,7 +36,7 @@ export function validateDOB(dateOfBirth) {
   if (!helpers.req(dateOfBirth)) {
     return true
   }
-  if (moment(dateOfBirth).isAfter(moment().startOf('day'))) {
+  if (dayjs(dateOfBirth).isAfter(dayjs().startOf('day'))) {
     return false
   }
   return true
