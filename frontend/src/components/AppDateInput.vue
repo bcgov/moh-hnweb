@@ -75,6 +75,7 @@ input.dp__input {
   color: #000000;
   font-family: 'BCSans';
   font-size: 18px;
+  height: 34px;
   margin-bottom: 15px;
 }
   
