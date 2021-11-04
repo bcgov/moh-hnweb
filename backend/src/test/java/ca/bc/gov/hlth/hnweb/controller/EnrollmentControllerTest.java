@@ -22,7 +22,7 @@ import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
 /**
- * Junit test class for EnrollmentController
+ * JUnit test class for EnrollmentController
  *
  */
 @SpringBootTest

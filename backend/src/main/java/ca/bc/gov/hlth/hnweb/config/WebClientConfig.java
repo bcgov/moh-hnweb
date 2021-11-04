@@ -32,7 +32,7 @@ import reactor.netty.http.client.HttpClient;
 @Configuration
 public class WebClientConfig {
 
-	private final Logger logger = LoggerFactory.getLogger("WebClientConfig");
+	private final Logger logger = LoggerFactory.getLogger(WebClientConfig.class);
 
 	private static final String KEY_STORE_TYPE_PKCS12 = "pkcs12";
 

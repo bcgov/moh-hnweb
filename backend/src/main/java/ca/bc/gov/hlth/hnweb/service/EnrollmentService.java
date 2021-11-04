@@ -23,7 +23,7 @@ public class EnrollmentService {
 
 	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(EnrollmentService.class);
 
-	public static String TRANSACTION_ID = "TransactionID";
+	public static final String TRANSACTION_ID = "TransactionID";
 
 	@Autowired
 	private Parser parser;

@@ -40,13 +40,13 @@ public class EnrollmentController {
 	@Autowired
 	private EnrollmentService enrollmentService;
 	
-	@PostMapping("/enrollsubscriber")
+	@PostMapping("/enroll-subscriber")
 	public EnrollSubscriberResponse enrollSubscriber(@Valid @RequestBody EnrollSubscriberRequest enrollSubscriberRequest) throws HL7Exception, IOException {
 		
 		logger.info("Subscriber enroll request: {} ", enrollSubscriberRequest.getPhn());
 		
 		R50 r50 = convertEnrollSubscriberRequestToR50(enrollSubscriberRequest);		
-		final String transactionId = UUID.randomUUID().toString();		
+		String transactionId = UUID.randomUUID().toString();		
 		Message message = enrollmentService.enrollSubscriber(r50, transactionId);		
 		EnrollSubscriberResponse enrollSubscriberResponse = convertAckToEnrollSubscriberResponse(message);
 		
