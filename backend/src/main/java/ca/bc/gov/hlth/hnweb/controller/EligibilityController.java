@@ -20,7 +20,7 @@ import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
 public class EligibilityController {
 	private static final Logger logger = LoggerFactory.getLogger(EligibilityController.class);
 
-	@GetMapping("/check-eligibility")
+	@GetMapping("/checkEligibility")
 	public ResponseEntity<CheckEligibilityResponse> checkEligibility(@RequestParam(name = "phn", required = true) String phn,
 			@DateTimeFormat(iso = ISO.DATE) @RequestParam(name = "eligibilityDate", required = false) Date eligibilityDate) {
 		logger.info("checkEligibility request - phn: {} date: {}", phn, eligibilityDate);
