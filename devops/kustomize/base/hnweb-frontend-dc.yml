@@ -1,0 +1,37 @@
+﻿apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app.kubernetes.io/part-of: hnweb
+  name: hnweb-frontend-dc
+spec:
+  replicas: 2
+  selector:
+    app: hnweb-frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: hnweb-frontend
+        deploymentconfig: hnweb-frontend-dc
+    spec:
+      containers:
+      - name: hnweb-frontend
+        image: >-
+          "image-registry.openshift-image-registry.svc:5000/c5839f-tools/hnweb-frontend:openshift-workflow"
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+  test: false
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - hnweb-frontend
+      from:
+        kind: ImageStreamTag
+        namespace: c5839f-dev
+        name: image-registry.openshift-image-registry.svc:5000/c5839f-tools/hnweb-frontend:openshift-workflow
+    type: ImageChange
