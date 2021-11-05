@@ -1,6 +1,7 @@
 import AlertPage from '../pages/AlertPage';
 import CheckEligibilityPage from '../pages/eligibility/CheckEligibilityPage';
 import {Role} from 'testcafe';
+import { Selector } from 'testcafe';
 
 const ERROR_MESSAGE = 'Please correct errors before submitting';
 const SUCCESS_MESSAGE = 'Search complete';
@@ -23,30 +24,33 @@ fixture(`CheckEligibility Page`)
     })
   .page('http://localhost:3000/eligibility/checkEligibility');
 
-test('Error when no username and date', async t => {
+test('Error when no phn and date', async t => {
     await t
         .click(CheckEligibilityPage.submitButton)
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
 
-        console.log("Error when no username and date");
+        console.log("Error when no phn and date");
 });
 
 test('Error when no date selected', async t => {
     await t
-        .typeText(CheckEligibilityPage.phnInput, '123456')
+        .debug()
+        .typeText(Selector('phn'), '123456')
+        .debug()
         .click(CheckEligibilityPage.submitButton)
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
 
         console.log("Error when no date selected");
 });
 
-test('Error when no username', async t => {
+test('Error when no phn', async t => {
     await t
+        .debug()
         .typeText(CheckEligibilityPage.eligibilityDate, '10/12/2021')
         .click(CheckEligibilityPage.submitButton)
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
 
-        console.log("Error when no uesrname");
+        console.log("Error when no phn");
 });
 
 test('Check validation passed info', async t => {
