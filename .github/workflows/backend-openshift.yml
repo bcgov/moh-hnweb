@@ -24,7 +24,7 @@
 
 # 👋 Visit our GitHub organization at https://github.com/redhat-actions/ to see our actions and provide feedback.
 
-name: backend-openShift
+name: backend-openshift
 
 env:
   # 🖊️ EDIT your repository secrets to log into your OpenShift cluster and set up the context.
@@ -57,9 +57,6 @@ on:
   push:
     # Edit to the branch(es) you want to build and deploy on each push.
     branches: [ 4241-hnweb-infrastructure ]
-
-  paths:
-    - "backend/**"
 
 jobs:
   openshift-ci-cd:
