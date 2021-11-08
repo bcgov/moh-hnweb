@@ -2,30 +2,31 @@
   <nav role="navigation">
     <div class="container">
       <ul>
-        <li id="home-link" :class="($route.name == 'Home') ? 'active' : 'inactive'">
+        <li id="home-link" :class="tabClass($route, 'Home')">
           <router-link @click="resetAlert" :to="{ name: 'Home'}">Home</router-link>
         </li>
-        <li id="eligibility-link" :class="$route.path.startsWith('/eligibility') ? 'active' : 'inactive'">
+        <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')">
           <div class="dropdown" :key="eligibilityDropdownKey" v-on:click="this.refreshEligibility()">
             <router-link @click="resetAlert" :to="{ name: 'Eligibility'}">Eligibility & PHN</router-link>
             <div class="dropdown-content">
-              <router-link @click="resetAlert" :class="($route.name == 'CheckEligibility') ? 'active' : 'inactive'" :to="{ name: 'CheckEligibility'}">Check Eligibility</router-link>
-              <router-link @click="resetAlert" :class="($route.name == 'PhnEnquiry') ? 'active' : 'inactive'" :to="{ name: 'PhnEnquiry'}">PHN Enquiry</router-link>
-              <router-link @click="resetAlert" :class="($route.name == 'CoverageStatusCheck') ? 'active' : 'inactive'" :to="{ name: 'CoverageStatusCheck'}">MSP Coverage Status Check</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'CheckEligibility')" :to="{ name: 'CheckEligibility'}">Check Eligibility</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'PhnEnquiry')" :to="{ name: 'PhnEnquiry'}">PHN Enquiry</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'PhnLookup')" :to="{ name: 'PhnLookup'}">PHN Lookup</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'CoverageStatusCheck')" :to="{ name: 'CoverageStatusCheck'}">MSP Coverage Status Check</router-link>
             </div>
           </div>
         </li>
-        <li id="coverage-maintenance-link" :class="$route.name == 'CoverageMaintenance' ? 'active' : 'inactive'">
+        <li id="coverage-maintenance-link" :class="tabClass($route, 'CoverageMaintenance')">
           <router-link @click="resetAlert" :to="{ name: 'CoverageMaintenance'}">Coverage Maintenance</router-link>
         </li>
-        <li id="coverage-enrollment-link" :class="$route.name == 'CoverageEnrollment' ? 'active' : 'inactive'">
+        <li id="coverage-enrollment-link" :class="tabClass($route, 'CoverageEnrollment')">
           <router-link @click="resetAlert" :to="{ name: 'CoverageEnrollment'}">Coverage Enrollment</router-link>
         </li>
-        <li id="manage-employees-link" :class="$route.name == 'ManageEmployees' ? 'active' : 'inactive'">
+        <li id="manage-employees-link" :class="tabClass($route, 'ManageEmployees')">
           <router-link @click="resetAlert" :to="{ name: 'ManageEmployees'}">Manage Employees</router-link>
         </li>
-        <li id="help-link" :class="$route.name == 'Help' ? 'active' : 'inactive'">
-            <router-link @click="resetAlert" :to="{ name: 'Help'}">Help</router-link>
+        <li id="help-link" :class="tabClass($route, 'Help')">
+          <router-link @click="resetAlert" :to="{ name: 'Help'}">Help</router-link>
         </li>
       </ul>
     </div>
@@ -40,14 +41,22 @@ export default {
       eligibilityDropdownKey: 0
     }
   },
-
   methods: {
     resetAlert: function () {
       this.$store.commit('alert/dismissAlert');
     },
     refreshEligibility() {
       this.eligibilityDropdownKey += 1
-    }
+    },
+    menuClass(route, routeName) {
+      return this.tabClass(route, routeName)
+    },
+    tabClass(route, routeName) {
+      return route.name === routeName ? 'active' : 'inactive';
+    },
+    menuTabClass(route, routePath) {
+      return route.path.startsWith(routePath) ? 'active' : 'inactive';
+    },
   }
 }
 </script>

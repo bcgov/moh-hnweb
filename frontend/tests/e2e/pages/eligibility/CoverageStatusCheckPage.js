@@ -1,9 +1,10 @@
 import { Selector } from 'testcafe';
 
-class CheckEligibility {
+class CoverageStatusCheck {
     constructor () {
         this.phnInput = Selector('#phn'); 
-        this.eligibilityDate  = Selector('div#eligibilityDate > div > div > div > input');
+        this.dateOfBirthInput  = Selector('#dateOfBirth');
+        this.dateOfServiceInput  = Selector('#dateOfService');
 
         this.submitButton = Selector('button[type="submit"]');
         this.cancelButton = Selector('button[type="button"]');
@@ -11,4 +12,4 @@ class CheckEligibility {
     }
 }
 
-export default new CheckEligibility();
+export default new CoverageStatusCheck();
