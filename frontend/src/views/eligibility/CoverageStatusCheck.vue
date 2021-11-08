@@ -137,12 +137,13 @@ export default {
         dateOfLastEyeExamination: '',
         patientRestriction: '',
         carecardWarning: '',
+        errorMessage: '',
       }
     }
   },
   computed: {
     eligibleOnDateOfService() {
-      return this.result.eligibleOnDateOfService ? 'YES' : 'NO'
+      return this.result.eligibleOnDateOfService ? 'Y' : 'N'
     }
   },
   methods: {
@@ -169,10 +170,15 @@ export default {
           dateOfLastEyeExamination: 'MSP HAS NOT PAID FOR AN EYE EXAM FOR THIS PHN IN THE LAST 24 MTHS FROM TODAY\'S DATE',
           patientRestriction: 'NO RESTRICTION',
           carecardWarning: 'THIS PERSON HAS REQUESTED A REPLACEMENT BD SERVICES CARD. PLEASE CONFIRM IDENTITY.',
-
+          errorMessage: 'Houston we have an error',
         }
-        this.searched = true
-        this.$store.commit('alert/setSuccessAlert', 'Search complete')
+        if (this.result.errorMessage === '') {
+          this.searched = true
+          this.$store.commit('alert/setSuccessAlert', 'Search complete')
+        } else {
+          this.$store.commit('alert/setErrorAlert', this.result.errorMessage)
+        }
+
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       } finally {
@@ -182,7 +188,7 @@ export default {
     resetForm() {
       this.phn = ''
       this.dateOfBirth = ''
-      this.dateOfService = dayjs(),
+      this.dateOfService = new Date(),
       this.v$.$reset()
       this.$store.commit("alert/dismissAlert");
       this.searched = false
