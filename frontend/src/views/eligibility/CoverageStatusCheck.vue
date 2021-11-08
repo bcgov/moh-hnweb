@@ -20,7 +20,7 @@ const v$ = useVuelidate()
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.phn" label="PHN" type="text" v-model="phn" />
+          <AppInput :e-model="v$.phn" label="PHN" type="text" v-model.trim="phn" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -39,9 +39,9 @@ const v$ = useVuelidate()
           <p>Select by clicking one or more boxes</p>
         </AppCol>
         <AppCol>
-          <AppCheckbox :errorValue="v$.requestSubsidyInsuredService" label="Check for Subsidy Insured Service" v-model="requestSubsidyInsuredService"/>
-          <AppCheckbox :errorValue="v$.requestLastEyeExam" label="Check for Last Eye Exam" v-model="requestLastEyeExam"/>
-          <AppCheckbox :errorValue="v$.requestPatientRestriction" label="Check for Patient Restriction" v-model="requestPatientRestriction"/>
+          <AppCheckbox :errorValue="v$.checkSubsidyInsuredService" id="checkSubsidyInsuredService" label="Check for Subsidy Insured Service" v-model="checkSubsidyInsuredService"/>
+          <AppCheckbox :errorValue="v$.checkLastEyeExam" label="Check for Last Eye Exam" v-model="checkLastEyeExam"/>
+          <AppCheckbox :errorValue="v$.checkPatientRestriction" label="Check for Patient Restriction" v-model="checkPatientRestriction"/>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -72,7 +72,7 @@ const v$ = useVuelidate()
         <AppOutput label="Date Of Service" :value="result.dateOfService"/>
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Eligible on Date of Service?" :value="result.eligibleOnDateOfService"/>
+        <AppOutput label="Eligible on Date of Service?" :value="eligibleOnDateOfService"/>
       </AppCol>
       <AppCol class="col3">
         <AppOutput label="Coverage End Date" :value="result.coverageEndDate"/>
@@ -117,11 +117,11 @@ export default {
   data() {
     return {
       phn: '',
-      dateOfBirth: undefined,
-      dateOfService: dayjs(),
-      requestSubsidyInsuredService: false,
-      requestLastEyeExam: false,
-      requestPatientRestriction: false,
+      dateOfBirth: null,
+      dateOfService: new Date(),
+      checkSubsidyInsuredService: false,
+      checkLastEyeExam: false,
+      checkPatientRestriction: false,
       searching: false,
       searched: false,
       result: {
@@ -129,7 +129,7 @@ export default {
         name: '',
         dateOfBirth: '',
         gender: '',
-        dateOfService: false,
+        dateOfService: '',
         eligibleOnDateOfService: false,        
         coverageEndDate: '',
         coverageEndReason: '',
@@ -138,6 +138,11 @@ export default {
         patientRestriction: '',
         carecardWarning: '',
       }
+    }
+  },
+  computed: {
+    eligibleOnDateOfService() {
+      return this.result.eligibleOnDateOfService ? 'YES' : 'NO'
     }
   },
   methods: {
@@ -150,14 +155,14 @@ export default {
           this.searching = false
           return
         }
-        //this.result = (await EligibilityService.checkCoverageStatus(this.phn, this.dateOfBirth, this.dateOfService, this.requestSubsidyInsuredService)).HN_WEB_DATE_FORMAT
+        //this.result = (await EligibilityService.checkCoverageStatus(this.phn, this.dateOfBirth, this.dateOfService, this.checkSubsidyInsuredService)).HN_WEB_DATE_FORMAT
         this.result = {
           phn: this.phn,
           name: 'Simpson, Homer',
           dateOfBirth: dayjs(this.dateOfBirth).format(OUTPUT_DATE_FORMAT),
           gender: 'MALE',
           dateOfService: dayjs(this.dateOfService).format(OUTPUT_DATE_FORMAT),
-          eligibleOnDateOfService: 'YES',
+          eligibleOnDateOfService: true,
           coverageEndDate: '20221212',
           coverageEndReason: '',
           subsidyInsuredService: 'THIS IS NOT AN INSURED BENEFIT',
@@ -199,9 +204,9 @@ export default {
         )
       },
       dateOfService: { required },
-      requestSubsidyInsuredService: {},
-      requestLastEyeExam: {},
-      requestPatientRestriction: {},
+      checkSubsidyInsuredService: {},
+      checkLastEyeExam: {},
+      checkPatientRestriction: {},
     }
   }
 }

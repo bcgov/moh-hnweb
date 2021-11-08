@@ -18,12 +18,12 @@ const v$ = useVuelidate()
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.phn" label="PHN" type="text" v-model="phn" />
+          <AppInput :e-model="v$.phn" id="phn" label="PHN" type="text" v-model.trim="phn" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput v-model="eligibilityDate" label="Date to Check" :e-model="v$.eligibilityDate"/>
+          <AppDateInput v-model="eligibilityDate" id="eligibilityDate" label="Date to Check" :e-model="v$.eligibilityDate"/>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -84,7 +84,6 @@ export default {
   },
   methods: {
     async submitForm() {
-      console.log(`eligibilityDate ${this.eligibilityDate}`)
       this.searching = true
       try {
         const isValid = await this.v$.$validate()

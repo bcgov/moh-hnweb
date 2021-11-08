@@ -9,15 +9,16 @@ import { INPUT_DATE_FORMAT } from '../util/constants'
   <div class="text_label">
     <label>{{label}}</label>
   </div>
-
-  <Datepicker
-    :autoApply="true"
-    :class="inputClass"
-    :enableTimePicker="false"
-    :format="INPUT_DATE_FORMAT"
-    :text-input="true"
-    v-model="value" 
-  />
+  <div v-bind="$attrs">
+    <Datepicker
+      :autoApply="true"
+      :class="inputClass"
+      :enableTimePicker="false"
+      :format="INPUT_DATE_FORMAT"
+      :text-input="true"
+      v-model="value" 
+    />
+  </div>
   <AppInputError :e-model="eModel" :label="label"/>
 
 </template>
@@ -31,14 +32,14 @@ import { INPUT_DATE_FORMAT } from '../util/constants'
       modelValue: Date,
     },
     computed: {
-          value: {
-      get() {
-        return this.modelValue
+      value: {
+        get() {
+          return this.modelValue
+        },
+        set(value) {
+          this.$emit('update:modelValue', value)
+        }
       },
-      set(value) {
-        this.$emit('update:modelValue', value)
-      }
-    },
       inputClass() {
         return {
           'text_input': true,
