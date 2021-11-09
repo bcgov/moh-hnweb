@@ -20,17 +20,17 @@ const v$ = useVuelidate()
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.phn" label="PHN" type="text" v-model.trim="phn" />
+          <AppInput :e-model="v$.phn" id="phn" label="PHN" type="text" v-model.trim="phn" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.dateOfBirth" label="Date Of Birth" v-model="dateOfBirth" />          
+          <AppDateInput :e-model="v$.dateOfBirth" id="dateOfBirth" label="Date Of Birth" v-model="dateOfBirth" />          
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.dateOfService" label="Date Of Service" v-model="dateOfService" />          
+          <AppDateInput :e-model="v$.dateOfService"id ="dateOfService" label="Date Of Service" v-model="dateOfService" />          
         </AppCol>
       </AppRow>
       <AppRow>
@@ -40,8 +40,8 @@ const v$ = useVuelidate()
         </AppCol>
         <AppCol>
           <AppCheckbox :errorValue="v$.checkSubsidyInsuredService" id="checkSubsidyInsuredService" label="Check for Subsidy Insured Service" v-model="checkSubsidyInsuredService"/>
-          <AppCheckbox :errorValue="v$.checkLastEyeExam" label="Check for Last Eye Exam" v-model="checkLastEyeExam"/>
-          <AppCheckbox :errorValue="v$.checkPatientRestriction" label="Check for Patient Restriction" v-model="checkPatientRestriction"/>
+          <AppCheckbox :errorValue="v$.checkLastEyeExam" id="checkLastEyeExam" label="Check for Last Eye Exam" v-model="checkLastEyeExam"/>
+          <AppCheckbox :errorValue="v$.checkPatientRestriction" id="checkPatientRestriction" label="Check for Patient Restriction" v-model="checkPatientRestriction"/>
         </AppCol>
       </AppRow>
       <AppRow>
