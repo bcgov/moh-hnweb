@@ -30,7 +30,7 @@ const v$ = useVuelidate()
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.dateOfService"id ="dateOfService" label="Date Of Service" v-model="dateOfService" />          
+          <AppDateInput :e-model="v$.dateOfService" id ="dateOfService" label="Date Of Service" v-model="dateOfService" />          
         </AppCol>
       </AppRow>
       <AppRow>
@@ -58,7 +58,7 @@ const v$ = useVuelidate()
         <AppOutput label="PHN" :value="result.phn"/>
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Name" :value="result.name"/>
+        <AppOutput label="Name" :value="fullName"/>
       </AppCol>
       <AppCol class="col3">
         <AppOutput label="Birth Date" :value="result.dateOfBirth"/>
@@ -105,7 +105,7 @@ const v$ = useVuelidate()
     </AppRow>
     <AppRow class="row">      
       <AppCol class="col12">
-        <p>{{result.note}}</p>
+        <p>{{result.carecardWarning}}</p>
       </AppCol>               
     </AppRow>         
   </div>
@@ -126,7 +126,9 @@ export default {
       searched: false,
       result: {
         phn: '',
-        name: '',
+        surname: '',
+        givenName: '',
+        secondName: '',
         dateOfBirth: '',
         gender: '',
         dateOfService: '',
@@ -144,7 +146,11 @@ export default {
   computed: {
     eligibleOnDateOfService() {
       return this.result.eligibleOnDateOfService ? 'Y' : 'N'
-    }
+    },
+    fullName() {      
+      const name = this.result.surname + ', ' + this.result.givenName + (this.result.secondName !== '' ? ' ' : '') + this.result.secondName
+      return name
+    },
   },
   methods: {
     async submitForm() {
@@ -159,20 +165,21 @@ export default {
         //this.result = (await EligibilityService.checkCoverageStatus(this.phn, this.dateOfBirth, this.dateOfService, this.checkSubsidyInsuredService)).HN_WEB_DATE_FORMAT
         this.result = {
           phn: this.phn,
-          name: 'Simpson, Homer',
+          givenName: 'Homer',
+          surname: 'Simpson',
+          secondName: 'J',
           dateOfBirth: dayjs(this.dateOfBirth).format(OUTPUT_DATE_FORMAT),
           gender: 'MALE',
           dateOfService: dayjs(this.dateOfService).format(OUTPUT_DATE_FORMAT),
           eligibleOnDateOfService: true,
           coverageEndDate: '20221212',
-          coverageEndReason: '',
+          coverageEndReason: 'It\'s all over',
           subsidyInsuredService: 'THIS IS NOT AN INSURED BENEFIT',
           dateOfLastEyeExamination: 'MSP HAS NOT PAID FOR AN EYE EXAM FOR THIS PHN IN THE LAST 24 MTHS FROM TODAY\'S DATE',
           patientRestriction: 'NO RESTRICTION',
           carecardWarning: 'THIS PERSON HAS REQUESTED A REPLACEMENT BD SERVICES CARD. PLEASE CONFIRM IDENTITY.',
-          errorMessage: 'Houston we have an error',
         }
-        if (this.result.errorMessage === '') {
+        if (!this.result.errorMessage || this.result.errorMessage === '') {
           this.searched = true
           this.$store.commit('alert/setSuccessAlert', 'Search complete')
         } else {
@@ -189,6 +196,7 @@ export default {
       this.phn = ''
       this.dateOfBirth = ''
       this.dateOfService = new Date(),
+      this.result = null,
       this.v$.$reset()
       this.$store.commit("alert/dismissAlert");
       this.searched = false
