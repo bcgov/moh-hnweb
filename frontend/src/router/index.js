@@ -57,7 +57,7 @@ const routes = [
         ]
     },
     {
-        path: '/managemployees',
+        path: '/manageEmployees',
         name: 'ManageEmployees',
         component: Employees
     },
