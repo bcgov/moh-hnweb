@@ -1,13 +1,21 @@
 package ca.bc.gov.hlth.hnweb.util;
 
+import java.util.Date;
+
+import ca.bc.gov.hlth.hnweb.model.v2.segment.HDR;
+import ca.bc.gov.hlth.hnweb.model.v2.segment.SFT;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZHD;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIA;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIH;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIK;
 import ca.uhn.hl7v2.HL7Exception;
+import ca.uhn.hl7v2.model.Varies;
+import ca.uhn.hl7v2.model.v24.datatype.CN;
 import ca.uhn.hl7v2.model.v24.segment.IN1;
 import ca.uhn.hl7v2.model.v24.segment.MSH;
 import ca.uhn.hl7v2.model.v24.segment.PID;
+import ca.uhn.hl7v2.model.v24.segment.QPD;
+import ca.uhn.hl7v2.model.v24.segment.RCP;
 
 /**
  * Contains utility methods related to HL7 V2 messages
@@ -31,10 +39,11 @@ public class V2MessageUtil {
      * @param messageControlID
      * @param processingID
      * @param versionID
+     * @param messageType 
      * @throws HL7Exception
      */
 	public static void setMshValues(MSH msh, String sendingApplication, String sendingFacility, String receivingApplication, 
-    								String receivingFacility, String dateTimeOfMessage, String security, 
+    								String receivingFacility, String dateTimeOfMessage, String security, String messageType,  
     								String messageControlID, String processingID, String versionID) throws HL7Exception {
     	//e.g. MSH|^~\&|HNWeb|BC01000030|RAIENROL-EMP|BC00001013|20200529114230|10-ANother|R50^Z06|20200529114230|D|2.4||^M
 
@@ -44,6 +53,7 @@ public class V2MessageUtil {
 		msh.getMsh6_ReceivingFacility().parse(receivingFacility);
 		msh.getMsh7_DateTimeOfMessage().parse(dateTimeOfMessage);
 		msh.getMsh8_Security().parse(security);
+		msh.getMsh9_MessageType().parse(messageType);
 		msh.getMsh10_MessageControlID().parse(messageControlID);
 		msh.getMsh11_ProcessingID().parse(processingID);
 		msh.getMsh12_VersionID().parse(versionID);
@@ -174,5 +184,83 @@ public class V2MessageUtil {
     	zik.getZik4_DocumentArgument(1).getArgumentName().parse(VISA_XPIRY);
     	zik.getZik4_DocumentArgument(1).getArgumentValue().parse(documentArgumentValue2);
     }
+
+    /**
+     * Populate HDR segment
+	 * 
+     * @param hdr
+     * 
+     * @throws HL7Exception
+     */
+	public static void setHdrValues(HDR hdr, String businessUserGroup) throws HL7Exception {
+		//e.g. HDR|||TRAININGAdmin
+    	
+    	hdr.getHDR3_BusinessUserGroup().parse(businessUserGroup);
+    }
+
+	/**
+	 * Populate SFT segment
+	 * 
+	 * @param sft
+	 * @param standardVersionNumber
+	 * @param softwareVendorOrganizationOrganizationName
+	 * @param softwareVendorOrganizationIDNumber
+	 * @param softwareVendorOrganizationAssigningAuthority
+	 * @param softwareVersionNumber
+	 * @param softwareProductName
+	 * @throws HL7Exception
+	 */
+	public static void setSftValues(SFT sft, String standardVersionNumber, 
+			String softwareVendorOrganizationOrganizationName, String softwareVendorOrganizationIDNumber, String softwareVendorOrganizationAssigningAuthority, 
+			String softwareVersionNumber, String softwareProductName) throws HL7Exception {
+		// e.g. SFT|1.0||testorg^^orgid^^^MOH|1.0|barebones||
+		
+		sft.getSFT1_StandardVersionNumber().parse(standardVersionNumber);
+		sft.getSFT3_SoftwareVendorOrganization().getXon1_OrganizationName().parse(softwareVendorOrganizationOrganizationName);
+		sft.getSFT3_SoftwareVendorOrganization().getXon3_IDNumber().parse(softwareVendorOrganizationIDNumber);
+		sft.getSFT3_SoftwareVendorOrganization().getXon6_AssigningAuthority().parse(softwareVendorOrganizationAssigningAuthority);
+		sft.getSFT4_SoftwareVersionNumber().parse(softwareVersionNumber);
+		sft.getSFT5_SoftwareProductName().parse(softwareProductName);		
+	}
+
+	/**
+     * Populate QPD segment
+	 * 
+	 * @param qpd
+	 * @param messageQueryName
+	 * @param queryTag
+	 * @param phn
+	 * @param dateOfBirth
+	 * @param dateOfService
+	 * @param checkSubsidyInsuredService
+	 * @param checkLastEyeExam
+	 * @param checkPatientRestriction
+	 * @throws HL7Exception
+	 */
+	public static void setQpdValues(QPD qpd, String messageQueryName, String queryTag,
+			String phn, Date dateOfBirth, Date dateOfService,
+			Boolean checkSubsidyInsuredService, Boolean checkLastEyeExam, Boolean checkPatientRestriction) throws HL7Exception {
+		
+		qpd.getQpd1_MessageQueryName().parse(messageQueryName);
+		qpd.getQpd2_QueryTag().parse(queryTag);
+		
+		CN cn = new CN(qpd.getMessage());
+		Varies qpd3_UserParametersInsuccessivefields = qpd.getQpd3_UserParametersInsuccessivefields();
+		qpd3_UserParametersInsuccessivefields.setData(cn);
+		
+	}
+
+	/**
+	 * Populate RCP segment
+	 * 
+	 * @param rcp
+	 * @param queryPriority
+	 * @throws HL7Exception
+	 */
+	public static void setRcpValues(RCP rcp, String queryPriority) throws HL7Exception {
+		//e.g. RCP|I|
+		
+		rcp.getRcp1_QueryPriority().parse(queryPriority);
+	}
 
 }

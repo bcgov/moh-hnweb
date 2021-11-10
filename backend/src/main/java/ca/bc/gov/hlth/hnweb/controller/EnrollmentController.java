@@ -55,14 +55,11 @@ public class EnrollmentController {
 		return enrollSubscriberResponse;
 	}
 	
-    private R50 convertEnrollSubscriberRequestToR50(EnrollSubscriberRequest enrollSubscriberRequest) throws HL7Exception, IOException {
+    private R50 convertEnrollSubscriberRequestToR50(EnrollSubscriberRequest enrollSubscriberRequest) throws HL7Exception {
     	
     	//Create a default R50 message with MSH-9 set to R50 Z06 
-    	R50 r50 = new R50();    	 
-    	r50.initQuickstart("R50", "Z06", "P");
-
-    	setSegmentValues(r50, enrollSubscriberRequest);
-    	     	
+    	R50 r50 = new R50(); 
+    	setSegmentValues(r50, enrollSubscriberRequest);    	     	
     	return r50;
     	
     }
@@ -93,7 +90,7 @@ public class EnrollmentController {
    	private void setSegmentValues(R50 r50, EnrollSubscriberRequest enrollSubscriberRequest) throws HL7Exception {
    		
    		//TODO (daveb-hni) This has been stubbed for now. Populate actual values from the correct source, e.g. the Enrollment Request Screen, when the related story is implemented.
-    	V2MessageUtil.setMshValues(r50.getMSH(), "HNWeb", "BC01000030", "RAIENROL-EMP", "BC00001013", "20200529114230", "10-ANother", "20200529114230", "D", "2.4");
+    	V2MessageUtil.setMshValues(r50.getMSH(), "HNWeb", "BC01000030", "RAIENROL-EMP", "BC00001013", "20200529114230", "10-ANother", "R50^Z06", "20200529114230", "D", "2.4");
 		V2MessageUtil.setZhdValues(r50.getZHD(), "20200529114230", "00000010", "HNAIADMINISTRATION", "2.4");
     	V2MessageUtil.setPidValues(r50.getPID(), enrollSubscriberRequest.getPhn(), "BC", "PH", "", "19700303", "M");   	  
     	V2MessageUtil.setZiaValues(r50.getZIA(), "20210101", "HELP^RERE^^^^^L", 
