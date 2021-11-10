@@ -8,7 +8,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.dateOfBirth" id="dateOfBirth" label="Date Of Birth" :modelValue="dateOfBirth" @update:modelValue="dateOfBirth = $event"/>          
+          <AppDateInput :e-model="v$.dateOfBirth" id="dateOfBirth" label="Date Of Birth" v-model="dateOfBirth"/>          
         </AppCol>
       </AppRow>
       <AppRow>
