@@ -8,7 +8,7 @@ import AppInputError from './AppInputError.vue'
     <label>{{label}}</label>
   </div>
 
-  <input :class="inputClass" :type="type" :value="modelValue" @input='$emit("update:modelValue", $event.target.value)'/>
+  <input :class="inputClass" :value="modelValue" @input='$emit("update:modelValue", $event.target.value)' v-bind="$attrs"/>
   
   <AppInputError :e-model="eModel" :label="label"/>
   
@@ -21,10 +21,6 @@ export default {
     eModel: Object,
     label: String,
     modelValue: String,
-    type: {
-      type:  String,
-      default: 'text'
-    }
   },
   computed: {
     inputClass() {

@@ -20,17 +20,17 @@ const v$ = useVuelidate()
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.phn" label="PHN" type="text" v-model="phn" />
+          <AppInput :e-model="v$.phn" id="phn" label="PHN" type="text" v-model.trim="phn" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.dateOfBirth" label="Date Of Birth" v-model="dateOfBirth" />          
+          <AppDateInput :e-model="v$.dateOfBirth" id="dateOfBirth" label="Date Of Birth" v-model="dateOfBirth" />          
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.dateOfService" label="Date Of Service" v-model="dateOfService" />          
+          <AppDateInput :e-model="v$.dateOfService" id ="dateOfService" label="Date Of Service" v-model="dateOfService" />          
         </AppCol>
       </AppRow>
       <AppRow>
@@ -39,9 +39,9 @@ const v$ = useVuelidate()
           <p>Select by clicking one or more boxes</p>
         </AppCol>
         <AppCol>
-          <AppCheckbox :errorValue="v$.requestSubsidyInsuredService" label="Check for Subsidy Insured Service" v-model="requestSubsidyInsuredService"/>
-          <AppCheckbox :errorValue="v$.requestLastEyeExam" label="Check for Last Eye Exam" v-model="requestLastEyeExam"/>
-          <AppCheckbox :errorValue="v$.requestPatientRestriction" label="Check for Patient Restriction" v-model="requestPatientRestriction"/>
+          <AppCheckbox :errorValue="v$.checkSubsidyInsuredService" id="checkSubsidyInsuredService" label="Check for Subsidy Insured Service" v-model="checkSubsidyInsuredService"/>
+          <AppCheckbox :errorValue="v$.checkLastEyeExam" id="checkLastEyeExam" label="Check for Last Eye Exam" v-model="checkLastEyeExam"/>
+          <AppCheckbox :errorValue="v$.checkPatientRestriction" id="checkPatientRestriction" label="Check for Patient Restriction" v-model="checkPatientRestriction"/>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -58,7 +58,7 @@ const v$ = useVuelidate()
         <AppOutput label="PHN" :value="result.phn"/>
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Name" :value="result.name"/>
+        <AppOutput label="Name" :value="fullName"/>
       </AppCol>
       <AppCol class="col3">
         <AppOutput label="Birth Date" :value="result.dateOfBirth"/>
@@ -72,7 +72,7 @@ const v$ = useVuelidate()
         <AppOutput label="Date Of Service" :value="result.dateOfService"/>
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Eligible on Date of Service?" :value="result.eligibleOnDateOfService"/>
+        <AppOutput label="Eligible on Date of Service?" :value="eligibleOnDateOfService"/>
       </AppCol>
       <AppCol class="col3">
         <AppOutput label="Coverage End Date" :value="result.coverageEndDate"/>
@@ -105,7 +105,7 @@ const v$ = useVuelidate()
     </AppRow>
     <AppRow class="row">      
       <AppCol class="col12">
-        <p>{{result.note}}</p>
+        <p>{{result.carecardWarning}}</p>
       </AppCol>               
     </AppRow>         
   </div>
@@ -117,19 +117,21 @@ export default {
   data() {
     return {
       phn: '',
-      dateOfBirth: undefined,
-      dateOfService: dayjs(),
-      requestSubsidyInsuredService: false,
-      requestLastEyeExam: false,
-      requestPatientRestriction: false,
+      dateOfBirth: null,
+      dateOfService: new Date(),
+      checkSubsidyInsuredService: false,
+      checkLastEyeExam: false,
+      checkPatientRestriction: false,
       searching: false,
       searched: false,
       result: {
         phn: '',
-        name: '',
+        surname: '',
+        givenName: '',
+        secondName: '',
         dateOfBirth: '',
         gender: '',
-        dateOfService: false,
+        dateOfService: '',
         eligibleOnDateOfService: false,        
         coverageEndDate: '',
         coverageEndReason: '',
@@ -137,8 +139,18 @@ export default {
         dateOfLastEyeExamination: '',
         patientRestriction: '',
         carecardWarning: '',
+        errorMessage: '',
       }
     }
+  },
+  computed: {
+    eligibleOnDateOfService() {
+      return this.result.eligibleOnDateOfService ? 'Y' : 'N'
+    },
+    fullName() {      
+      const name = this.result.surname + ', ' + this.result.givenName + (this.result.secondName !== '' ? ' ' : '') + this.result.secondName
+      return name
+    },
   },
   methods: {
     async submitForm() {
@@ -150,24 +162,30 @@ export default {
           this.searching = false
           return
         }
-        //this.result = (await EligibilityService.checkCoverageStatus(this.phn, this.dateOfBirth, this.dateOfService, this.requestSubsidyInsuredService)).HN_WEB_DATE_FORMAT
+        //this.result = (await EligibilityService.checkCoverageStatus(this.phn, this.dateOfBirth, this.dateOfService, this.checkSubsidyInsuredService)).HN_WEB_DATE_FORMAT
         this.result = {
           phn: this.phn,
-          name: 'Simpson, Homer',
+          givenName: 'Homer',
+          surname: 'Simpson',
+          secondName: 'J',
           dateOfBirth: dayjs(this.dateOfBirth).format(OUTPUT_DATE_FORMAT),
           gender: 'MALE',
           dateOfService: dayjs(this.dateOfService).format(OUTPUT_DATE_FORMAT),
-          eligibleOnDateOfService: 'YES',
+          eligibleOnDateOfService: true,
           coverageEndDate: '20221212',
-          coverageEndReason: '',
+          coverageEndReason: 'It\'s all over',
           subsidyInsuredService: 'THIS IS NOT AN INSURED BENEFIT',
           dateOfLastEyeExamination: 'MSP HAS NOT PAID FOR AN EYE EXAM FOR THIS PHN IN THE LAST 24 MTHS FROM TODAY\'S DATE',
           patientRestriction: 'NO RESTRICTION',
           carecardWarning: 'THIS PERSON HAS REQUESTED A REPLACEMENT BD SERVICES CARD. PLEASE CONFIRM IDENTITY.',
-
         }
-        this.searched = true
-        this.$store.commit('alert/setSuccessAlert', 'Search complete')
+        if (!this.result.errorMessage || this.result.errorMessage === '') {
+          this.searched = true
+          this.$store.commit('alert/setSuccessAlert', 'Search complete')
+        } else {
+          this.$store.commit('alert/setErrorAlert', this.result.errorMessage)
+        }
+
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       } finally {
@@ -177,7 +195,8 @@ export default {
     resetForm() {
       this.phn = ''
       this.dateOfBirth = ''
-      this.dateOfService = dayjs(),
+      this.dateOfService = new Date(),
+      this.result = null,
       this.v$.$reset()
       this.$store.commit("alert/dismissAlert");
       this.searched = false
@@ -199,9 +218,9 @@ export default {
         )
       },
       dateOfService: { required },
-      requestSubsidyInsuredService: {},
-      requestLastEyeExam: {},
-      requestPatientRestriction: {},
+      checkSubsidyInsuredService: {},
+      checkLastEyeExam: {},
+      checkPatientRestriction: {},
     }
   }
 }
