@@ -1,18 +1,3 @@
-<script setup>
-
-import AppButton from '../../components/AppButton.vue'
-import AppCol from '../../components/grid/AppCol.vue'
-import AppDateInput from '../../components/AppDateInput.vue'
-import AppInput from '../../components/AppInput.vue'
-import AppRow from '../../components/grid/AppRow.vue'
-
-import EligibilityService from '../../services/EligibilityService'
-import useVuelidate from '@vuelidate/core'
-import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
-import { required, helpers } from '@vuelidate/validators'
-
-const v$ = useVuelidate()
-</script>
 <template>
   <div>
     <form @submit.prevent="submitForm">
@@ -62,9 +47,30 @@ const v$ = useVuelidate()
 </template>
 
 <script>
+import AppButton from '../../components/AppButton.vue'
+import AppCol from '../../components/grid/AppCol.vue'
+import AppDateInput from '../../components/AppDateInput.vue'
+import AppInput from '../../components/AppInput.vue'
+import AppRow from '../../components/grid/AppRow.vue'
+
+import Datepicker from 'vue3-date-time-picker';
+import 'vue3-date-time-picker/dist/main.css'
+import { INPUT_DATE_FORMAT } from '../../util/constants'
+
+import EligibilityService from '../../services/EligibilityService'
+import useVuelidate from '@vuelidate/core'
+import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
+import { required, helpers } from '@vuelidate/validators'
+
 export default {
   name: 'CheckEligibility',
-
+  components: {
+    AppButton, AppCol, AppDateInput, AppInput, AppRow, Datepicker
+  },
+  setup() {
+    return {
+      v$: useVuelidate()}
+  },
   data() {
     return {
       phn: '',
