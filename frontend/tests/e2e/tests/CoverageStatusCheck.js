@@ -6,6 +6,8 @@ const ERROR_MESSAGE = 'Please correct errors before submitting';
 const PHN_ERROR_MESSAGE = 'PHN is required';
 const DOB_ERROR_MESSAGE = 'Date Of Birth is required';
 const INVALID_DOB_ERROR_MESSAGE = 'Date of Birth must not be in the future';
+const DOS_ERROR_MESSAGE = 'Date Of Service is required';
+const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid';
 const SUCCESS_MESSAGE = 'Search complete';
 const SITE_UNDER_TEST = 'http://localhost:3000/eligibility/coverageStatusCheck'
 
@@ -140,7 +142,7 @@ test('Check validation passed info', async t => {
 		console.log("Check validation passed info")
 });
 
-test.skip('Check Subsidy Insured Service CheckBox is checked/unchecked ', async tc => {  
+test('Check Subsidy Insured Service CheckBox is checked/unchecked ', async tc => {  
 	await tc
         .expect(CoverageStatusCheckPage.subsidyInsuredServiceCheckBox.visible).ok()
 		.click(CoverageStatusCheckPage.subsidyInsuredServiceCheckBox)  //Check box
@@ -149,7 +151,7 @@ test.skip('Check Subsidy Insured Service CheckBox is checked/unchecked ', async 
         .expect(CoverageStatusCheckPage.subsidyInsuredServiceCheckBox.checked).notOk();
 });
 
-test.skip('Check Date Of Last Eye Examination CheckBox is checked/unchecked ', async tc => {  
+test('Check Date Of Last Eye Examination CheckBox is checked/unchecked ', async tc => {  
 	await tc
         .expect(CoverageStatusCheckPage.dateOfLastEyeExaminationCheckBox.visible).ok()
 		.click(CoverageStatusCheckPage.dateOfLastEyeExaminationCheckBox)  //Check box
