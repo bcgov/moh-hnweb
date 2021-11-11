@@ -6,6 +6,6 @@ RUN mvn -f /home/app/pom.xml clean install
 #RUN mvn clean install
 
 FROM adoptopenjdk:11-jre-hotspot
-#WORKDIR /tmp
+WORKDIR /tmp
 COPY --from=build-stage /home/app/target/*.jar /tmp/app.jar
 ENTRYPOINT ["java","-jar","/tmp/app.jar"]
