@@ -53,10 +53,11 @@ env:
   IMAGE_TAGS: "openshift-workflow"
 
 on:
-  # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
   push:
     # Edit to the branch(es) you want to build and deploy on each push.
     branches: [ 4241-hnweb-infrastructure ]
+    paths: 
+      - ./frontend/*
 
 jobs:
   openshift-ci-cd:
