@@ -1,5 +1,5 @@
 FROM node:lts-alpine as build-stage
-ARG env=production
+ARG env=test
 WORKDIR /app
 COPY . .
 RUN yarn install
