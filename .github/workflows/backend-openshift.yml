@@ -58,7 +58,7 @@ on:
     # Edit to the branch(es) you want to build and deploy on each push.
     branches: [ 4241-hnweb-infrastructure ]
     paths: 
-      - ./backend/*
+      - './backend/*'
 
 jobs:
   openshift-ci-cd:
