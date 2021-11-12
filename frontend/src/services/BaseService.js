@@ -8,7 +8,7 @@ export const resources = {
     },
     eligibility: {
       eligibility: '/eligibility',
-      checkEligibility: '/eligibility/checkEligibility',
+      checkEligibility: '/eligibility/check-eligibility',
       checkCoverageStatus: '/eligibility/checkCoverageStatus',
       phnEnquiry: '/eligibility/phnEnquiry'
     }
