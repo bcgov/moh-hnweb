@@ -9,4 +9,4 @@ FROM adoptopenjdk:11-jre-hotspot
 WORKDIR /tmp
 COPY --from=build-stage /home/app/target/*.jar /tmp/app.jar
 ENTRYPOINT ["java","-jar","/tmp/app.jar"]
-EXPOSE 80
+EXPOSE 8080
