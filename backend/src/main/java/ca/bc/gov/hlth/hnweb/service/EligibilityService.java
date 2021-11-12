@@ -1,5 +1,6 @@
 package ca.bc.gov.hlth.hnweb.service;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.lang3.time.DateUtils;
@@ -76,11 +77,11 @@ public class EligibilityService {
 	 */
 	public CheckEligibilityResponse checkEligibility(String phn, Date eligibilityDate) {
 		CheckEligibilityResponse checkEligibilityResponse = new CheckEligibilityResponse();
-		checkEligibilityResponse.setBeneficiaryOnDateChecked(Boolean.TRUE);
-		checkEligibilityResponse.setCoverageEndDate(DateUtils.addDays(new Date(), 90));
+		checkEligibilityResponse.setBeneficiaryOnDateChecked("Y");
+		checkEligibilityResponse.setCoverageEndDate(new SimpleDateFormat("yyyyMMdd").format(DateUtils.addDays(new Date(), 90)));
 		checkEligibilityResponse.setPhn(phn);
-		checkEligibilityResponse.setReason("Some reason or other");
-		checkEligibilityResponse.setExclusionPeriodEndDate(DateUtils.addDays(new Date(), 30));
+		checkEligibilityResponse.setCoverageEndReason("Some reason or other");
+		checkEligibilityResponse.setExclusionPeriodEndDate(new SimpleDateFormat("yyyyMMdd").format(DateUtils.addDays(new Date(), 30)));
 		
 		return checkEligibilityResponse;
 	}

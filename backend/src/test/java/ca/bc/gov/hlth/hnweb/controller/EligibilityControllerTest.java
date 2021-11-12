@@ -45,7 +45,7 @@ public class EligibilityControllerTest {
 		// 2. Create a mock response object
 		CheckEligibilityResponse mockResponse = new CheckEligibilityResponse();
 		mockResponse.setPhn(phn);
-		mockResponse.setReason("This is a mocked out response");
+		mockResponse.setCoverageEndReason("This is a mocked out response");
 		
 		// 3. Return the mock response object when the service is called
 		// Note, the parameters need to match what is sent
@@ -60,7 +60,7 @@ public class EligibilityControllerTest {
 		
 		CheckEligibilityResponse checkEligibilityResponse = response.getBody();
 		assertEquals(phn, checkEligibilityResponse.getPhn());
-		assertEquals(reason, checkEligibilityResponse.getReason());
+		assertEquals(reason, checkEligibilityResponse.getCoverageEndReason());
 	}
 	
 	@Test
@@ -72,7 +72,7 @@ public class EligibilityControllerTest {
 		// 2. Create a mock response object
 		CheckEligibilityResponse mockResponse = new CheckEligibilityResponse();
 		mockResponse.setPhn(phn);
-		mockResponse.setReason("This is a mocked out response");
+		mockResponse.setCoverageEndReason("This is a mocked out response");
 		
 		// 3. Return the mock response object when the service is called
 		// Note, the parameters need to match what is sent

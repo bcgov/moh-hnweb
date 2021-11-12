@@ -1,19 +1,11 @@
 package ca.bc.gov.hlth.hnweb.model;
 
-import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 public class CheckEligibilityResponse {
 	private String phn;
-	private Boolean beneficiaryOnDateChecked;
-	
-	@JsonFormat(pattern="yyyy-MM-dd")
-	private Date coverageEndDate;
-	private String reason;
-	
-	@JsonFormat(pattern="yyyy-MM-dd")
-	private Date exclusionPeriodEndDate;
+	private String beneficiaryOnDateChecked;
+	private String coverageEndDate;
+	private String coverageEndReason;
+	private String exclusionPeriodEndDate;
 
 	public String getPhn() {
 		return phn;
@@ -23,42 +15,42 @@ public class CheckEligibilityResponse {
 		this.phn = phn;
 	}
 
-	public Boolean getBeneficiaryOnDateChecked() {
+	public String getBeneficiaryOnDateChecked() {
 		return beneficiaryOnDateChecked;
 	}
 
-	public void setBeneficiaryOnDateChecked(Boolean beneficiaryOnDateChecked) {
+	public void setBeneficiaryOnDateChecked(String beneficiaryOnDateChecked) {
 		this.beneficiaryOnDateChecked = beneficiaryOnDateChecked;
 	}
 
-	public Date getCoverageEndDate() {
+	public String getCoverageEndDate() {
 		return coverageEndDate;
 	}
 
-	public void setCoverageEndDate(Date coverageEndDate) {
+	public void setCoverageEndDate(String coverageEndDate) {
 		this.coverageEndDate = coverageEndDate;
 	}
 
-	public String getReason() {
-		return reason;
+	public String getCoverageEndReason() {
+		return coverageEndReason;
 	}
 
-	public void setReason(String reason) {
-		this.reason = reason;
+	public void setCoverageEndReason(String coverageEndReason) {
+		this.coverageEndReason = coverageEndReason;
 	}
 
-	public Date getExclusionPeriodEndDate() {
+	public String getExclusionPeriodEndDate() {
 		return exclusionPeriodEndDate;
 	}
 
-	public void setExclusionPeriodEndDate(Date exclusionPeriodEndDate) {
+	public void setExclusionPeriodEndDate(String exclusionPeriodEndDate) {
 		this.exclusionPeriodEndDate = exclusionPeriodEndDate;
 	}
 
 	@Override
 	public String toString() {
 		return "CheckEligibilityResponse [phn=" + phn + ", beneficiaryOnDateChecked=" + beneficiaryOnDateChecked + ", coverageEndDate="
-				+ coverageEndDate + ", reason=" + reason + ", exclusionPeriodEndDate=" + exclusionPeriodEndDate + "]";
+				+ coverageEndDate + ", coverageEndReason=" + coverageEndReason + ", exclusionPeriodEndDate=" + exclusionPeriodEndDate + "]";
 	}
 
 }
