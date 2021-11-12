@@ -1,3 +1,5 @@
+import { ClientFunction, Selector } from 'testcafe';
+
 import AlertPage from '../pages/AlertPage';
 import CoverageStatusCheckPage from '../pages/eligibility/CoverageStatusCheckPage';
 import {Role} from 'testcafe';
@@ -142,8 +144,17 @@ test('Check validation passed info', async t => {
 		console.log("Check validation passed info")
 });
 
-test('Check Subsidy Insured Service CheckBox is checked/unchecked ', async tc => {  
+test('Check Subsidy Insured Service CheckBox is checked/unchecked ', async tc => {   
+    const makeVisible = ClientFunction((selector) => {
+        const element = document.getElementById(selector);
+        element.style.width = '1';
+        element.style.height = '1';
+        console.log(element);
+        });
+
+    await makeVisible('checkSubsidyInsuredService');
 	await tc
+    .debug()
         .expect(CoverageStatusCheckPage.subsidyInsuredServiceCheckBox.visible).ok()
 		.click(CoverageStatusCheckPage.subsidyInsuredServiceCheckBox)  //Check box
         .expect(CoverageStatusCheckPage.subsidyInsuredServiceCheckBox.checked).ok()  //Confirm whether the option is selected
