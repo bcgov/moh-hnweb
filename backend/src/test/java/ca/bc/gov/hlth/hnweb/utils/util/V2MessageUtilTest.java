@@ -32,9 +32,8 @@ public class V2MessageUtilTest {
 
 		//Create a default R50 message with MSH-9 set to R50 Z03 
     	R50 r50Zo6 = new R50();
-    	r50Zo6.initQuickstart("R50", "Z06", "P");
 		
-    	V2MessageUtil.setMshValues(r50Zo6.getMSH(), "HNWeb", "BC01000030", "RAIENROL-EMP", "BC00001013", "20200529114230", "10-ANother", "20200529114230", "D", "2.4");		
+    	V2MessageUtil.setMshValues(r50Zo6.getMSH(), "HNWeb", "BC01000030", "RAIENROL-EMP", "BC00001013", "20200529114230", "10-ANother", "R50^Z06", "20200529114230", "D", "2.4");		
 		MSH msh = r50Zo6.getMSH();		
 		String encoded = parser.doEncode(msh, EncodingCharacters.getInstance(r50Zo6));		
 		assertEquals("MSH|^~\\&|HNWeb|BC01000030|RAIENROL-EMP|BC00001013|20200529114230|10-ANother|R50^Z06|20200529114230|D|2.4", encoded);
@@ -45,7 +44,6 @@ public class V2MessageUtilTest {
 
 		//Create a default R50 message with MSH-9 set to R50 Z03 
     	R50 r50Zo6 = new R50();
-    	r50Zo6.initQuickstart("R50", "Z06", "P");
 		
     	V2MessageUtil.setZhdValues(r50Zo6.getZHD(), "20200529114230", "00000010", "HNAIADMINISTRATION", "2.4");		
     	ZHD zhd = r50Zo6.getZHD();		
@@ -58,7 +56,6 @@ public class V2MessageUtilTest {
 
 		//Create a default R50 message with MSH-9 set to R50 Z03 
     	R50 r50Zo6 = new R50();
-    	r50Zo6.initQuickstart("R50", "Z06", "P");
 		
     	V2MessageUtil.setPidValues(r50Zo6.getPID(), "9999999999", "BC", "PH", "", "19700303", "M");		
     	PID pid = r50Zo6.getPID();		
@@ -71,7 +68,6 @@ public class V2MessageUtilTest {
 
 		//Create a default R50 message with MSH-9 set to R50 Z03 
     	R50 r50Zo6 = new R50();
-    	r50Zo6.initQuickstart("R50", "Z03", "P");
 		
     	V2MessageUtil.setZiaValues(r50Zo6.getZIA(), "20210101", "HELP^RERE^^^^^L", 
 				  "898 RETER ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^H", 
@@ -87,7 +83,6 @@ public class V2MessageUtilTest {
 
 		//Create a default R50 message with MSH-9 set to R50 Z03 
     	R50 r50Zo6 = new R50();
-    	r50Zo6.initQuickstart("R50", "Z06", "P");
 		
     	V2MessageUtil.setIn1Values(r50Zo6.getIN1(), "6337109", "789446", "123456", "20190501", "20201231");		
     	IN1 in1 = r50Zo6.getIN1();		
@@ -100,7 +95,6 @@ public class V2MessageUtilTest {
 
 		//Create a default R50 message with MSH-9 set to R50 Z03 
     	R50 r50Zo6 = new R50();
-    	r50Zo6.initQuickstart("R50", "Z06", "P");
 		
     	V2MessageUtil.setZihValues(r50Zo6.getZIH(), "D");		
     	ZIH zih = r50Zo6.getZIH();		
@@ -113,7 +107,6 @@ public class V2MessageUtilTest {
 
 		//Create a default R50 message with MSH-9 set to R50 Z03 
     	R50 r50Zo6 = new R50();
-    	r50Zo6.initQuickstart("R50", "Z06", "P");
 		
     	V2MessageUtil.setZikValues(r50Zo6.getZIK(), "20210101", "20221231");		
     	ZIK zik = r50Zo6.getZIK();		
