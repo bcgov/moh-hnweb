@@ -11,7 +11,14 @@ const INVALID_DOB_ERROR_MESSAGE = 'Date of Birth must not be in the future';
 const DOS_ERROR_MESSAGE = 'Date Of Service is required';
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid';
 const SUCCESS_MESSAGE = 'Search complete';
-const SITE_UNDER_TEST = 'http://localhost:3000/eligibility/coverageStatusCheck'
+const SITE_UNDER_TEST = 'http://localhost:3000/eligibility/coverageStatusCheck';
+const TRANS_SUCCESSFUL = 'Transaction Successful';
+
+const makeVisible = ClientFunction((selector) => {
+    const element = document.getElementById(selector);
+    element.style.width = '1px';
+    element.style.height = '1px';
+    });
 
 const regularAccUser = Role(SITE_UNDER_TEST, async t => {
     await t
@@ -21,6 +28,8 @@ const regularAccUser = Role(SITE_UNDER_TEST, async t => {
         .click("#kc-login");
 });
 
+
+
 fixture(`Coverage Status Check Page`)
 .disablePageCaching `Test Coverage Status Check`
     .beforeEach(async t => {
@@ -28,6 +37,17 @@ fixture(`Coverage Status Check Page`)
             .useRole(regularAccUser)
     })
   .page('http://localhost:3000/eligibility/coverageStatusCheck');
+
+test('Making checkboxes visible ', async t=> {   
+    await makeVisible('checkSubsidyInsuredService');
+    await makeVisible('checkLastEyeExam');
+    await makeVisible('checkPatientRestriction');
+
+    await t
+        .expect(CoverageStatusCheckPage.subsidyInsuredServiceCheckBox.visible).ok()
+        .expect(CoverageStatusCheckPage.patientRestrictionCheckBox.visible).ok()
+        .expect(CoverageStatusCheckPage.dateOfLastEyeExaminationCheckBox.visible).ok()
+});
 
 test('Error when no phn, dateOfBirth and dateOfService', async t => {
     await t
@@ -114,16 +134,14 @@ test('Check invalid phn format error message', async t => {
 });
 
 test('Check future date of birth error message', async t => {
-    var today = new Date();
-    var date = today.getFullYear()+(today.getMonth()+1)+today.getDate();
-
     await t
         .typeText(CoverageStatusCheckPage.phnInput, '9306448169')
+        .typeText(CoverageStatusCheckPage.dateOfBirthInput, '20291108') 
         .click(CoverageStatusCheckPage.dateOfServiceInput)
         .pressKey('tab')   
         .expect(CoverageStatusCheckPage.dateOfServiceInput.value).notEql('')
 		.click(CoverageStatusCheckPage.submitButton)
-        //.expect(CoverageStatusCheckPage.ErrorText.nth(1).textContent).contains(DOB_ERROR_MESSAGE)
+        .expect(CoverageStatusCheckPage.ErrorText.nth(0).textContent).contains(INVALID_DOB_ERROR_MESSAGE)
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
 
 		console.log("Check future date of birth error message")
@@ -140,39 +158,32 @@ test('Check validation passed info', async t => {
         .expect(CoverageStatusCheckPage.dateOfServiceInput.value).notEql('')
 		.click(CoverageStatusCheckPage.submitButton)
         .expect(AlertPage.alertBannerText.textContent).contains(SUCCESS_MESSAGE)
+        .expect(Selector('h2').textContent).contains(TRANS_SUCCESSFUL)
 
 		console.log("Check validation passed info")
 });
 
-test('Check Subsidy Insured Service CheckBox is checked/unchecked ', async tc => {   
-    const makeVisible = ClientFunction((selector) => {
-        const element = document.getElementById(selector);
-        element.style.width = '1';
-        element.style.height = '1';
-        console.log(element);
-        });
-
-    await makeVisible('checkSubsidyInsuredService');
-	await tc
-    .debug()
-        .expect(CoverageStatusCheckPage.subsidyInsuredServiceCheckBox.visible).ok()
+test('Check Subsidy Insured Service CheckBox is checked/unchecked ', async t => { 
+    await makeVisible('checkSubsidyInsuredService');  
+  	await t
 		.click(CoverageStatusCheckPage.subsidyInsuredServiceCheckBox)  //Check box
         .expect(CoverageStatusCheckPage.subsidyInsuredServiceCheckBox.checked).ok()  //Confirm whether the option is selected
         .click(CoverageStatusCheckPage.subsidyInsuredServiceCheckBox)
         .expect(CoverageStatusCheckPage.subsidyInsuredServiceCheckBox.checked).notOk();
 });
 
-test('Check Date Of Last Eye Examination CheckBox is checked/unchecked ', async tc => {  
-	await tc
-        .expect(CoverageStatusCheckPage.dateOfLastEyeExaminationCheckBox.visible).ok()
+test('Check Date Of Last Eye Examination CheckBox is checked/unchecked ', async t => { 
+    await makeVisible('checkLastEyeExam');  
+	await t
 		.click(CoverageStatusCheckPage.dateOfLastEyeExaminationCheckBox)  //Check box
         .expect(CoverageStatusCheckPage.dateOfLastEyeExaminationCheckBox.checked).ok()  //Confirm whether the option is selected
         .click(CoverageStatusCheckPage.dateOfLastEyeExaminationCheckBox)
         .expect(CoverageStatusCheckPage.dateOfLastEyeExaminationCheckBox.checked).notOk();
 });
 
-test.skip('Check Patient Restriction CheckBox is checked/unchecked ', async tc => {  
-	await tc
+test('Check Patient Restriction CheckBox is checked/unchecked ', async t => { 
+    await makeVisible('checkPatientRestriction');   
+	await t
 		.click(CoverageStatusCheckPage.patientRestrictionCheckBox)  //Check box
         .expect(CoverageStatusCheckPage.patientRestrictionCheckBox.checked).ok()  //Confirm whether the option is selected
         .click(CoverageStatusCheckPage.patientRestrictionCheckBox)
