@@ -15,6 +15,6 @@ import SubNavTab from '../../components/template/SubNavTab.vue'
 
 <script>
 export default {
-  name: 'Eligibility',
+  name: 'EligibilityHome',
 }
 </script>

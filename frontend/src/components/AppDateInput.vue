@@ -1,10 +1,3 @@
-<script setup>
-import Datepicker from 'vue3-date-time-picker';
-import AppInputError from './AppInputError.vue'
-import 'vue3-date-time-picker/dist/main.css'
-import { INPUT_DATE_FORMAT } from '../util/constants'
-
-</script>
 <template>
   <div class="text_label">
     <label>{{label}}</label>
@@ -14,7 +7,7 @@ import { INPUT_DATE_FORMAT } from '../util/constants'
       :autoApply="true"
       :class="inputClass"
       :enableTimePicker="false"
-      :format="INPUT_DATE_FORMAT"
+      :format="inputDateFormat"
       :text-input="true"
       v-model="value" 
     />
@@ -24,8 +17,17 @@ import { INPUT_DATE_FORMAT } from '../util/constants'
 </template>
 
 <script>
+import Datepicker from 'vue3-date-time-picker';
+import AppInputError from './AppInputError.vue'
+import 'vue3-date-time-picker/dist/main.css'
+import { INPUT_DATE_FORMAT } from '../util/constants.js'
+
   export default {
     name: 'AppDateInput',
+    components: {AppInputError, Datepicker},
+    created() {
+      this.inputDateFormat = INPUT_DATE_FORMAT
+    },
     props: {
       eModel: Object,
       label: String,

@@ -5,9 +5,9 @@ class CoverageStatusCheck {
         this.phnInput = Selector('#phn'); 
         this.dateOfBirthInput  = Selector('div#dateOfBirth > div > div > div > input');
         this.dateOfServiceInput  =  Selector('div#dateOfService > div > div > div > input');
-        this.subsidyInsuredServiceCheckBox = Selector('#checkSubsidyInsuredService');
-        this.dateOfLastEyeExaminationCheckBox = Selector('#checkLastEyeExam');
-        this.patientRestrictionCheckBox = Selector('#checkPatientRestriction');
+        this.subsidyInsuredServiceCheckBox = Selector('#checkSubsidyInsuredService', { timeout: 1000 });
+        this.dateOfLastEyeExaminationCheckBox = Selector('#checkLastEyeExam', { timeout: 1000 });
+        this.patientRestrictionCheckBox = Selector('#checkPatientRestriction', { timeout: 1000 });
         this.ErrorText = Selector('div').withAttribute('class','error-text');
 
         this.submitButton = Selector('button[type="submit"]');

@@ -1,7 +1,6 @@
 <template>
-  <router-link :class="navTabClass($route.name)" :to="{ name: this.routeName}">{{title}}</router-link>
+  <router-link :to="{ name: this.routeName}">{{title}}</router-link>
 </template>
-
 
 <script>
   export default {
@@ -10,17 +9,14 @@
       routeName: String,
       title: String
     },
-    methods: {
-      navTabClass(currentRoute) {
-        return (currentRoute === this.routeName) ? 'active-tab' : 'inactive-tab';
-      }
-    }
   }
 </script>
 
 <style scoped>
 
-.nav-tabs a {
+a {
+  background: #999999; 
+  border-radius: 8px 8px 0 0;
   color: #ffffff; 
   display: inline-block;
   padding: 0 20px;
@@ -28,22 +24,15 @@
   font-size: 16px;
   font-weight: bold;
   line-height: 40px;
+  margin-right: 10px;
+  text-decoration: none;
 }
-.active-tab,
-.active-tab:hover {
-    background: #003366;
-    margin-right:10px; 
-    text-decoration: none;
-    border-radius: 8px 8px 0 0;
-}
-.inactive-tab {
-    background: #999999; 
-    margin-right:10px;
-    text-decoration: none;
-    border-radius: 8px 8px 0 0;
-}
-.inactive-tab:hover {
+a:hover {
     background: #666666;
-    text-decoration: none;
 }
+.router-link-exact-active,
+.router-link-exact-active:hover {
+    background: #003366;
+}
+
 </style>

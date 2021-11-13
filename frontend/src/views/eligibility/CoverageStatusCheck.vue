@@ -1,20 +1,3 @@
-<script setup>
-import AppButton from '../../components/AppButton.vue'
-import AppCheckbox from '../../components/AppCheckbox.vue'
-import AppCol from '../../components/grid/AppCol.vue'
-import AppDateInput from '../../components/AppDateInput.vue'
-import AppInput from '../../components/AppInput.vue'
-import AppOutput from '../../components/AppOutput.vue'
-import AppRow from '../../components/grid/AppRow.vue'
-import EligibilityService from '../../services/EligibilityService'
-import useVuelidate from '@vuelidate/core'
-import { validateDOB, validatePHN, VALIDATE_DOB_MESSAGE, VALIDATE_PHN_MESSAGE } from '../../util/validators'
-import { OUTPUT_DATE_FORMAT } from '../../util/constants'
-import { required, helpers } from '@vuelidate/validators'
-import dayjs from 'dayjs'
-const v$ = useVuelidate()
-</script>
-
 <template>
   <div>
     <form @submit.prevent="submitForm">
@@ -25,7 +8,7 @@ const v$ = useVuelidate()
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.dateOfBirth" id="dateOfBirth" label="Date Of Birth" v-model="dateOfBirth" />          
+          <AppDateInput :e-model="v$.dateOfBirth" id="dateOfBirth" label="Date Of Birth" v-model="dateOfBirth"/>          
         </AppCol>
       </AppRow>
       <AppRow>
@@ -112,8 +95,27 @@ const v$ = useVuelidate()
 </template>
 
 <script>
+import AppButton from '../../components/AppButton.vue'
+import AppCheckbox from '../../components/AppCheckbox.vue'
+import AppCol from '../../components/grid/AppCol.vue'
+import AppDateInput from '../../components/AppDateInput.vue'
+import AppInput from '../../components/AppInput.vue'
+import AppOutput from '../../components/AppOutput.vue'
+import AppRow from '../../components/grid/AppRow.vue'
+import EligibilityService from '../../services/EligibilityService'
+import useVuelidate from '@vuelidate/core'
+import { validateDOB, validatePHN, VALIDATE_DOB_MESSAGE, VALIDATE_PHN_MESSAGE } from '../../util/validators'
+import { OUTPUT_DATE_FORMAT } from '../../util/constants'
+import { required, helpers } from '@vuelidate/validators'
+import dayjs from 'dayjs'
+
 export default {
   name: 'CoverageStatusCheck',
+  components: {AppButton, AppCheckbox, AppCol, AppDateInput, AppInput, AppOutput, AppRow},
+  setup() {
+    return {
+      v$: useVuelidate()}
+  },
   data() {
     return {
       phn: '',
@@ -162,6 +164,7 @@ export default {
           this.searching = false
           return
         }
+        console.log(`phn: ${this.phn}, dateOfBirth ${this.dateOfBirth}, dateOfService ${this.dateOfService}, checkSubsidyInsuredService ${this.checkSubsidyInsuredService}`)
         //this.result = (await EligibilityService.checkCoverageStatus(this.phn, this.dateOfBirth, this.dateOfService, this.checkSubsidyInsuredService)).HN_WEB_DATE_FORMAT
         this.result = {
           phn: this.phn,
