@@ -64,13 +64,16 @@ jobs:
     name: Run test cafe against frontend code
     runs-on: ubuntu-18.04
     steps:
-    - name: Checkout 
-      uses: actions/checkout@v1
-    - name: Run TestCafe
-      uses: DevExpress/testcafe-action@latest
+    - uses: actions/checkout@v1
+    - uses: actions/setup-node@v1
       with:
-        # Command line arguments passed to TestCafe
-        args: "chrome frontend/tests/e2e"       
+        node-version: 12
+    - name: Get yarn
+      working-directory: ./frontend
+      run: yarn
+    - name: Run test
+      working-directory: ./frontend
+      run: yarn test:e2e        
         
   openshift-ci-cd: 
     needs: [test-cafe]
