@@ -64,8 +64,8 @@ public class EligibilityController {
 			@DateTimeFormat(iso = ISO.DATE) @RequestParam(name = "dateOfBirth", required = true) Date dateOfBirth,
 			@DateTimeFormat(iso = ISO.DATE) @RequestParam(name = "dateOfService", required = true) Date dateOfService, 
 			@RequestParam(name = "checkSubsidyInsuredService") Boolean checkSubsidyInsuredService,
-			@RequestParam(name = "checkSubsidyInsuredService") Boolean checkLastEyeExam, 
-			@RequestParam(name = "checkSubsidyInsuredService") Boolean checkPatientRestriction) throws HL7Exception {
+			@RequestParam(name = "checkLastEyeExam") Boolean checkLastEyeExam, 
+			@RequestParam(name = "checkPatientRestriction") Boolean checkPatientRestriction) throws HL7Exception {
 		
 		logger.info("checkMspCoverageStatus request - phn: {}; dateOfBirth: {}; dateOfService: {}; "
 				+ "checkSubsidyInsuredService: {}; checkLastEyeExam: {}; checkPatientRestriction: {}", 

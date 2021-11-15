@@ -1,3 +1,6 @@
+import dayjs from 'dayjs'
+
+import {API_DATE_FORMAT} from '../util/constants'
 import {apiRequest, resources} from './BaseService'
 
 export default {
@@ -7,12 +10,15 @@ export default {
     return apiRequest().then(axiosInstance => axiosInstance.get(`${resources.eligibility.checkEligibility}?phn=${phn}&eligibilityDate=${eligibilityDate}`))
   },
 
-  checkCoverageStatus(phn, dateOfBirth, dateOfService, requestSubsidyInsuredService, requestLastEyeExam, requestPatientRestriction) {
-    console.log(`checkStatusCoverage: PHN: ${phn}, Date Of Birth: ${dateOfBirth}, Date Of Service: ${dateOfService}, 
-      requestSubsidyInsuredService: ${requestSubsidyInsuredService}, requestLastEyeExam: ${requestLastEyeExam}, requestPatientRestriction: ${requestPatientRestriction}`)
+  checkCoverageStatus(phn, dateOfBirth, dateOfService, checkSubsidyInsuredService, checkLastEyeExam, checkPatientRestriction) {
+    const formattedDateOfBirth = dayjs(dateOfBirth).format(API_DATE_FORMAT)
+    const formattedDateOfService = dayjs(dateOfService).format(API_DATE_FORMAT)
+    console.log(`checkStatusCoverage: PHN: ${phn}, Date Of Birth: ${formattedDateOfBirth}, Date Of Service: ${formattedDateOfService}, 
+    checkSubsidyInsuredService: ${checkSubsidyInsuredService}, checkLastEyeExam: ${checkLastEyeExam}, checkPatientRestriction: ${checkPatientRestriction}`)
+    
     return apiRequest().then(axiosInstance => axiosInstance.get(
-      `${resources.eligibility.checkCoverageStatus}?phn=${phn}&dateOfBirth=${dateOfBirth}&dateOfService=${dateOfService}
-      &requestSubsidyInsuredService=${requestSubsidyInsuredService}&requestLastEyeExam=${requestLastEyeExam}&requestPatientRestriction=${requestPatientRestriction}`))
+      `${resources.eligibility.checkMspCoverageStatus}?phn=${phn}&dateOfBirth=${formattedDateOfBirth}&dateOfService=${formattedDateOfService}` +
+      `&checkSubsidyInsuredService=${checkSubsidyInsuredService}&checkLastEyeExam=${checkLastEyeExam}&checkPatientRestriction=${checkPatientRestriction}`))
   }
 
 }
