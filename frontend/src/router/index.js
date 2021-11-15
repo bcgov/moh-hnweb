@@ -6,6 +6,7 @@ import Home from './../views/Home.vue'
 import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
 import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
 import PhnEnquiry from './../views/eligibility/PhnEnquiry.vue'
+import NotFound from '../views/NotFound.vue'
 import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
 import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
 import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
@@ -65,6 +66,11 @@ const routes = [
     path: '/help',
     name: 'Help',
     component: Help,
+  },
+  { 
+    path: '/:notFound(.*)',
+    name: 'NotFound',
+    component: NotFound,
   },
 ]
 
