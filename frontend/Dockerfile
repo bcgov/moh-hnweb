@@ -4,6 +4,7 @@ WORKDIR /app
 COPY . .
 RUN yarn install
 RUN yarn build --mode $env
+
 # production stage
 FROM nginxinc/nginx-unprivileged:1.20 as production-stage
 USER root
