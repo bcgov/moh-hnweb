@@ -64,16 +64,16 @@ jobs:
     name: Run test cafe against frontend code
     runs-on: ubuntu-18.04
     steps:
-      - name: Checkout 
-        uses: actions/checkout@v1
-      - name: Run TestCafe
-        uses: DevExpress/testcafe-action@latest
-        with:
-          # Command line arguments passed to TestCafe
-          args: "chrome tests"       
+    - name: Checkout 
+      uses: actions/checkout@v1
+    - name: Run TestCafe
+      uses: DevExpress/testcafe-action@latest
+      with:
+        # Command line arguments passed to TestCafe
+        args: "chrome tests"       
+        
   openshift-ci-cd: 
     needs: [test-cafe]
-  openshift-ci-cd:
     name: Build and deploy to OpenShift
     # ubuntu-20.04 can also be used.
     runs-on: ubuntu-18.04
