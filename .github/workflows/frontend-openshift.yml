@@ -70,7 +70,7 @@ jobs:
       uses: DevExpress/testcafe-action@latest
       with:
         # Command line arguments passed to TestCafe
-        args: "chrome tests"       
+        args: "chrome tests/e2e"       
         
   openshift-ci-cd: 
     needs: [test-cafe]
