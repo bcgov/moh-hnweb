@@ -71,6 +71,9 @@ jobs:
     - name: Get yarn
       working-directory: ./frontend
       run: yarn
+    - name: Get yarn test cafe
+      working-directory: ./frontend
+      run: yarn add testcafe      
     - name: Run test
       working-directory: ./frontend
       run: yarn test:e2e        
