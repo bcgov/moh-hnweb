@@ -62,7 +62,7 @@ on:
 jobs:
   test-cafe:
     name: Run test cafe against frontend code
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-node@v1
