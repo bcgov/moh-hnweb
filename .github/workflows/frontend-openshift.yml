@@ -68,7 +68,7 @@ jobs:
       uses: actions/checkout@v1
     - name: Start the server
       working-directory: ./frontend
-      run: yarn dev
+      #run: yarn dev
 # Commenting the testing as it needs RNAS and we cant connect to RNAS
 #    - name: Run TestCafe
 #      uses: DevExpress/testcafe-action@latest

@@ -9,7 +9,6 @@ RUN yarn install
 
 # Copy rest of the files
 COPY . .
-
 RUN yarn build --mode $env
 
 # production stage
