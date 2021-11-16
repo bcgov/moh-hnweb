@@ -9,7 +9,6 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
@@ -29,9 +28,6 @@ public class EligibilityService {
 	@Autowired
 	private Parser parser;
     
-	@Autowired
-	private WebClient enrollmentWebClient;	
-	
 	private static final String E45_RESPONSE_ERROR = "MSH|^~\\&|RAIELG-CNFRM|BC00001013|HNCLIENT|moh_hnclient_dev|20211108200334|rajan.reddy|E45|20211108170321|D|2.4||\r\n" 
 		+ "MSA|AE|20211108170321|ELIG0001DATE OF SERVICE EXCEEDS SYSTEM LIMITS. MUST BE WITHIN THE LAST 18 MONTHS. CONTACT MSP.\r\n"
 		+ "ERR|^^^ELIG0001&DATE OF SERVICE EXCEEDS SYSTEM LIMITS. MUST BE WITHIN THE LAST 18 MONTHS. CONTACT MSP.\r\n"
@@ -39,26 +35,6 @@ public class EligibilityService {
 		+ "QPD|E45^^HNET0003|1|^^00000010^^^CANBC^XX^MOH|^^00000010^^^CANBC^XX^MOH|^^00000745^^^CANBC^XX^MOH|9390352021^^^CANBC^JHN^MOH||19570713||||||20200505||PVC^^HNET9909~EYE^^HNET9909~PRS^^HNET9909\r\n"
 		+ "PID|||9390352021||^^^^^^L||19570713|\r\n"
 		+ "IN1|||00000745^^^CANBC^XX^MOH||||||||||||||||||||||";
-	
-	private static final String E45_RESPONSE_SUCCESS = "MSH|^~\\&|RAIELG-CNFRM|BC00001013|HNCLINET|moh_hnclient_dev|20211108223817|rajan.reddy|E45^^||D|2.4||\r\n" 
-	+ 
-	"MSA|AA||HJMB001ISUCCESSFULLY COMPLETED\r\n" + 
-	"ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED\r\n" + 
-	"QAK|1|AA|E45^^HNET0471\r\n" + 
-	"QPD|E45^^HNET0471|1|^^00000010^^^CANBC^XX^MOH|^^00000010^^^CANBC^XX^MOH|^^00000754^^^CANBC^XX^MOH|9873944324^^^CANBC^JHN^MOH||19780601||||||20210914\r\n" + 
-	"PID|||9873944324||TEST^ELIGIBILITY^MOH^^^^L||19780601|M\r\n" + 
-	"IN1|||00000754^^^CANBC^XX^MOH||||||||||||||||||||||Y\r\n"
-	;
-	
-	
-	private static final String E45_PVC_RESPONSE_SUCCESS = "MSH|^~\\&|RAIELG-CNFRM|BC00001013|HNCLINET|moh_hnclient_dev|20211108232125|rajan.reddy|E45||D|2.4||\r\n" + 
-			"MSA|AA||HJMB001ISUCCESSFULLY COMPLETED\r\n" + 
-			"ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED\r\n" + 
-			"QAK|1|AA|E45^^HNET0471\r\n" + 
-			"QPD|E45^^HNET0471|1|^^00000010^^^CANBC^XX^MOH|^^00000010^^^CANBC^XX^MOH|^^00000754^^^CANBC^XX^MOH|9873944324^^^CANBC^JHN^MOH||19780601||||||20210914||PVC^^HNET9909||\r\n" + 
-			"PID|||9873944324||TEST^ELIGIBILITY^MOH^^^^L||19780601|M\r\n" + 
-			"IN1|||00000754^^^CANBC^XX^MOH||||||||||||||||||||||Y\r\n" + 
-			"ADJ|1|IN|||PVC^^HNET9908|N\r\n";
 	
 	private static final String E45_PVC_EYE_PRS_RESPONSE_SUCCESS = "MSH|^~\\&|RAIELG-CNFRM|BC00001013|HNCLINET|moh_hnclient_dev|20211109142135|rajan.reddy|E45^^||D|2.4||\r\n" + 
 	"MSA|AA||HJMB001ISUCCESSFULLY COMPLETED\r\n" + 
@@ -95,7 +71,7 @@ public class EligibilityService {
 		logger.debug("Updated V2 message:\n{}", e45v2);
 		
 //		TODO (daveb-hni) Send to actual endpoint when it's available, currently response is stubbed.
-//		ResponseEntity<String> response = postEnrollmentRequest(e45v2, transactionId);
+//		ResponseEntity<String> response = postMspStatusCheckRequest(e45v2, transactionId);
 //		String responseBody = response.getBody();
 		String responseBody = generateCannedResponse(e45);
 		
