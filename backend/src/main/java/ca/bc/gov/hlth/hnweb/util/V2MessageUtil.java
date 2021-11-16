@@ -1,7 +1,9 @@
 package ca.bc.gov.hlth.hnweb.util;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import ca.bc.gov.hlth.hnweb.model.v2.segment.HDR;
-import ca.bc.gov.hlth.hnweb.model.v2.segment.QPD_E45;
+import ca.bc.gov.hlth.hnweb.model.v2.segment.QPD;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.SFT;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZHD;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIA;
@@ -27,6 +29,14 @@ public class V2MessageUtil {
 	private static final String VISA_ISSUE = "VISA_ISSUE";
     
 	private static final String VISA_XPIRY = "VISA_XPIRY";
+
+	public enum MessageType {
+		R15, E45, R50; 	//HIBC
+	}
+	
+	public enum SegmentType {
+		MSH, PID, QPD, ADJ
+	}
 
     /**
      * Populate MSH segment
@@ -239,7 +249,7 @@ public class V2MessageUtil {
 	 * @param checkPatientRestriction
 	 * @throws HL7Exception
 	 */
-	public static void setQpdValues(QPD_E45 qpd, String messageQueryName, String queryTag,
+	public static void setQpdValues(QPD qpd, String messageQueryName, String queryTag,
 			String phn, String dateOfBirth, String dateOfService,
 			Boolean checkSubsidyInsuredService, Boolean checkLastEyeExam, Boolean checkPatientRestriction) throws HL7Exception {
 		
@@ -257,17 +267,16 @@ public class V2MessageUtil {
 		qpd.getQpd6_PatientIdentifierList().getCx6_AssigningFacility().parse("MOH");
 		qpd.getQpd8_DateTimeOfBirth().parse(dateOfBirth);
 		qpd.getQpd14_ServiceEffectiveDate().parse(dateOfService);
-		
-		
+				
 		qpd.getQpd16_CoverageInquiryCode(0).parse("ENDRSN^^HNET9909");
 		qpd.getQpd16_CoverageInquiryCode(1).parse("CCARD^^HNET9909");
-		if (checkSubsidyInsuredService) {
+		if (BooleanUtils.isTrue(checkSubsidyInsuredService)) {
 			qpd.getQpd16_CoverageInquiryCode(2).parse("PVC^^HNET9909");
 		}
-		if (checkLastEyeExam) {
+		if (BooleanUtils.isTrue(checkLastEyeExam)) {
 			qpd.getQpd16_CoverageInquiryCode(qpd.getCoverageInquiryCodeReps()).parse("EYE^^HNET9909");
 		}
-		if (checkPatientRestriction) {
+		if (BooleanUtils.isTrue(checkPatientRestriction)) {
 			qpd.getQpd16_CoverageInquiryCode(qpd.getCoverageInquiryCodeReps()).parse("PRS^^HNET9909");
 		}		
 	}

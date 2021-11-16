@@ -94,9 +94,7 @@ public class EligibilityService {
 //		TODO (daveb-hni) Send to actual endpoint when it's available, currently response is stubbed.
 //		ResponseEntity<String> response = postEnrollmentRequest(e45v2, transactionId);
 //		Message message = parseE45v2ToAck(E45_PVC_EYE_PRS_RESPONSE_SUCCESS);
-		Message message = parseE45v2ToAck(E45_PVC_EYE_PRS_RESPONSE_SUCCESS);
-		return message;
-
+		return parseE45v2ToAck(E45_RESPONSE_ERROR);
 	}
 	
     private String encodeE45ToV2(E45 e45) throws HL7Exception {

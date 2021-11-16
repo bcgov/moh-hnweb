@@ -1,7 +1,14 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
-import java.util.*;
+import static ca.bc.gov.hlth.hnweb.util.V2MessageUtil.SegmentType.ADJ;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -12,28 +19,38 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
+import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
 import ca.bc.gov.hlth.hnweb.service.EligibilityService;
 import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
 import ca.uhn.hl7v2.HL7Exception;
-import ca.uhn.hl7v2.model.*;
+import ca.uhn.hl7v2.model.Message;
+import ca.uhn.hl7v2.model.Segment;
+import ca.uhn.hl7v2.model.Varies;
 import ca.uhn.hl7v2.model.v24.datatype.CE;
 import ca.uhn.hl7v2.model.v24.datatype.ELD;
 import ca.uhn.hl7v2.model.v24.segment.ERR;
 import ca.uhn.hl7v2.util.Terser;
 
+/**
+ * Handle requests related to Eligibility
+ *
+ */
 @RequestMapping("/eligibility")
 @RestController
 public class EligibilityController {
 
 	private static final Logger logger = LoggerFactory.getLogger(EligibilityController.class);
-
-	private static final String Y = "Y";
 
 	private static final String DATE_FORMAT_yyyyMMdd = "yyyyMMdd";
 
@@ -46,10 +63,8 @@ public class EligibilityController {
 		logger.info("checkEligibility request - phn: {} date: {}", phn, eligibilityDate);
 
 		try {
-			CheckEligibilityResponse checkEligibilityResponse = eligibilityService.checkEligibility(phn, eligibilityDate);
-			
-			ResponseEntity<CheckEligibilityResponse> response = ResponseEntity.ok(checkEligibilityResponse);
-		
+			CheckEligibilityResponse checkEligibilityResponse = eligibilityService.checkEligibility(phn, eligibilityDate);			
+			ResponseEntity<CheckEligibilityResponse> response = ResponseEntity.ok(checkEligibilityResponse);		
 			logger.info("checkEligibility response: {} ", checkEligibilityResponse);
 			return response;	
 		} catch (Exception e) {
@@ -58,27 +73,20 @@ public class EligibilityController {
 		
 	}
 
-	@GetMapping("/check-msp-coverage-status")
-	public ResponseEntity<CheckMspCoverageStatusResponse> checkMspCoverageStatus(
-			@RequestParam(name = "phn", required = true) String phn,
-			@DateTimeFormat(iso = ISO.DATE) @RequestParam(name = "dateOfBirth", required = true) Date dateOfBirth,
-			@DateTimeFormat(iso = ISO.DATE) @RequestParam(name = "dateOfService", required = true) Date dateOfService, 
-			@RequestParam(name = "checkSubsidyInsuredService") Boolean checkSubsidyInsuredService,
-			@RequestParam(name = "checkSubsidyInsuredService") Boolean checkLastEyeExam, 
-			@RequestParam(name = "checkSubsidyInsuredService") Boolean checkPatientRestriction) throws HL7Exception {
+	@PostMapping("/check-msp-coverage-status")
+	public ResponseEntity<CheckMspCoverageStatusResponse> checkMspCoverageStatus(@Valid @RequestBody CheckMspCoverageStatusRequest checkMspCoverageStatusRequest) throws HL7Exception {
 		
-		logger.info("checkMspCoverageStatus request - phn: {}; dateOfBirth: {}; dateOfService: {}; "
+		logger.info("checkMspCoverageStatus request params - phn: {}; dateOfBirth: {}; dateOfService: {}; "
 				+ "checkSubsidyInsuredService: {}; checkLastEyeExam: {}; checkPatientRestriction: {}", 
-				phn, dateOfBirth, dateOfService, checkSubsidyInsuredService, checkLastEyeExam, checkPatientRestriction);
-		
-		
-		E45 e45 = buildE45Message(phn, dateOfBirth, dateOfService, checkSubsidyInsuredService, checkLastEyeExam, checkPatientRestriction);		
+				checkMspCoverageStatusRequest.getPhn(), checkMspCoverageStatusRequest.getDateOfBirth(), checkMspCoverageStatusRequest.getDateOfService(), checkMspCoverageStatusRequest.getCheckSubsidyInsuredService(), checkMspCoverageStatusRequest.getCheckLastEyeExam(), checkMspCoverageStatusRequest.getCheckPatientRestriction());
+				
+		E45 e45 = buildE45Message(checkMspCoverageStatusRequest.getPhn(), checkMspCoverageStatusRequest.getDateOfBirth(), checkMspCoverageStatusRequest.getDateOfService(), checkMspCoverageStatusRequest.getCheckSubsidyInsuredService(), checkMspCoverageStatusRequest.getCheckLastEyeExam(), checkMspCoverageStatusRequest.getCheckPatientRestriction());		
 		String transactionId = UUID.randomUUID().toString();		
 		Message message = eligibilityService.checkMspCoverageStatus(e45, transactionId);		
-		CheckMspCoverageStatusResponse checkMspCoverageStatusResponse = buildEligibilityResponse(message, dateOfService);		
+		CheckMspCoverageStatusResponse checkMspCoverageStatusResponse = buildEligibilityResponse(message, checkMspCoverageStatusRequest.getDateOfService());		
 		ResponseEntity<CheckMspCoverageStatusResponse> response = ResponseEntity.ok(checkMspCoverageStatusResponse);
 	
-		logger.info("checkEligibility response: {} ", checkMspCoverageStatusResponse);
+		logger.info("checkMspCoverageStatus response: {} ", checkMspCoverageStatusResponse);
 		
 		return response;
 	}
@@ -110,14 +118,22 @@ public class EligibilityController {
 		
     	CheckMspCoverageStatusResponse checkMspCoverageStatusResponse = new CheckMspCoverageStatusResponse();
     	
-    	// Use a Terser to access the message info
+    	// Uses a Terser to access the message info
     	Terser terser = new Terser(message);
     	
+    	mapPersonValues(dateOfService, checkMspCoverageStatusResponse, terser);
+    	mapAdjustmentValues(message, checkMspCoverageStatusResponse);    	
+		mapErrorValues(message, checkMspCoverageStatusResponse, terser);
+		
+		return checkMspCoverageStatusResponse;
+	}
+
+	private void mapPersonValues(Date dateOfService, CheckMspCoverageStatusResponse checkMspCoverageStatusResponse,
+			Terser terser) throws HL7Exception {
     	/* 
     	 * Retrieve required info from the response message by specifying the location based on Segment-FieldSequence-FieldSubSection
-    	 */ 
-		
-    	//e.g. PID|||9873944324||TEST^ELIGIBILITY^MOH^^^^L||19780601|M
+    	 */ 		
+		//e.g. PID|||9873944324||TEST^ELIGIBILITY^MOH^^^^L||19780601|M
     	String phn = terser.get("/.PID-3-1");
     	String surname = terser.get("/.PID-5-1");
     	String givenName = terser.get("/.PID-5-2");
@@ -140,15 +156,20 @@ public class EligibilityController {
     	    	
     	checkMspCoverageStatusResponse.setCoverageEndDate(planExpirationDate);
     	checkMspCoverageStatusResponse.setEligibleOnDateOfService(reportOfEligibilityFlag);
+	}
 
-    	/* e.g. 
+	private void mapAdjustmentValues(Message message, CheckMspCoverageStatusResponse checkMspCoverageStatusResponse)
+			throws HL7Exception {
+		/* 
+		 * Iterate through the ADJ segments and extract the required information.
+		 * e.g. 
     	 * ADJ|1|IN|||PVC^^HNET9908|N 
     	 * ADJ|2|IN|||EYE^^HNET9908 
     	 * ADJ|3|IN|||PRS^^HNET9908|N
     	 */
     	String[] names = message.getNames();
-    	if (Arrays.stream(names).anyMatch(n -> StringUtils.equals("ADJ", n))) {
-			List<Segment> adjSegments = Arrays.stream(message.getAll("ADJ")).map(s -> {return (Segment)s;}).collect(Collectors.toList());
+    	if (Arrays.stream(names).anyMatch(n -> StringUtils.equals(ADJ.name(), n))) {
+			List<Segment> adjSegments = Arrays.stream(message.getAll(ADJ.name())).map(s -> (Segment)s).collect(Collectors.toList());
 			
 			adjSegments.forEach(as -> {			
 				try {
@@ -171,9 +192,12 @@ public class EligibilityController {
 				}
 			});		
     	}
-    	
-		/**
-		 * When checking for an error the MSA segment needs to be checked as even a success message has an ERR segmente.g.
+	}
+
+	private void mapErrorValues(Message message, CheckMspCoverageStatusResponse checkMspCoverageStatusResponse,
+			Terser terser) throws HL7Exception {
+		/*
+		 * When checking for an error the MSA segment needs to be checked as even a success message has an ERR segment e.g.
 		 * 
 		 * MSA|AA||HJMB001ISUCCESSFULLY COMPLETED
 		 * ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED
@@ -188,18 +212,16 @@ public class EligibilityController {
 		if (!StringUtils.equals("AA", msaAcknowledgementCode)) {
 			logger.warn("Error acknowledgement code {} received in the response.", msaAcknowledgementCode);
 			Segment errSegment = (Segment) message.get("ERR");
-			ERR err = (ERR) errSegment; err.getErr1_ErrorCodeAndLocation(0).getEld4_CodeIdentifyingError().getCe2_Text();
+			ERR err = (ERR) errSegment; 
 			ELD eld = err.getErr1_ErrorCodeAndLocation(0) ;
-			CE eld4_CodeIdentifyingError = eld.getEld4_CodeIdentifyingError();
-			String errorCode = eld4_CodeIdentifyingError.getCe1_Identifier().encode();
-			String errorText = eld4_CodeIdentifyingError.getCe2_Text().encode();			
+			CE eld4CodeIdentifyingError = eld.getEld4_CodeIdentifyingError();
+			String errorCode = eld4CodeIdentifyingError.getCe1_Identifier().encode();
+			String errorText = eld4CodeIdentifyingError.getCe2_Text().encode();			
 			logger.warn("Error returned in E45 response was Error Code: {} ; Error Message: {}", errorCode, errorText);
-			checkMspCoverageStatusResponse.setErrorMessage(errorCode + " " + errorText);
+			checkMspCoverageStatusResponse.setErrorMessage(errorText);
 		} else {
 			logger.debug("Successful acknowledgement code {} received in the response.", msaAcknowledgementCode);
 		}
-		
-		return checkMspCoverageStatusResponse;
 	}
 
 }

@@ -4,6 +4,7 @@ import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.AbstractSegment;
 import ca.uhn.hl7v2.model.Group;
 import ca.uhn.hl7v2.model.Type;
+import ca.uhn.hl7v2.model.Varies;
 import ca.uhn.hl7v2.model.v24.datatype.CE;
 import ca.uhn.hl7v2.model.v24.datatype.CX;
 import ca.uhn.hl7v2.model.v24.datatype.IS;
@@ -15,26 +16,47 @@ import ca.uhn.hl7v2.model.v24.datatype.XPN;
 import ca.uhn.hl7v2.parser.ModelClassFactory;
 
 /**
- *<p>Represents an HL7 QPD message segment (Query Parameter Definition). 
+ *<p>Represents an HL7 QPD message segment (Query Parameter Definition) for an E45 message. This has customized fields for each required query parameter instead of the 
+ * generic {@link Varies} field in  which can not be used for the E45 QPD query parameters.
  * This segment has the following fields:</p>
  * <ul>
-     * <li>QPD-1: Message Query Name (CE) <b> </b>
-     * <li>QPD-2: Query Tag (ST) <b>optional </b>
-     * <li>QPD-3: User Parameters (in successive fields) (Varies) <b>optional </b>
+     * <li>QPD-1: Message Query Name (CE) <b>required </b>
+     * <li>QPD-2: Query Tag (ST) <b>required </b>
+     * <li>QPD-3: Submitting Organization <b>required </b>
+     * <li>QPD-4: Provider Organization <b>required </b>
+     * <li>QPD-5: Payor Organization <b>required </b>
+     * <li>QPD-6: Patient Identifier List <b>required </b>
+     * <li>QPD-7: Patient Name <b>optional </b>
+     * <li>QPD-8: Date/Time of Birth <b>required </b>
+     * <li>QPD-9: Accident Date/Time <b>optional </b>
+     * <li>QPD-10: Insurance Plan ID <b>optional </b>
+     * <li>QPD-11: Group Number <b>optional </b>
+     * <li>QPD-12: Patient Member Number <b>optional </b>
+     * <li>QPD-13: Plan Type <b>optional </b>
+     * <li>QPD-14: Service Effective Date <b>required </b>
+     * <li>QPD-15: Service Expiration Date <b>optional </b>
+     * <li>QPD-16: Coverage Inquiry Code <b>optional </b>
+     * <li>QPD-17: Role Person <b>optional </b>
+     * <li>QPD-18: Provider Type <b>optional </b>
  * </ul>
  */
-@SuppressWarnings("unused")
-public class QPD_E45 extends AbstractSegment {
+public class QPD extends AbstractSegment {
 
-    /** 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7385534991464384899L;
+
+
+	/** 
      * Creates a new QPD segment
      */
-    public QPD_E45(Group parent, ModelClassFactory factory) {
+    public QPD(Group parent, ModelClassFactory factory) {
        super(parent, factory);
        init(factory);
     }
 
-    private void init(ModelClassFactory factory) {
+    private void init(@SuppressWarnings("unused") ModelClassFactory factory) {
        try {																													// Field
                                   this.add(CE.class, true, 1, 250, new Object[]{ getMessage() }, "Message Query Name");			//	1
                                   this.add(ST.class, true, 1, 32, new Object[]{ getMessage() }, "Query Tag");					//	2

@@ -1,6 +1,8 @@
 package ca.bc.gov.hlth.hnweb.model.v2.message;
 
-import ca.bc.gov.hlth.hnweb.model.v2.segment.*;
+import ca.bc.gov.hlth.hnweb.model.v2.segment.HDR;
+import ca.bc.gov.hlth.hnweb.model.v2.segment.QPD;
+import ca.bc.gov.hlth.hnweb.model.v2.segment.SFT;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.AbstractMessage;
 import ca.uhn.hl7v2.model.v24.segment.MSH;
@@ -38,7 +40,7 @@ public class E45 extends AbstractMessage {
             
             this.add(HDR.class, true, false);
             this.add(SFT.class, true, false);
-            this.add(QPD_E45.class, true, false);
+            this.add(QPD.class, true, false);
             this.add(RCP.class, true, false);
 
         } catch(HL7Exception e) {
@@ -67,8 +69,8 @@ public class E45 extends AbstractMessage {
 		return getTyped("SFT", SFT.class);
 	}
 
-	public QPD_E45 getQPD() {
-		return getTyped("QPD_E45", QPD_E45.class);
+	public QPD getQPD() {
+		return getTyped("QPD", QPD.class);
 	}
 
 	public RCP getRCP() {
