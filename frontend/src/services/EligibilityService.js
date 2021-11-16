@@ -5,10 +5,9 @@ import { apiRequest, resources } from './BaseService'
 
 export default {
 
-  checkEligibility(phn, eligibilityDate) {
-    const formattedEligibilityDate = dayjs(eligibilityDate).format(API_DATE_FORMAT)
-    console.log(`checkEligibility: PHN: ${phn} Date: ${formattedEligibilityDate}`)
-    return apiRequest().then(axiosInstance => axiosInstance.get(`${resources.eligibility.checkEligibility}?phn=${phn}&eligibilityDate=${formattedEligibilityDate}`))
+  checkEligibility(request) {
+    console.log(`checkEligibility: PHN: ${request.phn} Date: ${request.eligibilityDate}`)
+    return apiRequest().then(axiosInstance => axiosInstance.post(resources.eligibility.checkEligibility, request))
   },
 
   checkCoverageStatus(phn, dateOfBirth, dateOfService, requestSubsidyInsuredService, requestLastEyeExam, requestPatientRestriction) {

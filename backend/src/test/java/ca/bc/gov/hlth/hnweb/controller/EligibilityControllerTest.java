@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
+import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
 import ca.bc.gov.hlth.hnweb.service.EligibilityService;
 
@@ -55,7 +56,11 @@ public class EligibilityControllerTest {
 		// These assertions aren't that interested since our service is returning the REST model directly
 		// Once the service returns the HL7/Other business entity, the tests will be validating the conversion logic
 		// in the controller
-		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(phn, eligibilityDate);
+		CheckEligibilityRequest request = new CheckEligibilityRequest();
+		request.setPhn(phn);
+		request.setEligibilityDate(eligibilityDate);
+	
+		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(request);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		
 		CheckEligibilityResponse checkEligibilityResponse = response.getBody();
@@ -79,9 +84,13 @@ public class EligibilityControllerTest {
 		// Force a failure on an invalid PHN
 		when(eligibilityServiceMock.checkEligibility(phn, eligibilityDate)).thenThrow(new IllegalArgumentException());
 
+		CheckEligibilityRequest request = new CheckEligibilityRequest();
+		request.setPhn(phn);
+		request.setEligibilityDate(eligibilityDate);
+		
 		// 4. Perform assertions
 		ResponseStatusException responseException = assertThrows(ResponseStatusException.class, () -> {
-        	eligibilityController.checkEligibility(phn, eligibilityDate);
+        	eligibilityController.checkEligibility(request);
         });
 		assertEquals(HttpStatus.BAD_REQUEST, responseException.getStatus());
 		assertEquals("Bad /checkEligibility request", responseException.getReason());

@@ -34,7 +34,7 @@ public class V2MessageUtilTest {
     	R50 r50Zo6 = new R50();
     	r50Zo6.initQuickstart("R50", "Z06", "P");
 		
-    	V2MessageUtil.setMshValues(r50Zo6.getMSH(), "HNWeb", "BC01000030", "RAIENROL-EMP", "BC00001013", "20200529114230", "10-ANother", "20200529114230", "D", "2.4");		
+    	//V2MessageUtil.setMshValues(r50Zo6.getMSH(), "HNWeb", "BC01000030", "RAIENROL-EMP", "BC00001013", "20200529114230", "10-ANother", "20200529114230", "D", "2.4");		
 		MSH msh = r50Zo6.getMSH();		
 		String encoded = parser.doEncode(msh, EncodingCharacters.getInstance(r50Zo6));		
 		assertEquals("MSH|^~\\&|HNWeb|BC01000030|RAIENROL-EMP|BC00001013|20200529114230|10-ANother|R50^Z06|20200529114230|D|2.4", encoded);

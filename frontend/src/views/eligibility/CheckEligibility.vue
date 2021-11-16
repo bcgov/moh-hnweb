@@ -18,7 +18,7 @@
     </form>
   </div>
   <br />
-  <div v-if="searched">
+  <div v-if="searchOk">
     <h2>Transaction Successful</h2>
     <AppRow>
       <AppCol class="col3">PHN:</AppCol>
@@ -53,7 +53,7 @@ import EligibilityService from '../../services/EligibilityService'
 import useVuelidate from '@vuelidate/core'
 import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
-import { OUTPUT_DATE_FORMAT } from '../../util/constants'
+import { API_DATE_FORMAT, OUTPUT_DATE_FORMAT } from '../../util/constants'
 import dayjs from 'dayjs'
 
 export default {
@@ -70,7 +70,7 @@ export default {
       phn: '',
       eligibilityDate: new Date(),
       searching: false,
-      searched: false,
+      searchOk: false,
       result: {
         phn: '',
         beneficiaryOnDateChecked: '',
@@ -87,21 +87,27 @@ export default {
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
-          this.$store.commit('alert/setErrorAlert');
+          this.$store.commit('alert/setErrorAlert')
+          this.result = null
           this.searching = false
           return
         }
-        this.result = (await EligibilityService.checkEligibility(this.phn, this.eligibilityDate)).data
+        this.result = (await EligibilityService.checkEligibility({
+          phn: this.phn,
+          eligibilityDate: dayjs(this.eligibilityDate).format(API_DATE_FORMAT)
+        })).data
         if (!this.result.errorMessage || this.result.errorMessage === '') {
-          this.searched = true
+          this.searchOk = true
           this.$store.commit('alert/setSuccessAlert', 'Search complete')
         } else {
           this.$store.commit('alert/setErrorAlert', this.result.errorMessage)
+          this.result = null
+          this.searchOk = false
         }
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       } finally {
-        this.searching = false;
+        this.searching = false
       }
     },
     resetForm() {
@@ -109,8 +115,8 @@ export default {
       this.eligibilityDate = new Date()
       this.result = null
       this.v$.$reset()
-      this.$store.commit("alert/dismissAlert");
-      this.searched = false
+      this.$store.commit("alert/dismissAlert")
+      this.searchOk = false
       this.searching = false
     }
   },

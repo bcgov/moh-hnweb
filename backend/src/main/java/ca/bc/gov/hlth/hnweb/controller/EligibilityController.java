@@ -3,6 +3,8 @@ package ca.bc.gov.hlth.hnweb.controller;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.validation.Valid;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +14,14 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
 import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
@@ -37,13 +42,11 @@ public class EligibilityController {
 	@Autowired
 	private EligibilityService eligibilityService;
 	
-	@GetMapping("/check-eligibility")
-	public ResponseEntity<CheckEligibilityResponse> checkEligibility(@RequestParam(name = "phn", required = true) String phn,
-			@DateTimeFormat(iso = ISO.DATE) @RequestParam(name = "eligibilityDate", required = false) Date eligibilityDate) {
-		logger.info("checkEligibility request - phn: {} date: {}", phn, eligibilityDate);
+	@PostMapping("/check-eligibility")
+	public ResponseEntity<CheckEligibilityResponse> checkEligibility(@Valid @RequestBody CheckEligibilityRequest checkEligibilityRequest) {
 
 		try {
-			CheckEligibilityResponse checkEligibilityResponse = eligibilityService.checkEligibility(phn, eligibilityDate);
+			CheckEligibilityResponse checkEligibilityResponse = eligibilityService.checkEligibility(checkEligibilityRequest.getPhn(), checkEligibilityRequest.getEligibilityDate());
 			
 			ResponseEntity<CheckEligibilityResponse> response = ResponseEntity.ok(checkEligibilityResponse);
 		
