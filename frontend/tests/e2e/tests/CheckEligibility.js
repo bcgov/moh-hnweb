@@ -1,11 +1,11 @@
 import AlertPage from '../pages/AlertPage';
 import CheckEligibilityPage from '../pages/eligibility/CheckEligibilityPage';
 import {Role} from 'testcafe';
-import { Selector } from 'testcafe';
 
 const ERROR_MESSAGE = 'Please correct errors before submitting';
 const SUCCESS_MESSAGE = 'Search complete';
 const PHN_ERROR_MESSAGE = 'PHN is required'
+const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid';
 const SITE_UNDER_TEST = 'http://localhost:3000/eligibility/checkEligibility'
 
 //TODO: import from roles/role.js
@@ -35,7 +35,7 @@ test('Error when no phn and date', async t => {
 
 test('Error when no date selected', async t => {
     await t 
-        .typeText(CheckEligibilityPage.phnInput, '123456')
+        .typeText(CheckEligibilityPage.phnInput, '9876543211')
         .click(CheckEligibilityPage.eligibilityDate)
         .pressKey('tab')
         .click(CheckEligibilityPage.submitButton)
@@ -55,8 +55,18 @@ test('Error when no phn', async t => {
         console.log("Error when no phn");
 });
 
-test('Check validation passed info', async t => {
+test('Check invalid phn format error message', async t => {
+    await t
+        .typeText(CheckEligibilityPage.phnInput, '9876543211') 
+		.click(CheckEligibilityPage.submitButton)
+        .expect(CheckEligibilityPage.ErrorText.nth(0).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
+        .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
 
+		console.log("Error for invalid phn format error message")
+      
+});
+
+test('Check validation passed info', async t => {
     await t
         .typeText(CheckEligibilityPage.phnInput, '9306448169')
         .click(CheckEligibilityPage.eligibilityDate)
@@ -68,11 +78,9 @@ test('Check validation passed info', async t => {
 		console.log("Check validation passed info")
 });
 
-
-
 test('Check submitbutton is clickable', async t => {
 	await t
-        .typeText(CheckEligibilityPage.phnInput, '123456')  
+        .typeText(CheckEligibilityPage.phnInput, '9306448169')  
 		.click(CheckEligibilityPage.submitButton)
 
 		console.log("testcafe clicked submit button")
@@ -80,7 +88,7 @@ test('Check submitbutton is clickable', async t => {
 
 test('Check cancelButton is clickable', async t => {
 	await t
-        .typeText(CheckEligibilityPage.phnInput, '123456')  
+        .typeText(CheckEligibilityPage.phnInput, '9306448169')  
 		.click(CheckEligibilityPage.cancelButton)
         .expect(CheckEligibilityPage.phnInput.value).eql('')	
 
