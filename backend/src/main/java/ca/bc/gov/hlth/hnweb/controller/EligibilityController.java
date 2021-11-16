@@ -2,6 +2,8 @@ package ca.bc.gov.hlth.hnweb.controller;
 
 import static ca.bc.gov.hlth.hnweb.util.V2MessageUtil.SegmentType.ADJ;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -10,8 +12,8 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,21 +93,25 @@ public class EligibilityController {
 		return response;
 	}
 
-    private E45 buildE45Message(String phn, Date dateOfBirth, Date dateOfService, Boolean checkSubsidyInsuredService, Boolean checkLastEyeExam, Boolean checkPatientRestriction) throws HL7Exception {
+    private E45 buildE45Message(String phn, LocalDate dateOfBirth, LocalDate dateOfService, Boolean checkSubsidyInsuredService, Boolean checkLastEyeExam, Boolean checkPatientRestriction) throws HL7Exception {
     	
     	//Create a new E45 message and set it's values 
     	E45 e45 = new E45();
     	
-    	setSegmentValues(e45, phn,
-    			DateFormatUtils.format(dateOfBirth, DATE_FORMAT_yyyyMMdd), 
-    			DateFormatUtils.format(dateOfService, DATE_FORMAT_yyyyMMdd), 
-    			checkSubsidyInsuredService, checkLastEyeExam, checkPatientRestriction);
+    	DateTimeFormatter dateTimeFormatterYyyyMMdd = DateTimeFormatter.ofPattern(DATE_FORMAT_yyyyMMdd);
+    	
+		setSegmentValues(e45, phn,
+    			dateOfBirth.format(dateTimeFormatterYyyyMMdd),
+    			dateOfService.format(dateTimeFormatterYyyyMMdd), 
+    			BooleanUtils.isTrue(checkSubsidyInsuredService), 
+    			BooleanUtils.isTrue(checkLastEyeExam), 
+    			BooleanUtils.isTrue(checkPatientRestriction));
     	
     	return e45;    	
     }
 	
 	private void setSegmentValues(E45 e45, String phn, String dateOfBirth, String dateOfService,
-			Boolean checkSubsidyInsuredService, Boolean checkLastEyeExam, Boolean checkPatientRestriction) throws HL7Exception {
+			boolean checkSubsidyInsuredService, boolean checkLastEyeExam, boolean checkPatientRestriction) throws HL7Exception {
 	   		
 		V2MessageUtil.setMshValues(e45.getMSH(), "HNWeb", "BC01000030", "RAIENROL-EMP", "BC00001013", "20200529114230", "10-ANother", "E45", "20200529114230", "D");
 		V2MessageUtil.setHdrValues(e45.getHDR(), "TRAININGAdmin");
@@ -114,22 +120,21 @@ public class EligibilityController {
 		V2MessageUtil.setRcpValues(e45.getRCP(), "I");
 	}
 
-	private CheckMspCoverageStatusResponse buildEligibilityResponse(Message message, Date dateOfService) throws HL7Exception {
+	private CheckMspCoverageStatusResponse buildEligibilityResponse(Message message, LocalDate dateOfService) throws HL7Exception {
 		
     	CheckMspCoverageStatusResponse checkMspCoverageStatusResponse = new CheckMspCoverageStatusResponse();
     	
     	// Uses a Terser to access the message info
     	Terser terser = new Terser(message);
     	
-    	mapPersonValues(dateOfService, checkMspCoverageStatusResponse, terser);
+    	mapPersonValues(terser, checkMspCoverageStatusResponse, dateOfService);
     	mapAdjustmentValues(message, checkMspCoverageStatusResponse);    	
-		mapErrorValues(message, checkMspCoverageStatusResponse, terser);
+		mapErrorValues(terser, message, checkMspCoverageStatusResponse);
 		
 		return checkMspCoverageStatusResponse;
 	}
 
-	private void mapPersonValues(Date dateOfService, CheckMspCoverageStatusResponse checkMspCoverageStatusResponse,
-			Terser terser) throws HL7Exception {
+	private void mapPersonValues(Terser terser, CheckMspCoverageStatusResponse checkMspCoverageStatusResponse, LocalDate dateOfService) throws HL7Exception {
     	/* 
     	 * Retrieve required info from the response message by specifying the location based on Segment-FieldSequence-FieldSubSection
     	 */ 		
@@ -158,8 +163,7 @@ public class EligibilityController {
     	checkMspCoverageStatusResponse.setEligibleOnDateOfService(reportOfEligibilityFlag);
 	}
 
-	private void mapAdjustmentValues(Message message, CheckMspCoverageStatusResponse checkMspCoverageStatusResponse)
-			throws HL7Exception {
+	private void mapAdjustmentValues(Message message, CheckMspCoverageStatusResponse checkMspCoverageStatusResponse) throws HL7Exception {
 		/* 
 		 * Iterate through the ADJ segments and extract the required information.
 		 * e.g. 
@@ -194,8 +198,7 @@ public class EligibilityController {
     	}
 	}
 
-	private void mapErrorValues(Message message, CheckMspCoverageStatusResponse checkMspCoverageStatusResponse,
-			Terser terser) throws HL7Exception {
+	private void mapErrorValues(Terser terser, Message message, CheckMspCoverageStatusResponse checkMspCoverageStatusResponse) throws HL7Exception {
 		/*
 		 * When checking for an error the MSA segment needs to be checked as even a success message has an ERR segment e.g.
 		 * 

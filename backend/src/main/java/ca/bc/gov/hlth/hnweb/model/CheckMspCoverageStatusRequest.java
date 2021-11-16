@@ -1,6 +1,8 @@
 package ca.bc.gov.hlth.hnweb.model;
 
-import java.util.Date;
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * Request message for API call to check MSP coverage status 
@@ -10,9 +12,11 @@ public class CheckMspCoverageStatusRequest {
 	
 	private String phn;
 	
-	private Date dateOfBirth;
+	@JsonFormat(pattern="yyyy-MM-dd")
+	private LocalDate dateOfBirth;
 	
-	private Date dateOfService;
+	@JsonFormat(pattern="yyyy-MM-dd")
+	private LocalDate dateOfService;
 	
 	private Boolean checkSubsidyInsuredService;
 	
@@ -28,19 +32,23 @@ public class CheckMspCoverageStatusRequest {
 		this.phn = phn;
 	}
 
-	public Date getDateOfBirth() {
+	@JsonFormat(pattern="yyyy-MM-dd")
+	public LocalDate getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-	public void setDateOfBirth(Date dateOfBirth) {
+	@JsonFormat(pattern="yyyy-MM-dd")
+	public void setDateOfBirth(LocalDate dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 
-	public Date getDateOfService() {
+	@JsonFormat(pattern="yyyy-MM-dd")
+	public LocalDate getDateOfService() {
 		return dateOfService;
 	}
 
-	public void setDateOfService(Date dateOfService) {
+	@JsonFormat(pattern="yyyy-MM-dd")
+	public void setDateOfService(LocalDate dateOfService) {
 		this.dateOfService = dateOfService;
 	}
 
