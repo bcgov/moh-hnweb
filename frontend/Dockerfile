@@ -21,5 +21,6 @@ WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 COPY --from=build-stage /app/dist .
 
+
 EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
