@@ -56,7 +56,7 @@ public class V2MessageUtil {
      */
 	public static void setMshValues(MSH msh, String sendingApplication, String sendingFacility, String receivingApplication, 
     								String receivingFacility, String dateTimeOfMessage, String security, String messageType,  
-    								String messageControlID, String processingID, String versionID) throws HL7Exception {
+    								String messageControlID, String processingID) throws HL7Exception {
     	//e.g. MSH|^~\&|HNWeb|BC01000030|RAIENROL-EMP|BC00001013|20200529114230|10-ANother|R50^Z06|20200529114230|D|2.4||^M
 
     	msh.getMsh3_SendingApplication().parse(sendingApplication);

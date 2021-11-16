@@ -33,7 +33,7 @@ public class V2MessageUtilTest {
 		//Create a default R50 message with MSH-9 set to R50 Z03 
     	R50 r50Zo6 = new R50();
 		
-    	V2MessageUtil.setMshValues(r50Zo6.getMSH(), "HNWeb", "BC01000030", "RAIENROL-EMP", "BC00001013", "20200529114230", "10-ANother", "R50^Z06", "20200529114230", "D", "2.4");		
+    	V2MessageUtil.setMshValues(r50Zo6.getMSH(), "HNWeb", "BC01000030", "RAIENROL-EMP", "BC00001013", "20200529114230", "10-ANother", "R50^Z06", "20200529114230", "D");		
 		MSH msh = r50Zo6.getMSH();		
 		String encoded = parser.doEncode(msh, EncodingCharacters.getInstance(r50Zo6));		
 		assertEquals("MSH|^~\\&|HNWeb|BC01000030|RAIENROL-EMP|BC00001013|20200529114230|10-ANother|R50^Z06|20200529114230|D|2.4", encoded);

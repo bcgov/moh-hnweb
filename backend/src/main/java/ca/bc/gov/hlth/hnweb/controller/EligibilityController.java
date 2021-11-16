@@ -107,7 +107,7 @@ public class EligibilityController {
 	private void setSegmentValues(E45 e45, String phn, String dateOfBirth, String dateOfService,
 			Boolean checkSubsidyInsuredService, Boolean checkLastEyeExam, Boolean checkPatientRestriction) throws HL7Exception {
 	   		
-		V2MessageUtil.setMshValues(e45.getMSH(), "HNWeb", "BC01000030", "RAIENROL-EMP", "BC00001013", "20200529114230", "10-ANother", "E45", "20200529114230", "D", "2.4");
+		V2MessageUtil.setMshValues(e45.getMSH(), "HNWeb", "BC01000030", "RAIENROL-EMP", "BC00001013", "20200529114230", "10-ANother", "E45", "20200529114230", "D");
 		V2MessageUtil.setHdrValues(e45.getHDR(), "TRAININGAdmin");
 		V2MessageUtil.setSftValues(e45.getSFT(), "1.0", "testorg", "101", "MOH", "1.0", "barebones");
 		V2MessageUtil.setQpdValues(e45.getQPD(), "E45^^HNET0003", "1", phn, dateOfBirth, dateOfService, checkSubsidyInsuredService, checkLastEyeExam, checkPatientRestriction);		
