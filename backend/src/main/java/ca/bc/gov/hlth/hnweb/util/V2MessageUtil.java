@@ -1,7 +1,5 @@
 package ca.bc.gov.hlth.hnweb.util;
 
-import org.apache.commons.lang3.BooleanUtils;
-
 import ca.bc.gov.hlth.hnweb.model.v2.segment.HDR;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.QPD;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.SFT;
@@ -56,7 +54,7 @@ public class V2MessageUtil {
      */
 	public static void setMshValues(MSH msh, String sendingApplication, String sendingFacility, String receivingApplication, 
     								String receivingFacility, String dateTimeOfMessage, String security, String messageType,  
-    								String messageControlID, String processingID, String versionID) throws HL7Exception {
+    								String messageControlID, String processingID) throws HL7Exception {
     	//e.g. MSH|^~\&|HNWeb|BC01000030|RAIENROL-EMP|BC00001013|20200529114230|10-ANother|R50^Z06|20200529114230|D|2.4||^M
 
     	msh.getMsh3_SendingApplication().parse(sendingApplication);
@@ -267,18 +265,20 @@ public class V2MessageUtil {
 		qpd.getQpd6_PatientIdentifierList().getCx6_AssigningFacility().parse("MOH");
 		qpd.getQpd8_DateTimeOfBirth().parse(dateOfBirth);
 		qpd.getQpd14_ServiceEffectiveDate().parse(dateOfService);
-				
+
+		//build the repeating Coverage Inquiry Code field entries
 		qpd.getQpd16_CoverageInquiryCode(0).parse("ENDRSN^^HNET9909");
 		qpd.getQpd16_CoverageInquiryCode(1).parse("CCARD^^HNET9909");
-		if (BooleanUtils.isTrue(checkSubsidyInsuredService)) {
+		if (checkSubsidyInsuredService) {
 			qpd.getQpd16_CoverageInquiryCode(2).parse("PVC^^HNET9909");
 		}
-		if (BooleanUtils.isTrue(checkLastEyeExam)) {
+		if (checkLastEyeExam) {
 			qpd.getQpd16_CoverageInquiryCode(qpd.getCoverageInquiryCodeReps()).parse("EYE^^HNET9909");
 		}
-		if (BooleanUtils.isTrue(checkPatientRestriction)) {
+		if (checkPatientRestriction) {
 			qpd.getQpd16_CoverageInquiryCode(qpd.getCoverageInquiryCodeReps()).parse("PRS^^HNET9909");
-		}		
+		}
+		
 	}
 
 	/**
