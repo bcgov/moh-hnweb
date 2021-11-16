@@ -28,8 +28,6 @@ const regularAccUser = Role(SITE_UNDER_TEST, async t => {
         .click("#kc-login");
 });
 
-
-
 fixture(`Coverage Status Check Page`)
 .disablePageCaching `Test Coverage Status Check`
     .beforeEach(async t => {
@@ -65,8 +63,7 @@ test('Error when no phn, dateOfBirth and dateOfService', async t => {
 
 test('Error when no phn selected', async t => {
     await t
-        .click(CoverageStatusCheckPage.dateOfBirthInput)
-        .pressKey('tab')
+        .typeText(CoverageStatusCheckPage.dateOfBirthInput, '20211108')
         .click(CoverageStatusCheckPage.dateOfServiceInput)
         .pressKey('tab')    
         .click(CoverageStatusCheckPage.submitButton)
@@ -77,7 +74,7 @@ test('Error when no phn selected', async t => {
 
 test('Error when no dateOfBirth selected', async t => {
     await t
-        .typeText(CoverageStatusCheckPage.phnInput, '123456')
+        .typeText(CoverageStatusCheckPage.phnInput, '9306448169')
         .click(CoverageStatusCheckPage.dateOfServiceInput)
         .pressKey('tab') 
         .click(CoverageStatusCheckPage.submitButton)
@@ -88,8 +85,10 @@ test('Error when no dateOfBirth selected', async t => {
 
 test('Error when no dateOfService selected', async t => {
     await t
-        .typeText(CoverageStatusCheckPage.phnInput, '123456')
-        .click(CoverageStatusCheckPage.dateOfBirthInput)
+        .typeText(CoverageStatusCheckPage.phnInput, '9306448169')
+        .typeText(CoverageStatusCheckPage.dateOfBirthInput, '20211108') 
+        .selectText(CoverageStatusCheckPage.dateOfServiceInput)
+        .pressKey('delete')
         .pressKey('tab')
         .click(CoverageStatusCheckPage.submitButton)
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
@@ -99,8 +98,10 @@ test('Error when no dateOfService selected', async t => {
 
 test('Error when no phn and dateOfService selected', async t => {
     await t
-        .click(CoverageStatusCheckPage.dateOfBirthInput)
-        .pressKey('tab')
+        .typeText(CoverageStatusCheckPage.dateOfBirthInput, '20211108')
+        .selectText(CoverageStatusCheckPage.dateOfServiceInput)
+        .pressKey('delete')
+        .pressKey('tab') 
         .click(CoverageStatusCheckPage.submitButton)
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
        
@@ -170,29 +171,35 @@ test('Check Subsidy Insured Service CheckBox is checked/unchecked ', async t => 
         .expect(CoverageStatusCheckPage.subsidyInsuredServiceCheckBox.checked).ok()  //Confirm whether the option is selected
         .click(CoverageStatusCheckPage.subsidyInsuredServiceCheckBox)
         .expect(CoverageStatusCheckPage.subsidyInsuredServiceCheckBox.checked).notOk();
+
+        console.log("Check Subsidy Insured Service CheckBox is checked/unchecked")
 });
 
-test('Check Date Of Last Eye Examination CheckBox is checked/unchecked ', async t => { 
+test('Check Date Of Last Eye Examination CheckBox is checked/unchecked', async t => { 
     await makeVisible('checkLastEyeExam');  
 	await t
 		.click(CoverageStatusCheckPage.dateOfLastEyeExaminationCheckBox)  //Check box
         .expect(CoverageStatusCheckPage.dateOfLastEyeExaminationCheckBox.checked).ok()  //Confirm whether the option is selected
         .click(CoverageStatusCheckPage.dateOfLastEyeExaminationCheckBox)
         .expect(CoverageStatusCheckPage.dateOfLastEyeExaminationCheckBox.checked).notOk();
+
+        console.log("Check Date Of Last Eye Examination CheckBox is checked/unchecked")
 });
 
-test('Check Patient Restriction CheckBox is checked/unchecked ', async t => { 
+test('Check Patient Restriction CheckBox is checked/unchecked', async t => { 
     await makeVisible('checkPatientRestriction');   
 	await t
 		.click(CoverageStatusCheckPage.patientRestrictionCheckBox)  //Check box
         .expect(CoverageStatusCheckPage.patientRestrictionCheckBox.checked).ok()  //Confirm whether the option is selected
         .click(CoverageStatusCheckPage.patientRestrictionCheckBox)
         .expect(CoverageStatusCheckPage.patientRestrictionCheckBox.checked).notOk();
+
+        console.log("Check Patient Restriction CheckBox is checked/unchecked")
 });
 
 test('Check submitbutton is clickable', async t => {
 	await t
-        .typeText(CoverageStatusCheckPage.phnInput, '123456')  
+        .typeText(CoverageStatusCheckPage.phnInput, '9306448169')  
 		.click(CoverageStatusCheckPage.submitButton)
 
 		console.log("testcafe clicked submit button")
@@ -200,9 +207,8 @@ test('Check submitbutton is clickable', async t => {
 
 test('Check cancelButton is clickable', async t => {
 	await t
-        .typeText(CoverageStatusCheckPage.phnInput, '123456') 
-        .click(CoverageStatusCheckPage.dateOfBirthInput)
-        .pressKey('tab') 
+        .typeText(CoverageStatusCheckPage.phnInput, '9306448169') 
+        .typeText(CoverageStatusCheckPage.dateOfBirthInput, '20211108') 
         .click(CoverageStatusCheckPage.dateOfServiceInput)
         .pressKey('tab') 
 		.click(CoverageStatusCheckPage.cancelButton)

@@ -1,5 +1,8 @@
 package ca.bc.gov.hlth.hnweb.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang3.time.DateUtils;
@@ -93,8 +96,39 @@ public class EligibilityService {
 		
 //		TODO (daveb-hni) Send to actual endpoint when it's available, currently response is stubbed.
 //		ResponseEntity<String> response = postEnrollmentRequest(e45v2, transactionId);
-//		Message message = parseE45v2ToAck(E45_PVC_EYE_PRS_RESPONSE_SUCCESS);
-		return parseE45v2ToAck(E45_RESPONSE_ERROR);
+//		String responseBody = response.getBody();
+		String responseBody = generateCannedResponse(e45);
+		
+		return parseE45v2ToAck(responseBody);
+	}
+	
+	/**
+	 * TODO (daveb-hni) Remove this code when endpoint is integrated
+	 * @return
+	 */
+	private String generateCannedResponse(E45 e45) {
+		// Return an error message if the service effective date is > 18 months back
+		// This is a naive implementation but works for testing
+		Calendar serviceDate = Calendar.getInstance();
+		try {
+			serviceDate.setTime(new SimpleDateFormat("yyyyMMdd").parse( e45.getQPD().getServiceEffectiveDate().getTimeOfAnEvent().toString()));
+		} catch (ParseException e) {
+			// Ignore
+		}
+
+		Calendar today = Calendar.getInstance();		
+				
+		int yearsInBetween = today.get(Calendar.YEAR) - serviceDate.get(Calendar.YEAR); 
+		int monthsDiff = today.get(Calendar.MONTH) - serviceDate.get(Calendar.MONTH); 
+		long months = yearsInBetween * 12 + monthsDiff;
+					
+		String cannedResponse = null;
+		if (months <= 18) {
+			cannedResponse = E45_PVC_EYE_PRS_RESPONSE_SUCCESS;
+		} else {
+			cannedResponse = E45_RESPONSE_ERROR;
+		}
+		return cannedResponse;
 	}
 	
     private String encodeE45ToV2(E45 e45) throws HL7Exception {

@@ -12,7 +12,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   .text_label {
     display: flex;
   }
