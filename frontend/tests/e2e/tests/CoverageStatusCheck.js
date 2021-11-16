@@ -206,15 +206,24 @@ test('Check submitbutton is clickable', async t => {
 });
 
 test('Check cancelButton is clickable', async t => {
+    await makeVisible('checkSubsidyInsuredService');
+    await makeVisible('checkLastEyeExam');
+    await makeVisible('checkPatientRestriction');
 	await t
         .typeText(CoverageStatusCheckPage.phnInput, '9306448169') 
         .typeText(CoverageStatusCheckPage.dateOfBirthInput, '20211108') 
         .click(CoverageStatusCheckPage.dateOfServiceInput)
-        .pressKey('tab') 
+        .pressKey('tab')
+        .click(CoverageStatusCheckPage.subsidyInsuredServiceCheckBox) 
+        .click(CoverageStatusCheckPage.dateOfLastEyeExaminationCheckBox) 
+        .click(CoverageStatusCheckPage.patientRestrictionCheckBox)  
 		.click(CoverageStatusCheckPage.cancelButton)
         .expect(CoverageStatusCheckPage.phnInput.value).eql('')
         .expect(CoverageStatusCheckPage.dateOfBirthInput.value).eql('')	
-       
+        .expect(CoverageStatusCheckPage.subsidyInsuredServiceCheckBox.checked).notOk()
+        .expect(CoverageStatusCheckPage.dateOfLastEyeExaminationCheckBox.checked).notOk()
+        .expect(CoverageStatusCheckPage.patientRestrictionCheckBox.checked).notOk();
+
 		console.log("testcafe clicked cancel button")
 });
 
