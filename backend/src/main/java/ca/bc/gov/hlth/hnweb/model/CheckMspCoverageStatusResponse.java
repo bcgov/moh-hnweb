@@ -1,6 +1,6 @@
 package ca.bc.gov.hlth.hnweb.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -25,7 +25,7 @@ public class CheckMspCoverageStatusResponse {
 	private String gender;
 	
 	@JsonFormat(pattern="yyyyMMdd")
-	private Date dateOfService;
+	private LocalDate dateOfService;
 	
 	private String eligibleOnDateOfService;
 	
@@ -99,11 +99,11 @@ public class CheckMspCoverageStatusResponse {
 		this.gender = gender;
 	}
 
-	public Date getDateOfService() {
+	public LocalDate getDateOfService() {
 		return dateOfService;
 	}
 
-	public void setDateOfService(Date dateOfService) {
+	public void setDateOfService(LocalDate dateOfService) {
 		this.dateOfService = dateOfService;
 	}
 

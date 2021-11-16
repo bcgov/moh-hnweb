@@ -319,7 +319,23 @@ public class QPD extends AbstractSegment {
    
     
 
-    /** {@inheritDoc} */   
+    /**
+     * Returns QPD17- Role Person - creates it if necessary 
+     */
+    public XCN getRolePerson() {
+       return this.getTypedField(17, 0);
+    }
+    
+    /**
+     * Returns QPD17- Role Person - creates it if necessary 
+     */
+    public XCN getQpd17_RolePerson() {
+       return this.getTypedField(17, 0);
+    }
+    
+
+    
+   /** {@inheritDoc} */   
     protected Type createNewTypeWithoutReflection(int field) {
        switch (field) {
           case 0: return new CE(getMessage());
