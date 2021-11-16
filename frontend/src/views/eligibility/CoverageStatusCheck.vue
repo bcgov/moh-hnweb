@@ -34,7 +34,7 @@
     </form>
   </div>
   <br />
-    <div v-if="searched">
+    <div v-if="searchOk">
     <h2>Transaction Successful</h2>
     <AppRow>
       <AppCol class="col3">
@@ -105,7 +105,7 @@ import AppRow from '../../components/grid/AppRow.vue'
 import EligibilityService from '../../services/EligibilityService'
 import useVuelidate from '@vuelidate/core'
 import { validateDOB, validatePHN, VALIDATE_DOB_MESSAGE, VALIDATE_PHN_MESSAGE } from '../../util/validators'
-import { OUTPUT_DATE_FORMAT } from '../../util/constants'
+import { API_DATE_FORMAT } from '../../util/constants'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 
@@ -125,7 +125,7 @@ export default {
       checkLastEyeExam: false,
       checkPatientRestriction: false,
       searching: false,
-      searched: false,
+      searchOk: false,
       result: {
         phn: '',
         surname: '',
@@ -171,12 +171,20 @@ export default {
           this.searching = false
           return
         }
-        this.result = (await EligibilityService.checkCoverageStatus(this.phn, this.dateOfBirth, this.dateOfService, this.checkSubsidyInsuredService, this.checkLastEyeExam, this.checkPatientRestriction)).data
+        this.result = (await EligibilityService.checkCoverageStatus({
+          phn: this.phn, 
+          dateOfBirth: dayjs(this.dateOfBirth).format(API_DATE_FORMAT), 
+          dateOfService: dayjs(this.dateOfService).format(API_DATE_FORMAT), 
+          checkSubsidyInsuredService: this.checkSubsidyInsuredService,
+          checkLastEyeExam: this.checkLastEyeExam,
+          checkPatientRestriction: this.checkPatientRestriction})).data
         if (!this.result.errorMessage || this.result.errorMessage === '') {
-          this.searched = true
+          this.searchOk = true
           this.$store.commit('alert/setSuccessAlert', 'Search complete')
         } else {
           this.$store.commit('alert/setErrorAlert', this.result.errorMessage)
+          this.result = null
+          this.searchOk = false
         }
 
       } catch (err) {
@@ -195,7 +203,7 @@ export default {
       this.result = null,
       this.v$.$reset()
       this.$store.commit("alert/dismissAlert");
-      this.searched = false
+      this.searchOk = false
       this.searching = false
     }
   },
