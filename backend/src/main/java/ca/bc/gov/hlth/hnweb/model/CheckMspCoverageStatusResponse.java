@@ -18,8 +18,6 @@ public class CheckMspCoverageStatusResponse {
 	
 	private String secondName;
 	
-	private String nameTypeCode;
-	
 	private String dateOfBirth;
 	
 	private String gender;
@@ -73,14 +71,6 @@ public class CheckMspCoverageStatusResponse {
 
 	public void setSecondName(String secondName) {
 		this.secondName = secondName;
-	}
-
-	public String getNameTypeCode() {
-		return nameTypeCode;
-	}
-
-	public void setNameTypeCode(String nameTypeCode) {
-		this.nameTypeCode = nameTypeCode;
 	}
 
 	public String getDateOfBirth() {
@@ -184,7 +174,6 @@ public class CheckMspCoverageStatusResponse {
 		result = prime * result + ((eligibleOnDateOfService == null) ? 0 : eligibleOnDateOfService.hashCode());
 		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
 		result = prime * result + ((givenName == null) ? 0 : givenName.hashCode());
-		result = prime * result + ((nameTypeCode == null) ? 0 : nameTypeCode.hashCode());
 		result = prime * result + ((patientRestriction == null) ? 0 : patientRestriction.hashCode());
 		result = prime * result + ((phn == null) ? 0 : phn.hashCode());
 		result = prime * result + ((secondName == null) ? 0 : secondName.hashCode());
@@ -247,11 +236,6 @@ public class CheckMspCoverageStatusResponse {
 				return false;
 		} else if (!givenName.equals(other.givenName))
 			return false;
-		if (nameTypeCode == null) {
-			if (other.nameTypeCode != null)
-				return false;
-		} else if (!nameTypeCode.equals(other.nameTypeCode))
-			return false;
 		if (patientRestriction == null) {
 			if (other.patientRestriction != null)
 				return false;
@@ -283,11 +267,11 @@ public class CheckMspCoverageStatusResponse {
 	@Override
 	public String toString() {
 		return "CheckMspCoverageStatusResponse [phn=" + phn + ", surname=" + surname + ", givenName=" + givenName
-				+ ", secondName=" + secondName + ", nameTypeCode=" + nameTypeCode + ", dateOfBirth=" + dateOfBirth
-				+ ", gender=" + gender + ", dateOfService=" + dateOfService + ", eligibleOnDateOfService="
-				+ eligibleOnDateOfService + ", coverageEndDate=" + coverageEndDate + ", coverageEndReason="
-				+ coverageEndReason + ", subsidyInsuredService=" + subsidyInsuredService + ", dateOfLastEyeExamination="
+				+ ", secondName=" + secondName + ", dateOfBirth=" + dateOfBirth + ", gender=" + gender
+				+ ", dateOfService=" + dateOfService + ", eligibleOnDateOfService=" + eligibleOnDateOfService
+				+ ", coverageEndDate=" + coverageEndDate + ", coverageEndReason=" + coverageEndReason
+				+ ", subsidyInsuredService=" + subsidyInsuredService + ", dateOfLastEyeExamination="
 				+ dateOfLastEyeExamination + ", patientRestriction=" + patientRestriction + ", carecardWarning="
-				+ carecardWarning + "]";
+				+ carecardWarning + ", errorMessage=" + errorMessage + "]";
 	}
 }
