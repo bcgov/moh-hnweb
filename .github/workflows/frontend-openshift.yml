@@ -55,7 +55,7 @@ env:
 on:
   push:
     # Edit to the branch(es) you want to build and deploy on each push.
-    branches: [ 4241-hnweb-infrastructure ]
+    branches: [ main ]
     paths: 
     - "frontend/**"
 
