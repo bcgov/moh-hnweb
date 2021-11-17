@@ -109,7 +109,9 @@ public class EligibilityController {
     	
     	return e45;    	
     }
-	
+
+    //TODO (daveb-hni) Check if the below 6 methods can be refactored into separate class(es) for common use. Currently E45 only applies to this controller class.
+    
 	private void setSegmentValues(E45 e45, String phn, String dateOfBirth, String dateOfService,
 			boolean checkSubsidyInsuredService, boolean checkLastEyeExam, boolean checkPatientRestriction) throws HL7Exception {
 	   		
