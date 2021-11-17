@@ -196,11 +196,11 @@ export default {
     resetForm() {
       this.phn = ''
       this.dateOfBirth = null
-      this.dateOfService = new Date(),
+      this.dateOfService = new Date()
       this.checkSubsidyInsuredService = false
       this.checkLastEyeExam = false
       this.checkPatientRestriction = false
-      this.result = null,
+      this.result = null
       this.v$.$reset()
       this.$store.commit("alert/dismissAlert");
       this.searchOk = false

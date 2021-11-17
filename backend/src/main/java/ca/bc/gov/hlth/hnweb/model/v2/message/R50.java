@@ -55,8 +55,8 @@ public class R50 extends AbstractMessage {
     }
     
     /** 
-     * Returns "2.4"
-     * @return 
+     *
+     * @return Returns "2.4"
      */
     @Override
     public String getVersion() {
