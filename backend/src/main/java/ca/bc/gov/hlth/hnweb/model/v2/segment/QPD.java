@@ -53,10 +53,10 @@ public class QPD extends AbstractSegment {
      */
     public QPD(Group parent, ModelClassFactory factory) {
        super(parent, factory);
-       init(factory);
+       init();
     }
 
-    private void init(@SuppressWarnings("unused") ModelClassFactory factory) {
+    private void init() {
        try {																													// Field
                                   this.add(CE.class, true, 1, 250, new Object[]{ getMessage() }, "Message Query Name");			//	1
                                   this.add(ST.class, true, 1, 32, new Object[]{ getMessage() }, "Query Tag");					//	2

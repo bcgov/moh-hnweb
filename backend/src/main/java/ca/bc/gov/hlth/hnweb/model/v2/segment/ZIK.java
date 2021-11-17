@@ -20,10 +20,10 @@ public class ZIK extends AbstractSegment {
      */
     public ZIK(Group parent, ModelClassFactory factory) {
        super(parent, factory);
-       init(factory);
+       init();
     }
 
-	private void init(ModelClassFactory factory) {
+	private void init() {
 		try {
 																											// TABLE				healthnetBC Usage		
 			this.add(HD.class, true, 1, 52, new Object[] { getMessage() }, "Assigning Facility");

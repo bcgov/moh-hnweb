@@ -67,7 +67,7 @@ public class EligibilityService {
 
 	public Message checkMspCoverageStatus(E45 e45, String transactionId) throws HL7Exception {		
 		
-		String e45v2 = encodeE45ToV2(e45);		
+		String e45v2 = parser.encode(e45);		
 		logger.debug("Updated V2 message:\n{}", e45v2);
 		
 //		TODO (daveb-hni) Send to actual endpoint when it's available, currently response is stubbed.
@@ -107,15 +107,6 @@ public class EligibilityService {
 		return cannedResponse;
 	}
 	
-    private String encodeE45ToV2(E45 e45) throws HL7Exception {
-    	
-    	// Encode the message using the default HAPI parser and return it as a String
-    	String encodedMessage = parser.encode(e45);
-    	logger.debug("E45 Encoded Message:\n{}", encodedMessage);
-    	
-    	return encodedMessage;
-    }
-
     private Message parseE45v2ToAck(String v2) throws HL7Exception {
 
     	// Parse the V2 String and build a message from it that gets returned
