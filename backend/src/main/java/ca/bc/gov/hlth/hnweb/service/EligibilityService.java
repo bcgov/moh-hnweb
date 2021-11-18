@@ -68,7 +68,6 @@ public class EligibilityService {
 	public Message checkMspCoverageStatus(E45 e45, String transactionId) throws HL7Exception {		
 		
 		String e45v2 = parser.encode(e45);		
-		logger.debug("Updated V2 message:\n{}", e45v2);
 		
 //		TODO (daveb-hni) Send to actual endpoint when it's available, currently response is stubbed.
 //		ResponseEntity<String> response = postMspStatusCheckRequest(e45v2, transactionId);

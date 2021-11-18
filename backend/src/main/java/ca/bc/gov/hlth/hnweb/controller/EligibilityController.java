@@ -78,9 +78,10 @@ public class EligibilityController {
 	@PostMapping("/check-msp-coverage-status")
 	public ResponseEntity<CheckMspCoverageStatusResponse> checkMspCoverageStatus(@Valid @RequestBody CheckMspCoverageStatusRequest checkMspCoverageStatusRequest) throws HL7Exception {
 		
-		logger.info("checkMspCoverageStatus request params - phn: {}; dateOfBirth: {}; dateOfService: {}; "
+		logger.info("checkMspCoverageStatus request params - dateOfBirth: {}; dateOfService: {}; "
 				+ "checkSubsidyInsuredService: {}; checkLastEyeExam: {}; checkPatientRestriction: {}", 
-				checkMspCoverageStatusRequest.getPhn(), checkMspCoverageStatusRequest.getDateOfBirth(), checkMspCoverageStatusRequest.getDateOfService(), checkMspCoverageStatusRequest.getCheckSubsidyInsuredService(), checkMspCoverageStatusRequest.getCheckLastEyeExam(), checkMspCoverageStatusRequest.getCheckPatientRestriction());
+				checkMspCoverageStatusRequest.getDateOfBirth(), checkMspCoverageStatusRequest.getDateOfService(), 
+				checkMspCoverageStatusRequest.getCheckSubsidyInsuredService(), checkMspCoverageStatusRequest.getCheckLastEyeExam(), checkMspCoverageStatusRequest.getCheckPatientRestriction());
 				
 		E45 e45 = buildE45Message(checkMspCoverageStatusRequest.getPhn(), checkMspCoverageStatusRequest.getDateOfBirth(), checkMspCoverageStatusRequest.getDateOfService(), checkMspCoverageStatusRequest.getCheckSubsidyInsuredService(), checkMspCoverageStatusRequest.getCheckLastEyeExam(), checkMspCoverageStatusRequest.getCheckPatientRestriction());		
 		String transactionId = UUID.randomUUID().toString();		
