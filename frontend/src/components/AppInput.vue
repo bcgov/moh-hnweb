@@ -1,72 +1,64 @@
+<script setup>
+import AppInputError from './AppInputError.vue'
+</script>
+
 <template>
 
   <div class="text_label">
     <label>{{label}}</label>
   </div>
-  <input :class="inputClass" :type="type" :value="modelValue" @input='$emit("update:modelValue", $event.target.value)'/>
+
+  <input :class="inputClass" :value="modelValue" @input='$emit("update:modelValue", $event.target.value)' v-bind="$attrs"/>
   
-  <div class="error-text" v-for="error in errorValue.$errors">
-    {{error.$message.replace('Value', label)}}
-  </div>
+  <AppInputError :e-model="eModel" :label="label"/>
   
 </template>
 
 <script>
-import useVuelidate from '@vuelidate/core'
-
-  export default {
-    name: 'AppInput',
-    props: {
-      errorValue: Object,
-      label: String,
-      modelValue: String,
-      type: {
-        type:  String,
-        default: 'text'
-      }
-    },
-    computed: {
-      inputClass() {
-        return {
-          'text_input': true,
-          'error-input' : this.errorValue.$error,
-        }
+export default {
+  name: 'AppInput',
+  props: {
+    eModel: Object,
+    label: String,
+    modelValue: String,
+  },
+  computed: {
+    inputClass() {
+      return {
+        'text_input': true,
+        'error-input' : this.eModel.$error,
       }
     }
   }
+}
 </script>
 
-<style>
-  .text_input {
-    font-family: ‘BCSans’, ‘Noto Sans’, Verdana, Arial, sans-serif;
-    font-size: 18px;
-  }
+<style scoped>
+.text_input {
+  font-family: 'BCSans', 'Noto Sans', Verdana, Arial, sans-serif;
+  font-size: 18px;
+}
 
-  .text_input {
-    height: 34px;
-    border: 2px solid #606060;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border-radius: 4px;
-    padding: 5px 5px 5px 7px;
-  }
+.text_input {
+  height: 34px;
+  border: 2px solid #606060;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  padding: 5px 5px 5px 7px;
+}
 
-  .text_input[type="text"]:focus {
-    outline: 4px solid #3B99FC;
-    outline-offset: 1px;
-  }
+.text_input[type="text"]:focus {
+  outline: 2px solid #3B99FC;
+  outline-offset: 1px;
+}
 
-  .text_label {
-    display: flex;
-  }
+.text_label {
+  display: flex;
+}
 
-  .error-input {
-    border-color: crimson;
-    border-width: 2px;
-  }
-  
-  .error-text {
-    color: crimson;
-    margin-top: -15px;
-  }
+.error-input {
+  border-color: #D8292F !important;
+}
+
 </style>

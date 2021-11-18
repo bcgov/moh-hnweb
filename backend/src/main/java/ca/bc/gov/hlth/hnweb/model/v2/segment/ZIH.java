@@ -22,10 +22,10 @@ public class ZIH extends AbstractSegment {
      */
     public ZIH(Group parent, ModelClassFactory factory) {
        super(parent, factory);
-       init(factory);
+       init();
     }
 
-	private void init(ModelClassFactory factory) {
+	private void init() {
 		try {
 
 			this.add(DT.class, true, 1, 1, new Object[] { getMessage() }, "IMS Start Date");

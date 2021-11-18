@@ -29,14 +29,14 @@ public class ZIA extends AbstractSegment {
      */
     public ZIA(Group parent, ModelClassFactory factory) {
        super(parent, factory);
-       init(factory);
+       init();
     }
     
     /**
      * Initialize ZIA
      * @param factory ModelClassFactory
      */
-    private void init(ModelClassFactory factory) {
+    private void init() {
         try {   
             this.add(ST.class, true, 1, 1, new Object[]{ getMessage() }, "Client Research Code"); 
             this.add(DT.class, true, 1, 8, new Object[]{ getMessage() }, "BC Residency Date"); 

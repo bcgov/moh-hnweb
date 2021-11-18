@@ -2,13 +2,15 @@ package ca.bc.gov.hlth.hnweb.utils.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
+import ca.bc.gov.hlth.hnweb.model.v2.segment.HDR;
+import ca.bc.gov.hlth.hnweb.model.v2.segment.QPD;
+import ca.bc.gov.hlth.hnweb.model.v2.segment.SFT;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZHD;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIA;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIH;
@@ -18,6 +20,7 @@ import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.v24.segment.IN1;
 import ca.uhn.hl7v2.model.v24.segment.MSH;
 import ca.uhn.hl7v2.model.v24.segment.PID;
+import ca.uhn.hl7v2.model.v24.segment.RCP;
 import ca.uhn.hl7v2.parser.EncodingCharacters;
 import ca.uhn.hl7v2.parser.Parser;
 
@@ -28,24 +31,22 @@ public class V2MessageUtilTest {
 	private Parser parser;	
 	
 	@Test
-	public void testSetMshValues() throws HL7Exception, IOException {
+	public void testSetMshValues() throws HL7Exception {
 
-		//Create a default R50 message with MSH-9 set to R50 Z03 
+		//Create a R50 message 
     	R50 r50Zo6 = new R50();
-    	r50Zo6.initQuickstart("R50", "Z06", "P");
 		
-    	V2MessageUtil.setMshValues(r50Zo6.getMSH(), "HNWeb", "BC01000030", "RAIENROL-EMP", "BC00001013", "20200529114230", "10-ANother", "20200529114230", "D", "2.4");		
+    	V2MessageUtil.setMshValues(r50Zo6.getMSH(), "HNWeb", "BC01000030", "RAIENROL-EMP", "BC00001013", "20200529114230", "10-ANother", "R50^Z06", "20200529114230", "D");		
 		MSH msh = r50Zo6.getMSH();		
 		String encoded = parser.doEncode(msh, EncodingCharacters.getInstance(r50Zo6));		
 		assertEquals("MSH|^~\\&|HNWeb|BC01000030|RAIENROL-EMP|BC00001013|20200529114230|10-ANother|R50^Z06|20200529114230|D|2.4", encoded);
 	}
 	
 	@Test
-	public void testSetZhdValues() throws HL7Exception, IOException {
+	public void testSetZhdValues() throws HL7Exception {
 
-		//Create a default R50 message with MSH-9 set to R50 Z03 
+		//Create a R50 message 
     	R50 r50Zo6 = new R50();
-    	r50Zo6.initQuickstart("R50", "Z06", "P");
 		
     	V2MessageUtil.setZhdValues(r50Zo6.getZHD(), "20200529114230", "00000010", "HNAIADMINISTRATION", "2.4");		
     	ZHD zhd = r50Zo6.getZHD();		
@@ -54,11 +55,10 @@ public class V2MessageUtilTest {
 	}
 	
 	@Test
-	public void testSetPidValues() throws HL7Exception, IOException {
+	public void testSetPidValues() throws HL7Exception {
 
-		//Create a default R50 message with MSH-9 set to R50 Z03 
+		//Create a R50 message 
     	R50 r50Zo6 = new R50();
-    	r50Zo6.initQuickstart("R50", "Z06", "P");
 		
     	V2MessageUtil.setPidValues(r50Zo6.getPID(), "9999999999", "BC", "PH", "", "19700303", "M");		
     	PID pid = r50Zo6.getPID();		
@@ -67,11 +67,10 @@ public class V2MessageUtilTest {
 	}
 	
 	@Test
-	public void testSetZIAValues() throws HL7Exception, IOException {
+	public void testSetZIAValues() throws HL7Exception {
 
-		//Create a default R50 message with MSH-9 set to R50 Z03 
+		//Create a R50 message 
     	R50 r50Zo6 = new R50();
-    	r50Zo6.initQuickstart("R50", "Z03", "P");
 		
     	V2MessageUtil.setZiaValues(r50Zo6.getZIA(), "20210101", "HELP^RERE^^^^^L", 
 				  "898 RETER ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^H", 
@@ -83,11 +82,10 @@ public class V2MessageUtilTest {
 	}
 	
 	@Test
-	public void testSetIn1Values() throws HL7Exception, IOException {
+	public void testSetIn1Values() throws HL7Exception {
 
-		//Create a default R50 message with MSH-9 set to R50 Z03 
+		//Create a R50 message 
     	R50 r50Zo6 = new R50();
-    	r50Zo6.initQuickstart("R50", "Z06", "P");
 		
     	V2MessageUtil.setIn1Values(r50Zo6.getIN1(), "6337109", "789446", "123456", "20190501", "20201231");		
     	IN1 in1 = r50Zo6.getIN1();		
@@ -96,11 +94,10 @@ public class V2MessageUtilTest {
 	}
 	
 	@Test
-	public void testSetZihValues() throws HL7Exception, IOException {
+	public void testSetZihValues() throws HL7Exception {
 
-		//Create a default R50 message with MSH-9 set to R50 Z03 
+		//Create a R50 message 
     	R50 r50Zo6 = new R50();
-    	r50Zo6.initQuickstart("R50", "Z06", "P");
 		
     	V2MessageUtil.setZihValues(r50Zo6.getZIH(), "D");		
     	ZIH zih = r50Zo6.getZIH();		
@@ -109,11 +106,10 @@ public class V2MessageUtilTest {
 	}
 	
 	@Test
-	public void testSetZikValues() throws HL7Exception, IOException {
+	public void testSetZikValues() throws HL7Exception {
 
-		//Create a default R50 message with MSH-9 set to R50 Z03 
+		//Create a R50 message 
     	R50 r50Zo6 = new R50();
-    	r50Zo6.initQuickstart("R50", "Z06", "P");
 		
     	V2MessageUtil.setZikValues(r50Zo6.getZIK(), "20210101", "20221231");		
     	ZIK zik = r50Zo6.getZIK();		
@@ -121,4 +117,51 @@ public class V2MessageUtilTest {
 		assertEquals("ZIK||||VISA_ISSUE^20210101~VISA_XPIRY^20221231", encoded);
 	}
 	
+	@Test
+	public void testSetHdrValues() throws HL7Exception {
+
+		//Create an E45 message  
+    	E45 e45 = new E45();
+		
+    	V2MessageUtil.setHdrValues(e45.getHDR(), "TRAININGAdmin");		
+    	HDR hdr = e45.getHDR();		
+		String encoded = parser.doEncode(hdr, EncodingCharacters.getInstance(e45));		
+		assertEquals("HDR|||TRAININGAdmin", encoded);
+	}
+	
+	@Test
+	public void testSetSftValues() throws HL7Exception {
+
+		//Create an E45 message  
+    	E45 e45 = new E45();
+		
+    	V2MessageUtil.setSftValues(e45.getSFT(), "1.0", "testorg", "101", "MOH", "1.0", "barebones");		
+    	SFT sft = e45.getSFT();		
+		String encoded = parser.doEncode(sft, EncodingCharacters.getInstance(e45));		
+		assertEquals("SFT|1.0||testorg^^101^^^MOH|1.0|barebones", encoded);
+	}	
+
+	@Test
+	public void testSetQpdValues() throws HL7Exception {
+
+		//Create an E45 message  
+    	E45 e45 = new E45();
+		
+    	V2MessageUtil.setQpdValues(e45.getQPD(), "E45^^HNET0003", "1", "9865827321", "19730131", "20210705", true, false, true);		
+    	QPD qpd = e45.getQPD();		
+		String encoded = parser.doEncode(qpd, EncodingCharacters.getInstance(e45));		
+		assertEquals("QPD|E45^^HNET0003|1|^^00000001^^^CANBC^XX^MOH|^^00000001^^^CANBC^XX^MOH|^^00000754^^^CANBC^XX^MOH|9865827321^^^CANBC^JHN^MOH||19730131||||||20210705||ENDRSN^^HNET9909~CCARD^^HNET9909~PVC^^HNET9909~PRS^^HNET9909", encoded);
+	}
+
+	@Test
+	public void testSetRcpValues() throws HL7Exception {
+
+		//Create an E45 message  
+    	E45 e45 = new E45();
+		
+    	V2MessageUtil.setRcpValues(e45.getRCP(), "I");		
+    	RCP rcp = e45.getRCP();		
+		String encoded = parser.doEncode(rcp, EncodingCharacters.getInstance(e45));		
+		assertEquals("RCP|I", encoded);
+	}	
 }
