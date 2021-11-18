@@ -16,7 +16,7 @@ export default {
 
 <style scoped>
 .error-text {
-  color: crimson;
+  color: #D8292F;
   margin-top: -15px;
 }
 </style>

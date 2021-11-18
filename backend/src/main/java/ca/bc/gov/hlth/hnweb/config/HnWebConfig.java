@@ -23,4 +23,5 @@ public class HnWebConfig {
 	public Parser parser() {
 		return hapiContext().getGenericParser();
 	}
+
 }

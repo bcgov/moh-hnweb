@@ -31,10 +31,10 @@ public class SFT extends AbstractSegment {
      */
     public SFT(Group parent, ModelClassFactory factory) {
        super(parent, factory);
-       init(factory);
+       init();
     }
     
-    private void init(ModelClassFactory factory) {
+    private void init() {
         try {
             this.add(ST.class, false, 1, 30, new Object[]{ getMessage() }, "Standard Version Number"); 
             this.add(ST.class, false, 1, 30, new Object[]{ getMessage() }, "Standard Name"); 					//Not Supported.

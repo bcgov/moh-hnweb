@@ -8,6 +8,10 @@
       :class="inputClass"
       :enableTimePicker="false"
       :format="inputDateFormat"
+<<<<<<< HEAD
+=======
+      placeholder="YYYYMMDD"
+>>>>>>> origin/main
       :text-input="true"
       v-model="value" 
     />
@@ -88,7 +92,7 @@ input.dp__input {
 }
 
 .error-input input  {
-  border-color: crimson !important;
+  border-color: #D8292F !important;
 }
 
 </style>

@@ -21,10 +21,10 @@ public class HDR extends AbstractSegment {
      */
     public HDR(Group parent, ModelClassFactory factory) {
        super(parent, factory);
-       init(factory);
+       init();
     }
 
-	private void init(ModelClassFactory factory) {
+	private void init() {
 		try {
             this.add(ST.class, true, 1, 30, new Object[]{ getMessage() }, "Dummy field"); 
             this.add(ST.class, true, 1, 30, new Object[]{ getMessage() }, "Dummy field"); 

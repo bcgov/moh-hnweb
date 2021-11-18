@@ -16,18 +16,4 @@ export default {
     margin-bottom: 20px;
     font-size: 15px;
 }
-.nav-tabs,
-.nav-tabs a {
-  color: #ffffff; 
-}
-
-.nav-tabs a {
-  display: inline-block;
-  padding: 0 20px;
-  height: 36px;
-  font-size: 16px;
-  font-weight: bold;
-  line-height: 40px;
-}
-
 </style>

@@ -1,14 +1,15 @@
 package ca.bc.gov.hlth.hnweb.model.v2.message;
 
 import ca.bc.gov.hlth.hnweb.model.v2.segment.HDR;
+import ca.bc.gov.hlth.hnweb.model.v2.segment.QPD;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.SFT;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.AbstractMessage;
 import ca.uhn.hl7v2.model.v24.segment.MSH;
-import ca.uhn.hl7v2.model.v24.segment.QPD;
 import ca.uhn.hl7v2.model.v24.segment.RCP;
 import ca.uhn.hl7v2.parser.DefaultModelClassFactory;
 import ca.uhn.hl7v2.parser.ModelClassFactory;
+import ca.uhn.hl7v2.util.Terser;
 
 /**
  * Structure to represent a HL7 E45 Message 
@@ -34,6 +35,9 @@ public class E45 extends AbstractMessage {
     private void init() {
         try {
             this.add(MSH.class, true, false);
+        	Terser.set(this.getMSH(), 1, 0, 1, 1, "|");
+            Terser.set(this.getMSH(), 2, 0, 1, 1, "^~\\&");
+            
             this.add(HDR.class, true, false);
             this.add(SFT.class, true, false);
             this.add(QPD.class, true, false);
@@ -45,8 +49,8 @@ public class E45 extends AbstractMessage {
     }
     
     /** 
-     * Returns "2.4"
-     * @return 
+     *
+     * @return Returns "2.4"
      */
     @Override
     public String getVersion() {
