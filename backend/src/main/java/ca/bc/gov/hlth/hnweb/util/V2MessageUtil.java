@@ -1,20 +1,17 @@
 package ca.bc.gov.hlth.hnweb.util;
 
-import java.util.Date;
-
 import ca.bc.gov.hlth.hnweb.model.v2.segment.HDR;
+import ca.bc.gov.hlth.hnweb.model.v2.segment.QPD;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.SFT;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZHD;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIA;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIH;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIK;
 import ca.uhn.hl7v2.HL7Exception;
-import ca.uhn.hl7v2.model.Varies;
-import ca.uhn.hl7v2.model.v24.datatype.CN;
+import ca.uhn.hl7v2.Version;
 import ca.uhn.hl7v2.model.v24.segment.IN1;
 import ca.uhn.hl7v2.model.v24.segment.MSH;
 import ca.uhn.hl7v2.model.v24.segment.PID;
-import ca.uhn.hl7v2.model.v24.segment.QPD;
 import ca.uhn.hl7v2.model.v24.segment.RCP;
 
 /**
@@ -23,8 +20,21 @@ import ca.uhn.hl7v2.model.v24.segment.RCP;
  */
 public class V2MessageUtil {
 
+	public static final String FIELD_SEPARATOR = "|";
+
+	public static final String ENCODING_CHARACTERS = "^~\\&";
+
 	private static final String VISA_ISSUE = "VISA_ISSUE";
-    private static final String VISA_XPIRY = "VISA_XPIRY";
+    
+	private static final String VISA_XPIRY = "VISA_XPIRY";
+
+	public enum MessageType {
+		R15, E45, R50; 	//HIBC
+	}
+	
+	public enum SegmentType {
+		MSH, PID, QPD, ADJ
+	}
 
     /**
      * Populate MSH segment
@@ -44,7 +54,7 @@ public class V2MessageUtil {
      */
 	public static void setMshValues(MSH msh, String sendingApplication, String sendingFacility, String receivingApplication, 
     								String receivingFacility, String dateTimeOfMessage, String security, String messageType,  
-    								String messageControlID, String processingID, String versionID) throws HL7Exception {
+    								String messageControlID, String processingID) throws HL7Exception {
     	//e.g. MSH|^~\&|HNWeb|BC01000030|RAIENROL-EMP|BC00001013|20200529114230|10-ANother|R50^Z06|20200529114230|D|2.4||^M
 
     	msh.getMsh3_SendingApplication().parse(sendingApplication);
@@ -56,7 +66,7 @@ public class V2MessageUtil {
 		msh.getMsh9_MessageType().parse(messageType);
 		msh.getMsh10_MessageControlID().parse(messageControlID);
 		msh.getMsh11_ProcessingID().parse(processingID);
-		msh.getMsh12_VersionID().parse(versionID);
+		msh.getMsh12_VersionID().parse(Version.V24.getVersion());
     }
 
 	/**
@@ -238,15 +248,36 @@ public class V2MessageUtil {
 	 * @throws HL7Exception
 	 */
 	public static void setQpdValues(QPD qpd, String messageQueryName, String queryTag,
-			String phn, Date dateOfBirth, Date dateOfService,
+			String phn, String dateOfBirth, String dateOfService,
 			Boolean checkSubsidyInsuredService, Boolean checkLastEyeExam, Boolean checkPatientRestriction) throws HL7Exception {
+		
+//e.g.		QPD|E45^^HNET0003|1|^^00000001^^^CANBC^XX^MOH|^^00000001^^^CANBC^XX^MOH|^^00000754^^^CANBC^XX^MOH|9020198746^^^CANBC^JHN^MOH||19421112||||||19980601||PVC^^HNET9909||
 		
 		qpd.getQpd1_MessageQueryName().parse(messageQueryName);
 		qpd.getQpd2_QueryTag().parse(queryTag);
 		
-		CN cn = new CN(qpd.getMessage());
-		Varies qpd3_UserParametersInsuccessivefields = qpd.getQpd3_UserParametersInsuccessivefields();
-		qpd3_UserParametersInsuccessivefields.setData(cn);
+		qpd.getQpd3_SubmittingOrganization().parse("^^00000001^^^CANBC^XX^MOH");
+		qpd.getQpd4_ProviderOrganization().parse("^^00000001^^^CANBC^XX^MOH");
+		qpd.getQpd5_PayorOrganization().parse("^^00000754^^^CANBC^XX^MOH");
+		qpd.getQpd6_PatientIdentifierList().getCx1_ID().parse(phn); 
+		qpd.getQpd6_PatientIdentifierList().getCx4_AssigningAuthority().parse("CANBC");
+		qpd.getQpd6_PatientIdentifierList().getCx5_IdentifierTypeCode().parse("JHN");
+		qpd.getQpd6_PatientIdentifierList().getCx6_AssigningFacility().parse("MOH");
+		qpd.getQpd8_DateTimeOfBirth().parse(dateOfBirth);
+		qpd.getQpd14_ServiceEffectiveDate().parse(dateOfService);
+
+		//build the repeating Coverage Inquiry Code field entries
+		qpd.getQpd16_CoverageInquiryCode(0).parse("ENDRSN^^HNET9909");
+		qpd.getQpd16_CoverageInquiryCode(1).parse("CCARD^^HNET9909");
+		if (checkSubsidyInsuredService) {
+			qpd.getQpd16_CoverageInquiryCode(2).parse("PVC^^HNET9909");
+		}
+		if (checkLastEyeExam) {
+			qpd.getQpd16_CoverageInquiryCode(qpd.getCoverageInquiryCodeReps()).parse("EYE^^HNET9909");
+		}
+		if (checkPatientRestriction) {
+			qpd.getQpd16_CoverageInquiryCode(qpd.getCoverageInquiryCodeReps()).parse("PRS^^HNET9909");
+		}
 		
 	}
 

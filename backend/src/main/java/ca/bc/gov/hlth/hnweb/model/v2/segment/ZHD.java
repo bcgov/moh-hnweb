@@ -30,10 +30,10 @@ public class ZHD extends AbstractSegment {
      */
     public ZHD(Group parent, ModelClassFactory factory) {
        super(parent, factory);
-       init(factory);
+       init();
     }
     
-    private void init(ModelClassFactory factory) {
+    private void init() {
         try {
             this.add(TS.class, true, 1, 19, new Object[]{ getMessage() }, "Event Date/Time"); 
             this.add(XON.class, true, 1, 20, new Object[]{ getMessage() }, "Organization");

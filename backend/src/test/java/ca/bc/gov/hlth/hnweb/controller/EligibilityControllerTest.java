@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
+import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusRequest;
 import ca.bc.gov.hlth.hnweb.service.EligibilityService;
+import ca.uhn.hl7v2.HL7Exception;
 
 @SpringBootTest
 public class EligibilityControllerTest {
@@ -96,4 +99,27 @@ public class EligibilityControllerTest {
 		assertEquals("Bad /checkEligibility request", responseException.getReason());
 	}
 
+	@Test
+	public void testCheckMspCoverageStatus_success() throws HL7Exception {
+
+		CheckMspCoverageStatusRequest checkMspCoverageStatusRequest = createCheckMspCoverageStatusRequest("9873944324", LocalDate.of(1973, 8, 11), LocalDate.now(), true, false, null);
+		
+		//TODO (daveb-hni) The response is hard-coded currently so this this needs to be updated to Web Client test similar to EnrollmentControllerTest.testEnrollSubscriber_Error() once the endpoint connection is completed in EligibilityController.checkMspCoverageStatus 		
+//		ResponseEntity<CheckMspCoverageStatusResponse> responseEntity = eligibilityController.checkMspCoverageStatus(checkMspCoverageStatusRequest);		
+	}
+	
+	private CheckMspCoverageStatusRequest createCheckMspCoverageStatusRequest(String phn, LocalDate dateOfBirth, LocalDate dateOfService,
+			Boolean checkSubsidyInsuredService, Boolean checkLastEyeExam, Boolean checkPatientRestriction) {
+		
+		CheckMspCoverageStatusRequest checkMspCoverageStatusRequest = new CheckMspCoverageStatusRequest();
+		checkMspCoverageStatusRequest.setPhn(phn);
+		checkMspCoverageStatusRequest.setDateOfBirth(dateOfBirth);
+		checkMspCoverageStatusRequest.setDateOfService(dateOfService);
+		checkMspCoverageStatusRequest.setCheckSubsidyInsuredService(checkSubsidyInsuredService);
+		checkMspCoverageStatusRequest.setCheckLastEyeExam(checkLastEyeExam);
+		checkMspCoverageStatusRequest.setCheckPatientRestriction(checkPatientRestriction);
+		
+		return checkMspCoverageStatusRequest;
+	}
+	
 }

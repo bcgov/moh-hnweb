@@ -1,7 +1,7 @@
 <template>
   <label class="checkbox">
     {{ label }}
-    <input type="checkbox" :value="modelValue"
+    <input type="checkbox" :checked="modelValue"
       @change="$emit('update:modelValue', $event.target.checked)" v-bind="$attrs"/>
     <span class="checkmark"></span>
     

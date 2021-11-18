@@ -9,7 +9,7 @@ export const resources = {
     eligibility: {
       eligibility: '/eligibility',
       checkEligibility: '/eligibility/check-eligibility',
-      checkCoverageStatus: '/eligibility/checkCoverageStatus',
+      checkMspCoverageStatus: '/eligibility/check-msp-coverage-status',
       phnEnquiry: '/eligibility/phnEnquiry'
     }
   }

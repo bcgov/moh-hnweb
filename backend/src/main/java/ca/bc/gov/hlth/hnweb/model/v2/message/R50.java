@@ -1,5 +1,8 @@
 package ca.bc.gov.hlth.hnweb.model.v2.message;
 
+import static ca.bc.gov.hlth.hnweb.util.V2MessageUtil.ENCODING_CHARACTERS;
+import static ca.bc.gov.hlth.hnweb.util.V2MessageUtil.FIELD_SEPARATOR;
+
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZHD;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIA;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIH;
@@ -11,6 +14,7 @@ import ca.uhn.hl7v2.model.v24.segment.MSH;
 import ca.uhn.hl7v2.model.v24.segment.PID;
 import ca.uhn.hl7v2.parser.DefaultModelClassFactory;
 import ca.uhn.hl7v2.parser.ModelClassFactory;
+import ca.uhn.hl7v2.util.Terser;
 
 /**
  * Structure to represent a HL7 R50 Message 
@@ -42,14 +46,17 @@ public class R50 extends AbstractMessage {
             this.add(ZIH.class, false, false);
             this.add(ZIK.class, false, false);
 
-        } catch(HL7Exception e) {
+        	Terser.set(this.getMSH(), 1, 0, 1, 1, FIELD_SEPARATOR);
+            Terser.set(this.getMSH(), 2, 0, 1, 1, ENCODING_CHARACTERS);
+            
+       } catch(HL7Exception e) {
             log.error("Unexpected error creating R50 - this is probably a bug in the source code generator.", e);
        }
     }
     
     /** 
-     * Returns "2.4"
-     * @return 
+     *
+     * @return Returns "2.4"
      */
     @Override
     public String getVersion() {

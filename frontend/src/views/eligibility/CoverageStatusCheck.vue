@@ -34,7 +34,7 @@
     </form>
   </div>
   <br />
-    <div v-if="searched">
+    <div v-if="searchOk">
     <h2>Transaction Successful</h2>
     <AppRow>
       <AppCol class="col3">
@@ -55,7 +55,7 @@
         <AppOutput label="Date Of Service" :value="result.dateOfService"/>
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Eligible on Date of Service?" :value="eligibleOnDateOfService"/>
+        <AppOutput label="Eligible on Date of Service?" :value="result.eligibleOnDateOfService"/>
       </AppCol>
       <AppCol class="col3">
         <AppOutput label="Coverage End Date" :value="result.coverageEndDate"/>
@@ -105,7 +105,7 @@ import AppRow from '../../components/grid/AppRow.vue'
 import EligibilityService from '../../services/EligibilityService'
 import useVuelidate from '@vuelidate/core'
 import { validateDOB, validatePHN, VALIDATE_DOB_MESSAGE, VALIDATE_PHN_MESSAGE } from '../../util/validators'
-import { OUTPUT_DATE_FORMAT } from '../../util/constants'
+import { API_DATE_FORMAT } from '../../util/constants'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 
@@ -125,7 +125,7 @@ export default {
       checkLastEyeExam: false,
       checkPatientRestriction: false,
       searching: false,
-      searched: false,
+      searchOk: false,
       result: {
         phn: '',
         surname: '',
@@ -146,11 +146,17 @@ export default {
     }
   },
   computed: {
-    eligibleOnDateOfService() {
-      return this.result.eligibleOnDateOfService ? 'Y' : 'N'
-    },
-    fullName() {      
-      const name = this.result.surname + ', ' + this.result.givenName + (this.result.secondName !== '' ? ' ' : '') + this.result.secondName
+    fullName() {
+      let name = ''
+      if (this.result.surname) {
+        name = name + this.result.surname
+      }
+      if (this.result.givenName) {
+        name = name + ', ' + this.result.givenName
+      }
+      if (this.result.secondName) {
+        name = name + ' ' + this.result.secondName
+      }
       return name
     },
   },
@@ -161,32 +167,24 @@ export default {
         const isValid = await this.v$.$validate()
         if (!isValid) {
           this.$store.commit('alert/setErrorAlert');
+          this.result = null
           this.searching = false
           return
         }
-        console.log(`phn: ${this.phn}, dateOfBirth ${this.dateOfBirth}, dateOfService ${this.dateOfService}, checkSubsidyInsuredService ${this.checkSubsidyInsuredService}`)
-        //this.result = (await EligibilityService.checkCoverageStatus(this.phn, this.dateOfBirth, this.dateOfService, this.checkSubsidyInsuredService)).HN_WEB_DATE_FORMAT
-        this.result = {
-          phn: this.phn,
-          givenName: 'Homer',
-          surname: 'Simpson',
-          secondName: 'J',
-          dateOfBirth: dayjs(this.dateOfBirth).format(OUTPUT_DATE_FORMAT),
-          gender: 'MALE',
-          dateOfService: dayjs(this.dateOfService).format(OUTPUT_DATE_FORMAT),
-          eligibleOnDateOfService: true,
-          coverageEndDate: '20221212',
-          coverageEndReason: 'It\'s all over',
-          subsidyInsuredService: 'THIS IS NOT AN INSURED BENEFIT',
-          dateOfLastEyeExamination: 'MSP HAS NOT PAID FOR AN EYE EXAM FOR THIS PHN IN THE LAST 24 MTHS FROM TODAY\'S DATE',
-          patientRestriction: 'NO RESTRICTION',
-          carecardWarning: 'THIS PERSON HAS REQUESTED A REPLACEMENT BD SERVICES CARD. PLEASE CONFIRM IDENTITY.',
-        }
+        this.result = (await EligibilityService.checkCoverageStatus({
+          phn: this.phn, 
+          dateOfBirth: dayjs(this.dateOfBirth).format(API_DATE_FORMAT), 
+          dateOfService: dayjs(this.dateOfService).format(API_DATE_FORMAT), 
+          checkSubsidyInsuredService: this.checkSubsidyInsuredService,
+          checkLastEyeExam: this.checkLastEyeExam,
+          checkPatientRestriction: this.checkPatientRestriction})).data
         if (!this.result.errorMessage || this.result.errorMessage === '') {
-          this.searched = true
+          this.searchOk = true
           this.$store.commit('alert/setSuccessAlert', 'Search complete')
         } else {
           this.$store.commit('alert/setErrorAlert', this.result.errorMessage)
+          this.result = null
+          this.searchOk = false
         }
 
       } catch (err) {
@@ -197,12 +195,15 @@ export default {
     },
     resetForm() {
       this.phn = ''
-      this.dateOfBirth = ''
-      this.dateOfService = new Date(),
-      this.result = null,
+      this.dateOfBirth = null
+      this.dateOfService = new Date()
+      this.checkSubsidyInsuredService = false
+      this.checkLastEyeExam = false
+      this.checkPatientRestriction = false
+      this.result = null
       this.v$.$reset()
       this.$store.commit("alert/dismissAlert");
-      this.searched = false
+      this.searchOk = false
       this.searching = false
     }
   },
