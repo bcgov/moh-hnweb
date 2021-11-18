@@ -8,10 +8,6 @@
       :class="inputClass"
       :enableTimePicker="false"
       :format="inputDateFormat"
-<<<<<<< HEAD
-=======
-      placeholder="YYYYMMDD"
->>>>>>> origin/main
       :text-input="true"
       v-model="value" 
     />

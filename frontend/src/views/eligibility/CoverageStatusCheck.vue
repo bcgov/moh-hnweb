@@ -105,11 +105,7 @@ import AppRow from '../../components/grid/AppRow.vue'
 import EligibilityService from '../../services/EligibilityService'
 import useVuelidate from '@vuelidate/core'
 import { validateDOB, validatePHN, VALIDATE_DOB_MESSAGE, VALIDATE_PHN_MESSAGE } from '../../util/validators'
-<<<<<<< HEAD
-import { OUTPUT_DATE_FORMAT } from '../../util/constants'
-=======
 import { API_DATE_FORMAT } from '../../util/constants'
->>>>>>> origin/main
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 
@@ -150,11 +146,6 @@ export default {
     }
   },
   computed: {
-<<<<<<< HEAD
-    eligibleOnDateOfService() {
-      return this.result.eligibleOnDateOfService ? 'Y' : 'N'
-    }
-=======
     fullName() {
       let name = ''
       if (this.result.surname) {
@@ -168,7 +159,6 @@ export default {
       }
       return name
     },
->>>>>>> origin/main
   },
   methods: {
     async submitForm() {
@@ -181,24 +171,6 @@ export default {
           this.searching = false
           return
         }
-<<<<<<< HEAD
-        console.log(`phn: ${this.phn}, dateOfBirth ${this.dateOfBirth}, dateOfService ${this.dateOfService}, checkSubsidyInsuredService ${this.checkSubsidyInsuredService}`)
-        //this.result = (await EligibilityService.checkCoverageStatus(this.phn, this.dateOfBirth, this.dateOfService, this.checkSubsidyInsuredService)).HN_WEB_DATE_FORMAT
-        this.result = {
-          phn: this.phn,
-          name: 'Simpson, Homer',
-          dateOfBirth: dayjs(this.dateOfBirth).format(OUTPUT_DATE_FORMAT),
-          gender: 'MALE',
-          dateOfService: dayjs(this.dateOfService).format(OUTPUT_DATE_FORMAT),
-          eligibleOnDateOfService: true,
-          coverageEndDate: '20221212',
-          coverageEndReason: '',
-          subsidyInsuredService: 'THIS IS NOT AN INSURED BENEFIT',
-          dateOfLastEyeExamination: 'MSP HAS NOT PAID FOR AN EYE EXAM FOR THIS PHN IN THE LAST 24 MTHS FROM TODAY\'S DATE',
-          patientRestriction: 'NO RESTRICTION',
-          carecardWarning: 'THIS PERSON HAS REQUESTED A REPLACEMENT BD SERVICES CARD. PLEASE CONFIRM IDENTITY.',
-
-=======
         this.result = (await EligibilityService.checkCoverageStatus({
           phn: this.phn, 
           dateOfBirth: dayjs(this.dateOfBirth).format(API_DATE_FORMAT), 
@@ -213,7 +185,6 @@ export default {
           this.$store.commit('alert/setErrorAlert', this.result.errorMessage)
           this.result = null
           this.searchOk = false
->>>>>>> origin/main
         }
 
       } catch (err) {
