@@ -163,5 +163,25 @@ public class V2MessageUtilTest {
     	RCP rcp = e45.getRCP();		
 		String encoded = parser.doEncode(rcp, EncodingCharacters.getInstance(e45));		
 		assertEquals("RCP|I", encoded);
-	}	
+	}
+	
+	@Test
+	public void testCorrectMSH9_E45_correctionRequired() {
+		String e45 = "\"MSH|^~\\\\&|RAIELG-CNFRM|BC00001013|HNCLINET|moh_hnclient_dev|20211109142135|rajan.reddy|E45||D|2.4||";
+		String e45Corrected = "\"MSH|^~\\\\&|RAIELG-CNFRM|BC00001013|HNCLINET|moh_hnclient_dev|20211109142135|rajan.reddy|E45^^||D|2.4||";
+		
+		assertEquals(e45Corrected, V2MessageUtil.correctMSH9(e45, "E45"));
+	}
+	
+	@Test
+	public void testCorrectMSH9_E45_noCorrectionRequired() {
+		String e45 = "\"MSH|^~\\\\&|RAIELG-CNFRM|BC00001013|HNCLINET|moh_hnclient_dev|20211109142135|rajan.reddy|E45^^||D|2.4||";
+		
+		assertEquals(e45, V2MessageUtil.correctMSH9(e45, "E45"));
+	}
+	
+	@Test
+	public void testCorrectMSH9_R15() {
+		
+	}
 }

@@ -3,15 +3,15 @@ package ca.bc.gov.hlth.hnweb.service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
+import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
+import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.parser.Parser;
@@ -23,7 +23,7 @@ import ca.uhn.hl7v2.parser.Parser;
 @Service
 public class EligibilityService {
 	
-	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(EligibilityService.class);
+	private static final Logger logger = LoggerFactory.getLogger(EligibilityService.class);
 
 	@Autowired
 	private Parser parser;
@@ -48,21 +48,35 @@ public class EligibilityService {
 	"ADJ|3|IN|||PRS^^HNET9908|N\r\n" +
 	"ADJ|4|IN|||ABC^^HNET9908|Huh";
 	
+	private static final String R15_RESPONSE_ELIGIBLE = "MSH|^~\\&|RAICHK-BNF-CVST|BC00001013|HNWeb|moh_hnclient_dev|20211118181051|train96|R15|20210513182941|D|2.4||\r\n"
+			+ "MSA|AA|20210513182941|HJMB001ISUCCESSFULLY COMPLETED\r\n"
+			+ "ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED\r\n"
+			+ "ZTL|1^RD\r\n"
+			+ "IN1|1||||||||||||||||||||||||Y\r\n"
+			+ "ZIH||||||||||||||||||1";
+	
+	private static final String R15_RESPONSE_INELIGIBLE = "MSH|^~\\&|RAICHK-BNF-CVST|BC00001013|HNWeb|moh_hnclient_dev|20211118181051|train96|R15|20210513182941|D|2.4||\r\n"
+			+ "MSA|AA|20210513182941|HJMB001ISUCCESSFULLY COMPLETED\r\n"
+			+ "ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED\r\n"
+			+ "ZTL|1^RD\r\n"
+			+ "IN1|1||||||||||||20221231||||||||||||N\r\n"
+			+ "ZIH|||||||||||||||DEAD|20221201||1";
+	
 	/**
-	 * TODO (weskubo-cgi) This is just a stubbed out service for unit testing.
-	 * The real service will integrated with a downstream application and return
-	 * HL7 objects.
-	 * @return
+	 * Checks for subject eligibility based on the R15 request.
+	 * 
+	 * @return The R15 response.
+	 * @throws HL7Exception 
 	 */
-	public CheckEligibilityResponse checkEligibility(String phn, Date eligibilityDate) {
-		CheckEligibilityResponse checkEligibilityResponse = new CheckEligibilityResponse();
-		checkEligibilityResponse.setBeneficiaryOnDateChecked("Y");
-		checkEligibilityResponse.setCoverageEndDate(new SimpleDateFormat("yyyyMMdd").format(DateUtils.addDays(new Date(), 90)));
-		checkEligibilityResponse.setPhn(phn);
-		checkEligibilityResponse.setCoverageEndReason("Some reason or other");
-		checkEligibilityResponse.setExclusionPeriodEndDate(new SimpleDateFormat("yyyyMMdd").format(DateUtils.addDays(new Date(), 30)));
+	public Message checkEligibility(R15 r15) throws HL7Exception {
+		String r15v2 = parser.encode(r15);
 		
-		return checkEligibilityResponse;
+		// TODO (weskubo-hni) Send to actual endpoint when it's available, currently response is stubbed.
+//		ResponseEntity<String> response = postCheckEligibilityRequest(r15v2, UUID.randomUUID().toString());
+//		String responseBody = response.getBody();
+		String responseBody = generateCannedResponse(r15);
+
+		return parseResponse(responseBody, "R15");
 	}
 
 	public Message checkMspCoverageStatus(E45 e45, String transactionId) throws HL7Exception {		
@@ -74,7 +88,28 @@ public class EligibilityService {
 //		String responseBody = response.getBody();
 		String responseBody = generateCannedResponse(e45);
 		
-		return parseE45v2ToAck(responseBody);
+		return parseResponse(responseBody, "E45");
+	}
+	
+	private String generateCannedResponse(R15 r15) {
+		Calendar serviceDate = Calendar.getInstance();
+		try {
+			serviceDate.setTime(new SimpleDateFormat("yyyyMMdd").parse( r15.getIN1().getPlanEffectiveDate().toString()));
+		} catch (ParseException e) {
+			// Ignore
+		}
+		
+		Calendar today = Calendar.getInstance();
+		
+		int yearsDiff = serviceDate.get(Calendar.YEAR) - today.get(Calendar.YEAR);
+		
+		String cannedResponse = null;
+		if (yearsDiff > 1) {
+			cannedResponse = R15_RESPONSE_INELIGIBLE;
+		} else {
+			cannedResponse = R15_RESPONSE_ELIGIBLE;
+		}
+		return cannedResponse;
 	}
 	
 	/**
@@ -105,12 +140,17 @@ public class EligibilityService {
 		}
 		return cannedResponse;
 	}
-	
-    private Message parseE45v2ToAck(String v2) throws HL7Exception {
 
-    	// Parse the V2 String and build a message from it that gets returned
-    	
-    	Message message = parser.parse(v2.replaceAll("\\|E45\\|", "|E45^^|")); //TODO (daveb-hni) could move this to a custom parser
+    /**
+     * Parse the V2 String and build a message from it that gets returned.
+     * 
+     * @param response The raw V2 response
+     * @param messageType The target message type
+     * @return The Message
+     * @throws HL7Exception 
+     */
+    private Message parseResponse(String response, String messageType) throws HL7Exception {
+    	Message message = parser.parse(V2MessageUtil.correctMSH9(response, messageType));
     	logger.debug("V2 message parsed to {} object", message.getName());
     	
     	return message;

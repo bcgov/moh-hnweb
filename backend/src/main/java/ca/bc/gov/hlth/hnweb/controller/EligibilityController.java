@@ -24,11 +24,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import ca.bc.gov.hlth.hnweb.converter.R15Converter;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
 import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
+import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
 import ca.bc.gov.hlth.hnweb.service.EligibilityService;
 import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
 import ca.uhn.hl7v2.HL7Exception;
@@ -59,14 +61,18 @@ public class EligibilityController {
 	public ResponseEntity<CheckEligibilityResponse> checkEligibility(@Valid @RequestBody CheckEligibilityRequest checkEligibilityRequest) {
 
 		try {
-			CheckEligibilityResponse checkEligibilityResponse = eligibilityService.checkEligibility(checkEligibilityRequest.getPhn(), checkEligibilityRequest.getEligibilityDate());
+			R15Converter converter = new R15Converter();
+			R15 r15 = converter.convertRequest(checkEligibilityRequest);
+			Message message = eligibilityService.checkEligibility(r15);
+			
+			CheckEligibilityResponse checkEligibilityResponse = converter.convertResponse(message);
 			
 			ResponseEntity<CheckEligibilityResponse> response = ResponseEntity.ok(checkEligibilityResponse);
 
 			logger.info("checkEligibility response: {} ", checkEligibilityResponse);
 			return response;	
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /checkEligibility request", e);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /check-eligibility request", e);
 		}
 		
 	}

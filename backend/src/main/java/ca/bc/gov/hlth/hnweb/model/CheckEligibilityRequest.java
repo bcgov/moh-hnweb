@@ -1,10 +1,10 @@
 package ca.bc.gov.hlth.hnweb.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class CheckEligibilityRequest {
 	private String phn;
-	private Date eligibilityDate;
+	private LocalDate eligibilityDate;
 
 	public String getPhn() {
 		return phn;
@@ -14,11 +14,11 @@ public class CheckEligibilityRequest {
 		this.phn = phn;
 	}
 
-	public Date getEligibilityDate() {
+	public LocalDate getEligibilityDate() {
 		return eligibilityDate;
 	}
 
-	public void setEligibilityDate(Date eligibilityDate) {
+	public void setEligibilityDate(LocalDate eligibilityDate) {
 		this.eligibilityDate = eligibilityDate;
 	}
 
