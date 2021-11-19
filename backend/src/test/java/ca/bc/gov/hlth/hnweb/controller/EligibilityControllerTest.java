@@ -5,9 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -69,7 +67,7 @@ public class EligibilityControllerTest {
 		request.setPhn(phn);
 		request.setEligibilityDate(eligibilityDate);
 	
-		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(request);
+		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(request, null);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		
 		CheckEligibilityResponse checkEligibilityResponse = response.getBody();
@@ -100,7 +98,7 @@ public class EligibilityControllerTest {
 		
 		// 4. Perform assertions
 		ResponseStatusException responseException = assertThrows(ResponseStatusException.class, () -> {
-        	eligibilityController.checkEligibility(request);
+        	eligibilityController.checkEligibility(request, null);
         });
 		assertEquals(HttpStatus.BAD_REQUEST, responseException.getStatus());
 		assertEquals("Bad /check-eligibility request", responseException.getReason());

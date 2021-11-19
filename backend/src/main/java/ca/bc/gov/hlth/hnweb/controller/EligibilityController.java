@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,20 +54,23 @@ public class EligibilityController {
 
 	private static final Logger logger = LoggerFactory.getLogger(EligibilityController.class);
 
+	@Deprecated
 	private static final String DATE_FORMAT_yyyyMMdd = "yyyyMMdd";
 
 	@Autowired
 	private EligibilityService eligibilityService;
 	
+	@Autowired
+	private R15Converter r15Converter;
+	
 	@PostMapping("/check-eligibility")
 	public ResponseEntity<CheckEligibilityResponse> checkEligibility(@Valid @RequestBody CheckEligibilityRequest checkEligibilityRequest) {
 
 		try {
-			R15Converter converter = new R15Converter();
-			R15 r15 = converter.convertRequest(checkEligibilityRequest);
+			R15 r15 = r15Converter.convertRequest(checkEligibilityRequest);
 			Message message = eligibilityService.checkEligibility(r15);
 			
-			CheckEligibilityResponse checkEligibilityResponse = converter.convertResponse(message);
+			CheckEligibilityResponse checkEligibilityResponse = r15Converter.convertResponse(checkEligibilityRequest, message);
 			
 			ResponseEntity<CheckEligibilityResponse> response = ResponseEntity.ok(checkEligibilityResponse);
 
