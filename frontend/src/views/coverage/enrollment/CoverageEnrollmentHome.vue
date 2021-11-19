@@ -1,11 +1,14 @@
 <script setup>
-  import TheSubNav from '../../../components/template/TheSubNav.vue'
+import TheSubNav from '../../../components/template/TheSubNav.vue'
+import SubNavTab from '../../../components/template/SubNavTab.vue'
 </script>
+
 <template>
-   <TheSubNav>
+    <TheSubNav>
+      <SubNavTab routeName="AddVisaResidentWithoutPHN" title="Add Visa Resident without PHN" />
+      <SubNavTab routeName="AddVisaResidentWithPHN" title="Add Visa Resident with PHN" />
    </TheSubNav>
    <router-view/>
-    <h1>Coverage Enrollment</h1>
 </template>
 
 <script>
