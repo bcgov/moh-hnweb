@@ -181,7 +181,17 @@ public class V2MessageUtilTest {
 	}
 	
 	@Test
-	public void testCorrectMSH9_R15() {
+	public void testCorrectMSH9_R15_correctionRequired() {
+		String r15 =  "MSH|^~\\&|RAICHK-BNF-CVST|BC00001013|HNWeb|moh_hnclient_dev|20211118181051|train96|R15|20210513182941|D|2.4||";
+		String r15Corrected =  "MSH|^~\\&|RAICHK-BNF-CVST|BC00001013|HNWeb|moh_hnclient_dev|20211118181051|train96|R15^^|20210513182941|D|2.4||";
 		
+		assertEquals(r15Corrected, V2MessageUtil.correctMSH9(r15, "R15"));
+	}
+	
+	@Test
+	public void testCorrectMSH9_R15_noCorrectionRequired() {
+		String r15 =  "MSH|^~\\&|RAICHK-BNF-CVST|BC00001013|HNWeb|moh_hnclient_dev|20211118181051|train96|R15^^|20210513182941|D|2.4||";
+		
+		assertEquals(r15, V2MessageUtil.correctMSH9(r15, "R15"));
 	}
 }

@@ -60,7 +60,7 @@ public class EligibilityService {
 			+ "ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED\r\n"
 			+ "ZTL|1^RD\r\n"
 			+ "IN1|1||||||||||||20221231||||||||||||N\r\n"
-			+ "ZIH|||||||||||||||DEAD|20221201||1";
+			+ "ZIH|||||||||||||||DECEASED|20221201||1";
 	
 	/**
 	 * Checks for subject eligibility based on the R15 request.

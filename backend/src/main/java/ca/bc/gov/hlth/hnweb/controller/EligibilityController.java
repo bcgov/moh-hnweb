@@ -18,14 +18,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import ca.bc.gov.hlth.hnweb.converter.MSHDefaults;
 import ca.bc.gov.hlth.hnweb.converter.R15Converter;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
@@ -61,16 +60,17 @@ public class EligibilityController {
 	private EligibilityService eligibilityService;
 	
 	@Autowired
-	private R15Converter r15Converter;
+	private MSHDefaults mshDefaults;
 	
 	@PostMapping("/check-eligibility")
 	public ResponseEntity<CheckEligibilityResponse> checkEligibility(@Valid @RequestBody CheckEligibilityRequest checkEligibilityRequest) {
 
 		try {
-			R15 r15 = r15Converter.convertRequest(checkEligibilityRequest);
+			R15Converter converter = new R15Converter(mshDefaults);
+			R15 r15 = converter.convertRequest(checkEligibilityRequest);
 			Message message = eligibilityService.checkEligibility(r15);
 			
-			CheckEligibilityResponse checkEligibilityResponse = r15Converter.convertResponse(checkEligibilityRequest, message);
+			CheckEligibilityResponse checkEligibilityResponse = converter.convertResponse(message);
 			
 			ResponseEntity<CheckEligibilityResponse> response = ResponseEntity.ok(checkEligibilityResponse);
 

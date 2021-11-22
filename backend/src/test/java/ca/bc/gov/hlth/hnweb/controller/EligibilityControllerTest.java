@@ -39,6 +39,10 @@ public class EligibilityControllerTest {
 	@Autowired
 	private EligibilityController eligibilityController;
 	
+	/**
+	 * TODO (weskubo-cgi) Update this test once downstream service is integrated using WebClient.
+	 * @throws ParseException
+	 */
 	@Disabled
 	@Test
 	public void testCheckEligibility_success() throws ParseException {
@@ -67,7 +71,7 @@ public class EligibilityControllerTest {
 		request.setPhn(phn);
 		request.setEligibilityDate(eligibilityDate);
 	
-		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(request, null);
+		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(request);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		
 		CheckEligibilityResponse checkEligibilityResponse = response.getBody();
@@ -98,7 +102,7 @@ public class EligibilityControllerTest {
 		
 		// 4. Perform assertions
 		ResponseStatusException responseException = assertThrows(ResponseStatusException.class, () -> {
-        	eligibilityController.checkEligibility(request, null);
+        	eligibilityController.checkEligibility(request);
         });
 		assertEquals(HttpStatus.BAD_REQUEST, responseException.getStatus());
 		assertEquals("Bad /check-eligibility request", responseException.getReason());

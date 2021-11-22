@@ -20,8 +20,4 @@ v2:
     sendingApplication: HNWeb
     sendingFacility: HN-WEB
     receivingFacility: BC00001013
-    security: train96
     processingID: D
-  zhd:
-    businessOrganization: '00000010'
-    businessUserGroup: HNAIADMINISTRATION
