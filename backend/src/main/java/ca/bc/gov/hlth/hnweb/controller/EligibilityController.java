@@ -30,6 +30,9 @@ import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
 import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusResponse;
+import ca.bc.gov.hlth.hnweb.model.InquirePhnRequest;
+import ca.bc.gov.hlth.hnweb.model.InquirePhnResponse;
+import ca.bc.gov.hlth.hnweb.model.InquirePhnMatch;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
 import ca.bc.gov.hlth.hnweb.service.EligibilityService;
@@ -75,6 +78,31 @@ public class EligibilityController {
 			ResponseEntity<CheckEligibilityResponse> response = ResponseEntity.ok(checkEligibilityResponse);
 
 			logger.info("checkEligibility response: {} ", checkEligibilityResponse);
+			return response;	
+		} catch (Exception e) {
+			// TODO (weskubo-cgi) Update this with more specific error handling once downstream services are integrated
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /check-eligibility request", e);
+		}
+		
+	}	
+	
+	@PostMapping("/inquire-phn")
+	public ResponseEntity<InquirePhnResponse> enquirePhn(@Valid @RequestBody InquirePhnRequest enquirePhnRequest) {
+
+		try {
+			//R15Converter converter = new R15Converter(mshDefaults);
+			//R15 r15 = converter.convertRequest(checkEligibilityRequest);
+			
+			List<InquirePhnMatch> matches = eligibilityService.enquirePhn("");
+			
+			//eckEligibilityResponse checkEligibilityResponse = converter.convertResponse(r15Response);
+			
+			InquirePhnResponse enquirePhnResponse = new InquirePhnResponse();
+			enquirePhnResponse.setMatches(matches);
+			
+			ResponseEntity<InquirePhnResponse> response = ResponseEntity.ok(enquirePhnResponse);
+
+			logger.info("inquirePHN response: {} ", enquirePhnResponse);
 			return response;	
 		} catch (Exception e) {
 			// TODO (weskubo-cgi) Update this with more specific error handling once downstream services are integrated

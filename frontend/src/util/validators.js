@@ -4,12 +4,28 @@ import { helpers } from '@vuelidate/validators'
 
 /**
  * Validates that the PHN matches the accepted format.
+ * This assumes the PHN is optional and an empty value won't
+ * case validation failure.
+ */
+export function validateOptionalPHN(phn) {
+  if (phn === undefined || phn === '') {
+    return true
+  }
+  return validatePHNFormat(phn)
+}
+
+/**
+ * Validates that the PHN matches the accepted format.
+ * This assumes the PHN also has a required validation.
  */
 export function validatePHN(phn) {
   if (!helpers.req(phn)) {
     return true
   }
+  return validatePHNFormat(phn)
+}
 
+function validatePHNFormat(phn) {
   const phnSigDigits = [2, 4, 8, 5, 10, 9, 7, 3]
   let checksum = 0
   let digit = 0
