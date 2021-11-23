@@ -21,7 +21,7 @@ public class SecurityUtil {
 		userInfo.setRole("HNAIADMINISTRATION");
 		userInfo.setUsername(jwt.getClaim(CLAIM_USERNAME));
 		
-		return new UserInfo();
+		return userInfo;
 	}
 
 }

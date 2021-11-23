@@ -68,15 +68,16 @@ public class EligibilityController {
 		try {
 			R15Converter converter = new R15Converter(mshDefaults);
 			R15 r15 = converter.convertRequest(checkEligibilityRequest);
-			Message message = eligibilityService.checkEligibility(r15);
+			Message r15Response = eligibilityService.checkEligibility(r15);
 			
-			CheckEligibilityResponse checkEligibilityResponse = converter.convertResponse(message);
+			CheckEligibilityResponse checkEligibilityResponse = converter.convertResponse(r15Response);
 			
 			ResponseEntity<CheckEligibilityResponse> response = ResponseEntity.ok(checkEligibilityResponse);
 
 			logger.info("checkEligibility response: {} ", checkEligibilityResponse);
 			return response;	
 		} catch (Exception e) {
+			// TODO (weskubo-cgi) Update this with more specific error handling once downstream services are integrated
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /check-eligibility request", e);
 		}
 		
