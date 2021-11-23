@@ -4,7 +4,12 @@
       <section class="container">
         <section class="identity">
           <img src="../../assets/images/logo.png" width="154" class="logo" alt="BC Government Logo" />
-          <div class="sitename">{{title}}</div>
+            <div class="site-container">
+              <div class="sitename">{{title}}</div>
+              <div aria-label="This application is currently in Beta phase" class="Beta-PhaseBanner">
+                  Beta
+              </div>
+            </div>
         </section>
         <section class="options user-select-off">
           <a id="logoutLink" class="sign-out" v-on:click="logout">Sign Out</a>
@@ -24,7 +29,7 @@ export default {
     },
     methods: {
     logout: function () {
-      if(confirm("Please confirm you want to sign out. " +
+      if (confirm("Please confirm you want to sign out. " +
           "\nThis will also end all other active Keycloak or SiteMinder sessions you have open.")) {
         this.$keycloak.logout({redirectUri: import.meta.env.VITE_SITEMINDER_LOGOUT});
       }
@@ -84,5 +89,20 @@ header .container .options .sign-out {
 }
 header .container .options .sign-out:focus {
     box-shadow: 0 0 3px #FFFFFF;
+}
+
+header .site-container {
+  display: inline-block;  
+  vertical-align: top;
+}
+
+.Beta-PhaseBanner {
+  color: #fcba19;
+  display: inline-block;
+  padding-left: 5px;
+  padding-top: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 16px;
 }
 </style>

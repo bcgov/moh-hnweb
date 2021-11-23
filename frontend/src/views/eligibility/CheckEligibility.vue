@@ -8,7 +8,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput v-model="eligibilityDate" id="eligibilityDate" label="Date to Check" :e-model="v$.eligibilityDate"/>
+          <AppDateInput :e-model="v$.eligibilityDate"  id="eligibilityDate" label="Date to Check" v-model="eligibilityDate"/>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -18,7 +18,7 @@
     </form>
   </div>
   <br />
-  <div v-if="searched">
+  <div v-if="searchOk">
     <h2>Transaction Successful</h2>
     <AppRow>
       <AppCol class="col3">PHN:</AppCol>
@@ -26,7 +26,7 @@
     </AppRow>
     <AppRow class="row">
       <AppCol class="col3">Beneficiary on Date checked?</AppCol>
-      <AppCol>{{ result.beneficiaryOnDateChecked ? 'Y' : 'N' }}</AppCol>
+      <AppCol>{{ result.beneficiaryOnDateChecked }}</AppCol>
     </AppRow>
     <AppRow class="row">
       <AppCol class="col3">Coverage End Date:</AppCol>
@@ -34,15 +34,12 @@
     </AppRow>
     <AppRow class="row">
       <AppCol class="col3">Reason:</AppCol>
-      <AppCol>{{ result.reason }}</AppCol>
+      <AppCol>{{ result.coverageEndReason }}</AppCol>
     </AppRow>
     <AppRow class="row">
       <AppCol class="col3">Exclusion Period Date:</AppCol>
       <AppCol>{{ result.exclusionPeriodEndDate }}</AppCol>
     </AppRow>
-    <br />
-    <p>Next Business Service:</p>
-    <AppButton @click="$router.push('PhnEnquiry')" mode="secondary" type="button">PHN Enquiry</AppButton>
   </div>
 </template>
 
@@ -52,20 +49,17 @@ import AppCol from '../../components/grid/AppCol.vue'
 import AppDateInput from '../../components/AppDateInput.vue'
 import AppInput from '../../components/AppInput.vue'
 import AppRow from '../../components/grid/AppRow.vue'
-
-import Datepicker from 'vue3-date-time-picker';
-import 'vue3-date-time-picker/dist/main.css'
-import { INPUT_DATE_FORMAT } from '../../util/constants'
-
 import EligibilityService from '../../services/EligibilityService'
 import useVuelidate from '@vuelidate/core'
 import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
+import { API_DATE_FORMAT, OUTPUT_DATE_FORMAT } from '../../util/constants'
+import dayjs from 'dayjs'
 
 export default {
   name: 'CheckEligibility',
   components: {
-    AppButton, AppCol, AppDateInput, AppInput, AppRow, Datepicker
+    AppButton, AppCol, AppDateInput, AppInput, AppRow
   },
   setup() {
     return {
@@ -75,16 +69,15 @@ export default {
     return {
       phn: '',
       eligibilityDate: new Date(),
-      otherDate: new Date(),
-      date: null,
       searching: false,
-      searched: false,
+      searchOk: false,
       result: {
         phn: '',
-        beneficiaryOnDateChecked: false,
+        beneficiaryOnDateChecked: '',
         coverageEndDate: '',
-        reason: '',
-        exclusionPeriodEndDate: ''
+        coverageEndReason: '',
+        exclusionPeriodEndDate: '',
+        errorMessage: '',
       }
     }
   },
@@ -94,25 +87,36 @@ export default {
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
-          this.$store.commit('alert/setErrorAlert');
+          this.$store.commit('alert/setErrorAlert')
+          this.result = null
           this.searching = false
           return
         }
-        this.result = (await EligibilityService.checkEligibility(this.phn, this.eligibilityDate)).data
-        this.searched = true
-        this.$store.commit('alert/setSuccessAlert', 'Search complete')
+        this.result = (await EligibilityService.checkEligibility({
+          phn: this.phn,
+          eligibilityDate: dayjs(this.eligibilityDate).format(API_DATE_FORMAT)
+        })).data
+        if (!this.result.errorMessage || this.result.errorMessage === '') {
+          this.searchOk = true
+          this.$store.commit('alert/setSuccessAlert', 'Search complete')
+        } else {
+          this.$store.commit('alert/setErrorAlert', this.result.errorMessage)
+          this.result = null
+          this.searchOk = false
+        }
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       } finally {
-        this.searching = false;
+        this.searching = false
       }
     },
     resetForm() {
       this.phn = ''
       this.eligibilityDate = new Date()
+      this.result = null
       this.v$.$reset()
-      this.$store.commit("alert/dismissAlert");
-      this.searched = false
+      this.$store.commit("alert/dismissAlert")
+      this.searchOk = false
       this.searching = false
     }
   },
@@ -125,7 +129,6 @@ export default {
         )
       },
       eligibilityDate: { required },
-      otherDate: {required}
     }
   }
 }
