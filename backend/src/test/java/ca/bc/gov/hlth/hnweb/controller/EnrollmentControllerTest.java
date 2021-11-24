@@ -121,7 +121,7 @@ public class EnrollmentControllerTest {
 	 private String convertXMLFileToString() throws IOException
 	 {
 		// our XML file for this example
-	        File xmlFile = new File("C:\\Dev\\git\\HNWEB\\moh-hnweb\\backend\\src\\main\\resources\\GetDemographicsResponse .xml");
+	        File xmlFile = new File("src\\test\\resources\\GetDemographicsResponse.xml");
 	        
 	        // Let's get XML file as String using BufferedReader
 	        // FileReader uses platform's default character encoding
