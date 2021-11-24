@@ -1,6 +1,10 @@
 package ca.bc.gov.hlth.hnweb.service;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +13,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import ca.bc.gov.hlth.hnweb.config.HL7Config;
+import ca.bc.gov.hlth.hnweb.model.GetDemographicsQuery;
+import ca.bc.gov.hlth.hnweb.model.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
+import ca.bc.gov.hlth.hnweb.serialization.HL7Serializer;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.parser.Parser;
+
 
 /**
  * Service for processing enrollment requests 
@@ -30,6 +39,10 @@ public class EnrollmentService {
     
 	@Autowired
 	private WebClient enrollmentWebClient;
+	
+	@Autowired
+	private WebClient hcimWebClient;
+	
 	
 	/**
 	 * Enrolls a subscriber by sending a HL7 V2 message to external enrollment service. It was the R50 message to create a V2 String and sends this
@@ -55,7 +68,48 @@ public class EnrollmentService {
 		
 		return parseR50v2ToAck(response.getBody());
 	}
+	
+	  /**
+	   * Retrieves GetDemographicsResponse object based on a unique identifier
+	   *
+	   * @param params GetDemographicsQuery - Query parameter
+	   * @param mmd MessageMetaData - Meta Data for message
+	   * @return GetDemographicsResponse
+	   * @throws HL7Exception
+	   */
+	  public GetDemographicsResponse getDemographics(GetDemographicsQuery reqObj, MessageMetaData mmd, String transactionId)
+	      throws HL7Exception, IOException {
+		  
+		logger.debug("Get Demographics details for phn [{}]; Transaction ID [{}]", reqObj.getMrn(), transactionId);
+		
+		HL7Serializer hl7 = new HL7Serializer(new HL7Config());
+		
+	    Object request = hl7.toXml(reqObj, mmd);
+	    String historyRequest = request.toString();
+	
+	    ResponseEntity<String> getDemoResponse = postDemographicRequest(historyRequest, transactionId);
+	    logger.info(getDemoResponse.toString());
+	    GetDemographicsResponse results = hl7.fromXml(getDemoResponse.getBody().toString(), GetDemographicsResponse.class);
 
+	     if (results.getResultCount() == 0) {
+	    	  logger.debug("Error performing get demographics");
+	      }
+	    return results;
+	 
+	  }
+	  
+	private ResponseEntity<String> postDemographicRequest(String data, String transactionId) {
+		   return hcimWebClient
+	                .post()
+	                .contentType(MediaType.TEXT_XML)
+	                .header(TRANSACTION_ID, transactionId)
+	                .bodyValue(data)
+	                .retrieve()
+	                .toEntity(String.class)
+	                .block();
+	    	
+	}
+	
 	private ResponseEntity<String> postEnrollmentRequest(String data, String transactionId) {
         return enrollmentWebClient
                 .post()
@@ -66,6 +120,7 @@ public class EnrollmentService {
                 .toEntity(String.class)
                 .block();
     }	
+	 
 	
     private String encodeR50ToV2(R50 r50) throws HL7Exception {
     	

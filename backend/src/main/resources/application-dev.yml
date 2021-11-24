@@ -1,0 +1,27 @@
+keycloak:
+  base-oauth-url: https://common-logon-dev.hlth.gov.bc.ca/auth/realms/moh_applications
+  
+config:
+  # CORS header, should be HNWeb:
+  allowed-origins: http://localhost:3000
+
+server:
+  port: 9090
+
+# Configuration for Enroll Subscriber (R50) endpoint
+R50:
+  url: https://t1hni-connect.maximusbc.ca/Enrolment/HNI/Registration/VisaResident
+  user: 
+    name: EnrolmentRegHNIUser
+    password: Vic88#RegHNIUser
+  cert:
+    file: keystore\HNI-ENR-TST.pfx
+    password: HNItst11
+    
+    
+# Configuration for GetDemographics (R03) endpoint
+R03:
+  url: https://hd4.hcim.ehealth.gov.bc.ca/HCIM.HIALServices.Secured/QUPA_AR101102.asmx 
+  cert:
+    file: keystore\MOH_CRS_HD1.pfx
+    password: HCIM
