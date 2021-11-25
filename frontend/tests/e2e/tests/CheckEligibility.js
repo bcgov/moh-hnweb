@@ -1,21 +1,14 @@
 import AlertPage from '../pages/AlertPage';
 import CheckEligibilityPage from '../pages/eligibility/CheckEligibilityPage';
-import {Role} from 'testcafe';
+import { regularAccUser } from '../roles/roles';
+import { SITE_UNDER_TEST } from '../configuration';
 
 const ERROR_MESSAGE = 'Please correct errors before submitting';
 const SUCCESS_MESSAGE = 'Search complete';
 const PHN_ERROR_MESSAGE = 'PHN is required'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid';
-const SITE_UNDER_TEST = 'http://localhost:3000/eligibility/checkEligibility'
 
-//TODO: import from roles/role.js
-const regularAccUser = Role(SITE_UNDER_TEST, async t => {
-    await t
-        .click('#zocial-moh_idp')
-        .typeText('#username', 'hnweb1')
-        .typeText('#password', process.env.TESTCAFE_PASSWORD)
-        .click("#kc-login");
-});
+const PAGE_TO_TEST = SITE_UNDER_TEST + '/eligibility/checkEligibility'
 
 fixture(`CheckEligibility Page`)
 .disablePageCaching `Test CheckEligibility`
@@ -23,25 +16,21 @@ fixture(`CheckEligibility Page`)
         await t
             .useRole(regularAccUser)
     })
-  .page('http://localhost:3000/eligibility/checkEligibility');
+    .page(PAGE_TO_TEST);
 
 test('Error when no phn and date', async t => {
     await t
         .click(CheckEligibilityPage.submitButton)
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
-
-        console.log("Error when no phn and date");
 });
 
 test('Error when no date selected', async t => {
     await t 
-        .typeText(CheckEligibilityPage.phnInput, '9876543211')
+        .typeText(CheckEligibilityPage.phnInput, '9000448000')
         .click(CheckEligibilityPage.eligibilityDate)
         .pressKey('tab')
         .click(CheckEligibilityPage.submitButton)
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
-
-        console.log("Error when no date selected");
 });
 
 test('Error when no phn', async t => {
@@ -51,19 +40,14 @@ test('Error when no phn', async t => {
         .click(CheckEligibilityPage.submitButton)
         .expect(CheckEligibilityPage.ErrorText.textContent).contains(PHN_ERROR_MESSAGE)
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
-
-        console.log("Error when no phn");
 });
 
 test('Check invalid phn format error message', async t => {
     await t
-        .typeText(CheckEligibilityPage.phnInput, '9876543211') 
+        .typeText(CheckEligibilityPage.phnInput, '9000448000')
 		.click(CheckEligibilityPage.submitButton)
         .expect(CheckEligibilityPage.ErrorText.nth(0).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
-
-		console.log("Error for invalid phn format error message")
-      
 });
 
 test('Check validation passed info', async t => {
@@ -74,24 +58,18 @@ test('Check validation passed info', async t => {
         .expect(CheckEligibilityPage.eligibilityDate.value).notEql('')
 		.click(CheckEligibilityPage.submitButton)
         .expect(AlertPage.alertBannerText.textContent).contains(SUCCESS_MESSAGE)
-
-		console.log("Check validation passed info")
 });
 
-test('Check submitbutton is clickable', async t => {
+test('Check submit button is clickable', async t => {
 	await t
-        .typeText(CheckEligibilityPage.phnInput, '9306448169')  
+        .typeText(CheckEligibilityPage.phnInput, '9000448000')
 		.click(CheckEligibilityPage.submitButton)
-
-		console.log("testcafe clicked submit button")
 });
 
-test('Check cancelButton is clickable', async t => {
+test('Check cancel button is clickable', async t => {
 	await t
-        .typeText(CheckEligibilityPage.phnInput, '9306448169')  
+        .typeText(CheckEligibilityPage.phnInput, '9000448000')
 		.click(CheckEligibilityPage.cancelButton)
-        .expect(CheckEligibilityPage.phnInput.value).eql('')	
-
-		console.log("testcafe clicked cancel button")
+        .expect(CheckEligibilityPage.phnInput.value).eql('')
 });
 
