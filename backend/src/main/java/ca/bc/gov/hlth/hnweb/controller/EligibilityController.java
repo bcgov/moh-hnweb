@@ -103,6 +103,9 @@ public class EligibilityController {
 			RPBSPPE0 r41Response = eligibilityService.inquirePhn(r41Request);
 			
 			InquirePhnResponse inquirePhnResponse = converter.convertResponse(r41Response);
+			// TOOD (weskubo-cgi) The error message is removed for now so the UI can still show the canned results
+			// as all requests are returning an error
+			inquirePhnResponse.setErrorMessage(null);
 			inquirePhnResponse.setMatches(generateDummyR41Data());			
 			
 			ResponseEntity<InquirePhnResponse> response = ResponseEntity.ok(inquirePhnResponse);

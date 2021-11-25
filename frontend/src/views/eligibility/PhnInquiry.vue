@@ -55,8 +55,7 @@
       <thead>
       <tr>
         <th>PHN</th>
-        <th>Last Name</th>
-        <th>First Name</th>
+        <th>Name</th>
         <th>Date of Birth</th>
         <th>Gender</th>
         <th>Eligible</th>
@@ -64,14 +63,8 @@
       </tr>
       </thead>
       <tbody>
-        <tr v-for="person in result.matches">
-          <td>{{ person.phn }}</td>
-          <td>{{ person.lastName }}</td>
-          <td>{{ person.firstName }}</td>
-          <td>{{ person.dateOfBirth }}</td>
-          <td>{{ person.gender }}</td>
-          <td>{{ person.eligible }}</td>
-          <td>{{ person.student }}</td>
+        <tr v-for="match in result.matches">
+          <PhnInquiryMatch :match="match" />
         </tr>
       </tbody>
     </AppSimpleTable>
@@ -86,6 +79,7 @@ import AppInput from '../../components/AppInput.vue'
 import AppRow from '../../components/grid/AppRow.vue'
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
 import EligibilityService from '../../services/EligibilityService'
+import PhnInquiryMatch from '../../components/eligibility/PhnInquiryMatch.vue'
 import useVuelidate from '@vuelidate/core'
 import { validateOptionalPHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
 import { helpers } from '@vuelidate/validators'
@@ -93,7 +87,7 @@ import { helpers } from '@vuelidate/validators'
 export default {
   name: 'PhnInquiry',
   components: {
-    AppButton, AppCol, AppInput, AppRow, AppSimpleTable
+    AppButton, AppCol, AppInput, AppRow, AppSimpleTable, PhnInquiryMatch
   },
   setup() {
     return {
