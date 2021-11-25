@@ -68,15 +68,10 @@ export default {
             this.searching = false
             return
           }
-          this.result = (await EnrollmentService.getPersonDemographics({
-            phn: this.phn
-          }))
-          console.log('Result returned')
-          console.log(`Result: [PHN: ${this.result.phn}] [Name: ${this.result.name}] [DOB: ${this.result.dateOfBirth}]`)
-          this.searchOk = true
+          this.$emit('update-resident', this.result)
           this.$store.commit('alert/setSuccessAlert', 'Search complete')
-          this.$emit('update-resident', this.result, true)
         } catch (err) {
+          console.log(`Error ${err}`)
           this.$store.commit('alert/setErrorAlert', `${err}`)
         } finally {
           this.searching = false
@@ -86,7 +81,6 @@ export default {
         this.phn = '9890608412'
         this.v$.$reset()
         this.$store.commit("alert/dismissAlert");
-        this.searchOk = false
         this.searching = false
       },
     },

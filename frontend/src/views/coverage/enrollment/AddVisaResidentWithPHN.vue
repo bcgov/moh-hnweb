@@ -3,7 +3,7 @@
     <ResidentPHN @update-resident="updateResident" />
   </div>
   <div v-else-if="searchOk">
-    <ResidentDetails :resident="this.resident" />
+    <ResidentDetails :resident="this.result" />
   </div>
 </template>
 
@@ -44,7 +44,7 @@ export default {
   data() {
     return {
       searchOk: false,
-      resident: {
+      result: {
         phn: "",
         name: "",
         dateOfBirth: "",
@@ -52,13 +52,16 @@ export default {
     };
   },
   methods: {
-    updateResident(result, searchOk) {
+    async updateResident(phn) {
       console.log("Resident")
-      console.log(
-        `Resident: [PHN: ${result.phn}] [Name: ${result.name}] [DOB: ${result.dateOfBirth}]`
+      console.log(`Resident: [PHN: ${phn}]`
       )
-      this.resident = result
-      this.searchOk = searchOk
+      this.result = (await EnrollmentService.getPersonDemographics({
+        phn: this.phn
+      }))
+      console.log('Result returned')
+      console.log(`Result: [PHN: ${this.result.phn}] [Name: ${this.result.name}] [DOB: ${this.result.dateOfBirth}]`)
+      this.searchOk = true
     },
   },
 };
