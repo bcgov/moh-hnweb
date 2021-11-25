@@ -90,9 +90,8 @@ import useVuelidate from '@vuelidate/core'
 import { validateOptionalPHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
 import { helpers } from '@vuelidate/validators'
 
-
 export default {
-  name: 'PhnEnquiry',
+  name: 'PhnInquiry',
   components: {
     AppButton, AppCol, AppInput, AppRow, AppSimpleTable
   },
@@ -135,13 +134,14 @@ export default {
           this.showError('At least one PHN is required')
           return
         }
-        this.result = (await EligibilityService.enquirePhn({phns: this.populatedPHNs})).data
+        console.log(populatedPHNs)
+        this.result = (await EligibilityService.inquirePhn({phns: populatedPHNs})).data
 
         if (!this.result.errorMessage || this.result.errorMessage === '') {
           this.searchOk = true
           this.$store.commit('alert/setSuccessAlert', 'Search complete')
         } else {
-          this.$store.commit('alert/setErrorAlert', this.result.errorMessage)
+          this.$store.commit('alert/setWarningAlert', this.result.errorMessage)
           this.result = null
           this.searchOk = false
         }

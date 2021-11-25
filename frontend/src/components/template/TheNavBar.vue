@@ -10,7 +10,7 @@
             <router-link @click="resetAlert" :to="{ name: 'Eligibility'}">Eligibility & PHN</router-link>
             <div class="dropdown-content">
               <router-link @click="resetAlert" :class="menuClass($route, 'CheckEligibility')" :to="{ name: 'CheckEligibility'}">Check Eligibility</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'PhnEnquiry')" :to="{ name: 'PhnEnquiry'}">PHN Enquiry</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'PhnInquiry')" :to="{ name: 'PhnInquiry'}">PHN Inquiry</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'PhnLookup')" :to="{ name: 'PhnLookup'}">PHN Lookup</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'CoverageStatusCheck')" :to="{ name: 'CoverageStatusCheck'}">MSP Coverage Status Check</router-link>
             </div>

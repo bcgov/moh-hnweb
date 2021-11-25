@@ -1,6 +1,6 @@
 <template>
   <form>
-    <p>PHN Lookip</p>
+    <p>PHN Lookup</p>
   </form>
 </template>
 

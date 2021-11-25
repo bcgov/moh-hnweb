@@ -10,7 +10,7 @@ export default {
     return apiRequest().then(axiosInstance => axiosInstance.post(resources.eligibility.checkMspCoverageStatus, request))
   },
 
-  enquirePhn(request) {
+  inquirePhn(request) {
     return apiRequest().then(axiosInstance => axiosInstance.post(resources.eligibility.inquirePhn, request))
   }
 
