@@ -40,6 +40,9 @@ public class WebClientConfig {
 
 	@Value("${R50.url}")
 	private String r50Url;
+	
+	@Value("${R03.url}")
+	private String r03Url;
 	 
 	@Value("${R50.user.name}")
 	private String userName;
@@ -49,14 +52,20 @@ public class WebClientConfig {
 
 	@Value("classpath:${R50.cert.file}")
 	private Resource certFile;
+	
+	@Value("classpath:${R03.cert.file}")
+	private Resource r03CertFile;
 
 	@Value("${R50.cert.password}")
 	private String certPassword;
-
+	
+	@Value("${R03.cert.password}")
+	private String r03CertPassword;
+	
 	@Bean("enrollmentWebClient")
     public WebClient enrollmentWebClient() throws HNWebException {
 
-		SslContext sslContext = getSSLContext();
+		SslContext sslContext = getSSLContext(certFile, certPassword);
 		
 	    HttpClient httpClient= HttpClient.create().secure(t -> t.sslContext(sslContext));
 		ClientHttpConnector connector= new ReactorClientHttpConnector(httpClient);
@@ -70,8 +79,26 @@ public class WebClientConfig {
                 .defaultHeaders(header -> header.setBasicAuth(userName, userPassword))
                 .build();
     }
+	
+	
+	@Bean("hcimWebClient")
+	   public WebClient hcimWebClient() throws HNWebException {
 
-	private SslContext getSSLContext() throws HNWebException {
+			SslContext sslContext = getSSLContext(r03CertFile, r03CertPassword);
+			
+		    HttpClient httpClient= HttpClient.create().secure(t -> t.sslContext(sslContext));
+			ClientHttpConnector connector= new ReactorClientHttpConnector(httpClient);
+		    
+			return WebClient.builder()
+		    		.clientConnector(connector)
+		    		.baseUrl(r03Url)
+	                .filter(logRequest())
+	                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_XML_VALUE) 
+	                .defaultHeader(HttpHeaders.ACCEPT, MediaType.ALL_VALUE) 	             
+	                .build();
+	    }
+
+	private SslContext getSSLContext(Resource certFile, String certPassword) throws HNWebException {
 
 		try {
 			KeyStore keyStore = KeyStore.getInstance(KEY_STORE_TYPE_PKCS12);

@@ -3,7 +3,11 @@ package ca.bc.gov.hlth.hnweb.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,6 +21,8 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
+import ca.bc.gov.hlth.hnweb.model.GetDemographicsQuery;
+import ca.bc.gov.hlth.hnweb.model.GetDemographicsResponse;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -31,6 +37,8 @@ public class EnrollmentControllerTest {
 	private static final String ACK = "MSH|^~\\&|RAIPRSN-NM-SRCH|BC00002041|HNWeb|moh_hnclient_dev|20211013124847.746-0700||ACK|71902|D|2.4\r\n" + 
 			"MSA|AE|20191108082211|NHR529E^SEVERE SYSTEM ERROR\r\n" + 
 			"ERR|^^^NHR529E";
+	
+
 
 	public static MockWebServer mockBackEnd;
 
@@ -69,6 +77,27 @@ public class EnrollmentControllerTest {
         assertEquals("/", recordedRequest.getPath());
     }
     
+    
+    @Test
+    void testGetDemographics_Error() throws Exception {    	
+        
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(convertXMLFileToString())
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+
+        GetDemographicsQuery getDemoQuery = new GetDemographicsQuery();
+        getDemoQuery.setMrn("9862716574");
+        
+        GetDemographicsResponse response = enrollmentController.getDemographicDetails(getDemoQuery);
+    	assertEquals("9862716574", response.getPerson().getPhn());	
+		
+		//Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_XML_VALUE.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());
+    }
+    
     /**
      * The URL property used by the mocked endpoint needs to be set after the MockWebServer starts as the port it uses is 
      * created dynamically on start up to ensure it uses an available port so it is not known before then. 
@@ -76,6 +105,7 @@ public class EnrollmentControllerTest {
      */
     @DynamicPropertySource
     static void registerMockUrlProperty(DynamicPropertyRegistry registry) {
+        registry.add("R03.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
         registry.add("R50.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
     }
     
@@ -86,4 +116,35 @@ public class EnrollmentControllerTest {
 		enrollSubscriberRequest.setGender("M");
 		return enrollSubscriberRequest;
 	}
+    
+	 
+	 private String convertXMLFileToString() throws IOException
+	 {
+		// our XML file for this example
+	        File xmlFile = new File("src\\test\\resources\\GetDemographicsResponse.xml");
+	        
+	        // Let's get XML file as String using BufferedReader
+	        // FileReader uses platform's default character encoding
+	        // if you need to specify a different encoding, 
+	        // use InputStreamReader
+	        Reader fileReader;
+			
+				fileReader = new FileReader(xmlFile);
+			
+	        BufferedReader bufReader = new BufferedReader(fileReader);
+	        
+	        StringBuilder sb = new StringBuilder();
+	        String line = bufReader.readLine();
+	        while( line != null){
+	            sb.append(line).append("\n");
+	            line = bufReader.readLine();
+	        }
+	        String xml2String = sb.toString();
+	        System.out.println("XML to String using BufferedReader : ");
+	        System.out.println(xml2String);
+	        
+	        bufReader.close();
+	        
+	        return xml2String;
+	 }
 }
