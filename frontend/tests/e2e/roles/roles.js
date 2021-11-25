@@ -1,11 +1,10 @@
 import { Role } from 'testcafe';
+import { SITE_UNDER_TEST } from '../configuration.js';
 
-const SITE_UNDER_TEST = 'http://localhost:3000';
-
-const regularAccUser = Role(SITE_UNDER_TEST, async t => {
+export const regularAccUser = Role(SITE_UNDER_TEST, async t => {
     await t
         .click('#zocial-moh_idp')
         .typeText('#username', 'hnweb1')
-        .typeText('#password', process.env.TESTCAFE_PASSWORD)
+        .typeText('#password', process.env.HNWEB1_TESTCAFE_PASSWORD)
         .click("#kc-login");
 });

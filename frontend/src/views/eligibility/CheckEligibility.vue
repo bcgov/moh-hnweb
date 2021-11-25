@@ -21,24 +21,29 @@
   <div v-if="searchOk">
     <h2>Transaction Successful</h2>
     <AppRow>
-      <AppCol class="col3">PHN:</AppCol>
-      <AppCol>{{ result.phn }}</AppCol>
+      <AppCol class="col3">
+        <AppOutput label="PHN" :value="result.phn"/>      
+      </AppCol>
     </AppRow>
-    <AppRow class="row">
-      <AppCol class="col3">Beneficiary on Date checked?</AppCol>
-      <AppCol>{{ result.beneficiaryOnDateChecked }}</AppCol>
+    <AppRow>
+      <AppCol class="col3">
+        <AppOutput label="Beneficiary on Date checked?" :value="result.beneficiaryOnDateChecked"/>      
+      </AppCol>
     </AppRow>
-    <AppRow class="row">
-      <AppCol class="col3">Coverage End Date:</AppCol>
-      <AppCol>{{ result.coverageEndDate }}</AppCol>
+    <AppRow>
+      <AppCol class="col3">
+        <AppOutput label="Coverage End Date" :value="result.coverageEndDate"/>      
+      </AppCol>
     </AppRow>
-    <AppRow class="row">
-      <AppCol class="col3">Reason:</AppCol>
-      <AppCol>{{ result.coverageEndReason }}</AppCol>
+    <AppRow>
+      <AppCol class="col3">
+        <AppOutput label="Coverage End Reason" :value="result.coverageEndReason"/>      
+      </AppCol>
     </AppRow>
-    <AppRow class="row">
-      <AppCol class="col3">Exclusion Period Date:</AppCol>
-      <AppCol>{{ result.exclusionPeriodEndDate }}</AppCol>
+    <AppRow>
+      <AppCol class="col3">
+        <AppOutput label="Exclusion Period Date" :value="result.exclusionPeriodEndDate"/>      
+      </AppCol>
     </AppRow>
   </div>
 </template>
@@ -48,6 +53,7 @@ import AppButton from '../../components/AppButton.vue'
 import AppCol from '../../components/grid/AppCol.vue'
 import AppDateInput from '../../components/AppDateInput.vue'
 import AppInput from '../../components/AppInput.vue'
+import AppOutput from '../../components/AppOutput.vue'
 import AppRow from '../../components/grid/AppRow.vue'
 import EligibilityService from '../../services/EligibilityService'
 import useVuelidate from '@vuelidate/core'
@@ -59,7 +65,7 @@ import dayjs from 'dayjs'
 export default {
   name: 'CheckEligibility',
   components: {
-    AppButton, AppCol, AppDateInput, AppInput, AppRow
+    AppButton, AppCol, AppDateInput, AppInput, AppOutput, AppRow
   },
   setup() {
     return {
