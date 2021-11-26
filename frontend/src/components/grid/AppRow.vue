@@ -18,4 +18,8 @@
     width: 100%;
   }
   
+.row1 {
+  justify-content: center;
+}
+
 </style>
