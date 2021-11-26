@@ -51,11 +51,6 @@ export default {
       return {
         phn: '9890608412',
         searching: false,
-        result: {
-          phn: '',
-          name: '',
-          dateOfBirth: '',
-        },
       }
     },
     methods: {
@@ -68,7 +63,7 @@ export default {
             this.searching = false
             return
           }
-          this.$emit('update-resident', this.result)
+          this.$emit('update-resident', this.phn)
           this.$store.commit('alert/setSuccessAlert', 'Search complete')
         } catch (err) {
           console.log(`Error ${err}`)

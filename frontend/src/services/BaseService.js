@@ -10,7 +10,8 @@ export const resources = {
     },
     enrollment: {
       enrollment: '/enrollment',
-      addVisaResidentWithPHN: '/enrollment/add-visa-resident-with-phn',
+      personDetails: 'enrollment/person-details',
+      addVisaResidentWithPHN: '/enrollment/enroll-subscriber',
     },
   }
 

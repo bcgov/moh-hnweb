@@ -61,7 +61,7 @@
 
       <AppRow>
         <AppCol class="col7">
-          <AppInput :e-model="v$.homeAddressLine1" id ="homeAddressLine1" label="Home Address" v-model="homeAddressLine1" />          
+          <AppInput :e-model="v$.homeAddress" id ="homeAddress" label="Home Address" v-model="homeAddress" />          
         </AppCol>
       </AppRow>
       <AppRow>
@@ -74,7 +74,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col4">
-          <AppInput :e-model="v$.country" id="country" label="Country" type="text" v-model.trim="country" />
+          <AppInput :e-model="v$.country" id="country" label="Country - Optional" type="text" v-model.trim="country" />
         </AppCol>
         <AppCol class="col4">
           <AppInput :e-model="v$.postalCode" id="postalCode" label="Postal Code" type="text" v-model.trim="postalCode" />
@@ -83,32 +83,32 @@
 
       <AppRow>
         <AppCol class="col7">
-          <AppInput :e-model="v$.mailHomeAddressLine1" id ="mailHomeAddressLine1" label="Mailing Address (if different from home address)" v-model="mailHomeAddressLine1" />          
+          <AppInput :e-model="v$.mailingAddress" id ="mailingAddress" label="Mailing Address (if different from home address)" v-model="mailingAddress" />          
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col4">
-          <AppInput :e-model="v$.mailCity" id="mailCity" label="City" type="text" v-model.trim="mailCity" />
+          <AppInput :e-model="v$.mailingAddressCity" id="mailingAddressCity" label="City" type="text" v-model.trim="mailingAddressCity" />
         </AppCol>
         <AppCol class="col4">
-          <AppInput :e-model="v$.mailProvince" id="mailProvince" label="Province" type="text" v-model.trim="mailProvince" />
+          <AppInput :e-model="v$.mailingAddressProvince" id="mailingAddressProvince" label="Province" type="text" v-model.trim="mailingAddressProvince" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col4">
-          <AppInput :e-model="v$.mailCountry" id="mailCountry" label="Country" type="text" v-model.trim="mailCountry" />
+          <AppInput :e-model="v$.mailingAddressCountry" id="mailingAddressCountry" label="Country - Optional" type="text" v-model.trim="mailingAddressCountry" />
         </AppCol>
         <AppCol class="col4">
-          <AppInput :e-model="v$.mailPostalCode" id="mailPostalCode" label="Postal Code" type="text" v-model.trim="mailPostalCode" />
+          <AppInput :e-model="v$.mailingAddressPostalCode" id="mailingAddressPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddressPostalCode" />
         </AppCol>
       </AppRow>
 
-      <AppRow class="row1">
+      <AppRow>
         <AppCol class="col4">
           <AppInput :e-model="v$.priorResidenceCode" id="priorResidenceCode" label="Prior Residence Code - Optional" type="text" v-model.trim="priorResidenceCode" />
         </AppCol>
       </AppRow>
-      <AppRow class="row1">
+      <AppRow>
         <AppCol class="col4">
           <AppInput :e-model="v$.otherProvinceHealthcareNumber" id="otherProvinceHealthcareNumber" label="Other Province Healthcare Number (If Applicable) - Optional" type="text" v-model.trim="otherProvinceHealthcareNumber" />
         </AppCol>
@@ -116,7 +116,7 @@
 
       <AppRow>
         <AppButton :disabled="searching" mode="primary" type="submit">Submit</AppButton>
-        <AppButton @click="resetFormVisaResident" mode="secondary" type="button">Clear</AppButton>
+        <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
       </AppRow>
     </form>
   </div>
@@ -138,6 +138,8 @@ import EnrollmentService from '../../../services/EnrollmentService'
 import useVuelidate from '@vuelidate/core'
 import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
+import dayjs from 'dayjs'
+import { API_DATE_FORMAT } from '../../../util/constants'
 
 export default {
     name: 'ResidentDetails',
@@ -176,16 +178,16 @@ export default {
           coverageEffectiveDate: null,
           telephone: '',
           coverageCancellationDate: null,
-          homeAddressLine1: '',
+          homeAddress: '',
           city: '',
           province: '',
           country: '',
           postalCode: '',
-          mailHomeAddressLine1: '',
-          mailCity: '',
-          mailProvince: '',
-          mailCountry: '',
-          mailPostalCode: '',
+          mailingAddress: '',
+          mailingAddressCity: '',
+          mailingAddressProvince: '',
+          mailingAddressCountry: '',
+          mailingAddressPostalCode: '',
           priorResidenceCode: '',
           otherProvinceHealthcareNumber: '',
           // Immigration Code drop down options
@@ -196,35 +198,6 @@ export default {
         }
     },
     methods: {
-      async submitForm() {
-        this.searching = true
-        try {
-          const isValid = await this.v$.$validate()
-          if (!isValid) {
-            this.$store.commit('alert/setErrorAlert');
-            this.searching = false
-            return
-          }
-          this.result = (await EnrollmentService.getPersonDemographics({
-            phn: this.phn
-          }))
-          console.log('Result returned')
-          console.log(`Result: [PHN: ${this.result.phn}] [Name: ${this.result.name}] [DOB: ${this.result.dateOfBirth}]`)
-          this.searchOk = true
-          this.$store.commit('alert/setSuccessAlert', 'Search complete')
-        } catch (err) {
-          this.$store.commit('alert/setErrorAlert', `${err}`)
-        } finally {
-          this.searching = false
-        }
-      },
-      resetForm() {
-        this.phn = '9890608412'
-        this.v$.$reset()
-        this.$store.commit("alert/dismissAlert");
-        this.searchOk = false
-        this.searching = false
-      },
       async registerVisaResident() {
         console.log('registerVisaResident')
         this.searching = true
@@ -235,27 +208,70 @@ export default {
             this.searching = false
             return
           }
-          console.log('Send to service')
-          // this.result = (await EnrollmentService.getPersonDemographics({
-          //   phn: this.phn
-          // }))
-          console.log('Result returned')
-          console.log(`Result: [PHN: ${this.result.phn}] [Name: ${this.result.name}] [DOB: ${this.result.dateOfBirth}]`)
-          this.searchOk = true
-          this.$store.commit('alert/setSuccessAlert', 'Search complete')
+          console.log('Emitting')
+          this.$emit('register-resident', {
+            phn: this.resident.phn,
+            groupNumber: this.groupNumber,
+            immigrationCode: this.immigrationCode,
+            groupMemberNumber: this.groupMemberNumber,
+            visaIssueDate: dayjs(this.visaIssueDate).format(API_DATE_FORMAT),
+            departmentNumber: this.departmentNumber,
+            visaExpiryDate: dayjs(this.visaExpiryDate).format(API_DATE_FORMAT),
+            residenceDate: dayjs(this.residenceDate).format(API_DATE_FORMAT),
+            coverageEffectiveDate: dayjs(this.coverageEffectiveDate).format(API_DATE_FORMAT),
+            telephone: this.telephone,
+            coverageCancellationDate: dayjs(this.coverageCancellationDate).format(API_DATE_FORMAT),
+            homeAddress: this.homeAddress,
+            city: this.city,
+            province: this.province,
+            country: this.country,
+            postalCode: this.postalCode,
+            mailingAddress: this.mailingAddress,
+            mailingAddressCity: this.mailingAddressCity,
+            mailingAddressProvince: this.mailingAddressProvince,
+            mailingAddressCountry: this.mailingAddressCountry,
+            mailingAddressPostalCode: this.mailingAddressPostalCode,
+            priorResidenceCode: this.priorResidenceCode,
+            otherProvinceHealthcareNumber: this.otherProvinceHealthcareNumber,
+          })
+          this.$store.commit('alert/setSuccessAlert', 'Transaction Successful')
         } catch (err) {
           this.$store.commit('alert/setErrorAlert', `${err}`)
         } finally {
           this.searching = false
         }
       },
-      resetFormVisaResident() {
-        this.groupNumber = ''
+      resetForm() {
+        this.groupNumber = '',
+        this.immigrationCode = '',
+        this.groupMemberNumber = '',
+        this.visaIssueDate = null,
+        this.departmentNumber = '',
+        this.visaExpiryDate = null,
+        this.residenceDate = null,
+        this.coverageEffectiveDate = null,
+        this.telephone = '',
+        this.coverageCancellationDate = null,
+        this.homeAddress = '',
+        this.city = '',
+        this.province = '',
+        this.country = '',
+        this.postalCode = '',
+        this.mailingAddress = '',
+        this.mailingAddressCity = '',
+        this.mailingAddressProvince = '',
+        this.mailingAddressCountry = '',
+        this.mailingAddressPostalCode = '',
+        this.priorResidenceCode = '',
+        this.otherProvinceHealthcareNumber = '',
         this.v$.$reset()
         this.$store.commit("alert/dismissAlert");
-        // this.searchOk = false
-        // this.searching = false
-      }
+        this.searching = false
+        this.registrationOk = false
+        this.v$.$reset()
+        this.$store.commit("alert/dismissAlert");
+        this.searching = false
+      },
     },
     validations() {
       return {
@@ -271,16 +287,16 @@ export default {
         coverageEffectiveDate: {required},
         telephone: {},
         coverageCancellationDate: {required},
-        homeAddressLine1: {required},
+        homeAddress: {required},
         city: {required},
         province: {required},
         country: {required},
         postalCode: {required},
-        mailHomeAddressLine1: {},
-        mailCity: {},
-        mailProvince: {},
-        mailCountry: {},
-        mailPostalCode: {},
+        mailingAddress: {},
+        mailingAddressCity: {},
+        mailingAddressProvince: {},
+        mailingAddressCountry: {},
+        mailingAddressPostalCode: {},
         priorResidenceCode: {},
         otherProvinceHealthcareNumber: {},
       }

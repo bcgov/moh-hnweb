@@ -1,9 +1,16 @@
 <template>
-  <div v-if="searchOk != true">
+  <div v-if="searchOk != true && registrationOk != true">
     <ResidentPHN @update-resident="updateResident" />
   </div>
   <div v-else-if="searchOk">
-    <ResidentDetails :resident="this.result" />
+    <ResidentDetails :resident="this.result" @register-resident="registerResident" />
+  </div>
+  <div v-else-if="registrationOk">
+    <AppRow>
+      <AppCol class="col3">
+        <AppOutput label="PHN" :value="registrationResult.phn"/>
+      </AppCol>
+    </AppRow>
   </div>
 </template>
 
@@ -44,25 +51,43 @@ export default {
   data() {
     return {
       searchOk: false,
+      registrationOk: false,
       result: {
-        phn: "",
-        name: "",
-        dateOfBirth: "",
+        phn: '',
+        name: '',
+        dateOfBirth: '',
       },
+      registrationResult: {
+        phn: '',
+        name: '',
+        errorMessage: null,
+      }
     };
   },
   methods: {
     async updateResident(phn) {
-      console.log("Resident")
+      console.log("updateResident")
       console.log(`Resident: [PHN: ${phn}]`
       )
       this.result = (await EnrollmentService.getPersonDemographics({
-        phn: this.phn
+        phn: phn
       }))
       console.log('Result returned')
       console.log(`Result: [PHN: ${this.result.phn}] [Name: ${this.result.name}] [DOB: ${this.result.dateOfBirth}]`)
       this.searchOk = true
     },
+    async registerResident(personDetails) {
+      console.log("registerResident")
+      console.log(`personDetails: [PHN: ${personDetails.phn}] [Group Number: ${personDetails.groupNumber}]`
+      )
+      this.registrationResult = (await EnrollmentService.registerResident({
+        ...personDetails
+      }))
+      console.log('Registration Result returned')
+      console.log(`Registration Result: [PHN: ${this.registrationResult.phn}] [Name: ${this.registrationResult.name}] [DOB: ${this.registrationResult.errorMessage}]`)
+      this.searchOk = false
+      this.registrationOk = true
+    }
   },
 };
 </script>
