@@ -16,6 +16,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import ca.bc.gov.hlth.hnweb.config.HL7Config;
 import ca.bc.gov.hlth.hnweb.model.GetDemographicsQuery;
 import ca.bc.gov.hlth.hnweb.model.GetDemographicsResponse;
+import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsQuery;
+import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
 import ca.bc.gov.hlth.hnweb.serialization.HL7Serializer;
 import ca.uhn.hl7v2.HL7Exception;
@@ -31,6 +33,9 @@ import ca.uhn.hl7v2.parser.Parser;
 public class EnrollmentService {
 
 	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(EnrollmentService.class);
+	private static final String dataEntererExt = "";
+	private static final String sourceSystemOverride = "HOOPC";
+	private static final String organization = "BCHCIM";
 
 	public static final String TRANSACTION_ID = "TransactionID";
 
@@ -77,36 +82,45 @@ public class EnrollmentService {
 	   * @return GetDemographicsResponse
 	   * @throws HL7Exception
 	   */
-	  public GetDemographicsResponse getDemographics(GetDemographicsQuery reqObj, MessageMetaData mmd, String transactionId)
+	  public GetPersonDetailsResponse getDemographics(String phn, String transactionId)
 	      throws HL7Exception, IOException {
 		  
-		logger.debug("Get Demographics details for phn [{}]; Transaction ID [{}]", reqObj.getMrn(), transactionId);
+		logger.debug("Get Demographics details for PHN [{}]; Transaction ID [{}]", phn, transactionId);
 		
 		HL7Serializer hl7 = new HL7Serializer(new HL7Config());
+		MessageMetaData mmd = new MessageMetaData(dataEntererExt, sourceSystemOverride, organization);
+		GetDemographicsQuery queryObj = buildDemographicsRequest(phn);
 		
-	    Object request = hl7.toXml(reqObj, mmd);
-	    String historyRequest = request.toString();
+	    Object formattedRequest = hl7.toXml(queryObj, mmd);
+	    String historyRequest = formattedRequest.toString();
 	
-	    ResponseEntity<String> getDemoResponse = postDemographicRequest(historyRequest, transactionId);
-	    logger.info(getDemoResponse.toString());
-	    GetDemographicsResponse results = hl7.fromXml(getDemoResponse.getBody().toString(), GetDemographicsResponse.class);
+	    //ResponseEntity<String> getDemoResponse = postDemographicRequest(historyRequest, transactionId); 
+	    String getDemoResponse = getDemoGraphicsResponse();
+	    
+	    //GetDemographicsResponse demographicsResponse = hl7.fromXml(getDemoResponse.getBody().toString(), GetDemographicsResponse.class);
+	    GetDemographicsResponse demographicsResponse = hl7.fromXml(getDemoResponse, GetDemographicsResponse.class);
 
-	     if (results.getResultCount() == 0) {
-	    	  logger.debug("Error performing get demographics");
+	     if (demographicsResponse.getResultCount() == 0) {
+	    	 logger.debug("Error performing get demographics");
+	    	 throw new HL7Exception("Error performing request for the phn : {}, phn");
 	      }
-	    return results;
+	     
+	    GetPersonDetailsResponse personDetails = buildPersonDetailsResponse(demographicsResponse);
+	    logger.info("Person details: {}", personDetails.toString());
+	     
+	    return personDetails;
 	 
-	  }
+	 }
 	  
 	private ResponseEntity<String> postDemographicRequest(String data, String transactionId) {
-		   return hcimWebClient
-	                .post()
-	                .contentType(MediaType.TEXT_XML)
-	                .header(TRANSACTION_ID, transactionId)
-	                .bodyValue(data)
-	                .retrieve()
-	                .toEntity(String.class)
-	                .block();
+		return hcimWebClient
+	             .post()
+	             .contentType(MediaType.TEXT_XML)
+	             .header(TRANSACTION_ID, transactionId)
+	             .bodyValue(data)
+	             .retrieve()
+	             .toEntity(String.class)
+	             .block();
 	    	
 	}
 	
@@ -120,8 +134,7 @@ public class EnrollmentService {
                 .toEntity(String.class)
                 .block();
     }	
-	 
-	
+	 	
     private String encodeR50ToV2(R50 r50) throws HL7Exception {
     	
     	// Encode the message using the default HAPI parser and return it as a String
@@ -140,6 +153,29 @@ public class EnrollmentService {
     	return message;
     }
     
+    private GetDemographicsQuery buildDemographicsRequest(String phn) {
+    	
+    	GetDemographicsQuery getDemographicsQuery = new GetDemographicsQuery();
+    	getDemographicsQuery.setMrn(phn);
+    	logger.debug("Creating request for the phn : {}", getDemographicsQuery.getMrn());
+    	
+    	return getDemographicsQuery;
+    	
+    }
+    
+    private GetPersonDetailsResponse buildPersonDetailsResponse(GetDemographicsResponse respObj)  {
+    	
+    	GetPersonDetailsResponse personDetails = new GetPersonDetailsResponse();
+    	personDetails.setPerson(respObj.getPerson());
+    	personDetails.setMessage(respObj.getMessage());
+    	
+    	logger.info(personDetails.toString());
+    	
+    	return personDetails;
+    	
+    	
+    }
+    
 	/**
 	 * TODO (daveb-hni) The message is currently being adjusted to avoid an error in the endpoint. Confirm if this is needed when a response is received to the email that has been sent to the endpoint creator. 
 	 * The endpoint currently expects the message in slightly different format to the HL7 V2 2.4 spec. The difference in the messages is that there is an empty field expected 
@@ -154,6 +190,35 @@ public class EnrollmentService {
 	 */
 	private String formatMessage(String r50v2) {
 		return  r50v2.replaceFirst("\r", "||\r");
+	}
+	
+	private String getDemoGraphicsResponse() throws IOException {
+		// our XML file for this example
+		File xmlFile = new File("src\\main\\resources\\GetDemographicsResponse.xml");
+		        
+		 // Let's get XML file as String using BufferedReader
+		 // FileReader uses platform's default character encoding
+		 // if you need to specify a different encoding, 
+		 // use InputStreamReader
+		 Reader fileReader;
+				
+		 fileReader = new FileReader(xmlFile);
+				
+		 BufferedReader bufReader = new BufferedReader(fileReader);
+		        
+		 StringBuilder sb = new StringBuilder();
+		 String line = bufReader.readLine();
+		 while( line != null){
+		      sb.append(line).append("\n");
+		      line = bufReader.readLine();
+		  }
+		 String xml2String = sb.toString();
+		 logger.info("XML to String using BufferedReader : ");
+		 //logger.info(xml2String);
+		        
+		  bufReader.close();
+		        
+		  return xml2String;
 	}
 	
 }
