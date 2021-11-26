@@ -1,0 +1,82 @@
+package ca.bc.gov.hlth.hnweb.converter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
+import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
+import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
+import ca.uhn.hl7v2.HL7Exception;
+import ca.uhn.hl7v2.model.Message;
+import ca.uhn.hl7v2.util.Terser;
+
+/**
+ * Contains methods to facilitate converter an EnrollSubscriberRequest to and R50 Message
+ * and from Message to an EnrollSubscriberResponse.
+ *
+ */
+public class R50Converter extends BaseConverter {
+
+	private static final Logger logger = LoggerFactory.getLogger(R50Converter.class);
+
+	private static final String MESSAGE_TYPE = "R50^Z06";
+	private static final String RECEIVING_APPLICATION = "RAICHK-BNF-CVST";
+	
+	private String phn;
+	
+	public R50Converter(MSHDefaults mshDefaults) {
+		super(mshDefaults);
+	}
+	
+	public R50 convertRequest(EnrollSubscriberRequest request) throws HL7Exception {
+		phn = request.getPhn();
+		
+    	//Create a default R50 message with MSH-9 set to R50 Z06 
+    	R50 r50 = new R50(); 
+
+    	populateMSH(r50.getMSH());
+    	populateZHD(r50.getZHD());
+    	populatePID(r50.getPID(), phn); 	
+    	
+    	//TODO (Anumeha Srivastava) Add populate methods for remaining segments e.g. populateZia(r50.getZIA());
+//    	V2MessageUtil.setZiaValues(r50.getZIA(), "20210101", "HELP^RERE^^^^^L", "898 RETER ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^H", "123 UIYUI ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^M",
+//			      "^PRN^PH^^^250^8578974", "S", "AB");
+    	
+    	populateIN1(r50.getIN1(), null);
+//    	V2MessageUtil.setZihValues(r50.getZIH(), "D");        	
+//    	V2MessageUtil.setZikValues(r50.getZIK(), "20210101", "20221231");    	
+
+		return r50;
+	}
+	
+	public EnrollSubscriberResponse convertResponse(Message message) throws HL7Exception {
+    	EnrollSubscriberResponse enrollSubscriberResponse = new EnrollSubscriberResponse();
+    	
+    	// Uses a Terser to access the message info
+    	Terser terser = new Terser(message);
+    	
+    	/* 
+    	 * Retrieve required info by specifying the location
+    	 */ 
+    	String messageId = terser.get("/.MSH-10-1");
+    	String acknowledgementCode = terser.get("/.MSA-1-1");
+    	String acknowledgementMessage = terser.get("/.MSA-3-1");
+    	
+    	logger.debug("ACK message response code [{}] and message [{}]", acknowledgementCode, acknowledgementMessage);
+    	
+    	enrollSubscriberResponse.setMessageId(messageId);
+    	enrollSubscriberResponse.setAcknowledgementCode(acknowledgementCode);
+		enrollSubscriberResponse.setAcknowledgementMessage(acknowledgementMessage);
+    	
+    	return enrollSubscriberResponse;
+	}
+	
+	protected String getReceivingApplication() {
+		return RECEIVING_APPLICATION;
+	}
+	
+	protected String getMessageType() {
+		return MESSAGE_TYPE;
+	}
+
+}
