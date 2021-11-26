@@ -57,7 +57,7 @@ test('Check invalid phn format validation', async t => {
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
 });
 
-test.skip('Check properly filled form passes validation', async t => {
+test('Check properly filled form passes validation', async t => {
     await t
         // Given the page is filled out correctly
         .typeText(PhnInquiryPage.phnInput1, '9879875914')
