@@ -95,7 +95,7 @@ export default {
   },
   data() {
     return {
-      phn1: '9879875914',
+      phn1: '',
       phn2: '',
       phn3: '',
       phn4: '',
