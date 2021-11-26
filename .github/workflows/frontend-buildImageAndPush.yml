@@ -1,5 +1,10 @@
 name: BuildAndPush
 
+env:
+  registry-url: 'image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools'
+  image-name: 'hnweb-frontend'
+  image-tag: 'GithubActions'
+
 on:
   push:
     branches:
@@ -9,27 +14,28 @@ on:
     - 4241-hnweb-infrastructure
 
 jobs:
+  
   buildAndPush:
     runs-on: ubuntu-latest
+    
     steps:
+    - name: Declare some variables
+      id: vars
+      shell: bash
+      run: |
+        pwd
+        echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"    
+
+    - name: Another step
+      run: |
+        echo "Branch: ${{ steps.vars.outputs.branch }}"
+        echo "Sha: ${{ steps.vars.outputs.sha_short }}"
+
     - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build . --file ./frontend/Dockerfile --tag image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools/hnweb-frontend:$(date +%s)
-
-    - name: OpenShift login
-    - uses: redhat-actions/oc-login@v1.1
-      with:
-          # Openshift Server URL.
-          openshift_server_url: ${{secrets.C5839F_OPENSHIFT_SERVER}}
-          # Openshift Bearer Token. Store in a secret.
-          openshift_token: ${{secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN}}
-          # Set current context's namespace to this, after logging in.
-          namespace: c5839f-tools
-
-
-    - name: Push To Registry
-    - uses: redhat-actions/push-to-registry@v2.4
-      with:
-        image: image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools/hnweb-frontend:$(date +%s) 
-  
-  
+    - name: Build the image and push to openshift regisrty
+      working-directory: ./frontend
+      run: |
+        docker build . --file Dockerfile --tag ${{env.registry-url}}/${{env.image-name}}:${{env.image-tag}}
+        docker login -p ${{secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN}} -u github-actions-sa ${{env.registry-url}}
+        docker push ${{env.registry-url}}/${{env.image-name}}:${{env.image-tag}}

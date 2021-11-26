@@ -4,7 +4,7 @@ import keycloak from '../keycloak';
 export const resources = {
     eligibility: {
       eligibility: '/eligibility',
-      checkEligibility: '/eligibility/checkEligibility',
+      checkEligibility: '/eligibility/check-eligibility',
       checkMspCoverageStatus: '/eligibility/check-msp-coverage-status',
       phnEnquiry: '/eligibility/phnEnquiry'
     },

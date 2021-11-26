@@ -10,6 +10,7 @@ import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
 import Employees from './../views/Employees.vue'
 import Help from './../views/Help.vue'
 import Home from './../views/Home.vue'
+import NotFound from '../views/NotFound.vue'
 import PhnEnquiry from './../views/eligibility/PhnEnquiry.vue'
 
 const routes = [
@@ -82,6 +83,11 @@ const routes = [
     path: '/help',
     name: 'Help',
     component: Help,
+  },
+  { 
+    path: '/:notFound(.*)',
+    name: 'NotFound',
+    component: NotFound,
   },
 ]
 

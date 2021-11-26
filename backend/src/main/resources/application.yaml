@@ -13,3 +13,11 @@ springdoc:
     path: /docs/swagger-ui.html
   api-docs:
     path: /docs/api-docs
+    
+# V2 message construction
+v2:
+  msh:
+    sendingApplication: HNWeb
+    sendingFacility: HN-WEB
+    receivingFacility: BC00001013
+    processingID: D

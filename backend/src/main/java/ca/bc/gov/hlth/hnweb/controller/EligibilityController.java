@@ -5,7 +5,6 @@ import static ca.bc.gov.hlth.hnweb.util.V2MessageUtil.SegmentType.ADJ;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -17,22 +16,22 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import ca.bc.gov.hlth.hnweb.converter.MSHDefaults;
+import ca.bc.gov.hlth.hnweb.converter.R15Converter;
+import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
 import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
+import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
 import ca.bc.gov.hlth.hnweb.service.EligibilityService;
 import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
 import ca.uhn.hl7v2.HL7Exception;
@@ -54,23 +53,32 @@ public class EligibilityController {
 
 	private static final Logger logger = LoggerFactory.getLogger(EligibilityController.class);
 
+	@Deprecated
 	private static final String DATE_FORMAT_yyyyMMdd = "yyyyMMdd";
 
 	@Autowired
 	private EligibilityService eligibilityService;
 	
-	@GetMapping("/check-eligibility")
-	public ResponseEntity<CheckEligibilityResponse> checkEligibility(@RequestParam(name = "phn", required = true) String phn,
-			@DateTimeFormat(iso = ISO.DATE) @RequestParam(name = "eligibilityDate", required = false) Date eligibilityDate) {
-		logger.info("checkEligibility request - phn: {} date: {}", phn, eligibilityDate);
+	@Autowired
+	private MSHDefaults mshDefaults;
+	
+	@PostMapping("/check-eligibility")
+	public ResponseEntity<CheckEligibilityResponse> checkEligibility(@Valid @RequestBody CheckEligibilityRequest checkEligibilityRequest) {
 
 		try {
-			CheckEligibilityResponse checkEligibilityResponse = eligibilityService.checkEligibility(phn, eligibilityDate);			
-			ResponseEntity<CheckEligibilityResponse> response = ResponseEntity.ok(checkEligibilityResponse);		
+			R15Converter converter = new R15Converter(mshDefaults);
+			R15 r15 = converter.convertRequest(checkEligibilityRequest);
+			Message r15Response = eligibilityService.checkEligibility(r15);
+			
+			CheckEligibilityResponse checkEligibilityResponse = converter.convertResponse(r15Response);
+			
+			ResponseEntity<CheckEligibilityResponse> response = ResponseEntity.ok(checkEligibilityResponse);
+
 			logger.info("checkEligibility response: {} ", checkEligibilityResponse);
 			return response;	
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /checkEligibility request", e);
+			// TODO (weskubo-cgi) Update this with more specific error handling once downstream services are integrated
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /check-eligibility request", e);
 		}
 		
 	}

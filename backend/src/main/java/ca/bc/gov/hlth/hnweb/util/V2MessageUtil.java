@@ -23,6 +23,10 @@ public class V2MessageUtil {
 	public static final String FIELD_SEPARATOR = "|";
 
 	public static final String ENCODING_CHARACTERS = "^~\\&";
+	
+	public static final String DATE_FORMAT_DATE_ONLY = "yyyyMMdd";
+	
+	public static final String  DEFAULT_VERSION_ID = "2.4";
 
 	private static final String VISA_ISSUE = "VISA_ISSUE";
     
@@ -292,6 +296,11 @@ public class V2MessageUtil {
 		//e.g. RCP|I|
 		
 		rcp.getRcp1_QueryPriority().parse(queryPriority);
+	}
+	
+	public static String correctMSH9(String v2, String messageType) {
+		// XXX This is to fix the following parsing issue: Can't determine message structure from MSH-9: R15 HINT: there are only 1 of 3 components present]
+    	return v2.replaceAll("\\|" + messageType + "\\|", "|" + messageType + "^^|");
 	}
 
 }
