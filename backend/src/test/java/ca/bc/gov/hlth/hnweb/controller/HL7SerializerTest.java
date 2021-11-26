@@ -68,9 +68,8 @@ public class HL7SerializerTest {
 	            line = bufReader.readLine();
 	        }
 	        String xml2String = sb.toString();
-	        System.out.println("XML to String using BufferedReader : ");
-	        System.out.println(xml2String);
-	        
+	        log.info("XML to String using BufferedReader : ");
+	              
 	        bufReader.close();
 	        
 	        return xml2String;

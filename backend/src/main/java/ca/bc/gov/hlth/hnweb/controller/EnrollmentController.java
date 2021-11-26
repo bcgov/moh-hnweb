@@ -17,6 +17,8 @@ import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
 
 import ca.bc.gov.hlth.hnweb.model.GetDemographicsQuery;
 import ca.bc.gov.hlth.hnweb.model.GetDemographicsResponse;
+import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsQuery;
+import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
 
 import ca.bc.gov.hlth.hnweb.service.EnrollmentService;
@@ -41,10 +43,6 @@ import ca.uhn.hl7v2.util.Terser;
 public class EnrollmentController {
 	
 	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(EnrollmentController.class);
-	private static final String dataEntererExt = "";
-	private static final String sourceSystemOverride = "HOOPC";
-	private static final String organization = "BCHCIM";
-	
 
 	@Autowired
 	private EnrollmentService enrollmentService;
@@ -64,20 +62,18 @@ public class EnrollmentController {
 		return enrollSubscriberResponse;
 	}
 	
-	@PostMapping("/enroll-demo")
-	public GetDemographicsResponse getDemographicDetails(@Valid @RequestBody GetDemographicsQuery requestObj) throws HL7Exception, IOException {
+	@PostMapping("/person-details")
+	public GetPersonDetailsResponse getDemographicDetails(@Valid @RequestBody GetPersonDetailsQuery requestObj) throws HL7Exception, IOException {
 		
 		logger.info("Demographic request: {} ", requestObj.getMrn());
 			
-		String transactionId = UUID.randomUUID().toString();
+		String transactionId = UUID.randomUUID().toString();	
 		
-		MessageMetaData mmd = new MessageMetaData(dataEntererExt, sourceSystemOverride, organization);
+		GetPersonDetailsResponse personDetails  = enrollmentService.getDemographics(requestObj.getMrn(), transactionId);
 		
-		GetDemographicsResponse demographicResponse  = enrollmentService.getDemographics(requestObj, mmd, transactionId);
+		logger.info("Get Person Details Response: {} ", personDetails.getMessage().getDetails());
 		
-		logger.info("Subscriber enroll Response: {} ", demographicResponse.getMessage().getDetails());
-		
-		return demographicResponse;
+		return personDetails;
 	}
 	
 	
