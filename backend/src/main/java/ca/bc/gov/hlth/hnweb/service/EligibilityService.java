@@ -2,9 +2,7 @@ package ca.bc.gov.hlth.hnweb.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -18,8 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
-import ca.bc.gov.hlth.hnweb.model.InquirePhnMatch;
 import ca.bc.gov.hlth.hnweb.model.fixedwidth.RPBSPPE0;
+import ca.bc.gov.hlth.hnweb.model.fixedwidth.RPBSPPL0;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
 import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
@@ -40,6 +38,9 @@ public class EligibilityService {
 	
 	@Value("${rapid.r41Path}")
 	private String r41Path;
+	
+	@Value("${rapid.r42Path}")
+	private String r42Path;
 
 	@Autowired
 	private Parser parser;
@@ -104,6 +105,25 @@ public class EligibilityService {
 		RPBSPPE0 rpbsppe0Response = new RPBSPPE0(response.getBody());
 
 		return rpbsppe0Response;
+	}
+	
+	public RPBSPPL0 lookupPhn(RPBSPPL0 rpbsppl0) throws HNWebException {
+		String rpbsppl0Str = rpbsppl0.serialize();
+
+		logger.info("Request {}", rpbsppl0Str);
+		
+		ResponseEntity<String> response = postRapidRequest(r42Path, rpbsppl0Str);
+		
+		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
+		
+		// TODO (weskubo-cgi) Add status code handling
+		if (response.getStatusCode() != HttpStatus.OK) {
+			throw new HNWebException("Downstream error " + response.getStatusCode());
+		}
+		
+		RPBSPPL0 rpbsppl0Response = new RPBSPPL0(response.getBody());
+
+		return rpbsppl0Response;
 	}
 	
 

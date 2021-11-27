@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class RPBSHeader {
 	public static final String IDENTIFER_ERRORMSG = "ERRORMSG";
+	public static final String IDENTIFER_RESPONSE = "RESPONSE";
 	
 	/** 0 Not required */
 	private String systemCode = "";

@@ -58,5 +58,29 @@ export function validateDOB(dateOfBirth) {
   return true
 }
 
+/**
+ * Validates that the Contract Number is valid.
+ */
+ export function validateContractNumber(contractNumber) {
+  if (!helpers.req(contractNumber)) {
+    return true
+  }
+  // TODO (weskubo-cgi) Add contract number validator
+  return true
+}
+
+/**
+ * Validates that the Broup Number is valid.
+ */
+ export function validateGroupNumber(groupNumber) {
+  if (!helpers.req(groupNumber)) {
+    return true
+  }
+  // TODO (weskubo-cgi) Add group number validator
+  return true
+}
+
 export const VALIDATE_DOB_MESSAGE = "Date of Birth must not be in the future"
 export const VALIDATE_PHN_MESSAGE = "PHN format is invalid"
+export const VALIDATE_CONTRACT_NUMBER_MESSAGE = "MSP Contract Number is invalid"
+export const VALIDATE_GROUP_NUMBER_MESSAGE = "Group Number is invalid"

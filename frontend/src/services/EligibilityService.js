@@ -12,6 +12,10 @@ export default {
 
   inquirePhn(request) {
     return apiRequest().then(axiosInstance => axiosInstance.post(resources.eligibility.inquirePhn, request))
+  },
+
+  lookupPhn(request) {
+    return apiRequest().then(axiosInstance => axiosInstance.post(resources.eligibility.lookupPhn, request))
   }
 
 }

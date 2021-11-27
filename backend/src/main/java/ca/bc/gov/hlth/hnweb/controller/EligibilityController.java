@@ -28,6 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
 import ca.bc.gov.hlth.hnweb.converter.MSHDefaults;
 import ca.bc.gov.hlth.hnweb.converter.R15Converter;
 import ca.bc.gov.hlth.hnweb.converter.fixedwidth.R41Converter;
+import ca.bc.gov.hlth.hnweb.converter.fixedwidth.R42Converter;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
 import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusRequest;
@@ -35,8 +36,11 @@ import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusResponse;
 import ca.bc.gov.hlth.hnweb.model.InquirePhnMatch;
 import ca.bc.gov.hlth.hnweb.model.InquirePhnRequest;
 import ca.bc.gov.hlth.hnweb.model.InquirePhnResponse;
+import ca.bc.gov.hlth.hnweb.model.LookupPhnRequest;
+import ca.bc.gov.hlth.hnweb.model.LookupPhnResponse;
 import ca.bc.gov.hlth.hnweb.model.fixedwidth.FixedWidthDefaults;
 import ca.bc.gov.hlth.hnweb.model.fixedwidth.RPBSPPE0;
+import ca.bc.gov.hlth.hnweb.model.fixedwidth.RPBSPPL0;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
 import ca.bc.gov.hlth.hnweb.service.EligibilityService;
@@ -111,6 +115,31 @@ public class EligibilityController {
 			ResponseEntity<InquirePhnResponse> response = ResponseEntity.ok(inquirePhnResponse);
 
 			logger.info("inquirePHN response: {} ", inquirePhnResponse);
+			return response;	
+		} catch (Exception e) {
+			// TODO (weskubo-cgi) Update this with more specific error handling once downstream services are integrated
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /check-eligibility request", e);
+		}
+		
+	}
+	
+	@PostMapping("/lookup-phn")
+	public ResponseEntity<LookupPhnResponse> lookupPhn(@Valid @RequestBody LookupPhnRequest lookupPhnRequest) {
+
+		try {
+			R42Converter converter = new R42Converter(fwDefaults);
+			RPBSPPL0 r42Request = converter.convertRequest(lookupPhnRequest);
+			
+			RPBSPPL0 r42Response = eligibilityService.lookupPhn(r42Request);
+			
+			LookupPhnResponse lookupPhnResponse = converter.convertResponse(r42Response);
+			// TOOD (weskubo-cgi) The error message is removed for now so the UI can still show the canned results
+			// as all requests are returning an error
+			//lookupPhnResponse.setMatches(generateDummyR41Data());			
+			
+			ResponseEntity<LookupPhnResponse> response = ResponseEntity.ok(lookupPhnResponse);
+
+			logger.info("lookupPhn response: {} ", lookupPhnResponse);
 			return response;	
 		} catch (Exception e) {
 			// TODO (weskubo-cgi) Update this with more specific error handling once downstream services are integrated
