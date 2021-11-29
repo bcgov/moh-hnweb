@@ -16,7 +16,7 @@ import ca.bc.gov.hlth.hnweb.converter.MSHDefaults;
 import ca.bc.gov.hlth.hnweb.converter.R50Converter;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
-import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsQuery;
+import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
 import ca.bc.gov.hlth.hnweb.service.EnrollmentService;
@@ -67,13 +67,13 @@ public class EnrollmentController {
 	}
 	
 	@PostMapping("/person-details")
-	public GetPersonDetailsResponse getDemographicDetails(@Valid @RequestBody GetPersonDetailsQuery requestObj) throws HL7Exception, IOException {
+	public GetPersonDetailsResponse getDemographicDetails(@Valid @RequestBody GetPersonDetailsRequest requestObj) throws HL7Exception, IOException {
 		
-		logger.info("Demographic request: {} ", requestObj.getMrn());
+		logger.info("Demographic request: {} ", requestObj.getPhn());
 			
 		String transactionId = UUID.randomUUID().toString();	
 		
-		GetPersonDetailsResponse personDetails  = enrollmentService.getDemographics(requestObj.getMrn(), transactionId);
+		GetPersonDetailsResponse personDetails  = enrollmentService.getDemographics(requestObj.getPhn(), transactionId);
 		
 		logger.info("Get Person Details Response: {} ", personDetails.getMessage().getDetails());
 		

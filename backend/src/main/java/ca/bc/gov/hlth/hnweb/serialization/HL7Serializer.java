@@ -2,7 +2,7 @@ package ca.bc.gov.hlth.hnweb.serialization;
 
 import ca.bc.gov.hlth.hnweb.config.HL7Config;
 import ca.bc.gov.hlth.hnweb.model.Address;
-import ca.bc.gov.hlth.hnweb.model.GetDemographicsQuery;
+import ca.bc.gov.hlth.hnweb.model.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.model.MedicalRecordNumber;
 import ca.bc.gov.hlth.hnweb.model.Message;
@@ -54,7 +54,7 @@ public class HL7Serializer {
     xs.allowTypes(new Class[] {ca.bc.gov.hlth.hnweb.model.GetDemographicsResponse.class});
 
     xs.registerConverter(new DateConverter(hl4DateFormat, new String[] {hl4DateFormat}, true));
-    xs.aliasType("getDemographics", GetDemographicsQuery.class);
+    xs.aliasType("getDemographics", GetDemographicsRequest.class);
     xs.aliasType("getDemographicsResponse", GetDemographicsResponse.class);   
     xs.aliasType("person", Person.class);
     xs.aliasType("hl7Config", HL7Config.class);

@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import ca.bc.gov.hlth.hnweb.config.HL7Config;
-import ca.bc.gov.hlth.hnweb.model.GetDemographicsQuery;
+import ca.bc.gov.hlth.hnweb.model.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetDemographicsResponse;
-import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsQuery;
+import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
 import ca.bc.gov.hlth.hnweb.serialization.HL7Serializer;
@@ -36,6 +36,7 @@ public class EnrollmentService {
 	private static final String dataEntererExt = "";
 	private static final String sourceSystemOverride = "HOOPC";
 	private static final String organization = "BCHCIM";
+	private static final String mrn_source = "MOH_CRS";
 
 	public static final String TRANSACTION_ID = "TransactionID";
 
@@ -89,7 +90,7 @@ public class EnrollmentService {
 		
 		HL7Serializer hl7 = new HL7Serializer(new HL7Config());
 		MessageMetaData mmd = new MessageMetaData(dataEntererExt, sourceSystemOverride, organization);
-		GetDemographicsQuery queryObj = buildDemographicsRequest(phn);
+		GetDemographicsRequest queryObj = buildDemographicsRequest(phn);
 		
 	    Object formattedRequest = hl7.toXml(queryObj, mmd);
 	    String historyRequest = formattedRequest.toString();
@@ -153,13 +154,14 @@ public class EnrollmentService {
     	return message;
     }
     
-    private GetDemographicsQuery buildDemographicsRequest(String phn) {
+    private GetDemographicsRequest buildDemographicsRequest(String phn) {
     	
-    	GetDemographicsQuery getDemographicsQuery = new GetDemographicsQuery();
-    	getDemographicsQuery.setMrn(phn);
-    	logger.debug("Creating request for the phn : {}", getDemographicsQuery.getMrn());
+    	GetDemographicsRequest getDemographics = new GetDemographicsRequest();
+    	getDemographics.setPhn(phn);
+    	getDemographics.setPhn(mrn_source);
+    	logger.debug("Creating request for the phn : {}", getDemographics.getPhn());
     	
-    	return getDemographicsQuery;
+    	return getDemographics;
     	
     }
     
