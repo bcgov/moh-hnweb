@@ -42,8 +42,8 @@ public class R50Converter extends BaseConverter {
     	populatePID(r50.getPID(), phn);    	    	
     	populateIN1(r50.getIN1(), request.getCoverageEffectiveDate());
     	populateZIA(zia, request.getResidenceDate(), request.getFullName(), request.getFullName(), request.getAreaCode(),request.getTelephone(), request.getImmigrationCode(), request.getPriorResidenceCode());
-    	populateZIAExtendedAddress1(zia, request.getAddress(), null, null, null, request.getCity(), request.getProvince(), request.getPostalCode());
-    	populateZIAExtendedAddress2(zia, request.getMailingAddress(), null, null, null, request.getMailingAddressCity(), request.getMailingAddressProvince(), request.getMailingAddressPostalCode());
+    	populateZIAExtendedAddress1(zia, request.getAddress(), request.getCity(), request.getProvince(), request.getPostalCode());
+    	populateZIAExtendedAddress2(zia, request.getMailingAddress(), request.getMailingAddressCity(), request.getMailingAddressProvince(), request.getMailingAddressPostalCode());
     	populateZIH(r50.getZIH()); 
     	populateZIK(r50.getZIK(), request.getVisaIssueDate(), request.getVisaExpiryDate());
   

@@ -72,12 +72,12 @@ public abstract class BaseConverter {
 		V2MessageUtil.setZiaValues(zia, dateOnlyFormatter.format(bcResidencyDate), familyName, name,  areaCode, telephone, immigrationOrVisaCode, priorResidenceCode);
 	}
 	
-	protected void populateZIAExtendedAddress1(ZIA zia, String addressLine1, String addressLine2, String addressLine3, String addressLine4,String city, String province, String postalCode) throws HL7Exception {
+	protected void populateZIAExtendedAddress1(ZIA zia, String addressLine1, String city, String province, String postalCode) throws HL7Exception {
 		
 		V2MessageUtil.setZiaExtendedAddrees1(zia, addressLine1, city, province, postalCode);
 	}
 	
-	protected void populateZIAExtendedAddress2(ZIA zia, String addressLine1, String addressLine2, String addressLine3, String addressLine4,String city, String province, String postalCode) throws HL7Exception {
+	protected void populateZIAExtendedAddress2(ZIA zia, String addressLine1, String city, String province, String postalCode) throws HL7Exception {
 		
 		V2MessageUtil.setZiaExtendedAddrees2(zia, addressLine1, city, province, postalCode);
 	}
