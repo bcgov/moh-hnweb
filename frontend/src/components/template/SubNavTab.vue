@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="{ name: this.routeName}">{{title}}</router-link>
+  <router-link @click="resetAlert" :to="{ name: this.routeName}">{{title}}</router-link>
 </template>
 
 <script>
@@ -9,6 +9,11 @@
       routeName: String,
       title: String
     },
+    methods: {
+      resetAlert() {
+       this.$store.dispatch('alert/dismissAlert');
+      }
+    }
   }
 </script>
 
