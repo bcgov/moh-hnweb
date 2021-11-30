@@ -1,14 +1,19 @@
 <template>
-  <div v-if="searchOk != true && registrationOk != true">
+  <div  v-if="action === this.PAGE_ACTION.PHN_SEARCH">
     <ResidentPHN @update-resident="updateResident" />
   </div>
-  <div v-else-if="searchOk">
+  <div v-if="action === this.PAGE_ACTION.STUDENT_REGISTRATION">
     <ResidentDetails :resident="this.result" @register-resident="registerResident" />
   </div>
-  <div v-else-if="registrationOk">
+  <div v-if="action === this.PAGE_ACTION.CONFIRMATION">
     <AppRow>
       <AppCol class="col3">
         <AppOutput label="PHN" :value="registrationResult.phn"/>
+      </AppCol>
+    </AppRow>
+    <AppRow>
+      <AppCol>
+        <AppOutput label="Name" :value="registrationResult.name"/>
       </AppCol>
     </AppRow>
   </div>
@@ -50,7 +55,7 @@ export default {
   },
   data() {
     return {
-      searchOk: false,
+      pageAction: null,
       registrationOk: false,
       result: {
         phn: '',
@@ -64,7 +69,15 @@ export default {
       }
     };
   },
-  methods: {
+  created() {
+    this.PAGE_ACTION = {
+      PHN_SEARCH: 'PHN_SEARCH',
+      STUDENT_REGISTRATION: 'STUDENT_REGISTRATION',
+      CONFIRMATION: 'CONFIRMATION'
+    }
+    this.pageAction = this.PAGE_ACTION.PHN_SEARCH
+  },
+  methods: {    
     async updateResident(phn) {
       console.log("updateResident")
       console.log(`Resident: [PHN: ${phn}]`
@@ -74,7 +87,7 @@ export default {
       }))
       console.log('Result returned')
       console.log(`Result: [PHN: ${this.result.phn}] [Name: ${this.result.name}] [DOB: ${this.result.dateOfBirth}]`)
-      this.searchOk = true
+      this.action = this.PAGE_ACTION.STUDENT_REGISTRATION
     },
     async registerResident(personDetails) {
       console.log("registerResident")
@@ -85,8 +98,7 @@ export default {
       }))
       console.log('Registration Result returned')
       console.log(`Registration Result: [PHN: ${this.registrationResult.phn}] [Name: ${this.registrationResult.name}] [DOB: ${this.registrationResult.errorMessage}]`)
-      this.searchOk = false
-      this.registrationOk = true
+      this.action = this.PAGE_ACTION.CONFIRMATION
     }
   },
 };
