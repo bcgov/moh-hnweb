@@ -61,7 +61,17 @@
 
       <AppRow>
         <AppCol class="col7">
-          <AppInput :e-model="v$.address" id ="address" label="Home Address" v-model="address" />          
+          <AppInput :e-model="v$.address1" id ="address1" label="Home Address Line 1" v-model="address1" />          
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col7">
+          <AppInput :e-model="v$.address2" id ="address2" label="Line 2 - Optional" v-model="address2" />          
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col7">
+          <AppInput :e-model="v$.address3" id ="address3" label="Line 3 - Optional" v-model="address3" />          
         </AppCol>
       </AppRow>
       <AppRow>
@@ -83,7 +93,17 @@
 
       <AppRow>
         <AppCol class="col7">
-          <AppInput :e-model="v$.mailingAddress" id ="mailingAddress" label="Mailing Address (if different from home address)" v-model="mailingAddress" />          
+          <AppInput :e-model="v$.mailingAddres1" id ="mailingAddress1" label="Mailing Address (if different from home address)" v-model="mailingAddress1" />          
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col7">
+          <AppInput :e-model="v$.mailingAddress2" id ="mailingAddress2" label="Line 2 - Optional" v-model="mailingAddress2" />          
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col7">
+          <AppInput :e-model="v$.mailingAddress3" id ="mailingAddress3" label="Line 3 - Optional" v-model="mailingAddress3" />          
         </AppCol>
       </AppRow>
       <AppRow>
@@ -178,12 +198,16 @@ export default {
           coverageEffectiveDate: null,
           telephone: '',
           coverageCancellationDate: null,
-          address: '',
+          address1: '',
+          address2: '',
+          address3: '',
           city: '',
           province: '',
           country: '',
           postalCode: '',
-          mailingAddress: '',
+          mailingAddress1: '',
+          mailingAddress2: '',
+          mailingAddress3: '',
           mailingAddressCity: '',
           mailingAddressProvince: '',
           mailingAddressCountry: '',
@@ -222,12 +246,16 @@ export default {
             coverageEffectiveDate: dayjs(this.coverageEffectiveDate).format(API_DATE_FORMAT),
             telephone: this.telephone,
             coverageCancellationDate: dayjs(this.coverageCancellationDate).format(API_DATE_FORMAT),
-            address: this.address,
+            address1: this.address1,
+            address2: this.address2,
+            address3: this.address3,
             city: this.city,
             province: this.province,
             country: this.country,
             postalCode: this.postalCode,
-            mailingAddress: this.mailingAddress,
+            mailingAddress1: this.mailingAddress1,
+            mailingAddress2: this.mailingAddress2,
+            mailingAddress3: this.mailingAddress3,
             mailingAddressCity: this.mailingAddressCity,
             mailingAddressProvince: this.mailingAddressProvince,
             mailingAddressCountry: this.mailingAddressCountry,
@@ -253,12 +281,16 @@ export default {
         this.coverageEffectiveDate = null,
         this.telephone = '',
         this.coverageCancellationDate = null,
-        this.address = '',
+        this.address1 = '',
+        this.address2 = '',
+        this.address3 = '',
         this.city = '',
         this.province = '',
         this.country = '',
         this.postalCode = '',
-        this.mailingAddress = '',
+        this.mailingAddress1 = '',
+        this.mailingAddress2 = '',
+        this.mailingAddress3 = '',
         this.mailingAddressCity = '',
         this.mailingAddressProvince = '',
         this.mailingAddressCountry = '',
@@ -288,12 +320,16 @@ export default {
         coverageEffectiveDate: {required},
         telephone: {},
         coverageCancellationDate: {required},
-        address: {required},
+        address1: {required},
+        address2: {},
+        address3: {},
         city: {required},
         province: {required},
         country: {required},
         postalCode: {required},
-        mailingAddress: {},
+        mailingAddress1: {},
+        mailingAddress2: {},
+        mailingAddress3: {},
         mailingAddressCity: {},
         mailingAddressProvince: {},
         mailingAddressCountry: {},
