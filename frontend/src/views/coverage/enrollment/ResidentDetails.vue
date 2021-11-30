@@ -61,7 +61,7 @@
 
       <AppRow>
         <AppCol class="col7">
-          <AppInput :e-model="v$.homeAddress" id ="homeAddress" label="Home Address" v-model="homeAddress" />          
+          <AppInput :e-model="v$.address" id ="address" label="Home Address" v-model="address" />          
         </AppCol>
       </AppRow>
       <AppRow>
@@ -178,7 +178,7 @@ export default {
           coverageEffectiveDate: null,
           telephone: '',
           coverageCancellationDate: null,
-          homeAddress: '',
+          address: '',
           city: '',
           province: '',
           country: '',
@@ -202,12 +202,13 @@ export default {
         console.log('registerVisaResident')
         this.searching = true
         try {
-          const isValid = await this.v$.$validate()
-          if (!isValid) {
-            this.$store.commit('alert/setErrorAlert');
-            this.searching = false
-            return
-          }
+          const isValid = true
+          // await this.v$.$validate()
+          // if (!isValid) {
+          //   this.$store.commit('alert/setErrorAlert');
+          //   this.searching = false
+          //   return
+          // }
           console.log('Emitting')
           this.$emit('register-resident', {
             phn: this.resident.phn,
@@ -221,7 +222,7 @@ export default {
             coverageEffectiveDate: dayjs(this.coverageEffectiveDate).format(API_DATE_FORMAT),
             telephone: this.telephone,
             coverageCancellationDate: dayjs(this.coverageCancellationDate).format(API_DATE_FORMAT),
-            homeAddress: this.homeAddress,
+            address: this.address,
             city: this.city,
             province: this.province,
             country: this.country,
@@ -252,7 +253,7 @@ export default {
         this.coverageEffectiveDate = null,
         this.telephone = '',
         this.coverageCancellationDate = null,
-        this.homeAddress = '',
+        this.address = '',
         this.city = '',
         this.province = '',
         this.country = '',
@@ -287,7 +288,7 @@ export default {
         coverageEffectiveDate: {required},
         telephone: {},
         coverageCancellationDate: {required},
-        homeAddress: {required},
+        address: {required},
         city: {required},
         province: {required},
         country: {required},
