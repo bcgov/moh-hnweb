@@ -1,4 +1,4 @@
-package ca.bc.gov.hlth.hnweb.model;
+package ca.bc.gov.hlth.hnweb.model.eligibility;
 
 public class LookupPhnBeneficiary {
 	private String phn;

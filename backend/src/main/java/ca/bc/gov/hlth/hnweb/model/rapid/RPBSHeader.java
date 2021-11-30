@@ -1,4 +1,4 @@
-package ca.bc.gov.hlth.hnweb.model.fixedwidth;
+package ca.bc.gov.hlth.hnweb.model.rapid;
 
 import org.apache.commons.lang3.StringUtils;
 

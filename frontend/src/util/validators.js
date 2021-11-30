@@ -65,19 +65,74 @@ export function validateDOB(dateOfBirth) {
   if (!helpers.req(contractNumber)) {
     return true
   }
-  // TODO (weskubo-cgi) Add contract number validator
-  return true
+  return validateNumber(contractNumber, 9)
 }
 
 /**
- * Validates that the Broup Number is valid.
+ * Validates that the Group Number is valid.
  */
  export function validateGroupNumber(groupNumber) {
   if (!helpers.req(groupNumber)) {
     return true
   }
-  // TODO (weskubo-cgi) Add group number validator
+  if (!validateNumber(groupNumber, 7)) {
+    return false
+  }
+  if (!validateMod10(groupNumber)) {
+    return false
+  }
   return true
+}
+
+/**
+ * Validates that the input is an integer number of the specified length.
+ */
+function validateNumber(input, length) {
+  console.log('validateNumber')
+  if (input.length != length) {
+    return false
+  }
+  if (isNaN(input)) {
+    return false
+  }
+  const number = +input
+  if (!Number.isInteger(number)) {
+    return false
+  }
+  if (number < 0) {
+    return false
+  }
+  return true
+}
+
+function validateMod10(input) {
+  console.log('validateMod10')
+	const numDigits = input.length
+	let sum = 0
+	let tmpDigit = 0
+
+	if (input.length % 2 === 0) {
+    // Even number of digits in String to check
+		for (let i = 0; i < numDigits; i += 2 ) {
+			// Odd Numbers
+			tmpDigit = Number(input.charAt(i))
+			sum += tmpDigit === 9 ? 9 : (tmpDigit * 2) % 9
+			// Even Numbers
+			sum += Number(input.charAt(i + 1))
+		}
+	} else {
+    //Odd Number of digits in String to check
+		for (let i = 1; i < numDigits; i += 2) {
+			// Odd Numbers
+			sum += Number(input.charAt(i - 1))
+			// Even Numbers
+			tmpDigit = Number(input.charAt(i))
+			sum += tmpDigit === 9 ? 9 : (tmpDigit * 2) % 9
+		}
+		// Last odd Number
+		sum += Number(input.charAt(numDigits - 1))
+	}
+  return (sum % 10) === 0
 }
 
 export const VALIDATE_DOB_MESSAGE = "Date of Birth must not be in the future"

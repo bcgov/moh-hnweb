@@ -1,4 +1,4 @@
-package ca.bc.gov.hlth.hnweb.model.fixedwidth;
+package ca.bc.gov.hlth.hnweb.model.rapid;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

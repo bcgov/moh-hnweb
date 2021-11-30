@@ -27,8 +27,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.converter.MSHDefaults;
 import ca.bc.gov.hlth.hnweb.converter.R15Converter;
-import ca.bc.gov.hlth.hnweb.converter.fixedwidth.R41Converter;
-import ca.bc.gov.hlth.hnweb.converter.fixedwidth.R42Converter;
+import ca.bc.gov.hlth.hnweb.converter.rapid.R41Converter;
+import ca.bc.gov.hlth.hnweb.converter.rapid.R42Converter;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
 import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusRequest;
@@ -36,11 +36,11 @@ import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusResponse;
 import ca.bc.gov.hlth.hnweb.model.InquirePhnMatch;
 import ca.bc.gov.hlth.hnweb.model.InquirePhnRequest;
 import ca.bc.gov.hlth.hnweb.model.InquirePhnResponse;
-import ca.bc.gov.hlth.hnweb.model.LookupPhnRequest;
-import ca.bc.gov.hlth.hnweb.model.LookupPhnResponse;
-import ca.bc.gov.hlth.hnweb.model.fixedwidth.FixedWidthDefaults;
-import ca.bc.gov.hlth.hnweb.model.fixedwidth.RPBSPPE0;
-import ca.bc.gov.hlth.hnweb.model.fixedwidth.RPBSPPL0;
+import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnRequest;
+import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnResponse;
+import ca.bc.gov.hlth.hnweb.model.rapid.FixedWidthDefaults;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPL0;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
 import ca.bc.gov.hlth.hnweb.service.EligibilityService;
@@ -109,7 +109,7 @@ public class EligibilityController {
 			InquirePhnResponse inquirePhnResponse = converter.convertResponse(r41Response);
 			// TOOD (weskubo-cgi) The error message is removed for now so the UI can still show the canned results
 			// as all requests are returning an error
-			inquirePhnResponse.setErrorMessage(null);
+			//inquirePhnResponse.setErrorMessage(null);
 			inquirePhnResponse.setMatches(generateDummyR41Data());			
 			
 			ResponseEntity<InquirePhnResponse> response = ResponseEntity.ok(inquirePhnResponse);
@@ -143,7 +143,7 @@ public class EligibilityController {
 			return response;	
 		} catch (Exception e) {
 			// TODO (weskubo-cgi) Update this with more specific error handling once downstream services are integrated
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /check-eligibility request", e);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /lookup-phn request", e);
 		}
 		
 	}

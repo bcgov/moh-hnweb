@@ -1,24 +1,23 @@
 package ca.bc.gov.hlth.hnweb.model;
 
 public class BaseResponse {
-	protected String errorMessage;
+	protected StatusEnum status;
+	protected String message;
 
-	protected String warningMessage;
-
-	public String getErrorMessage() {
-		return errorMessage;
+	public StatusEnum getStatus() {
+		return status;
 	}
 
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
+	public void setStatus(StatusEnum status) {
+		this.status = status;
 	}
 
-	public String getWarningMessage() {
-		return warningMessage;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setWarningMessage(String warningMessage) {
-		this.warningMessage = warningMessage;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 }

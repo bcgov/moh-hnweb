@@ -1,4 +1,4 @@
-package ca.bc.gov.hlth.hnweb.model.fixedwidth;
+package ca.bc.gov.hlth.hnweb.model.rapid;
 
 import java.util.ArrayList;
 import java.util.List;

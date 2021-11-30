@@ -15,7 +15,7 @@ public class InquirePhnResponse extends BaseResponse {
 
 	@Override
 	public String toString() {
-		return "EnquirePhnResponse [matches=" + matches + ", errorMessage=" + errorMessage + "]";
+		return "InquirePhnResponse [matches=" + matches + "]";
 	}
 
 }

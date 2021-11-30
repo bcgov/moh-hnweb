@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
-import ca.bc.gov.hlth.hnweb.model.fixedwidth.RPBSPPE0;
-import ca.bc.gov.hlth.hnweb.model.fixedwidth.RPBSPPL0;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPL0;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
 import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
@@ -115,8 +115,7 @@ public class EligibilityService {
 		ResponseEntity<String> response = postRapidRequest(r42Path, rpbsppl0Str);
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
-		
-		// TODO (weskubo-cgi) Add status code handling
+
 		if (response.getStatusCode() != HttpStatus.OK) {
 			throw new HNWebException("Downstream error " + response.getStatusCode());
 		}

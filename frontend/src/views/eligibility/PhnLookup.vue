@@ -19,7 +19,6 @@
   </div>
   <br />
   <div v-if="searchOk">
-    <h2>Transaction Successful</h2>
     <AppSimpleTable>
       <thead>
       <tr>
@@ -62,52 +61,45 @@ export default {
   },
   data() {
     return {
-      groupNumber: '6337109',
-      contractNumber: '680342326',
+      groupNumber: '',
+      contractNumber: '',
       searching: false,
       searchOk: false,
       result: {
-        errorMessage: '',
-        warningMessage: '',
+        status: '',
+        message: '',
         beneficiaries: [],
       },
     }
   },
   methods: {
     async submitForm() {
+      this.result = null
       this.searching = true
+      this.searchOk = false
       try {
         const isValid = await this.v$.$validate()      
         if (!isValid) {
-          this.showError()
+          this.$store.commit('alert/setErrorAlert')
           return
         }
         this.result = (await EligibilityService.lookupPhn({groupNumber: this.groupNumber, contractNumber: this.contractNumber})).data
-        console.log(this.result.beneficiaries)
-
-        if (!this.result.errorMessage || this.result.errorMessage === '') {
-          this.searchOk = true
-
-          if (this.result.warningMessage) {
-            this.$store.commit('alert/setWarningAlert', this.result.warningMessage)  
-          } else {
-            this.$store.commit('alert/setSuccessAlert', 'Search complete')
-          }
-        } else {
-          this.$store.commit('alert/setWarningAlert', this.result.errorMessage)
-          this.result = null
-          this.searchOk = false
+        if (this.result.status === 'error') {
+          this.$store.commit('alert/setErrorAlert', this.result.messa)
+          return
         }
+
+        this.searchOk = true
+        if (this.result.status === 'success') {
+          this.$store.commit('alert/setSuccessAlert', this.result.message || 'Transaction successful')
+        } else if (this.result.status === 'warning') {
+          this.$store.commit('alert/setWarningAlert', this.result.message)  
+        }          
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       } finally {
         this.searching = false
       }
-    },
-    showError(error) {
-      this.$store.commit('alert/setErrorAlert', error)
-      this.result = {}
-      this.searching = false
     },
     resetForm() {
       this.contractNumber = ''
