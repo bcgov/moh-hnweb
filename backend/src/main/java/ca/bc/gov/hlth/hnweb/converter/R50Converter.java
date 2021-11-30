@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
+import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIA;
+import ca.bc.gov.hlth.hnweb.util.V2MessageUtil.AddressType;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.util.Terser;
@@ -23,29 +25,28 @@ public class R50Converter extends BaseConverter {
 	private static final String RECEIVING_APPLICATION = "RAICHK-BNF-CVST";
 	
 	private String phn;
-	
+		
 	public R50Converter(MSHDefaults mshDefaults) {
 		super(mshDefaults);
 	}
 	
 	public R50 convertRequest(EnrollSubscriberRequest request) throws HL7Exception {
 		phn = request.getPhn();
-		
+						
     	//Create a default R50 message with MSH-9 set to R50 Z06 
     	R50 r50 = new R50(); 
+    	ZIA zia = r50.getZIA();
 
     	populateMSH(r50.getMSH());
     	populateZHD(r50.getZHD());
-    	populatePID(r50.getPID(), phn); 	
-    	
-    	//TODO (Anumeha Srivastava) Add populate methods for remaining segments e.g. populateZia(r50.getZIA());
-//    	V2MessageUtil.setZiaValues(r50.getZIA(), "20210101", "HELP^RERE^^^^^L", "898 RETER ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^H", "123 UIYUI ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^M",
-//			      "^PRN^PH^^^250^8578974", "S", "AB");
-    	
-    	populateIN1(r50.getIN1(), null);
-//    	V2MessageUtil.setZihValues(r50.getZIH(), "D");        	
-//    	V2MessageUtil.setZikValues(r50.getZIK(), "20210101", "20221231");    	
-
+    	populatePID(r50.getPID(), phn);    	    	
+    	populateIN1(r50.getIN1(), request.getCoverageEffectiveDate());
+    	populateZIA(zia, request.getResidenceDate(), request.getFullName(), request.getFullName(), request.getAreaCode(),request.getTelephone(), request.getImmigrationCode(), request.getPriorResidenceCode());
+    	populateZIAExtendedAddress1(zia, request.getAddress(), request.getCity(), request.getProvince(), request.getPostalCode());
+    	populateZIAExtendedAddress2(zia, request.getMailingAddress(), request.getMailingAddressCity(), request.getMailingAddressProvince(), request.getMailingAddressPostalCode());
+    	populateZIH(r50.getZIH()); 
+    	populateZIK(r50.getZIK(), request.getVisaIssueDate(), request.getVisaExpiryDate());
+  
 		return r50;
 	}
 	
@@ -78,5 +79,7 @@ public class R50Converter extends BaseConverter {
 	protected String getMessageType() {
 		return MESSAGE_TYPE;
 	}
+
+	
 
 }

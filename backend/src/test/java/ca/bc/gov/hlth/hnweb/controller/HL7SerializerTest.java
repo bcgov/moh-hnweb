@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.hlth.hnweb.config.HL7Config;
-import ca.bc.gov.hlth.hnweb.model.GetDemographicsQuery;
+import ca.bc.gov.hlth.hnweb.model.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.serialization.HL7Serializer;
 import ca.bc.gov.hlth.hnweb.service.MessageMetaData;
@@ -34,8 +34,8 @@ public class HL7SerializerTest {
     mmd.setDataEntererExt("train96");
     mmd.setOrganization("HOOPC");
     mmd.setSourceSystemOverride("BCHCIM");
-    GetDemographicsQuery getDemoQuery = new GetDemographicsQuery();
-    getDemoQuery.setMrn("9862716574");
+    GetDemographicsRequest getDemoQuery = new GetDemographicsRequest();
+    getDemoQuery.setPhn("9862716574");
 
     Object request = hl7.toXml(getDemoQuery, mmd);
     

@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,10 +23,11 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
-import ca.bc.gov.hlth.hnweb.model.GetDemographicsQuery;
+import ca.bc.gov.hlth.hnweb.model.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetDemographicsResponse;
-import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsQuery;
+import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
+import ca.bc.gov.hlth.hnweb.service.EnrollmentService;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -77,7 +79,7 @@ public class EnrollmentControllerTest {
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
-        assertEquals("/", recordedRequest.getPath());
+        assertEquals("/", recordedRequest.getPath());       
     }
     
     @Disabled
@@ -88,8 +90,8 @@ public class EnrollmentControllerTest {
         		.setBody(convertXMLFileToString())
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
-        GetPersonDetailsQuery getPersonQuery = new GetPersonDetailsQuery();
-        getPersonQuery.setMrn("9862716574");
+        GetPersonDetailsRequest getPersonQuery = new GetPersonDetailsRequest();
+        getPersonQuery.setPhn("9862716574");
         
         GetPersonDetailsResponse response = enrollmentController.getDemographicDetails(getPersonQuery);
     	assertEquals("9862716574", response.getPerson().getPhn());	
@@ -100,6 +102,8 @@ public class EnrollmentControllerTest {
         //assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         //assertEquals(MediaType.TEXT_XML_VALUE.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         //assertEquals("/", recordedRequest.getPath());
+    	
+    	//mockBackEnd.close();
     }
     
     /**
@@ -116,8 +120,24 @@ public class EnrollmentControllerTest {
     private EnrollSubscriberRequest createEnrollSubscriberRequest() {
 		EnrollSubscriberRequest enrollSubscriberRequest = new EnrollSubscriberRequest();
 		enrollSubscriberRequest.setPhn("123456789");
-		enrollSubscriberRequest.setSurname("Test");
+		enrollSubscriberRequest.setFullName("Test");
 		enrollSubscriberRequest.setGender("M");
+		enrollSubscriberRequest.setResidenceDate(LocalDate.now());
+		enrollSubscriberRequest.setCoverageEffectiveDate(LocalDate.now());
+		enrollSubscriberRequest.setVisaIssueDate(LocalDate.now());
+		enrollSubscriberRequest.setVisaExpiryDate(LocalDate.now());
+		enrollSubscriberRequest.setAddress("101 33A Street");
+		enrollSubscriberRequest.setCity("Victoria");
+		enrollSubscriberRequest.setProvince("BC");
+		enrollSubscriberRequest.setPostalCode("T0T0X0");
+		enrollSubscriberRequest.setAreaCode("250");
+		enrollSubscriberRequest.setTelephone("8578974");
+		enrollSubscriberRequest.setMailingAddress("101 33A Street");
+		enrollSubscriberRequest.setMailingAddressCity("Victoria");
+		enrollSubscriberRequest.setMailingAddressProvince("BC");
+		enrollSubscriberRequest.setMailingAddressPostalCode("T0T0X0");
+		enrollSubscriberRequest.setCountry("CA");
+		
 		return enrollSubscriberRequest;
 	}
     
