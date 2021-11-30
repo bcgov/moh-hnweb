@@ -251,9 +251,9 @@ export default {
           console.log('Emitting')
           this.$emit('register-resident', {
             phn: this.resident.phn,
-            givenName: this.givenName,	
-            secondName: this.secondName,        
-            surname: this.surname,
+            givenName: this.resident.givenName,	
+            secondName: this.resident.secondName,        
+            surname: this.resident.surname,
             groupNumber: this.groupNumber,
             immigrationCode: this.immigrationCode,
             groupMemberNumber: this.groupMemberNumber,

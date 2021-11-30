@@ -86,22 +86,33 @@ export default {
       console.log("updateResident")
       console.log(`Resident: [PHN: ${phn}]`
       )
-      this.personResult = (await EnrollmentService.getPersonDemographics({
-        phn: phn
-      }).data)
+      this.personResult = (await EnrollmentService.getPersonDemographics({ phn: phn }).data)
+      if (this.personResult.status === 'error') {
+        this.$store.commit('alert/setErrorAlert', this.personResult.message)
+        return
+      }
+
       console.log('Result returned')
       console.log(`Result: [PHN: ${this.personResult.person.phn}] [Name: ${this.personResult.person.givenName}] [DOB: ${this.personResult.person.dateOfBirth}]`)
+      if (this.personResult.status === 'success') {
+        console.log(`Success: ${this.personResult.message}`)        
+      }             
       this.pageAction = this.PAGE_ACTION.STUDENT_REGISTRATION
     },
     async registerResident(personDetails) {
       console.log("registerResident")
-      console.log(`personDetails: [PHN: ${personDetails.phn}] [Group Number: ${personDetails.groupNumber}]`
+      console.log(`personDetails: [PHN: ${personDetails.phn}] [Surname: ${personDetails.surname}] [Group Number: ${personDetails.groupNumber}]`
       )
-      this.registrationResult = (await EnrollmentService.registerResident({
-        ...personDetails
-      }).data)
+      this.registrationResult = (await EnrollmentService.registerResident({...personDetails}).data)
+      if (this.registrationResult.status === 'error') {
+        this.$store.commit('alert/setErrorAlert', this.registrationResult.message)
+        return
+      }
       console.log('Registration Result returned')
       console.log(`Registration Result: [PHN: ${this.registrationResult.person.phn}] [Name: ${this.registrationResult.person.name}] [DOB: ${this.registrationResult.person.errorMessage}]`)
+      if (this.registrationResult.status === 'success') {
+        console.log(`Success: ${this.registrationResult.message}`)        
+      }             
       this.pageAction = this.PAGE_ACTION.CONFIRMATION
     }
   },
