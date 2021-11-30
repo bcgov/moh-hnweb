@@ -88,9 +88,9 @@ export default {
       )
       this.personResult = (await EnrollmentService.getPersonDemographics({
         phn: phn
-      }))
+      }).data)
       console.log('Result returned')
-      console.log(`Result: [PHN: ${this.personResult.person.phn}] [Name: ${this.personResult.person.name}] [DOB: ${this.personResult.person.dateOfBirth}]`)
+      console.log(`Result: [PHN: ${this.personResult.person.phn}] [Name: ${this.personResult.person.givenName}] [DOB: ${this.personResult.person.dateOfBirth}]`)
       this.pageAction = this.PAGE_ACTION.STUDENT_REGISTRATION
     },
     async registerResident(personDetails) {
@@ -99,7 +99,7 @@ export default {
       )
       this.registrationResult = (await EnrollmentService.registerResident({
         ...personDetails
-      }))
+      }).data)
       console.log('Registration Result returned')
       console.log(`Registration Result: [PHN: ${this.registrationResult.person.phn}] [Name: ${this.registrationResult.person.name}] [DOB: ${this.registrationResult.person.errorMessage}]`)
       this.pageAction = this.PAGE_ACTION.CONFIRMATION

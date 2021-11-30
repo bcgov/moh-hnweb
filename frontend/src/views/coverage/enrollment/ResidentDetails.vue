@@ -7,7 +7,7 @@
     </AppRow>
     <AppRow>
       <AppCol class="col3">
-        <AppOutput label="Name" :value="resident.name"/>
+        <AppOutput label="Name" :value="fullName"/>
       </AppCol>
     </AppRow>
     <AppRow>
@@ -93,7 +93,7 @@
 
       <AppRow>
         <AppCol class="col7">
-          <AppInput :e-model="v$.mailingAddres1" id ="mailingAddress1" label="Mailing Address (if different from home address)" v-model="mailingAddress1" />          
+          <AppInput :e-model="v$.mailingAddress1" id ="mailingAddress1" label="Mailing Address (if different from home address)" v-model="mailingAddress1" />          
         </AppCol>
       </AppRow>
       <AppRow>
@@ -221,6 +221,21 @@ export default {
           ],
         }
     },
+    computed: {
+      fullName() {
+        let name = ''
+        if (this.resident.surname) {
+          name = name + this.resident.surname
+        }
+        if (this.resident.givenName) {
+          name = name + ', ' + this.resident.givenName
+        }
+        if (this.resident.secondName) {
+          name = name + ' ' + this.resident.secondName
+        }
+        return name
+      },
+    },
     methods: {
       async registerVisaResident() {
         console.log('registerVisaResident')
@@ -236,6 +251,9 @@ export default {
           console.log('Emitting')
           this.$emit('register-resident', {
             phn: this.resident.phn,
+            givenName: this.givenName,	
+            secondName: this.secondName,        
+            surname: this.surname,
             groupNumber: this.groupNumber,
             immigrationCode: this.immigrationCode,
             groupMemberNumber: this.groupMemberNumber,
