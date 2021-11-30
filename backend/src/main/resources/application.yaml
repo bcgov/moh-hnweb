@@ -22,7 +22,7 @@ v2:
     receivingFacility: BC00001013
     processingID: D
 
-# Fixed Width message construction
-fixedWidth:
+# RAPID fixed width message construction
+rapid:
   header: 
     organization: "00000010"

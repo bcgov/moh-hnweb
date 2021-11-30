@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import ca.bc.gov.hlth.hnweb.model.InquirePhnRequest;
 import ca.bc.gov.hlth.hnweb.model.InquirePhnResponse;
 import ca.bc.gov.hlth.hnweb.model.rapid.CI0;
-import ca.bc.gov.hlth.hnweb.model.rapid.FixedWidthDefaults;
+import ca.bc.gov.hlth.hnweb.model.rapid.RapidDefaults;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0;
 
@@ -13,13 +13,13 @@ public class R41Converter extends BaseRapidConverter {
 	//private static final String TRAN_CODE = "RPBSPPE0";
 	private static final String TRAN_CODE = "RPBSPPMC";
 
-	public R41Converter(FixedWidthDefaults fwDefaults) {
-		super(fwDefaults);
+	public R41Converter(RapidDefaults rapidDefaults) {
+		super(rapidDefaults);
 	}
 	
 	public RPBSPPE0 convertRequest(InquirePhnRequest request) {
 		RPBSHeader rpbsHeader = new RPBSHeader();
-		rpbsHeader.setOrganization(fwDefaults.getOrganization());
+		rpbsHeader.setOrganization(rapidDefaults.getOrganization());
 		rpbsHeader.setTranCode(getTranCode());
 
 		// TODO (weskubo-cgi) This is not the correct format

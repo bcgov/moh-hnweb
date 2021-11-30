@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.hlth.hnweb.model.BaseResponse;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
-import ca.bc.gov.hlth.hnweb.model.rapid.FixedWidthDefaults;
+import ca.bc.gov.hlth.hnweb.model.rapid.RapidDefaults;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 
 public abstract class BaseRapidConverter {
@@ -14,11 +14,11 @@ public abstract class BaseRapidConverter {
 
 	protected static final String STATUS_CODE_SUCCESS = "RPBS9014";
 	
-	protected FixedWidthDefaults fwDefaults;
+	protected RapidDefaults rapidDefaults;
 
-	public BaseRapidConverter(FixedWidthDefaults fwDefaults) {
+	public BaseRapidConverter(RapidDefaults rapidDefaults) {
 		super();
-		this.fwDefaults = fwDefaults;
+		this.rapidDefaults = rapidDefaults;
 	}
 	
 	protected void handleStatus(RPBSHeader header, BaseResponse response) {

@@ -6,7 +6,7 @@ import ca.bc.gov.hlth.hnweb.model.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnBeneficiary;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnRequest;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnResponse;
-import ca.bc.gov.hlth.hnweb.model.rapid.FixedWidthDefaults;
+import ca.bc.gov.hlth.hnweb.model.rapid.RapidDefaults;
 import ca.bc.gov.hlth.hnweb.model.rapid.PL0;
 import ca.bc.gov.hlth.hnweb.model.rapid.PL0Beneficary;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
@@ -15,13 +15,13 @@ import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPL0;
 public class R42Converter extends BaseRapidConverter {
 	private static final String TRAN_CODE = "RPBSPPL0";
 
-	public R42Converter(FixedWidthDefaults fwDefaults) {
-		super(fwDefaults);
+	public R42Converter(RapidDefaults rapidDefaults) {
+		super(rapidDefaults);
 	}
 	
 	public RPBSPPL0 convertRequest(LookupPhnRequest request) {
 		RPBSHeader rpbsHeader = new RPBSHeader();
-		rpbsHeader.setOrganization(fwDefaults.getOrganization());
+		rpbsHeader.setOrganization(rapidDefaults.getOrganization());
 		rpbsHeader.setTranCode(getTranCode());
 
 		PL0 pl0 = new PL0();

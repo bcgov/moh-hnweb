@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FixedWidthDefaults {
+public class RapidDefaults {
 	
-	@Value("${fixedWidth.header.organization}")
+	@Value("${rapid.header.organization}")
 	private String organization;
 
 	public String getOrganization() {

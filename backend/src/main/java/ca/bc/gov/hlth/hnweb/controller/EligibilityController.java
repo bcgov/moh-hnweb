@@ -38,7 +38,7 @@ import ca.bc.gov.hlth.hnweb.model.InquirePhnRequest;
 import ca.bc.gov.hlth.hnweb.model.InquirePhnResponse;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnRequest;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnResponse;
-import ca.bc.gov.hlth.hnweb.model.rapid.FixedWidthDefaults;
+import ca.bc.gov.hlth.hnweb.model.rapid.RapidDefaults;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPL0;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
@@ -71,7 +71,7 @@ public class EligibilityController {
 	private EligibilityService eligibilityService;
 
 	@Autowired
-	private FixedWidthDefaults fwDefaults;
+	private RapidDefaults rapidDefaults;
 	
 	@Autowired
 	private MSHDefaults mshDefaults;
@@ -101,7 +101,7 @@ public class EligibilityController {
 	public ResponseEntity<InquirePhnResponse> inquirePhn(@Valid @RequestBody InquirePhnRequest inquirePhnRequest) {
 
 		try {
-			R41Converter converter = new R41Converter(fwDefaults);
+			R41Converter converter = new R41Converter(rapidDefaults);
 			RPBSPPE0 r41Request = converter.convertRequest(inquirePhnRequest);
 			
 			RPBSPPE0 r41Response = eligibilityService.inquirePhn(r41Request);
@@ -127,7 +127,7 @@ public class EligibilityController {
 	public ResponseEntity<LookupPhnResponse> lookupPhn(@Valid @RequestBody LookupPhnRequest lookupPhnRequest) {
 
 		try {
-			R42Converter converter = new R42Converter(fwDefaults);
+			R42Converter converter = new R42Converter(rapidDefaults);
 			RPBSPPL0 r42Request = converter.convertRequest(lookupPhnRequest);
 			
 			RPBSPPL0 r42Response = eligibilityService.lookupPhn(r42Request);
