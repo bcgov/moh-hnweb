@@ -19,7 +19,8 @@
   </div>
   <br />
   <div v-if="searchOk">
-    <AppSimpleTable>
+    <hr />
+    <AppSimpleTable id="resultsTable">
       <thead>
       <tr>
         <th>PHN</th>
@@ -77,6 +78,7 @@ export default {
       this.result = null
       this.searching = true
       this.searchOk = false
+      this.$store.commit("alert/dismissAlert")
       try {
         const isValid = await this.v$.$validate()      
         if (!isValid) {
@@ -85,7 +87,7 @@ export default {
         }
         this.result = (await EligibilityService.lookupPhn({groupNumber: this.groupNumber, contractNumber: this.contractNumber})).data
         if (this.result.status === 'error') {
-          this.$store.commit('alert/setErrorAlert', this.result.messa)
+          this.$store.commit('alert/setErrorAlert', this.result.message)
           return
         }
 

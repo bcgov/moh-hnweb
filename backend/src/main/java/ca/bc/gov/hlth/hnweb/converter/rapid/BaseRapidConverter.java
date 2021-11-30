@@ -9,14 +9,14 @@ import ca.bc.gov.hlth.hnweb.model.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rapid.FixedWidthDefaults;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 
-public abstract class BaseFixedWidthConverter {
-	protected static final Logger logger = LoggerFactory.getLogger(BaseFixedWidthConverter.class);
+public abstract class BaseRapidConverter {
+	protected static final Logger logger = LoggerFactory.getLogger(BaseRapidConverter.class);
 
 	protected static final String STATUS_CODE_SUCCESS = "RPBS9014";
 	
 	protected FixedWidthDefaults fwDefaults;
 
-	public BaseFixedWidthConverter(FixedWidthDefaults fwDefaults) {
+	public BaseRapidConverter(FixedWidthDefaults fwDefaults) {
 		super();
 		this.fwDefaults = fwDefaults;
 	}
@@ -30,7 +30,7 @@ public abstract class BaseFixedWidthConverter {
 		} else if (StringUtils.equals(header.getIdentifier(), RPBSHeader.IDENTIFER_RESPONSE)) {
 			if (StringUtils.equals(statusCode, STATUS_CODE_SUCCESS)) {
 				response.setStatus(StatusEnum.SUCCESS);
-				response.setMessage("Line One\n" + statusText);
+				response.setMessage(statusText);
 			} else {
 				response.setStatus(StatusEnum.WARNING);
 				response.setMessage(statusCode + " " + statusText);

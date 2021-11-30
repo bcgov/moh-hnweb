@@ -11,7 +11,7 @@
     },
     methods: {
       resetAlert() {
-       this.$store.dispatch('alert/dismissAlert');
+       this.$store.commit('alert/dismissAlert');
       }
     }
   }

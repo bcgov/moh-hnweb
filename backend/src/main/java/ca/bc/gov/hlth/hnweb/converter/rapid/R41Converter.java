@@ -9,7 +9,7 @@ import ca.bc.gov.hlth.hnweb.model.rapid.FixedWidthDefaults;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0;
 
-public class R41Converter extends BaseFixedWidthConverter {
+public class R41Converter extends BaseRapidConverter {
 	//private static final String TRAN_CODE = "RPBSPPE0";
 	private static final String TRAN_CODE = "RPBSPPMC";
 

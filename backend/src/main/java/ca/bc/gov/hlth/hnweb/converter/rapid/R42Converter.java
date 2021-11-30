@@ -12,7 +12,7 @@ import ca.bc.gov.hlth.hnweb.model.rapid.PL0Beneficary;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPL0;
 
-public class R42Converter extends BaseFixedWidthConverter {
+public class R42Converter extends BaseRapidConverter {
 	private static final String TRAN_CODE = "RPBSPPL0";
 
 	public R42Converter(FixedWidthDefaults fwDefaults) {
@@ -65,47 +65,6 @@ public class R42Converter extends BaseFixedWidthConverter {
 	@Override
 	public String getTranCode() {
 		return TRAN_CODE;
-	}
-	
-	public static void main(String[] args) {
-		System.out.println("6337109 valid " + isValidMod10("6337109"));
-		
-		System.out.println("6243109 valid " + isValidMod10("6243109"));
-	}
-	
-	private static boolean isValidMod10(String mod10Str)
-	{
-		int numDigits = mod10Str.length();
-		int sum = 0;
-		int tmpDigit = 0;
-		if (mod10Str.length()%2==0)
-		{//Even number of digits in String to check
-			for (int i=0;i<numDigits;i+=2)
-			{
-				//Odd Numbers
-				tmpDigit = Character.getNumericValue(mod10Str.charAt(i));
-				sum += tmpDigit==9?9:(tmpDigit*2)%9;
-				//Even Numbers
-				sum += Character.getNumericValue(mod10Str.charAt(i+1));
-			}
-		}
-		else
-		{//Odd Number of digits in String to check
-			for (int i=1;i<numDigits;i+=2)
-			{
-				//Odd Numbers
-				sum += Character.getNumericValue(mod10Str.charAt(i-1));
-				//Even Numbers
-				tmpDigit = Character.getNumericValue(mod10Str.charAt(i));
-				sum += tmpDigit==9?9:(tmpDigit*2)%9;
-			}
-			//Last odd Number
-			sum += Character.getNumericValue(mod10Str.charAt(numDigits-1));
-		}
-		if ((sum %10) == 0)
-			return true;
-		else
-			return false;
 	}
 
 }
