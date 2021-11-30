@@ -64,7 +64,6 @@ export default {
             return
           }
           this.$emit('update-resident', this.phn)
-          this.$store.commit('alert/setSuccessAlert', 'Search complete')
         } catch (err) {
           console.log(`Error ${err}`)
           this.$store.commit('alert/setErrorAlert', `${err}`)

@@ -1,19 +1,19 @@
 <template>
-  <div  v-if="action === this.PAGE_ACTION.PHN_SEARCH">
+  <div v-if="pageAction === this.PAGE_ACTION.PHN_SEARCH">
     <ResidentPHN @update-resident="updateResident" />
   </div>
-  <div v-if="action === this.PAGE_ACTION.STUDENT_REGISTRATION">
-    <ResidentDetails :resident="this.result" @register-resident="registerResident" />
+  <div v-else-if="pageAction === this.PAGE_ACTION.STUDENT_REGISTRATION">
+    <ResidentDetails :resident="this.personResult.person" @register-resident="registerResident" />
   </div>
-  <div v-if="action === this.PAGE_ACTION.CONFIRMATION">
+  <div v-else-if="pageAction === this.PAGE_ACTION.CONFIRMATION">
     <AppRow>
       <AppCol class="col3">
-        <AppOutput label="PHN" :value="registrationResult.phn"/>
+        <AppOutput label="PHN" :value="this.registrationResult.person.phn"/>
       </AppCol>
     </AppRow>
     <AppRow>
       <AppCol>
-        <AppOutput label="Name" :value="registrationResult.name"/>
+        <AppOutput label="Name" :value="this.registrationResult.person.name"/>
       </AppCol>
     </AppRow>
   </div>
@@ -57,10 +57,14 @@ export default {
     return {
       pageAction: null,
       registrationOk: false,
-      result: {
-        phn: '',
-        name: '',
-        dateOfBirth: '',
+      personResult: {
+        person: {
+          phn: '',
+          name: '',
+          dateOfBirth: '',
+        },
+        status: '',
+        message: null
       },
       registrationResult: {
         phn: '',
@@ -82,12 +86,12 @@ export default {
       console.log("updateResident")
       console.log(`Resident: [PHN: ${phn}]`
       )
-      this.result = (await EnrollmentService.getPersonDemographics({
+      this.personResult = (await EnrollmentService.getPersonDemographics({
         phn: phn
       }))
       console.log('Result returned')
-      console.log(`Result: [PHN: ${this.result.phn}] [Name: ${this.result.name}] [DOB: ${this.result.dateOfBirth}]`)
-      this.action = this.PAGE_ACTION.STUDENT_REGISTRATION
+      console.log(`Result: [PHN: ${this.personResult.person.phn}] [Name: ${this.personResult.person.name}] [DOB: ${this.personResult.person.dateOfBirth}]`)
+      this.pageAction = this.PAGE_ACTION.STUDENT_REGISTRATION
     },
     async registerResident(personDetails) {
       console.log("registerResident")
@@ -97,8 +101,8 @@ export default {
         ...personDetails
       }))
       console.log('Registration Result returned')
-      console.log(`Registration Result: [PHN: ${this.registrationResult.phn}] [Name: ${this.registrationResult.name}] [DOB: ${this.registrationResult.errorMessage}]`)
-      this.action = this.PAGE_ACTION.CONFIRMATION
+      console.log(`Registration Result: [PHN: ${this.registrationResult.person.phn}] [Name: ${this.registrationResult.person.name}] [DOB: ${this.registrationResult.person.errorMessage}]`)
+      this.pageAction = this.PAGE_ACTION.CONFIRMATION
     }
   },
 };
