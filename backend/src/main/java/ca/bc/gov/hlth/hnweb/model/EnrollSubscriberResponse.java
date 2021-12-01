@@ -1,40 +1,49 @@
 package ca.bc.gov.hlth.hnweb.model;
 
-/**
- * Response message for API call to enroll a subscriber 
- *
- */
-public class EnrollSubscriberResponse {
+import java.time.LocalDate;
+import java.util.Date;
 
-	private String messageId;
+public class EnrollSubscriberResponse extends BaseResponse {
 
-	private String acknowledgementCode;
-	
-	private String acknowledgementMessage;
-	
-	public String getMessageId() {
-		return messageId;
+	private String phn;
+
+	private String givenName;
+
+	private String secondName;
+
+	private String surname;
+
+	public String getPhn() {
+		return phn;
 	}
 
-	public void setMessageId(String messageId) {
-		this.messageId = messageId;
+	public void setPhn(String phn) {
+		this.phn = phn;
 	}
 
-	public String getAcknowledgementCode() {
-		return acknowledgementCode;
+	public String getGivenName() {
+		return givenName;
 	}
 
-	public void setAcknowledgementCode(String acknowledgementCode) {
-		this.acknowledgementCode = acknowledgementCode;
+	public void setGivenName(String givenName) {
+		this.givenName = givenName;
 	}
 
-	public String getAcknowledgementMessage() {
-		return acknowledgementMessage;
+	public String getSecondName() {
+		return secondName;
 	}
 
-	public void setAcknowledgementMessage(String acknowledgementMessage) {
-		this.acknowledgementMessage = acknowledgementMessage;
+	public void setSecondName(String secondName) {
+		this.secondName = secondName;
 	}
-	
+
+	public String getSurname() {
+		return surname;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
 	
 }

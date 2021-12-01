@@ -4,10 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import ca.bc.gov.hlth.hnweb.model.Address;
-import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
-import ca.bc.gov.hlth.hnweb.model.Name;
-import ca.bc.gov.hlth.hnweb.model.Telecommunication;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZHD;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIA;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIH;
@@ -67,9 +63,9 @@ public abstract class BaseConverter {
 		V2MessageUtil.setIn1Values(in1, null, null, null, dateOnlyFormatter.format(planEffectiveDate), null);
 	}
 	
-	protected void populateZIA(ZIA zia, LocalDate bcResidencyDate, String familyName, String name, String areaCode, String telephone, String immigrationOrVisaCode, String priorResidenceCode) throws HL7Exception {
+	protected void populateZIA(ZIA zia, LocalDate bcResidencyDate, String familyName, String firstGivenName, String secondGivenName, String areaCode, String telephone, String immigrationOrVisaCode, String priorResidenceCode) throws HL7Exception {
 		
-		V2MessageUtil.setZiaValues(zia, dateOnlyFormatter.format(bcResidencyDate), familyName, name,  areaCode, telephone, immigrationOrVisaCode, priorResidenceCode);
+		V2MessageUtil.setZiaValues(zia, dateOnlyFormatter.format(bcResidencyDate), familyName, firstGivenName, secondGivenName,  areaCode, telephone, immigrationOrVisaCode, priorResidenceCode);
 	}
 	
 	protected void populateZIAExtendedAddress1(ZIA zia, String addressLine1, String city, String province, String postalCode) throws HL7Exception {

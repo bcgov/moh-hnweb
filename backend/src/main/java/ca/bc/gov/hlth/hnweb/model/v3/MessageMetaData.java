@@ -1,4 +1,4 @@
-package ca.bc.gov.hlth.hnweb.service;
+package ca.bc.gov.hlth.hnweb.model.v3;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
