@@ -1,21 +1,28 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.UUID;
 
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ca.bc.gov.hlth.hnweb.converter.XmlConverter;
 import ca.bc.gov.hlth.hnweb.converter.MSHDefaults;
 import ca.bc.gov.hlth.hnweb.converter.R50Converter;
-import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
+import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
+import ca.bc.gov.hlth.hnweb.model.R50Response;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
@@ -46,7 +53,7 @@ public class EnrollmentController {
 	private MSHDefaults mshDefaults;
 	
 	@PostMapping("/enroll-subscriber")
-	public EnrollSubscriberResponse enrollSubscriber(@Valid @RequestBody EnrollSubscriberRequest enrollSubscriberRequest) throws HL7Exception, IOException {
+	public ResponseEntity<EnrollSubscriberResponse> enrollSubscriber(@Valid @RequestBody EnrollSubscriberRequest enrollSubscriberRequest) throws HL7Exception, IOException {
 		
 		logger.info("Subscriber enroll request: {} ", enrollSubscriberRequest.getPhn());
 		
@@ -54,30 +61,61 @@ public class EnrollmentController {
 		R50 r50 = converter.convertRequest(enrollSubscriberRequest);
 		String transactionId = UUID.randomUUID().toString();		
 		Message r50Message = enrollmentService.enrollSubscriber(r50, transactionId);		
-		EnrollSubscriberResponse enrollSubscriberResponse = converter.convertResponse(r50Message);
+		R50Response r50Response = converter.convertResponse(r50Message);
+		EnrollSubscriberResponse enrollSubscriberResponse = converter.buildEnrollSubscribeResponse(r50Response);
+		ResponseEntity<EnrollSubscriberResponse> responseEntity = ResponseEntity.ok(enrollSubscriberResponse);
 		
-		/*
-		 * TODO (daveb-hni) Add the wrapper to the returned response
-		 * ResponseEntity<CheckEligibilityResponse> response = ResponseEntity.ok(enrollSubscriberResponse);		 * 		
-		 */
+		logger.info("Subscriber enroll Response: {} ", r50Response.getAcknowledgementMessage());
 		
-		logger.info("Subscriber enroll Response: {} ", enrollSubscriberResponse.getAcknowledgementMessage());
-		
-		return enrollSubscriberResponse;
+		return responseEntity;
 	}
 	
 	@PostMapping("/person-details")
-	public GetPersonDetailsResponse getDemographicDetails(@Valid @RequestBody GetPersonDetailsRequest requestObj) throws HL7Exception, IOException {
+	public ResponseEntity<GetPersonDetailsResponse> getDemographicDetails(@Valid @RequestBody GetPersonDetailsRequest requestObj) throws HL7Exception, IOException {
 		
 		logger.info("Demographic request: {} ", requestObj.getPhn());
 			
-		String transactionId = UUID.randomUUID().toString();	
+		String transactionId = UUID.randomUUID().toString();
+		XmlConverter converter = new XmlConverter();
 		
-		GetPersonDetailsResponse personDetails  = enrollmentService.getDemographics(requestObj.getPhn(), transactionId);
+		String xmlString = converter.convertRequest(requestObj.getPhn());
+		ResponseEntity<String> demoGraphicsResponse = enrollmentService.getDemographics(xmlString, transactionId);	
 		
-		logger.info("Get Person Details Response: {} ", personDetails.getMessage().getDetails());
+		//getDemoGraphicsResponse();
+		GetPersonDetailsResponse personDetails = converter.convertResponse(demoGraphicsResponse.getBody());
+		ResponseEntity<GetPersonDetailsResponse> responseEntity = ResponseEntity.ok(personDetails);
 		
-		return personDetails;
+		return responseEntity;
 	}
+	
+	private String getDemoGraphicsResponse() throws IOException {
+		// our XML file for this example
+		File xmlFile = new File("src\\main\\resources\\GetDemographicsResponse.xml");
+		        
+		 // Let's get XML file as String using BufferedReader
+		 // FileReader uses platform's default character encoding
+		 // if you need to specify a different encoding, 
+		 // use InputStreamReader
+		 Reader fileReader;
+				
+		 fileReader = new FileReader(xmlFile);
+				
+		 BufferedReader bufReader = new BufferedReader(fileReader);
+		        
+		 StringBuilder sb = new StringBuilder();
+		 String line = bufReader.readLine();
+		 while( line != null){
+		      sb.append(line).append("\n");
+		      line = bufReader.readLine();
+		  }
+		 String xml2String = sb.toString();
+		 logger.info("XML to String using BufferedReader : ");
+		 //logger.info(xml2String);
+		        
+		  bufReader.close();
+		        
+		  return xml2String;
+	}
+	
 	
 }

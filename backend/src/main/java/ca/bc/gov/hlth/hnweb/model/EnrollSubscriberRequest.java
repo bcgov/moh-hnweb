@@ -10,7 +10,11 @@ public class EnrollSubscriberRequest {
 	
 	private String phn;
 	
-	private String fullName;
+	private String familyName;
+	
+	private String firstGivenName;
+	
+	private String secondGivenName;
 		
 	private String gender;
 	
@@ -68,14 +72,6 @@ public class EnrollSubscriberRequest {
 		this.phn = phn;
 	}
 
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(String surname) {
-		this.fullName = surname;
-	}
-
 	public String getGender() {
 		return gender;
 	}
@@ -90,6 +86,30 @@ public class EnrollSubscriberRequest {
 
 	public void setGroupnumber(String groupnumber) {
 		this.groupnumber = groupnumber;
+	}
+
+	public String getFamilyName() {
+		return familyName;
+	}
+
+	public void setFamilyName(String familyName) {
+		this.familyName = familyName;
+	}
+
+	public String getFirstGivenName() {
+		return firstGivenName;
+	}
+
+	public void setFirstGivenName(String firstGivenName) {
+		this.firstGivenName = firstGivenName;
+	}
+
+	public String getSecondGivenName() {
+		return secondGivenName;
+	}
+
+	public void setSecondGivenName(String secondGivenName) {
+		this.secondGivenName = secondGivenName;
 	}
 
 	public String getImmigrationCode() {

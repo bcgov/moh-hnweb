@@ -14,11 +14,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import ca.bc.gov.hlth.hnweb.config.HL7Config;
-import ca.bc.gov.hlth.hnweb.model.GetDemographicsRequest;
-import ca.bc.gov.hlth.hnweb.model.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
+import ca.bc.gov.hlth.hnweb.model.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
+import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
+import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
+import ca.bc.gov.hlth.hnweb.model.v3.MessageMetaData;
 import ca.bc.gov.hlth.hnweb.serialization.HL7Serializer;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
@@ -75,41 +77,22 @@ public class EnrollmentService {
 		return parseR50v2ToAck(response.getBody());
 	}
 	
+	 
 	  /**
-	   * Retrieves GetDemographicsResponse object based on a unique identifier
-	   *
-	   * @param params GetDemographicsQuery - Query parameter
-	   * @param mmd MessageMetaData - Meta Data for message
-	   * @return GetDemographicsResponse
-	   * @throws HL7Exception
-	   */
-	  public GetPersonDetailsResponse getDemographics(String phn, String transactionId)
+	 * @param xmlString
+	 * @param transactionId
+	 * @return
+	 * @throws HL7Exception
+	 * @throws IOException
+	 */
+	public ResponseEntity<String> getDemographics(String xmlString, String transactionId)
 	      throws HL7Exception, IOException {
 		  
-		logger.debug("Get Demographics details for PHN [{}]; Transaction ID [{}]", phn, transactionId);
-		
-		HL7Serializer hl7 = new HL7Serializer(new HL7Config());
-		MessageMetaData mmd = new MessageMetaData(dataEntererExt, sourceSystemOverride, organization);
-		GetDemographicsRequest queryObj = buildDemographicsRequest(phn);
-		
-	    Object formattedRequest = hl7.toXml(queryObj, mmd);
-	    String historyRequest = formattedRequest.toString();
-	
-	    //ResponseEntity<String> getDemoResponse = postDemographicRequest(historyRequest, transactionId); 
-	    String getDemoResponse = getDemoGraphicsResponse();
+	    ResponseEntity<String> getDemoResponse = postDemographicRequest(xmlString, transactionId); 
+	    logger.debug("Response Status: {} ; Message:\n{}", getDemoResponse.getStatusCode(), getDemoResponse.getBody());
 	    
-	    //GetDemographicsResponse demographicsResponse = hl7.fromXml(getDemoResponse.getBody().toString(), GetDemographicsResponse.class);
-	    GetDemographicsResponse demographicsResponse = hl7.fromXml(getDemoResponse, GetDemographicsResponse.class);
-
-	     if (demographicsResponse.getResultCount() == 0) {
-	    	 logger.debug("Error performing get demographics");
-	    	 throw new HL7Exception("Error performing request for the phn : {}, phn");
-	      }
-	     
-	    GetPersonDetailsResponse personDetails = buildPersonDetailsResponse(demographicsResponse);
-	    logger.info("Person details: {}", personDetails.toString());
-	     
-	    return personDetails;
+	    return getDemoResponse;
+	
 	 
 	 }
 	  
@@ -154,29 +137,7 @@ public class EnrollmentService {
     	return message;
     }
     
-    private GetDemographicsRequest buildDemographicsRequest(String phn) {
-    	
-    	GetDemographicsRequest getDemographics = new GetDemographicsRequest();
-    	getDemographics.setPhn(phn);
-    	getDemographics.setPhn(mrn_source);
-    	logger.debug("Creating request for the phn : {}", getDemographics.getPhn());
-    	
-    	return getDemographics;
-    	
-    }
-    
-    private GetPersonDetailsResponse buildPersonDetailsResponse(GetDemographicsResponse respObj)  {
-    	
-    	GetPersonDetailsResponse personDetails = new GetPersonDetailsResponse();
-    	personDetails.setPerson(respObj.getPerson());
-    	personDetails.setMessage(respObj.getMessage());
-    	
-    	logger.info(personDetails.toString());
-    	
-    	return personDetails;
-    	
-    	
-    }
+
     
 	/**
 	 * TODO (daveb-hni) The message is currently being adjusted to avoid an error in the endpoint. Confirm if this is needed when a response is received to the email that has been sent to the endpoint creator. 
@@ -194,33 +155,6 @@ public class EnrollmentService {
 		return  r50v2.replaceFirst("\r", "||\r");
 	}
 	
-	private String getDemoGraphicsResponse() throws IOException {
-		// our XML file for this example
-		File xmlFile = new File("src\\main\\resources\\GetDemographicsResponse.xml");
-		        
-		 // Let's get XML file as String using BufferedReader
-		 // FileReader uses platform's default character encoding
-		 // if you need to specify a different encoding, 
-		 // use InputStreamReader
-		 Reader fileReader;
-				
-		 fileReader = new FileReader(xmlFile);
-				
-		 BufferedReader bufReader = new BufferedReader(fileReader);
-		        
-		 StringBuilder sb = new StringBuilder();
-		 String line = bufReader.readLine();
-		 while( line != null){
-		      sb.append(line).append("\n");
-		      line = bufReader.readLine();
-		  }
-		 String xml2String = sb.toString();
-		 logger.info("XML to String using BufferedReader : ");
-		 //logger.info(xml2String);
-		        
-		  bufReader.close();
-		        
-		  return xml2String;
-	}
+
 	
 }

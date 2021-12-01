@@ -1,4 +1,4 @@
-package ca.bc.gov.hlth.hnweb.model;
+package ca.bc.gov.hlth.hnweb.model.v3;
 
 public class MedicalRecordNumber {
   private String mrn;

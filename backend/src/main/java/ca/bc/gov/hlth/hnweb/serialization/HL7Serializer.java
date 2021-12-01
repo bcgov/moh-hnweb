@@ -1,15 +1,15 @@
 package ca.bc.gov.hlth.hnweb.serialization;
 
 import ca.bc.gov.hlth.hnweb.config.HL7Config;
-import ca.bc.gov.hlth.hnweb.model.Address;
-import ca.bc.gov.hlth.hnweb.model.GetDemographicsRequest;
-import ca.bc.gov.hlth.hnweb.model.GetDemographicsResponse;
-import ca.bc.gov.hlth.hnweb.model.MedicalRecordNumber;
-import ca.bc.gov.hlth.hnweb.model.Message;
-import ca.bc.gov.hlth.hnweb.model.Name;
-import ca.bc.gov.hlth.hnweb.model.Person;
 import ca.bc.gov.hlth.hnweb.model.Telecommunication;
-import ca.bc.gov.hlth.hnweb.service.MessageMetaData;
+import ca.bc.gov.hlth.hnweb.model.v3.Address;
+import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
+import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
+import ca.bc.gov.hlth.hnweb.model.v3.MedicalRecordNumber;
+import ca.bc.gov.hlth.hnweb.model.v3.Message;
+import ca.bc.gov.hlth.hnweb.model.v3.MessageMetaData;
+import ca.bc.gov.hlth.hnweb.model.v3.Name;
+import ca.bc.gov.hlth.hnweb.model.v3.Person;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.basic.DateConverter;
@@ -51,7 +51,7 @@ public class HL7Serializer {
 
     XStream.setupDefaultSecurity(xs); // to be removed after 1.5
     xs.allowTypesByWildcard(new String[] {"ca.bc.gov.hlth.hnweb.model.**"});
-    xs.allowTypes(new Class[] {ca.bc.gov.hlth.hnweb.model.GetDemographicsResponse.class});
+    xs.allowTypes(new Class[] {ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse.class});
 
     xs.registerConverter(new DateConverter(hl4DateFormat, new String[] {hl4DateFormat}, true));
     xs.aliasType("getDemographics", GetDemographicsRequest.class);

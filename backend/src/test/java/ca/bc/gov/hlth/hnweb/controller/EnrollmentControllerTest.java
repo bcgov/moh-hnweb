@@ -12,22 +12,20 @@ import java.time.LocalDate;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
-import ca.bc.gov.hlth.hnweb.model.GetDemographicsRequest;
-import ca.bc.gov.hlth.hnweb.model.GetDemographicsResponse;
+import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
-import ca.bc.gov.hlth.hnweb.service.EnrollmentService;
+import ca.bc.gov.hlth.hnweb.model.StatusEnum;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -69,11 +67,11 @@ public class EnrollmentControllerTest {
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
 
 		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();
-		EnrollSubscriberResponse enrollSubscriberResponse = enrollmentController.enrollSubscriber(enrollSubscriberRequest);
+		ResponseEntity<EnrollSubscriberResponse> enrollSubscriber = enrollmentController.enrollSubscriber(enrollSubscriberRequest);
 
 		//Check the response
-		assertEquals("AE", enrollSubscriberResponse.getAcknowledgementCode());
-		assertEquals("NHR529E", enrollSubscriberResponse.getAcknowledgementMessage());
+		assertEquals(StatusEnum.ERROR, enrollSubscriber.getBody().getStatus());
+		assertEquals("NHR529E", enrollSubscriber.getBody().getMessage());
 		
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -82,7 +80,7 @@ public class EnrollmentControllerTest {
         assertEquals("/", recordedRequest.getPath());       
     }
     
-    @Disabled
+    
     @Test
     void testGetDemographicsDetails_Success() throws Exception {    	
         
@@ -93,15 +91,16 @@ public class EnrollmentControllerTest {
         GetPersonDetailsRequest getPersonQuery = new GetPersonDetailsRequest();
         getPersonQuery.setPhn("9862716574");
         
-        GetPersonDetailsResponse response = enrollmentController.getDemographicDetails(getPersonQuery);
-    	assertEquals("9862716574", response.getPerson().getPhn());	
-    	assertEquals("Robert", response.getPerson().getDocumentedName().getFirstGivenName());
+        ResponseEntity<GetPersonDetailsResponse> response = enrollmentController.getDemographicDetails(getPersonQuery);
+        GetPersonDetailsResponse getPersonDetailsResponse = response.getBody();
+    	assertEquals("9862716574",  getPersonDetailsResponse.getPhn());	
+    	//assertEquals("Robert", response.getPerson().getDocumentedName().getFirstGivenName());
 		
 		//Check the client request is sent as expected
-        //RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
-        //assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
-        //assertEquals(MediaType.TEXT_XML_VALUE.toString(), recordedRequest.getHeader(CONTENT_TYPE));
-        //assertEquals("/", recordedRequest.getPath());
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());
     	
     	//mockBackEnd.close();
     }
@@ -120,7 +119,9 @@ public class EnrollmentControllerTest {
     private EnrollSubscriberRequest createEnrollSubscriberRequest() {
 		EnrollSubscriberRequest enrollSubscriberRequest = new EnrollSubscriberRequest();
 		enrollSubscriberRequest.setPhn("123456789");
-		enrollSubscriberRequest.setFullName("Test");
+		enrollSubscriberRequest.setFirstGivenName("FirstName");
+		enrollSubscriberRequest.setSecondGivenName("SecondName");
+		enrollSubscriberRequest.setFamilyName("FamilyName");
 		enrollSubscriberRequest.setGender("M");
 		enrollSubscriberRequest.setResidenceDate(LocalDate.now());
 		enrollSubscriberRequest.setCoverageEffectiveDate(LocalDate.now());

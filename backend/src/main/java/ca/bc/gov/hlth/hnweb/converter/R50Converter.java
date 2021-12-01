@@ -1,13 +1,15 @@
 package ca.bc.gov.hlth.hnweb.converter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
+import ca.bc.gov.hlth.hnweb.model.R50Response;
+import ca.bc.gov.hlth.hnweb.model.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIA;
-import ca.bc.gov.hlth.hnweb.util.V2MessageUtil.AddressType;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.util.Terser;
@@ -25,6 +27,10 @@ public class R50Converter extends BaseConverter {
 	private static final String RECEIVING_APPLICATION = "RAICHK-BNF-CVST";
 	
 	private String phn;
+	
+	public enum AcknowledgementCode {
+		AA, AE, AR;
+	}
 		
 	public R50Converter(MSHDefaults mshDefaults) {
 		super(mshDefaults);
@@ -41,7 +47,7 @@ public class R50Converter extends BaseConverter {
     	populateZHD(r50.getZHD());
     	populatePID(r50.getPID(), phn);    	    	
     	populateIN1(r50.getIN1(), request.getCoverageEffectiveDate());
-    	populateZIA(zia, request.getResidenceDate(), request.getFullName(), request.getFullName(), request.getAreaCode(),request.getTelephone(), request.getImmigrationCode(), request.getPriorResidenceCode());
+    	populateZIA(zia, request.getResidenceDate(), request.getFamilyName(), request.getFirstGivenName(), request.getSecondGivenName(), request.getAreaCode(),request.getTelephone(), request.getImmigrationCode(), request.getPriorResidenceCode());
     	populateZIAExtendedAddress1(zia, request.getAddress(), request.getCity(), request.getProvince(), request.getPostalCode());
     	populateZIAExtendedAddress2(zia, request.getMailingAddress(), request.getMailingAddressCity(), request.getMailingAddressProvince(), request.getMailingAddressPostalCode());
     	populateZIH(r50.getZIH()); 
@@ -50,8 +56,8 @@ public class R50Converter extends BaseConverter {
 		return r50;
 	}
 	
-	public EnrollSubscriberResponse convertResponse(Message message) throws HL7Exception {
-    	EnrollSubscriberResponse enrollSubscriberResponse = new EnrollSubscriberResponse();
+	public R50Response convertResponse(Message message) throws HL7Exception {
+    	R50Response r50Response = new R50Response();
     	
     	// Uses a Terser to access the message info
     	Terser terser = new Terser(message);
@@ -65,11 +71,26 @@ public class R50Converter extends BaseConverter {
     	
     	logger.debug("ACK message response code [{}] and message [{}]", acknowledgementCode, acknowledgementMessage);
     	
-    	enrollSubscriberResponse.setMessageId(messageId);
-    	enrollSubscriberResponse.setAcknowledgementCode(acknowledgementCode);
-		enrollSubscriberResponse.setAcknowledgementMessage(acknowledgementMessage);
+    	r50Response.setMessageId(messageId);
+    	r50Response.setAcknowledgementCode(acknowledgementCode);
+    	r50Response.setAcknowledgementMessage(acknowledgementMessage);
     	
-    	return enrollSubscriberResponse;
+    	return r50Response;
+	}
+	
+	public EnrollSubscriberResponse buildEnrollSubscribeResponse(R50Response r50Response ) {
+		EnrollSubscriberResponse response = new EnrollSubscriberResponse();
+		String ackCode = r50Response.getAcknowledgementCode();
+		
+		if(StringUtils.equals(ackCode, AcknowledgementCode.AE.name())) {
+			response.setStatus(StatusEnum.ERROR);
+			response.setMessage(r50Response.getAcknowledgementMessage());
+		} else if (StringUtils.equals(ackCode, AcknowledgementCode.AA.name())) {
+			response.setStatus(StatusEnum.SUCCESS);
+			response.setMessage(r50Response.getAcknowledgementMessage());
+		}
+				
+		return response;
 	}
 	
 	protected String getReceivingApplication() {

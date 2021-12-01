@@ -140,16 +140,18 @@ public class V2MessageUtil {
      * @param priorResidenceCode
      * @throws HL7Exception
      */
-    public static void setZiaValues(ZIA zia, String bcResidencyDate, String familyName, String name,  String areaCode, String phoneNumber, String immigrationOrVisaCode, String priorResidenceCode) throws HL7Exception {
+    public static void setZiaValues(ZIA zia, String bcResidencyDate, String familyName, String firstGivenName, String secondGivenName,  String areaCode, String phoneNumber, String immigrationOrVisaCode, String priorResidenceCode) throws HL7Exception {
     	//e.g. ZIA||20210101|||||||||||||HELP^RERE^^^^^L|898 RETER ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^H~123 UIYUI ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^M|^PRN^PH^^^250^8578974|||||||S|AB^M
-    	
+    	String givenName  = firstGivenName + " " + secondGivenName;
     	zia.getZia2_BCResidencyDate().parse(bcResidencyDate);
     	zia.getZia15_ExtendedPersonName().parse(familyName);   	
-    	zia.getZia15_ExtendedPersonName().getGivenName().parse(name);
+    	zia.getZia15_ExtendedPersonName().getGivenName().parse(givenName);
     	zia.getZia15_ExtendedPersonName().getNameTypeCode().parse("L");;
     
     	
     	zia.getZia17_ExtendedTelephoneNumber().getAreaCityCode().parse(areaCode);
+    	zia.getZia17_ExtendedTelephoneNumber().getTelecommunicationEquipmentType().parse("PH");
+    	
     	zia.getZia17_ExtendedTelephoneNumber().getPhoneNumber().parse(phoneNumber);
     	zia.getZia17_ExtendedTelephoneNumber().getTelecommunicationUseCode().parse(TelePhoneUseCode.PRN.name());
 

@@ -14,10 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.hlth.hnweb.config.HL7Config;
-import ca.bc.gov.hlth.hnweb.model.GetDemographicsRequest;
-import ca.bc.gov.hlth.hnweb.model.GetDemographicsResponse;
+import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
+import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
+import ca.bc.gov.hlth.hnweb.model.v3.MessageMetaData;
 import ca.bc.gov.hlth.hnweb.serialization.HL7Serializer;
-import ca.bc.gov.hlth.hnweb.service.MessageMetaData;
 
 
 public class HL7SerializerTest {
