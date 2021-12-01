@@ -26,11 +26,15 @@
       </AppRow>
        <AppRow>
         <AppCol class="col4">
-          <AppInput :e-model="v$.immigrationCode" id="groupMemberNumber" label="Group Member Number - Optional" type="text" v-model.trim="groupMemberNumber" />
+          <AppInput :e-model="v$.groupMemberNumber" id="groupMemberNumber" label="Group Member Number - Optional" type="text" v-model.trim="groupMemberNumber" />
         </AppCol>
         <AppCol class="col4">
           <AppDateInput :e-model="v$.visaIssueDate" id ="visaIssueDate" label="Visa Issue Date" v-model="visaIssueDate" />          
         </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppButton :disabled="searching" mode="primary" type="submit">Submit</AppButton>
+        <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
       </AppRow>
       <AppRow>
         <AppCol class="col4">
@@ -134,10 +138,6 @@
         </AppCol>
       </AppRow>
 
-      <AppRow>
-        <AppButton :disabled="searching" mode="primary" type="submit">Submit</AppButton>
-        <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
-      </AppRow>
     </form>
   </div>
 </template>
@@ -156,7 +156,7 @@ import { INPUT_DATE_FORMAT } from '../../../util/constants'
 
 import EnrollmentService from '../../../services/EnrollmentService'
 import useVuelidate from '@vuelidate/core'
-import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../../util/validators'
+import { validateNumber, validateGroupMemberNumber, validateDepartmentNumber, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT } from '../../../util/constants'
@@ -242,12 +242,12 @@ export default {
         this.searching = true
         try {
           const isValid = true
-          // await this.v$.$validate()
-          // if (!isValid) {
-          //   this.$store.commit('alert/setErrorAlert');
-          //   this.searching = false
-          //   return
-          // }
+          await this.v$.$validate()
+          if (!isValid) {
+            this.$store.commit('alert/setErrorAlert');
+            this.searching = false
+            return
+          }
           console.log('Emitting')
           this.$emit('register-resident', {
             phn: this.resident.phn,
@@ -328,11 +328,22 @@ export default {
       return {
         groupNumber: {
           required,
+          validateNumber: helpers.withMessage(
+            VALIDATE_GROUP_NUMBER_MESSAGE, validateNumber
+          )
         },
         immigrationCode: {required},
-        groupMemberNumber: {},
+        groupMemberNumber: {
+          validateGroupMemberNumber: helpers.withMessage(
+            VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, validateGroupMemberNumber
+          )
+        },
         visaIssueDate: {required},
-        departmentNumber: {},
+        departmentNumber: {
+          validateDepartmentNumber: helpers.withMessage(  
+            VALIDATE_DEPARTMENT_NUMBER_MESSAGE, validateDepartmentNumber
+          )
+        },
         visaExpiryDate: {required},
         residenceDate: {required},
         coverageEffectiveDate: {required},
