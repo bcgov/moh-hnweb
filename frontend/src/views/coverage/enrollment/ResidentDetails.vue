@@ -7,7 +7,7 @@
     </AppRow>
     <AppRow>
       <AppCol class="col3">
-        <AppOutput label="Name" :value="resident.name"/>
+        <AppOutput label="Name" :value="fullName"/>
       </AppCol>
     </AppRow>
     <AppRow>
@@ -26,7 +26,7 @@
       </AppRow>
        <AppRow>
         <AppCol class="col4">
-          <AppInput :e-model="v$.immigrationCode" id="groupMemberNumber" label="Group Member Number - Optional" type="text" v-model.trim="groupMemberNumber" />
+          <AppInput :e-model="v$.groupMemberNumber" id="groupMemberNumber" label="Group Member Number - Optional" type="text" v-model.trim="groupMemberNumber" />
         </AppCol>
         <AppCol class="col4">
           <AppDateInput :e-model="v$.visaIssueDate" id ="visaIssueDate" label="Visa Issue Date" v-model="visaIssueDate" />          
@@ -61,7 +61,17 @@
 
       <AppRow>
         <AppCol class="col7">
-          <AppInput :e-model="v$.address" id ="address" label="Home Address" v-model="address" />          
+          <AppInput :e-model="v$.address1" id ="address1" label="Home Address Line 1" v-model="address1" />          
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col7">
+          <AppInput :e-model="v$.address2" id ="address2" label="Line 2 - Optional" v-model="address2" />          
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col7">
+          <AppInput :e-model="v$.address3" id ="address3" label="Line 3 - Optional" v-model="address3" />          
         </AppCol>
       </AppRow>
       <AppRow>
@@ -69,13 +79,10 @@
           <AppInput :e-model="v$.city" id="city" label="City" type="text" v-model.trim="city" />
         </AppCol>
         <AppCol class="col4">
-          <AppInput :e-model="v$.province" id="province" label="Province" type="text" v-model.trim="province" />
+          <AppSelect :e-model="v$.province"  id="province" label="Province" v-model="province" :options="provinceOptions"/>
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col4">
-          <AppInput :e-model="v$.country" id="country" label="Country - Optional" type="text" v-model.trim="country" />
-        </AppCol>
         <AppCol class="col4">
           <AppInput :e-model="v$.postalCode" id="postalCode" label="Postal Code" type="text" v-model.trim="postalCode" />
         </AppCol>
@@ -83,7 +90,17 @@
 
       <AppRow>
         <AppCol class="col7">
-          <AppInput :e-model="v$.mailingAddress" id ="mailingAddress" label="Mailing Address (if different from home address)" v-model="mailingAddress" />          
+          <AppInput :e-model="v$.mailingAddress1" id ="mailingAddress1" label="Mailing Address (if different from home address)" v-model="mailingAddress1" />          
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col7">
+          <AppInput :e-model="v$.mailingAddress2" id ="mailingAddress2" label="Line 2 - Optional" v-model="mailingAddress2" />          
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col7">
+          <AppInput :e-model="v$.mailingAddress3" id ="mailingAddress3" label="Line 3 - Optional" v-model="mailingAddress3" />          
         </AppCol>
       </AppRow>
       <AppRow>
@@ -91,13 +108,10 @@
           <AppInput :e-model="v$.mailingAddressCity" id="mailingAddressCity" label="City" type="text" v-model.trim="mailingAddressCity" />
         </AppCol>
         <AppCol class="col4">
-          <AppInput :e-model="v$.mailingAddressProvince" id="mailingAddressProvince" label="Province" type="text" v-model.trim="mailingAddressProvince" />
+          <AppSelect :e-model="v$.mailingAddressProvince"  id="mailingAddressProvince" label="Province" v-model="mailingAddressProvince" :options="provinceOptions"/>
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col4">
-          <AppInput :e-model="v$.mailingAddressCountry" id="mailingAddressCountry" label="Country - Optional" type="text" v-model.trim="mailingAddressCountry" />
-        </AppCol>
         <AppCol class="col4">
           <AppInput :e-model="v$.mailingAddressPostalCode" id="mailingAddressPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddressPostalCode" />
         </AppCol>
@@ -105,7 +119,7 @@
 
       <AppRow>
         <AppCol class="col4">
-          <AppInput :e-model="v$.priorResidenceCode" id="priorResidenceCode" label="Prior Residence Code - Optional" type="text" v-model.trim="priorResidenceCode" />
+          <AppSelect :e-model="v$.priorResidenceCode"  id="priorResidenceCode" label="Prior Residence Code - Optional" v-model="priorResidenceCode" :options="priorResidenceOptions"/>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -136,18 +150,22 @@ import { INPUT_DATE_FORMAT } from '../../../util/constants'
 
 import EnrollmentService from '../../../services/EnrollmentService'
 import useVuelidate from '@vuelidate/core'
-import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../../util/validators'
+import { validateNumber, validateGroupMemberNumber, validateDepartmentNumber, validateTelephone, 
+        VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT } from '../../../util/constants'
+import { formatPersonName } from "../../../util/utils"
 
 export default {
     name: 'ResidentDetails',
     props: {
       resident: {
         phn: '',
-        name: 'Result Name',
-        dateOfBirth: '222222',
+        givenName: '',	
+        secondName: '',        
+        surname: '',
+        dateOfBirth: '',
       },
     },
     components: {
@@ -178,24 +196,65 @@ export default {
           coverageEffectiveDate: null,
           telephone: '',
           coverageCancellationDate: null,
-          address: '',
+          address1: '',
+          address2: '',
+          address3: '',
           city: '',
           province: '',
-          country: '',
           postalCode: '',
-          mailingAddress: '',
+          mailingAddress1: '',
+          mailingAddress2: '',
+          mailingAddress3: '',
           mailingAddressCity: '',
           mailingAddressProvince: '',
-          mailingAddressCountry: '',
           mailingAddressPostalCode: '',
           priorResidenceCode: '',
           otherProvinceHealthcareNumber: '',
           // Immigration Code drop down options
           immigrationCodeOptions: [
             { text: '', value: '' },
-            { text: 'Student Authorization', value: 'Student_Authorization' },
+            { text: 'Student Authorization', value: 'S' },
+          ],
+          provinceOptions: [
+            { text: '', value: '' },
+            { text: 'Alberta', value: 'AB' },
+            { text: 'British Columbia', value: 'BC' },
+            { text: 'Manitoba', value: 'MB' },
+            { text: 'New Brunswick', value: 'NB' },
+            { text: 'Newfoundland', value: 'NL' },
+            { text: 'Nova Scotia', value: 'NS' },
+            { text: 'Northwest Territories', value: 'NT' },
+            { text: 'Nunavut', value: 'NU' },
+            { text: 'Ontario', value: 'ON' },
+            { text: 'P.E.I', value: 'PE' },
+            { text: 'Quebec', value: 'QC' },
+            { text: 'Saskatchewan', value: 'SK' },
+            { text: 'Yukon', value: 'YT' },
+          ],
+          priorResidenceOptions: [
+            { text: '', value: '' },
+            { text: 'Alberta', value: 'AB' },
+            { text: 'Manitoba', value: 'MB' },
+            { text: 'New Brunswick', value: 'NB' },
+            { text: 'Newfoundland', value: 'NL' },
+            { text: 'Nova Scotia', value: 'NS' },
+            { text: 'Northwest Territories', value: 'NT' },
+            { text: 'Nunavut', value: 'NU' },
+            { text: 'Other Country', value: 'OC' },
+            { text: 'Ontario', value: 'ON' },
+            { text: 'P.E.I', value: 'PE' },
+            { text: 'Quebec', value: 'QC' },
+            { text: 'Saskatchewan', value: 'SK' },
+            { text: 'U.S.A', value: 'US' },
+            { text: 'Yukon', value: 'YT' },
+            { text: 'British Columbia', value: 'BC' },
           ],
         }
+    },
+    computed: {
+      fullName() {
+        return formatPersonName(this.resident)
+      },
     },
     methods: {
       async registerVisaResident() {
@@ -212,6 +271,9 @@ export default {
           console.log('Emitting')
           this.$emit('register-resident', {
             phn: this.resident.phn,
+            givenName: this.resident.givenName,	
+            secondName: this.resident.secondName,        
+            surname: this.resident.surname,
             groupNumber: this.groupNumber,
             immigrationCode: this.immigrationCode,
             groupMemberNumber: this.groupMemberNumber,
@@ -222,15 +284,17 @@ export default {
             coverageEffectiveDate: dayjs(this.coverageEffectiveDate).format(API_DATE_FORMAT),
             telephone: this.telephone,
             coverageCancellationDate: dayjs(this.coverageCancellationDate).format(API_DATE_FORMAT),
-            address: this.address,
+            address1: this.address1,
+            address2: this.address2,
+            address3: this.address3,
             city: this.city,
             province: this.province,
-            country: this.country,
             postalCode: this.postalCode,
-            mailingAddress: this.mailingAddress,
+            mailingAddress1: this.mailingAddress1,
+            mailingAddress2: this.mailingAddress2,
+            mailingAddress3: this.mailingAddress3,
             mailingAddressCity: this.mailingAddressCity,
             mailingAddressProvince: this.mailingAddressProvince,
-            mailingAddressCountry: this.mailingAddressCountry,
             mailingAddressPostalCode: this.mailingAddressPostalCode,
             priorResidenceCode: this.priorResidenceCode,
             otherProvinceHealthcareNumber: this.otherProvinceHealthcareNumber,
@@ -253,15 +317,17 @@ export default {
         this.coverageEffectiveDate = null,
         this.telephone = '',
         this.coverageCancellationDate = null,
-        this.address = '',
+        this.address1 = '',
+        this.address2 = '',
+        this.address3 = '',
         this.city = '',
         this.province = '',
-        this.country = '',
         this.postalCode = '',
-        this.mailingAddress = '',
+        this.mailingAddress1 = '',
+        this.mailingAddress2 = '',
+        this.mailingAddress3 = '',
         this.mailingAddressCity = '',
         this.mailingAddressProvince = '',
-        this.mailingAddressCountry = '',
         this.mailingAddressPostalCode = '',
         this.priorResidenceCode = '',
         this.otherProvinceHealthcareNumber = '',
@@ -278,25 +344,42 @@ export default {
       return {
         groupNumber: {
           required,
+          validateNumber: helpers.withMessage(
+            VALIDATE_GROUP_NUMBER_MESSAGE, validateNumber
+          )
         },
         immigrationCode: {required},
-        groupMemberNumber: {},
+        groupMemberNumber: {
+          validateGroupMemberNumber: helpers.withMessage(
+            VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, validateGroupMemberNumber
+          )
+        },
         visaIssueDate: {required},
-        departmentNumber: {},
+        departmentNumber: {
+          validateDepartmentNumber: helpers.withMessage(  
+            VALIDATE_DEPARTMENT_NUMBER_MESSAGE, validateDepartmentNumber
+          )
+        },
         visaExpiryDate: {required},
         residenceDate: {required},
         coverageEffectiveDate: {required},
-        telephone: {},
+        telephone: {
+          validateTelephone: helpers.withMessage(
+            VALIDATE_TELEPHONE_MESSAGE, validateTelephone
+          )
+        },
         coverageCancellationDate: {required},
-        address: {required},
+        address1: {required},
+        address2: {},
+        address3: {},
         city: {required},
         province: {required},
-        country: {required},
         postalCode: {required},
-        mailingAddress: {},
+        mailingAddress1: {},
+        mailingAddress2: {},
+        mailingAddress3: {},
         mailingAddressCity: {},
         mailingAddressProvince: {},
-        mailingAddressCountry: {},
         mailingAddressPostalCode: {},
         priorResidenceCode: {},
         otherProvinceHealthcareNumber: {},
