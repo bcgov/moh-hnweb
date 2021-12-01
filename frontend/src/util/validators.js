@@ -51,7 +51,7 @@ export function validateNumber(value) {
   if (value.length != 7) {
     return false
   }
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < value.length; i++) {
     if (isNaN(value.charAt(i))) {
       return false
     }
@@ -80,9 +80,25 @@ export function validateGroupMemberNumber(value) {
   if (value.length > 6) {
     return false
   }
-  var invalidChars = /[\\|^\&]/;  
-  if (invalidChars.test(value)) {
+  for (let i = 0; i < 7; i++) {
+    if (isNaN(value.charAt(i))) {
+      return false
+    }
+  }
+  return true
+}
+
+/**
+ * Only numbers 0 to 9 are valid. Phone Number must be entered as seven (10) numbers in length with no space or hyphen.
+ */
+ export function validateTelephone(value) {
+  if (value.length != 10) {
     return false
+  }
+  for (let i = 0; i < value.length; i++) {
+    if (isNaN(value.charAt(i))) {
+      return false
+    }
   }
   return true
 } 
@@ -92,3 +108,4 @@ export const VALIDATE_PHN_MESSAGE = "PHN format is invalid"
 export const VALIDATE_GROUP_NUMBER_MESSAGE = "Only digits 0 to 9 are valid. Group Number must be entered as seven (7) digits in length."
 export const VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE = "Can be up to nine (9) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid."
 export const VALIDATE_DEPARTMENT_NUMBER_MESSAGE = "Can be up to nine (6) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid."
+export const VALIDATE_TELEPHONE_MESSAGE = "Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen."

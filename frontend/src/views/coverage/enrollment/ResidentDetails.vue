@@ -156,7 +156,8 @@ import { INPUT_DATE_FORMAT } from '../../../util/constants'
 
 import EnrollmentService from '../../../services/EnrollmentService'
 import useVuelidate from '@vuelidate/core'
-import { validateNumber, validateGroupMemberNumber, validateDepartmentNumber, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE } from '../../../util/validators'
+import { validateNumber, validateGroupMemberNumber, validateDepartmentNumber, validateTelephone, 
+        VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT } from '../../../util/constants'
@@ -347,7 +348,11 @@ export default {
         visaExpiryDate: {required},
         residenceDate: {required},
         coverageEffectiveDate: {required},
-        telephone: {},
+        telephone: {
+          validateTelephone: helpers.withMessage(
+            VALIDATE_TELEPHONE_MESSAGE, validateTelephone
+          )
+        },
         coverageCancellationDate: {required},
         address1: {required},
         address2: {},
