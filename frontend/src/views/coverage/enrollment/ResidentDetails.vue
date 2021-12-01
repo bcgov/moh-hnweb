@@ -161,8 +161,10 @@ export default {
     props: {
       resident: {
         phn: '',
-        name: 'Result Name',
-        dateOfBirth: '222222',
+        givenName: '',	
+        secondName: '',        
+        surname: '',
+        dateOfBirth: '',
       },
     },
     components: {

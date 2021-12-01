@@ -8,12 +8,12 @@
   <div v-else-if="pageAction === this.PAGE_ACTION.CONFIRMATION">
     <AppRow>
       <AppCol class="col3">
-        <AppOutput label="PHN" :value="this.registrationResult.person.phn"/>
+        <AppOutput label="PHN" :value="this.personResult.person.phn"/>
       </AppCol>
     </AppRow>
     <AppRow>
       <AppCol>
-        <AppOutput label="Name" :value="this.registrationResult.person.name"/>
+        <AppOutput label="Name" :value="fullName"/>
       </AppCol>
     </AppRow>
   </div>
@@ -60,16 +60,17 @@ export default {
       personResult: {
         person: {
           phn: '',
-          name: '',
+          givenName: '',	
+          secondName: '',        
+          surname: '',
           dateOfBirth: '',
         },
         status: '',
-        message: null
+        message: null,
       },
       registrationResult: {
-        phn: '',
-        name: '',
-        errorMessage: null,
+        status: '',
+        message: null,
       }
     };
   },
@@ -80,6 +81,22 @@ export default {
       CONFIRMATION: 'CONFIRMATION'
     }
     this.pageAction = this.PAGE_ACTION.PHN_SEARCH
+  },
+  computed: {
+    fullName() {
+      let name = ''
+      const person = this.personResult.person
+      if (person.surname) {
+        name = name + person.surname
+      }
+      if (person.givenName) {
+        name = name + ', ' + person.givenName
+      }
+      if (person.secondName) {
+        name = name + ' ' + person.secondName
+      }
+      return name
+    },
   },
   methods: {    
     async updateResident(phn) {
@@ -109,7 +126,6 @@ export default {
         return
       }
       console.log('Registration Result returned')
-      console.log(`Registration Result: [PHN: ${this.registrationResult.person.phn}] [Name: ${this.registrationResult.person.name}] [DOB: ${this.registrationResult.person.errorMessage}]`)
       if (this.registrationResult.status === 'success') {
         console.log(`Success: ${this.registrationResult.message}`)        
       }             
