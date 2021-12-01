@@ -150,6 +150,8 @@ public class V2MessageUtil {
     
     	
     	zia.getZia17_ExtendedTelephoneNumber().getAreaCityCode().parse(areaCode);
+    	zia.getZia17_ExtendedTelephoneNumber().getTelecommunicationEquipmentType().parse("PH");
+    	
     	zia.getZia17_ExtendedTelephoneNumber().getPhoneNumber().parse(phoneNumber);
     	zia.getZia17_ExtendedTelephoneNumber().getTelecommunicationUseCode().parse(TelePhoneUseCode.PRN.name());
 

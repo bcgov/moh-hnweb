@@ -119,7 +119,9 @@ public class EnrollmentControllerTest {
     private EnrollSubscriberRequest createEnrollSubscriberRequest() {
 		EnrollSubscriberRequest enrollSubscriberRequest = new EnrollSubscriberRequest();
 		enrollSubscriberRequest.setPhn("123456789");
-		enrollSubscriberRequest.setFullName("Test");
+		enrollSubscriberRequest.setFirstGivenName("FirstName");
+		enrollSubscriberRequest.setSecondGivenName("SecondName");
+		enrollSubscriberRequest.setFamilyName("FamilyName");
 		enrollSubscriberRequest.setGender("M");
 		enrollSubscriberRequest.setResidenceDate(LocalDate.now());
 		enrollSubscriberRequest.setCoverageEffectiveDate(LocalDate.now());
