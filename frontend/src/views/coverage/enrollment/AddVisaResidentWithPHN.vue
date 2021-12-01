@@ -35,7 +35,7 @@ import EnrollmentService from "../../../services/EnrollmentService";
 import useVuelidate from "@vuelidate/core";
 import { validatePHN, VALIDATE_PHN_MESSAGE } from "../../../util/validators";
 import { required, helpers } from "@vuelidate/validators";
-
+import { formatPersonName } from "../../../util/utils"
 import ResidentPHN from "./ResidentPHN.vue"
 import ResidentDetails from "./ResidentDetails.vue";
 
@@ -84,18 +84,7 @@ export default {
   },
   computed: {
     fullName() {
-      let name = ''
-      const person = this.personResult.person
-      if (person.surname) {
-        name = name + person.surname
-      }
-      if (person.givenName) {
-        name = name + ', ' + person.givenName
-      }
-      if (person.secondName) {
-        name = name + ' ' + person.secondName
-      }
-      return name
+      return formatPersonName(this.personResult.person)
     },
   },
   methods: {    

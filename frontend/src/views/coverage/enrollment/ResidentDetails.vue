@@ -155,6 +155,7 @@ import { validateNumber, validateGroupMemberNumber, validateDepartmentNumber, va
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT } from '../../../util/constants'
+import { formatPersonName } from "../../../util/utils"
 
 export default {
     name: 'ResidentDetails',
@@ -252,17 +253,7 @@ export default {
     },
     computed: {
       fullName() {
-        let name = ''
-        if (this.resident.surname) {
-          name = name + this.resident.surname
-        }
-        if (this.resident.givenName) {
-          name = name + ', ' + this.resident.givenName
-        }
-        if (this.resident.secondName) {
-          name = name + ' ' + this.resident.secondName
-        }
-        return name
+        return formatPersonName(this.resident)
       },
     },
     methods: {
