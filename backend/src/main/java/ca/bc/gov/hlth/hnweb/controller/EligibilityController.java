@@ -29,6 +29,7 @@ import ca.bc.gov.hlth.hnweb.converter.MSHDefaults;
 import ca.bc.gov.hlth.hnweb.converter.R15Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.R41Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.R42Converter;
+import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
 import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusRequest;
@@ -133,19 +134,22 @@ public class EligibilityController {
 			RPBSPPL0 r42Response = eligibilityService.lookupPhn(r42Request);
 			
 			LookupPhnResponse lookupPhnResponse = converter.convertResponse(r42Response);
-			// TOOD (weskubo-cgi) The error message is removed for now so the UI can still show the canned results
-			// as all requests are returning an error
-			//lookupPhnResponse.setMatches(generateDummyR41Data());			
 			
 			ResponseEntity<LookupPhnResponse> response = ResponseEntity.ok(lookupPhnResponse);
 
 			logger.info("lookupPhn response: {} ", lookupPhnResponse);
 			return response;	
+
+		} catch (HNWebException hwe) {
+			switch (hwe.getType()) {
+			case DOWNSTREAM_FAILURE:
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
+			default:
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /lookup-phn request", hwe);				
+			}
 		} catch (Exception e) {
-			// TODO (weskubo-cgi) Update this with more specific error handling once downstream services are integrated
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /lookup-phn request", e);
-		}
-		
+		}		
 	}
 	
 	private List<InquirePhnMatch> generateDummyR41Data() {

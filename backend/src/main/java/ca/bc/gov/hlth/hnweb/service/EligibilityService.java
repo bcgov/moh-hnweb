@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import ca.bc.gov.hlth.hnweb.exception.ExceptionType;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPL0;
@@ -117,7 +118,8 @@ public class EligibilityService {
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 
 		if (response.getStatusCode() != HttpStatus.OK) {
-			throw new HNWebException("Downstream error " + response.getStatusCode());
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
 		}
 		
 		RPBSPPL0 rpbsppl0Response = new RPBSPPL0(response.getBody());
