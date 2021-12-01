@@ -23,8 +23,8 @@
           <div class="dropdown" :key="coverageEnrollmentDropDownKey" v-on:click="this.refreshEnrollment">
             <router-link @click="resetAlert" :to="{ name: 'CoverageEnrollment'}">Coverage Enrollment</router-link>
             <div class="dropdown-content">
-              <router-link @click="resetAlert" :class="menuClass($route, 'AddVisaResidentWithoutPHN')" :to="{ name: 'AddVisaResidentWithoutPHN'}">Add Visa Resident without PHN</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'AddVisaResidentWithPHN')" :to="{ name: 'AddVisaResidentWithPHN'}">Add Visa Resident with PHN</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'AddVisaResidentWithoutPHN')" :to="{ name: 'AddVisaResidentWithoutPHN'}">Add Study Permit holder without PHN</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'AddVisaResidentWithPHN')" :to="{ name: 'AddVisaResidentWithPHN'}">Add Study Permit holder with PHN</router-link>
             </div>
           </div>
         </li>

@@ -1,6 +1,6 @@
 <template>
    <form>
-       <p>Add Visa Resident without PHN</p>
+       <p>Add Study Permit holder without PHN</p>
    </form>
 </template>
 

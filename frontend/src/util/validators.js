@@ -77,7 +77,6 @@ export function validateGroupMemberNumber(value) {
  * Can be up to nine (6) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid.
  */
  export function validateDepartmentNumber(value) {
-  console.log(`A validateGroupMemberNumber: ${value}`)
   if (value.length > 6) {
     return false
   }
