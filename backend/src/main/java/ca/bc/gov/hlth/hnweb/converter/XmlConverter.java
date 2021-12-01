@@ -25,71 +25,75 @@ public class XmlConverter {
 		mmd = new MessageMetaData(dataEntererExt, sourceSystemOverride, organization);
 	}
 
-	
 	/**
 	 * @param phn
 	 * @return
 	 */
 	public String convertRequest(String phn) {
 		logger.debug("Get Demographics details for PHN [{}]", phn);
-		
+
 		GetDemographicsRequest request = buildDemographicsRequest(phn);
 		Object formattedRequest = hl7.toXml(request, mmd);
-	    String historyRequest = formattedRequest.toString();
-	    logger.debug("Request XML : {} ", historyRequest);
-	    return historyRequest;
-		
+		String historyRequest = formattedRequest.toString();
+		logger.debug("Request XML : {} ", historyRequest);
+		return historyRequest;
+
 	}
-	
+
 	public GetPersonDetailsResponse convertResponse(String xmlString) {
-		
+
 		GetDemographicsResponse demographicsResponse = hl7.fromXml(xmlString, GetDemographicsResponse.class);
 		logger.debug("Converted Demographics response : {} ", demographicsResponse.toString());
 		GetPersonDetailsResponse personDetailsResponse = buildPersonDetailsResponse(demographicsResponse);
 		logger.debug("Converted PersonDetails Response : {} ", personDetailsResponse);
 		return personDetailsResponse;
-		
+
 	}
-	
 
-    private GetPersonDetailsResponse buildPersonDetailsResponse(GetDemographicsResponse respObj)  {
-    	GetPersonDetailsResponse personDetails = new GetPersonDetailsResponse();
-    	
-    	if (respObj.getResultCount() == 0) {
-	    	 logger.debug("Error performing get demographics");
-	    	 personDetails.setStatus(StatusEnum.ERROR);
-	    	 personDetails.setMessage(respObj.getMessage().getDetails());
-	    	 return personDetails;
-	     }
+	private GetPersonDetailsResponse buildPersonDetailsResponse(GetDemographicsResponse respObj) {
+		GetPersonDetailsResponse personDetails = new GetPersonDetailsResponse();
+		String messageDetails = respObj.getMessage().getDetails();
+		String messageText[] = messageDetails.split("\\|");
+		if (respObj.getResultCount() == 0) {
+			logger.debug("No result found for the Phn [{}]", respObj.getPerson().getPhn());
 
-    	personDetails.setPhn(respObj.getPerson().getPhn());
-    
-    	personDetails.setGivenName(respObj.getPerson().getDocumentedName().getFirstGivenName());
-    	personDetails.setSecondName(respObj.getPerson().getDocumentedName().getSecondGivenName());
-    	personDetails.setSecondName(respObj.getPerson().getDocumentedName().getSurname());
-    	personDetails.setDateOfBirth(respObj.getPerson().getBirthDate());
-    	
-    	//No message for successful transaction is returned
-    	personDetails.setMessage("Transaction Successful");
-    	personDetails.setStatus(StatusEnum.SUCCESS);
-    	
-    	logger.info(personDetails.toString());
-    	
-    	return personDetails;
-    	
-    	
-    }
-	
-    private GetDemographicsRequest buildDemographicsRequest(String phn) {
-    	
-    	GetDemographicsRequest getDemographics = new GetDemographicsRequest();
-    	getDemographics.setPhn(phn); 
-    	getDemographics.setMrnSource(mrn_source);
-    	logger.debug("Creating request for the phn : {}", getDemographics.getPhn());
-    	
-    	return getDemographics;
-    	
-    }
-    
+			if (messageText.length > 0) {
+				personDetails.setStatus(StatusEnum.ERROR);
+				personDetails.setMessage(messageText[1]);
+			}
+		} else {
+			personDetails.setPhn(respObj.getPerson().getPhn());
+			personDetails.setGivenName(respObj.getPerson().getDocumentedName().getFirstGivenName());
+			personDetails.setSecondName(respObj.getPerson().getDocumentedName().getSecondGivenName());
+			personDetails.setSecondName(respObj.getPerson().getDocumentedName().getSurname());
+			personDetails.setDateOfBirth(respObj.getPerson().getBirthDate());
+
+			if (messageText.length > 0) {
+				if (messageText[1].contains("Warning")) {
+					personDetails.setStatus(StatusEnum.WARNING);
+				} else {
+					personDetails.setStatus(StatusEnum.SUCCESS);
+
+				}
+			}
+
+			personDetails.setMessage(messageText[1]);
+			logger.info(personDetails.toString());
+		}
+
+		return personDetails;
+
+	}
+
+	private GetDemographicsRequest buildDemographicsRequest(String phn) {
+
+		GetDemographicsRequest getDemographics = new GetDemographicsRequest();
+		getDemographics.setPhn(phn);
+		getDemographics.setMrnSource(mrn_source);
+		logger.debug("Creating request for the phn : {}", getDemographics.getPhn());
+
+		return getDemographics;
+
+	}
 
 }
