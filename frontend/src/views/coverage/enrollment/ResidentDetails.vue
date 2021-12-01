@@ -33,10 +33,6 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppButton :disabled="searching" mode="primary" type="submit">Submit</AppButton>
-        <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
-      </AppRow>
-      <AppRow>
         <AppCol class="col4">
           <AppInput :e-model="v$.departmentNumber" id="departmentNumber" label="Department Number - Optional" type="text" v-model.trim="departmentNumber" />
         </AppCol>
@@ -123,7 +119,7 @@
 
       <AppRow>
         <AppCol class="col4">
-          <AppInput :e-model="v$.priorResidenceCode" id="priorResidenceCode" label="Prior Residence Code - Optional" type="text" v-model.trim="priorResidenceCode" />
+          <AppSelect :e-model="v$.priorResidenceCode"  id="priorResidenceCode" label="Prior Residence Code - Optional" v-model="priorResidenceCode" :options="priorResidenceOptions"/>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -132,6 +128,10 @@
         </AppCol>
       </AppRow>
 
+      <AppRow>
+        <AppButton :disabled="searching" mode="primary" type="submit">Submit</AppButton>
+        <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
+      </AppRow>
     </form>
   </div>
 </template>
@@ -210,7 +210,24 @@ export default {
           // Immigration Code drop down options
           immigrationCodeOptions: [
             { text: '', value: '' },
-            { text: 'Student Authorization', value: 'Student_Authorization' },
+            { text: 'Student Authorization', value: 'S' },
+          ],
+          priorResidenceOptions: [
+            { text: 'Alberta', value: 'AB' },
+            { text: 'Manitoba', value: 'MB' },
+            { text: 'New Brunswick', value: 'NB' },
+            { text: 'Newfoundland', value: 'NL' },
+            { text: 'Nova Scotia', value: 'NS' },
+            { text: 'Northwest Territories', value: 'NT' },
+            { text: 'Nunavut', value: 'NU' },
+            { text: 'Other Country', value: 'OC' },
+            { text: 'Ontario', value: 'ON' },
+            { text: 'P.E.I', value: 'PE' },
+            { text: 'Quebec', value: 'QC' },
+            { text: 'Saskatchewan', value: 'SK' },
+            { text: 'U.S.A', value: 'US' },
+            { text: 'Yukon', value: 'YT' },
+            { text: 'British Columbia', value: 'BC' },
           ],
         }
     },
@@ -235,12 +252,12 @@ export default {
         this.searching = true
         try {
           const isValid = true
-          await this.v$.$validate()
-          if (!isValid) {
-            this.$store.commit('alert/setErrorAlert');
-            this.searching = false
-            return
-          }
+          // await this.v$.$validate()
+          // if (!isValid) {
+          //   this.$store.commit('alert/setErrorAlert');
+          //   this.searching = false
+          //   return
+          // }
           console.log('Emitting')
           this.$emit('register-resident', {
             phn: this.resident.phn,
