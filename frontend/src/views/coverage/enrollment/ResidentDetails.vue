@@ -79,7 +79,7 @@
           <AppInput :e-model="v$.city" id="city" label="City" type="text" v-model.trim="city" />
         </AppCol>
         <AppCol class="col4">
-          <AppInput :e-model="v$.province" id="province" label="Province" type="text" v-model.trim="province" />
+          <AppSelect :e-model="v$.province"  id="province" label="Province" v-model="province" :options="provinceOptions"/>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -108,7 +108,7 @@
           <AppInput :e-model="v$.mailingAddressCity" id="mailingAddressCity" label="City" type="text" v-model.trim="mailingAddressCity" />
         </AppCol>
         <AppCol class="col4">
-          <AppInput :e-model="v$.mailingAddressProvince" id="mailingAddressProvince" label="Province" type="text" v-model.trim="mailingAddressProvince" />
+          <AppSelect :e-model="v$.mailingAddressProvince"  id="mailingAddressProvince" label="Province" v-model="mailingAddressProvince" :options="provinceOptions"/>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -212,7 +212,24 @@ export default {
             { text: '', value: '' },
             { text: 'Student Authorization', value: 'S' },
           ],
+          provinceOptions: [
+            { text: '', value: '' },
+            { text: 'Alberta', value: 'AB' },
+            { text: 'British Columbia', value: 'BC' },
+            { text: 'Manitoba', value: 'MB' },
+            { text: 'New Brunswick', value: 'NB' },
+            { text: 'Newfoundland', value: 'NL' },
+            { text: 'Nova Scotia', value: 'NS' },
+            { text: 'Northwest Territories', value: 'NT' },
+            { text: 'Nunavut', value: 'NU' },
+            { text: 'Ontario', value: 'ON' },
+            { text: 'P.E.I', value: 'PE' },
+            { text: 'Quebec', value: 'QC' },
+            { text: 'Saskatchewan', value: 'SK' },
+            { text: 'Yukon', value: 'YT' },
+          ],
           priorResidenceOptions: [
+            { text: '', value: '' },
             { text: 'Alberta', value: 'AB' },
             { text: 'Manitoba', value: 'MB' },
             { text: 'New Brunswick', value: 'NB' },
