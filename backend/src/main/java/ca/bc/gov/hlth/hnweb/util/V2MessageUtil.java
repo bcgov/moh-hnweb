@@ -140,11 +140,14 @@ public class V2MessageUtil {
      * @param priorResidenceCode
      * @throws HL7Exception
      */
-    public static void setZiaValues(ZIA zia, String bcResidencyDate, String familyName, String firstGivenName, String secondGivenName,  String areaCode, String phoneNumber, String immigrationOrVisaCode, String priorResidenceCode) throws HL7Exception {
+    public static void setZiaValues(ZIA zia, String bcResidencyDate, String surname, String firstGivenName, String secondGivenName,  String telephone, String immigrationOrVisaCode, String priorResidenceCode) throws HL7Exception {
     	//e.g. ZIA||20210101|||||||||||||HELP^RERE^^^^^L|898 RETER ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^H~123 UIYUI ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^M|^PRN^PH^^^250^8578974|||||||S|AB^M
     	String givenName  = firstGivenName + " " + secondGivenName;
+    	String areaCode = telephone.substring(0,3);
+    	String phoneNumber = telephone.substring(3);
+    	
     	zia.getZia2_BCResidencyDate().parse(bcResidencyDate);
-    	zia.getZia15_ExtendedPersonName().parse(familyName);   	
+    	zia.getZia15_ExtendedPersonName().parse(surname);   	
     	zia.getZia15_ExtendedPersonName().getGivenName().parse(givenName);
     	zia.getZia15_ExtendedPersonName().getNameTypeCode().parse("L");;
     
@@ -159,18 +162,22 @@ public class V2MessageUtil {
     	zia.getZia25_PriorResidenceCode().parse(priorResidenceCode);
     }
     
-    public static void setZiaExtendedAddrees1(ZIA zia, String addressLine1,String city, String province, String postalCode) throws HL7Exception {
+    public static void setZiaExtendedAddrees1(ZIA zia, String addressLine1, String addressLine2, String addressLine3, String city, String province, String postalCode) throws HL7Exception {
 
-    	zia.getZia16_ExtendedAddress(0).getZAD1_AddressLine1().parse(addressLine1);   
+    	zia.getZia16_ExtendedAddress(0).getZAD1_AddressLine1().parse(addressLine1);
+    	zia.getZia16_ExtendedAddress(0).getZAD2_AddressLine2().parse(addressLine2);  
+    	zia.getZia16_ExtendedAddress(0).getZAD3_AddressLine3().parse(addressLine3);  
     	zia.getZia16_ExtendedAddress(0).getZAD20_City().parse(city);
     	zia.getZia16_ExtendedAddress(0).getZAD21_Province().parse(province);
     	zia.getZia16_ExtendedAddress(0).getZAD22_PostalCode().parse(postalCode);
     	zia.getExtendedAddress(0).getZAD24_AddressType().parse(AddressType.H.name());
     }
     
-    public static void setZiaExtendedAddrees2(ZIA zia, String mailingAddressLine1, String city, String province, String postalCode) throws HL7Exception {
+    public static void setZiaExtendedAddrees2(ZIA zia, String mailingAddressLine1,  String mailingAddressLine2,  String mailingAddressLine3, String city, String province, String postalCode) throws HL7Exception {
 
-    	zia.getZia16_ExtendedAddress(1).getZAD1_AddressLine1().parse(mailingAddressLine1);   	
+    	zia.getZia16_ExtendedAddress(1).getZAD1_AddressLine1().parse(mailingAddressLine1);
+    	zia.getZia16_ExtendedAddress(1).getZAD2_AddressLine2().parse(mailingAddressLine2);
+    	zia.getZia16_ExtendedAddress(1).getZAD3_AddressLine3().parse(mailingAddressLine3);
     	zia.getZia16_ExtendedAddress(1).getZAD20_City().parse(city);
     	zia.getZia16_ExtendedAddress(1).getZAD21_Province().parse(province);
     	zia.getZia16_ExtendedAddress(1).getZAD22_PostalCode().parse(postalCode);

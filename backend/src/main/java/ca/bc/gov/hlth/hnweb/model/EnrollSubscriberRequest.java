@@ -10,7 +10,7 @@ public class EnrollSubscriberRequest {
 	
 	private String phn;
 	
-	private String familyName;
+	private String surname;
 	
 	private String firstGivenName;
 	
@@ -34,13 +34,15 @@ public class EnrollSubscriberRequest {
 	
 	private LocalDate coverageEffectiveDate;
 	
-	private String areaCode;
-	
 	private String telephone;
 	
 	private LocalDate coverageCancellationDate;
 	
-	private String address;
+	private String address1;
+	
+	private String address2;
+	
+	private String address3;
 	
 	private String city;
 	
@@ -50,7 +52,11 @@ public class EnrollSubscriberRequest {
 	
 	private String postalCode;
 	
-	private String mailingAddress;
+	private String mailingAddress1;
+	
+	private String mailingAddress2;
+	
+	private String mailingAddress3;
 	
 	private String mailingAddressCity;
 	
@@ -88,12 +94,12 @@ public class EnrollSubscriberRequest {
 		this.groupnumber = groupnumber;
 	}
 
-	public String getFamilyName() {
-		return familyName;
+	public String getSurname() {
+		return surname;
 	}
 
-	public void setFamilyName(String familyName) {
-		this.familyName = familyName;
+	public void setSurname(String familyName) {
+		this.surname = familyName;
 	}
 
 	public String getFirstGivenName() {
@@ -168,14 +174,6 @@ public class EnrollSubscriberRequest {
 		this.coverageEffectiveDate = coverageEffectiveDate;
 	}
 
-	public String getAreaCode() {
-		return areaCode;
-	}
-
-	public void setAreaCode(String areaCode) {
-		this.areaCode = areaCode;
-	}
-
 	public String getTelephone() {
 		return telephone;
 	}
@@ -192,12 +190,44 @@ public class EnrollSubscriberRequest {
 		this.coverageCancellationDate = coverageCancellationDate;
 	}
 
-	public String getAddress() {
-		return address;
+	public String getAddress1() {
+		return address1;
 	}
 
-	public void setAddress(String address) {
-		this.address = address;
+	public void setAddress1(String address) {
+		this.address1 = address;
+	}
+
+	public String getAddress2() {
+		return address2;
+	}
+
+	public void setAddress2(String address2) {
+		this.address2 = address2;
+	}
+
+	public String getAddress3() {
+		return address3;
+	}
+
+	public void setAddress3(String address3) {
+		this.address3 = address3;
+	}
+
+	public String getMailingAddress2() {
+		return mailingAddress2;
+	}
+
+	public void setMailingAddress2(String mailingAddress2) {
+		this.mailingAddress2 = mailingAddress2;
+	}
+
+	public String getMailingAddress3() {
+		return mailingAddress3;
+	}
+
+	public void setMailingAddress3(String mailingAddress3) {
+		this.mailingAddress3 = mailingAddress3;
 	}
 
 	public String getCity() {
@@ -232,12 +262,12 @@ public class EnrollSubscriberRequest {
 		this.postalCode = postalCode;
 	}
 
-	public String getMailingAddress() {
-		return mailingAddress;
+	public String getMailingAddress1() {
+		return mailingAddress1;
 	}
 
-	public void setMailingAddress(String mailingAddress) {
-		this.mailingAddress = mailingAddress;
+	public void setMailingAddress1(String mailingAddress) {
+		this.mailingAddress1 = mailingAddress;
 	}
 
 	public String getMailingAddressCity() {

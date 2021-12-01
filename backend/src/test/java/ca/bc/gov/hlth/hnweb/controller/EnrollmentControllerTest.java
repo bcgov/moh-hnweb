@@ -41,8 +41,6 @@ public class EnrollmentControllerTest {
 			"MSA|AE|20191108082211|NHR529E^SEVERE SYSTEM ERROR\r\n" + 
 			"ERR|^^^NHR529E";
 	
-
-
 	public static MockWebServer mockBackEnd;
 
 	@Autowired
@@ -85,7 +83,7 @@ public class EnrollmentControllerTest {
     void testGetDemographicsDetails_Success() throws Exception {    	
         
         mockBackEnd.enqueue(new MockResponse()
-        		.setBody(convertXMLFileToString())
+        		.setBody(convertXMLFileToString("src\\test\\resources\\GetDemographicsResponse.xml"))
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
         GetPersonDetailsRequest getPersonQuery = new GetPersonDetailsRequest();
@@ -94,15 +92,36 @@ public class EnrollmentControllerTest {
         ResponseEntity<GetPersonDetailsResponse> response = enrollmentController.getDemographicDetails(getPersonQuery);
         GetPersonDetailsResponse getPersonDetailsResponse = response.getBody();
     	assertEquals("9862716574",  getPersonDetailsResponse.getPhn());	
-    	//assertEquals("Robert", response.getPerson().getDocumentedName().getFirstGivenName());
+    	assertEquals("Robert", getPersonDetailsResponse.getGivenName());
 		
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertEquals("/", recordedRequest.getPath());
-    	
-    	//mockBackEnd.close();
+    }
+    
+    @Test
+    void testGetDemographicsDetails_Warning() throws Exception { 
+    	String expectedMessageText = " Warning: The identifier you used in the query has been merged. The surviving identifier was returned.";
+        
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(convertXMLFileToString("src\\test\\resources\\GetDemographicsResponse_NonSurvivor.xml"))
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+
+        GetPersonDetailsRequest getPersonQuery = new GetPersonDetailsRequest();
+        getPersonQuery.setPhn("9862716574");
+        
+        ResponseEntity<GetPersonDetailsResponse> response = enrollmentController.getDemographicDetails(getPersonQuery);
+        GetPersonDetailsResponse getPersonDetailsResponse = response.getBody();
+        assertEquals(StatusEnum.WARNING, getPersonDetailsResponse.getStatus());
+        assertEquals(expectedMessageText, getPersonDetailsResponse.getMessage());
+		
+		//Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());
     }
     
     /**
@@ -121,19 +140,18 @@ public class EnrollmentControllerTest {
 		enrollSubscriberRequest.setPhn("123456789");
 		enrollSubscriberRequest.setFirstGivenName("FirstName");
 		enrollSubscriberRequest.setSecondGivenName("SecondName");
-		enrollSubscriberRequest.setFamilyName("FamilyName");
+		enrollSubscriberRequest.setSurname("FamilyName");
 		enrollSubscriberRequest.setGender("M");
 		enrollSubscriberRequest.setResidenceDate(LocalDate.now());
 		enrollSubscriberRequest.setCoverageEffectiveDate(LocalDate.now());
 		enrollSubscriberRequest.setVisaIssueDate(LocalDate.now());
 		enrollSubscriberRequest.setVisaExpiryDate(LocalDate.now());
-		enrollSubscriberRequest.setAddress("101 33A Street");
+		enrollSubscriberRequest.setAddress1("101 33A Street");
 		enrollSubscriberRequest.setCity("Victoria");
 		enrollSubscriberRequest.setProvince("BC");
 		enrollSubscriberRequest.setPostalCode("T0T0X0");
-		enrollSubscriberRequest.setAreaCode("250");
-		enrollSubscriberRequest.setTelephone("8578974");
-		enrollSubscriberRequest.setMailingAddress("101 33A Street");
+		enrollSubscriberRequest.setTelephone("2508578974");
+		enrollSubscriberRequest.setMailingAddress1("101 33A Street");
 		enrollSubscriberRequest.setMailingAddressCity("Victoria");
 		enrollSubscriberRequest.setMailingAddressProvince("BC");
 		enrollSubscriberRequest.setMailingAddressPostalCode("T0T0X0");
@@ -143,10 +161,10 @@ public class EnrollmentControllerTest {
 	}
     
 	 
-	private String convertXMLFileToString() throws IOException
+	private String convertXMLFileToString(String file) throws IOException
 	{
 	// our XML file for this example
-	    File xmlFile = new File("src\\test\\resources\\GetDemographicsResponse.xml");
+	    File xmlFile = new File(file);
 	 
 	    Reader fileReader;			
 		fileReader = new FileReader(xmlFile);

@@ -63,19 +63,19 @@ public abstract class BaseConverter {
 		V2MessageUtil.setIn1Values(in1, null, null, null, dateOnlyFormatter.format(planEffectiveDate), null);
 	}
 	
-	protected void populateZIA(ZIA zia, LocalDate bcResidencyDate, String familyName, String firstGivenName, String secondGivenName, String areaCode, String telephone, String immigrationOrVisaCode, String priorResidenceCode) throws HL7Exception {
+	protected void populateZIA(ZIA zia, LocalDate bcResidencyDate, String surname, String firstGivenName, String secondGivenName, String telephone, String immigrationOrVisaCode, String priorResidenceCode) throws HL7Exception {
 		
-		V2MessageUtil.setZiaValues(zia, dateOnlyFormatter.format(bcResidencyDate), familyName, firstGivenName, secondGivenName,  areaCode, telephone, immigrationOrVisaCode, priorResidenceCode);
+		V2MessageUtil.setZiaValues(zia, dateOnlyFormatter.format(bcResidencyDate), surname, firstGivenName, secondGivenName, telephone, immigrationOrVisaCode, priorResidenceCode);
 	}
 	
-	protected void populateZIAExtendedAddress1(ZIA zia, String addressLine1, String city, String province, String postalCode) throws HL7Exception {
+	protected void populateZIAExtendedAddress1(ZIA zia, String addressLine1, String addressLine2, String addressLine3, String city, String province, String postalCode) throws HL7Exception {
 		
-		V2MessageUtil.setZiaExtendedAddrees1(zia, addressLine1, city, province, postalCode);
+		V2MessageUtil.setZiaExtendedAddrees1(zia, addressLine1, addressLine2, addressLine3, city, province, postalCode);
 	}
 	
-	protected void populateZIAExtendedAddress2(ZIA zia, String addressLine1, String city, String province, String postalCode) throws HL7Exception {
+	protected void populateZIAExtendedAddress2(ZIA zia, String addressLine1, String addressLine2, String addressLine3, String city, String province, String postalCode) throws HL7Exception {
 		
-		V2MessageUtil.setZiaExtendedAddrees2(zia, addressLine1, city, province, postalCode);
+		V2MessageUtil.setZiaExtendedAddrees2(zia, addressLine1, addressLine2, addressLine3, city, province, postalCode);
 	}
 	
 	protected void populateZIH(ZIH zih) throws HL7Exception {

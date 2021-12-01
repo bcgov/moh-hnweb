@@ -38,7 +38,7 @@ public class R50Converter extends BaseConverter {
 	
 	public R50 convertRequest(EnrollSubscriberRequest request) throws HL7Exception {
 		phn = request.getPhn();
-						
+								
     	//Create a default R50 message with MSH-9 set to R50 Z06 
     	R50 r50 = new R50(); 
     	ZIA zia = r50.getZIA();
@@ -47,9 +47,9 @@ public class R50Converter extends BaseConverter {
     	populateZHD(r50.getZHD());
     	populatePID(r50.getPID(), phn);    	    	
     	populateIN1(r50.getIN1(), request.getCoverageEffectiveDate());
-    	populateZIA(zia, request.getResidenceDate(), request.getFamilyName(), request.getFirstGivenName(), request.getSecondGivenName(), request.getAreaCode(),request.getTelephone(), request.getImmigrationCode(), request.getPriorResidenceCode());
-    	populateZIAExtendedAddress1(zia, request.getAddress(), request.getCity(), request.getProvince(), request.getPostalCode());
-    	populateZIAExtendedAddress2(zia, request.getMailingAddress(), request.getMailingAddressCity(), request.getMailingAddressProvince(), request.getMailingAddressPostalCode());
+    	populateZIA(zia, request.getResidenceDate(), request.getSurname(), request.getFirstGivenName(), request.getSecondGivenName(), request.getTelephone(), request.getImmigrationCode(), request.getPriorResidenceCode());
+    	populateZIAExtendedAddress1(zia, request.getAddress1(), request.getAddress2(),request.getAddress3(), request.getCity(), request.getProvince(), request.getPostalCode());
+    	populateZIAExtendedAddress2(zia, request.getMailingAddress1(),request.getMailingAddress2(),request.getMailingAddress3(), request.getMailingAddressCity(), request.getMailingAddressProvince(), request.getMailingAddressPostalCode());
     	populateZIH(r50.getZIH()); 
     	populateZIK(r50.getZIK(), request.getVisaIssueDate(), request.getVisaExpiryDate());
   
@@ -82,12 +82,13 @@ public class R50Converter extends BaseConverter {
 		EnrollSubscriberResponse response = new EnrollSubscriberResponse();
 		String ackCode = r50Response.getAcknowledgementCode();
 		
-		if(StringUtils.equals(ackCode, AcknowledgementCode.AE.name())) {
+		//Check the AcknowledgementCode and set the status 
+		if(StringUtils.equals(ackCode, AcknowledgementCode.AE.name()) 
+				|| StringUtils.equals(ackCode, AcknowledgementCode.AR.name())) {
 			response.setStatus(StatusEnum.ERROR);
 			response.setMessage(r50Response.getAcknowledgementMessage());
 		} else if (StringUtils.equals(ackCode, AcknowledgementCode.AA.name())) {
 			response.setStatus(StatusEnum.SUCCESS);
-			response.setMessage(r50Response.getAcknowledgementMessage());
 		}
 				
 		return response;
