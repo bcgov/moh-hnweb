@@ -88,9 +88,6 @@
       </AppRow>
       <AppRow>
         <AppCol class="col4">
-          <AppInput :e-model="v$.country" id="country" label="Country - Optional" type="text" v-model.trim="country" />
-        </AppCol>
-        <AppCol class="col4">
           <AppInput :e-model="v$.postalCode" id="postalCode" label="Postal Code" type="text" v-model.trim="postalCode" />
         </AppCol>
       </AppRow>
@@ -119,9 +116,6 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col4">
-          <AppInput :e-model="v$.mailingAddressCountry" id="mailingAddressCountry" label="Country - Optional" type="text" v-model.trim="mailingAddressCountry" />
-        </AppCol>
         <AppCol class="col4">
           <AppInput :e-model="v$.mailingAddressPostalCode" id="mailingAddressPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddressPostalCode" />
         </AppCol>
@@ -204,14 +198,12 @@ export default {
           address3: '',
           city: '',
           province: '',
-          country: '',
           postalCode: '',
           mailingAddress1: '',
           mailingAddress2: '',
           mailingAddress3: '',
           mailingAddressCity: '',
           mailingAddressProvince: '',
-          mailingAddressCountry: '',
           mailingAddressPostalCode: '',
           priorResidenceCode: '',
           otherProvinceHealthcareNumber: '',
@@ -270,14 +262,12 @@ export default {
             address3: this.address3,
             city: this.city,
             province: this.province,
-            country: this.country,
             postalCode: this.postalCode,
             mailingAddress1: this.mailingAddress1,
             mailingAddress2: this.mailingAddress2,
             mailingAddress3: this.mailingAddress3,
             mailingAddressCity: this.mailingAddressCity,
             mailingAddressProvince: this.mailingAddressProvince,
-            mailingAddressCountry: this.mailingAddressCountry,
             mailingAddressPostalCode: this.mailingAddressPostalCode,
             priorResidenceCode: this.priorResidenceCode,
             otherProvinceHealthcareNumber: this.otherProvinceHealthcareNumber,
@@ -305,14 +295,12 @@ export default {
         this.address3 = '',
         this.city = '',
         this.province = '',
-        this.country = '',
         this.postalCode = '',
         this.mailingAddress1 = '',
         this.mailingAddress2 = '',
         this.mailingAddress3 = '',
         this.mailingAddressCity = '',
         this.mailingAddressProvince = '',
-        this.mailingAddressCountry = '',
         this.mailingAddressPostalCode = '',
         this.priorResidenceCode = '',
         this.otherProvinceHealthcareNumber = '',
@@ -359,14 +347,12 @@ export default {
         address3: {},
         city: {required},
         province: {required},
-        country: {required},
         postalCode: {required},
         mailingAddress1: {},
         mailingAddress2: {},
         mailingAddress3: {},
         mailingAddressCity: {},
         mailingAddressProvince: {},
-        mailingAddressCountry: {},
         mailingAddressPostalCode: {},
         priorResidenceCode: {},
         otherProvinceHealthcareNumber: {},
