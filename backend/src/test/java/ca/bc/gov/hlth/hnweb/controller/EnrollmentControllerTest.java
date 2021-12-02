@@ -138,10 +138,11 @@ public class EnrollmentControllerTest {
     private EnrollSubscriberRequest createEnrollSubscriberRequest() {
 		EnrollSubscriberRequest enrollSubscriberRequest = new EnrollSubscriberRequest();
 		enrollSubscriberRequest.setPhn("123456789");
-		enrollSubscriberRequest.setFirstGivenName("FirstName");
-		enrollSubscriberRequest.setSecondGivenName("SecondName");
+		enrollSubscriberRequest.setGivenName("FirstName");
+		enrollSubscriberRequest.setSecondName("SecondName");
 		enrollSubscriberRequest.setSurname("FamilyName");
 		enrollSubscriberRequest.setGender("M");
+		enrollSubscriberRequest.setDateOfBirth(LocalDate.of(1973, 8, 11));
 		enrollSubscriberRequest.setResidenceDate(LocalDate.now());
 		enrollSubscriberRequest.setCoverageEffectiveDate(LocalDate.now());
 		enrollSubscriberRequest.setVisaIssueDate(LocalDate.now());

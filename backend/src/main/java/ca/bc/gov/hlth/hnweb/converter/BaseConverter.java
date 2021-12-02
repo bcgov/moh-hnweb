@@ -22,8 +22,8 @@ import ca.uhn.hl7v2.model.v24.segment.PID;
  *
  */
 public abstract class BaseConverter {
-	private static final String PID_NAMESPACE_ID = "BC";
-	private static final String PID_ID_TYPE_CODE = "PH";
+	protected static final String PID_NAMESPACE_ID = "BC";
+	protected static final String PID_ID_TYPE_CODE = "PH";
 	private static final String ZIH_COVERAGE_CAN_REASON = "D";
 
 	protected static DateTimeFormatter dateOnlyFormatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_FORMAT_DATE_ONLY);
