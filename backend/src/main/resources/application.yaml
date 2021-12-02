@@ -21,3 +21,8 @@ v2:
     sendingFacility: HN-WEB
     receivingFacility: BC00001013
     processingID: D
+
+# RAPID fixed width message construction
+rapid:
+  header: 
+    organization: "00000010"

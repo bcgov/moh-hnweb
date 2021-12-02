@@ -23,6 +23,7 @@
     flex-direction: column;
     flex-basis: 100%;
     flex: 1;
+    padding-right: 15px;
   }
 
   .col2 {

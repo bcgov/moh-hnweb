@@ -17,8 +17,8 @@ h2, p {
     line-height: 1.5rem;
     margin-bottom: 20px;
 }
-h1, h2, h3, h4, h5, p {
-    color: #494949;
+h1, h2, h3, h4, h5, p, label {
+    color: #313132;
 }
 .small {
     font-size: 0.815rem;

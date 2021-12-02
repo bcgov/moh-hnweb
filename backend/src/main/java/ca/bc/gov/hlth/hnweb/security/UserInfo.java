@@ -8,6 +8,17 @@ public class UserInfo {
 	private String organization;
 	private String role;
 
+	public UserInfo() {
+		super();
+	}
+
+	public UserInfo(String username, String organization, String role) {
+		super();
+		this.username = username;
+		this.organization = organization;
+		this.role = role;
+	}
+
 	public String getUsername() {
 		return username;
 	}

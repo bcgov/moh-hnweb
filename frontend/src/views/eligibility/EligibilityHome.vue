@@ -6,7 +6,7 @@ import SubNavTab from '../../components/template/SubNavTab.vue'
 <template>
   <TheSubNav>
     <SubNavTab routeName="CheckEligibility" title="Check Eligibility" />
-    <SubNavTab routeName="PhnEnquiry" title="PHN Enquiry" />
+    <SubNavTab routeName="PhnInquiry" title="PHN Inquiry" />
     <SubNavTab routeName="PhnLookup" title="PHN Lookup"/>
     <SubNavTab routeName="CoverageStatusCheck" title="MSP Coverage Status Check" />
   </TheSubNav>

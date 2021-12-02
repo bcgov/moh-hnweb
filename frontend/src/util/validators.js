@@ -4,12 +4,28 @@ import { helpers } from '@vuelidate/validators'
 
 /**
  * Validates that the PHN matches the accepted format.
+ * This assumes the PHN is optional and an empty value won't
+ * cause validation failure.
+ */
+export function validateOptionalPHN(phn) {
+  if (phn === undefined || phn === '') {
+    return true
+  }
+  return validatePHNFormat(phn)
+}
+
+/**
+ * Validates that the PHN matches the accepted format.
+ * This assumes the PHN also has a required validation.
  */
 export function validatePHN(phn) {
   if (!helpers.req(phn)) {
     return true
   }
+  return validatePHNFormat(phn)
+}
 
+function validatePHNFormat(phn) {
   const phnSigDigits = [2, 4, 8, 5, 10, 9, 7, 3]
   let checksum = 0
   let digit = 0
@@ -42,5 +58,84 @@ export function validateDOB(dateOfBirth) {
   return true
 }
 
+/**
+ * Validates that the Contract Number is valid.
+ */
+ export function validateContractNumber(contractNumber) {
+  if (!helpers.req(contractNumber)) {
+    return true
+  }
+  return validateNumber(contractNumber, 9)
+}
+
+/**
+ * Validates that the Group Number is valid.
+ */
+ export function validateGroupNumber(groupNumber) {
+  if (!helpers.req(groupNumber)) {
+    return true
+  }
+  if (!validateNumber(groupNumber, 7)) {
+    return false
+  }
+  if (!validateMod10(groupNumber)) {
+    return false
+  }
+  return true
+}
+
+/**
+ * Validates that the input is an integer number of the specified length.
+ */
+function validateNumber(input, length) {
+  console.log('validateNumber')
+  if (input.length != length) {
+    return false
+  }
+  if (isNaN(input)) {
+    return false
+  }
+  const number = +input
+  if (!Number.isInteger(number)) {
+    return false
+  }
+  if (number < 0) {
+    return false
+  }
+  return true
+}
+
+function validateMod10(input) {
+  console.log('validateMod10')
+	const numDigits = input.length
+	let sum = 0
+	let tmpDigit = 0
+
+	if (input.length % 2 === 0) {
+    // Even number of digits in String to check
+		for (let i = 0; i < numDigits; i += 2 ) {
+			// Odd Numbers
+			tmpDigit = Number(input.charAt(i))
+			sum += tmpDigit === 9 ? 9 : (tmpDigit * 2) % 9
+			// Even Numbers
+			sum += Number(input.charAt(i + 1))
+		}
+	} else {
+    //Odd Number of digits in String to check
+		for (let i = 1; i < numDigits; i += 2) {
+			// Odd Numbers
+			sum += Number(input.charAt(i - 1))
+			// Even Numbers
+			tmpDigit = Number(input.charAt(i))
+			sum += tmpDigit === 9 ? 9 : (tmpDigit * 2) % 9
+		}
+		// Last odd Number
+		sum += Number(input.charAt(numDigits - 1))
+	}
+  return (sum % 10) === 0
+}
+
 export const VALIDATE_DOB_MESSAGE = "Date of Birth must not be in the future"
 export const VALIDATE_PHN_MESSAGE = "PHN format is invalid"
+export const VALIDATE_CONTRACT_NUMBER_MESSAGE = "MSP Contract Number is invalid"
+export const VALIDATE_GROUP_NUMBER_MESSAGE = "Group Number is invalid"

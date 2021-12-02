@@ -5,11 +5,12 @@ import Help from './../views/Help.vue'
 import Home from './../views/Home.vue'
 import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
 import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
-import PhnEnquiry from './../views/eligibility/PhnEnquiry.vue'
 import NotFound from '../views/NotFound.vue'
 import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
 import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
 import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
+import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
+import PhnLookup from '../views/eligibility/PhnLookup.vue'
 
 const routes = [
   {
@@ -41,14 +42,14 @@ const routes = [
         component: CheckEligibility,
       },
       {
-        path: 'phnEnquiry',
-        name: 'PhnEnquiry',
-        component: PhnEnquiry,
+        path: 'phnInquiry',
+        name: 'PhnInquiry',
+        component: PhnInquiry,
       },
       {
         path: 'phnLookup',
         name: 'PhnLookup',
-        component: PhnEnquiry,
+        component: PhnLookup,
       },
       {
         path: 'coverageStatusCheck',
