@@ -77,7 +77,7 @@ public class V2MessageUtilTest {
     	V2MessageUtil.setZiaExtendedAddrees1(zia, "1541", "22A street","sw", "Victoria", "BC", "T6T6T6");
 				
 		String ziaEncoded = parser.doEncode(zia, EncodingCharacters.getInstance(r50Zo6));		
-		assertEquals("ZIA||20210101|||||||||||||HELP^RERE ^^^^^L|1541^22A street^sw^^^^^^^^^^^^^^^^^Victoria^BC^T6T6T6^^H|^PRN^PH^^^250^8578974|||||||S|AB", ziaEncoded);
+		assertEquals("ZIA||20210101|||||||||||||HELP^RERE^^^^^L|1541^22A street^sw^^^^^^^^^^^^^^^^^Victoria^BC^T6T6T6^^H|^PRN^PH^^^250^8578974|||||||S|AB", ziaEncoded);
 	}
 	
 	@Test

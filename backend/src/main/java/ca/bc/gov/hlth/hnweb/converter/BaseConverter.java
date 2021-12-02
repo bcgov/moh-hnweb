@@ -59,8 +59,8 @@ public abstract class BaseConverter {
 		V2MessageUtil.setPidValues(pid, phn, PID_NAMESPACE_ID, PID_ID_TYPE_CODE, "", "", "");
 	}
 	
-	protected void populateIN1(IN1 in1, LocalDate planEffectiveDate) throws HL7Exception {
-		V2MessageUtil.setIn1Values(in1, null, null, null, dateOnlyFormatter.format(planEffectiveDate), null);
+	protected void populateIN1(IN1 in1, LocalDate planEffectiveDate, LocalDate planCancellationDate, String groupNumber, String groupMemebrNumber, String immigrationCode ) throws HL7Exception {
+		V2MessageUtil.setIn1Values(in1, groupNumber, groupMemebrNumber, immigrationCode, dateOnlyFormatter.format(planEffectiveDate), dateOnlyFormatter.format(planCancellationDate));
 	}
 	
 	protected void populateZIA(ZIA zia, LocalDate bcResidencyDate, String surname, String firstGivenName, String secondGivenName, String telephone, String immigrationOrVisaCode, String priorResidenceCode) throws HL7Exception {

@@ -26,7 +26,7 @@ public class R15Converter extends BaseConverter {
     	populateMSH(r15.getMSH());
     	populateZHD(r15.getZHD());
     	populatePID(r15.getPID(), phn);
-    	populateIN1(r15.getIN1(), request.getEligibilityDate());
+    	populateIN1(r15.getIN1(), request.getEligibilityDate(), null,null,null,null);
     	
     	return r15;
 	}
