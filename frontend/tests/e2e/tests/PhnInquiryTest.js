@@ -1,8 +1,7 @@
+import { SITE_UNDER_TEST } from '../configuration';
 import AlertPage from '../pages/AlertPage';
 import PhnInquiryPage from '../pages/eligibility/PhnInquiryPage';
 import { regularAccUser } from '../roles/roles';
-import { SITE_UNDER_TEST } from '../configuration';
-import CheckEligibilityPage from "../pages/eligibility/CheckEligibilityPage";
 
 const ERROR_MESSAGE = 'Please correct errors before submitting';
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid';
@@ -44,36 +43,39 @@ test('Check invalid phn format validation', async t => {
         // When I click the submit button
         .click(PhnInquiryPage.submitButton)
         // I expect an error message stating the page had errors and an individual error message for the PHN format
-        .expect(PhnInquiryPage.ErrorText.nth(0).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
-        .expect(PhnInquiryPage.ErrorText.nth(1).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
-        .expect(PhnInquiryPage.ErrorText.nth(2).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
-        .expect(PhnInquiryPage.ErrorText.nth(3).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
-        .expect(PhnInquiryPage.ErrorText.nth(4).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
-        .expect(PhnInquiryPage.ErrorText.nth(5).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
-        .expect(PhnInquiryPage.ErrorText.nth(6).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
-        .expect(PhnInquiryPage.ErrorText.nth(7).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
-        .expect(PhnInquiryPage.ErrorText.nth(8).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
-        .expect(PhnInquiryPage.ErrorText.nth(9).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
+        .expect(PhnInquiryPage.errorText.nth(0).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
+        .expect(PhnInquiryPage.errorText.nth(1).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
+        .expect(PhnInquiryPage.errorText.nth(2).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
+        .expect(PhnInquiryPage.errorText.nth(3).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
+        .expect(PhnInquiryPage.errorText.nth(4).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
+        .expect(PhnInquiryPage.errorText.nth(5).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
+        .expect(PhnInquiryPage.errorText.nth(6).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
+        .expect(PhnInquiryPage.errorText.nth(7).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
+        .expect(PhnInquiryPage.errorText.nth(8).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
+        .expect(PhnInquiryPage.errorText.nth(9).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
 });
 
-test('Check properly filled form passes validation', async t => {
+test('Check properly filled form passes validation and validate results', async t => {
     await t
         // Given the page is filled out correctly
-        .typeText(PhnInquiryPage.phnInput1, '9879875914')
-        .typeText(PhnInquiryPage.phnInput2, '9879875914')
-        .typeText(PhnInquiryPage.phnInput3, '9879875914')
-        .typeText(PhnInquiryPage.phnInput4, '9879875914')
-        .typeText(PhnInquiryPage.phnInput5, '9879875914')
-        .typeText(PhnInquiryPage.phnInput6, '9879875914')
-        .typeText(PhnInquiryPage.phnInput7, '9879875914')
-        .typeText(PhnInquiryPage.phnInput8, '9879875914')
-        .typeText(PhnInquiryPage.phnInput9, '9879875914')
-        .typeText(PhnInquiryPage.phnInput10, '9879875914')
+        .typeText(PhnInquiryPage.phnInput1, '9873895902')
+        .typeText(PhnInquiryPage.phnInput2, '9879431603')
         // When I click the submit button
         .click(PhnInquiryPage.submitButton)
         // I expect a success message
         .expect(AlertPage.alertBannerText.textContent).contains(SUCCESS_MESSAGE)
+        // And a table with two results
+        .expect(PhnLookupPage.resultsTable.exists).ok()
+        .expect(PhnLookupPage.resultsTable.child('thead').exists).ok()
+        .expect(PhnLookupPage.resultsTable.child('tbody').child('tr').count).eql(1)
+        .expect(PhnLookupPage.resultsRow1.exists).ok() 
+        .expect(PhnLookupPage.resultsRow1.child('td').exists).ok()
+        // Validate the first row
+        .expect(PhnLookupPage.resultsRow1.child('td').nth(0).textContent).eql('9873895927') 
+        .expect(PhnLookupPage.resultsRow1.child('td').nth(1).textContent).eql('CHECKSETSNAME, CHECSETFNAME CHESERSNDNAME') 
+        .expect(PhnLookupPage.resultsRow1.child('td').nth(2).textContent).eql('19700101') 
+        .expect(PhnLookupPage.resultsRow1.child('td').nth(3).textContent).eql('M') 
 });
 
 test('Check cancel button clears the form', async t => {
