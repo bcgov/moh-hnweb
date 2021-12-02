@@ -1,9 +1,10 @@
-package ca.bc.gov.hlth.hnweb.model;
+package ca.bc.gov.hlth.hnweb.model.eligibility;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InquirePhnRequest {
-	private List<String> phns;
+	private List<String> phns = new ArrayList<String>();
 
 	public List<String> getPhns() {
 		return phns;

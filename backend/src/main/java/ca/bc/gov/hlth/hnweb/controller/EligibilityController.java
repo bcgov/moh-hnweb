@@ -4,7 +4,6 @@ import static ca.bc.gov.hlth.hnweb.util.V2MessageUtil.SegmentType.ADJ;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -34,14 +33,13 @@ import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
 import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusResponse;
-import ca.bc.gov.hlth.hnweb.model.InquirePhnMatch;
-import ca.bc.gov.hlth.hnweb.model.InquirePhnRequest;
-import ca.bc.gov.hlth.hnweb.model.InquirePhnResponse;
+import ca.bc.gov.hlth.hnweb.model.eligibility.InquirePhnRequest;
+import ca.bc.gov.hlth.hnweb.model.eligibility.InquirePhnResponse;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnRequest;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnResponse;
-import ca.bc.gov.hlth.hnweb.model.rapid.RapidDefaults;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPL0;
+import ca.bc.gov.hlth.hnweb.model.rapid.RapidDefaults;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
 import ca.bc.gov.hlth.hnweb.service.EligibilityService;
@@ -104,22 +102,24 @@ public class EligibilityController {
 		try {
 			R41Converter converter = new R41Converter(rapidDefaults);
 			RPBSPPE0 r41Request = converter.convertRequest(inquirePhnRequest);
-			
-			RPBSPPE0 r41Response = eligibilityService.inquirePhn(r41Request);
+		
+			RPBSPPE0 r41Response = eligibilityService.inquirePhn(r41Request);	
 			
 			InquirePhnResponse inquirePhnResponse = converter.convertResponse(r41Response);
-			// TOOD (weskubo-cgi) The error message is removed for now so the UI can still show the canned results
-			// as all requests are returning an error
-			//inquirePhnResponse.setErrorMessage(null);
-			inquirePhnResponse.setMatches(generateDummyR41Data());			
-			
+					
 			ResponseEntity<InquirePhnResponse> response = ResponseEntity.ok(inquirePhnResponse);
 
 			logger.info("inquirePHN response: {} ", inquirePhnResponse);
 			return response;	
+		} catch (HNWebException hwe) {
+			switch (hwe.getType()) {
+			case DOWNSTREAM_FAILURE:
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
+			default:
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /lookup-phn request", hwe);				
+			}
 		} catch (Exception e) {
-			// TODO (weskubo-cgi) Update this with more specific error handling once downstream services are integrated
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /check-eligibility request", e);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /lookup-phn request", e);
 		}
 		
 	}
@@ -150,53 +150,6 @@ public class EligibilityController {
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /lookup-phn request", e);
 		}		
-	}
-	
-	private List<InquirePhnMatch> generateDummyR41Data() {
-
-		List<InquirePhnMatch> results = new ArrayList<InquirePhnMatch>();
-
-		InquirePhnMatch result1 = new InquirePhnMatch();
-		result1.setPhn("123456789");
-		result1.setFirstName("Homer");
-		result1.setLastName("Simpson");
-		result1.setDateOfBirth("19600101");
-		result1.setGender("M");
-		result1.setEligible("N");
-		result1.setStudent("N");
-		results.add(result1);
-
-		InquirePhnMatch result2 = new InquirePhnMatch();
-		result2.setPhn("234567890");
-		result2.setFirstName("Marge");
-		result2.setLastName("Simpson");
-		result2.setDateOfBirth("19650101");
-		result2.setGender("F");
-		result2.setEligible("Y");
-		result2.setStudent("N");
-		results.add(result2);
-
-		InquirePhnMatch result3 = new InquirePhnMatch();
-		result3.setPhn("345678901");
-		result3.setFirstName("Lisa");
-		result3.setLastName("Simpson");
-		result3.setDateOfBirth("19900101");
-		result3.setGender("F");
-		result3.setEligible("N");
-		result3.setStudent("Y");
-		results.add(result3);
-
-		InquirePhnMatch result4 = new InquirePhnMatch();
-		result4.setPhn("456789012");
-		result4.setFirstName("Bart");
-		result4.setLastName("Simpson");
-		result4.setDateOfBirth("19950101");
-		result4.setGender("M");
-		result4.setEligible("Y");
-		result4.setStudent("Y");
-		results.add(result4);
-		
-		return results;
 	}
 
 	@PostMapping("/check-msp-coverage-status")

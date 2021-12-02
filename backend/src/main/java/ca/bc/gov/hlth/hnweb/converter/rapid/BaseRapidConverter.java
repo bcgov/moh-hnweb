@@ -12,7 +12,11 @@ import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 public abstract class BaseRapidConverter {
 	protected static final Logger logger = LoggerFactory.getLogger(BaseRapidConverter.class);
 
+	protected static final String RAPID_DATE_FORMAT = "yyyy-MM-dd";
+	
 	protected static final String STATUS_CODE_SUCCESS = "RPBS9014";
+	
+	protected static final String STATUS_TEXT_SUCCESS = "TRANSACTION SUCCESSFUL";
 	
 	protected RapidDefaults rapidDefaults;
 
@@ -40,6 +44,11 @@ public abstract class BaseRapidConverter {
 			response.setStatus(StatusEnum.WARNING);
 			response.setMessage(statusCode + " " + statusText);
 		}
+	}
+	
+	protected String convertBirthDate(String birthDate) {
+		// Convert the response Date from yyyy-MM-dd to yyyyMMdd
+		return StringUtils.remove(birthDate, "-");
 	}
 
 	public abstract String getTranCode();
