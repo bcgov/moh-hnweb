@@ -6,10 +6,9 @@ import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.hlth.hnweb.model.BaseResponse;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
-import ca.bc.gov.hlth.hnweb.model.rapid.RapidDefaults;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
-import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 
 public abstract class BaseRapidConverter {
 	protected static final Logger logger = LoggerFactory.getLogger(BaseRapidConverter.class);
@@ -20,19 +19,11 @@ public abstract class BaseRapidConverter {
 	
 	protected static final String STATUS_TEXT_SUCCESS = "TRANSACTION SUCCESSFUL";
 	
-	protected RapidDefaults rapidDefaults;
-	
 	protected UserInfo userInfo;
 	
 	public BaseRapidConverter() {
 		super();
 		this.userInfo = SecurityUtil.loadUserInfo();
-	}
-	
-	@Deprecated
-	public BaseRapidConverter(RapidDefaults rapidDefaults) {
-		super();
-		this.rapidDefaults = rapidDefaults;
 	}
 	
 	protected void handleStatus(RPBSHeader header, BaseResponse response) {

@@ -15,20 +15,19 @@ import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0Beneficiary;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0Data;
-import ca.bc.gov.hlth.hnweb.model.rapid.RapidDefaults;
 
 public class R41Converter extends BaseRapidConverter {
 	private static final String TRAN_CODE = "RPBSPPE0";
 
-	public R41Converter(RapidDefaults rapidDefaults) {
-		super(rapidDefaults);
+	public R41Converter() {
+		super();
 	}
 	
 	public RPBSPPE0 convertRequest(InquirePhnRequest request) {
 		String eligibilityDate = new SimpleDateFormat(RAPID_DATE_FORMAT).format(new Date());
 		
 		RPBSHeader rpbsHeader = new RPBSHeader();
-		rpbsHeader.setOrganization(rapidDefaults.getOrganization());
+		rpbsHeader.setOrganization(userInfo.getOrganization());
 		rpbsHeader.setTranCode(getTranCode());		
 		
 		RPBSPPE0Data data = new RPBSPPE0Data();

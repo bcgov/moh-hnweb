@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClientException;
 import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.converter.MSHDefaults;
@@ -39,7 +40,6 @@ import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnRequest;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnResponse;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPL0;
-import ca.bc.gov.hlth.hnweb.model.rapid.RapidDefaults;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
 import ca.bc.gov.hlth.hnweb.service.EligibilityService;
@@ -68,9 +68,6 @@ public class EligibilityController {
 
 	@Autowired
 	private EligibilityService eligibilityService;
-
-	@Autowired
-	private RapidDefaults rapidDefaults;
 	
 	@Autowired
 	private MSHDefaults mshDefaults;
@@ -100,7 +97,7 @@ public class EligibilityController {
 	public ResponseEntity<InquirePhnResponse> inquirePhn(@Valid @RequestBody InquirePhnRequest inquirePhnRequest) {
 
 		try {
-			R41Converter converter = new R41Converter(rapidDefaults);
+			R41Converter converter = new R41Converter();
 			RPBSPPE0 r41Request = converter.convertRequest(inquirePhnRequest);
 		
 			RPBSPPE0 r41Response = eligibilityService.inquirePhn(r41Request);	
@@ -116,10 +113,12 @@ public class EligibilityController {
 			case DOWNSTREAM_FAILURE:
 				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
 			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /lookup-phn request", hwe);				
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /inquire-phn request", hwe);				
 			}
+		} catch (WebClientException wce) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /lookup-phn request", e);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /inquire-phn request", e);
 		}
 		
 	}
@@ -147,7 +146,10 @@ public class EligibilityController {
 			default:
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /lookup-phn request", hwe);				
 			}
-		} catch (Exception e) {
+		} catch (WebClientException wce) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
+		}
+		catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /lookup-phn request", e);
 		}		
 	}
