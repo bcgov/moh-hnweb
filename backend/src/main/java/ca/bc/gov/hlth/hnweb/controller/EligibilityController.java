@@ -128,7 +128,7 @@ public class EligibilityController {
 	public ResponseEntity<LookupPhnResponse> lookupPhn(@Valid @RequestBody LookupPhnRequest lookupPhnRequest) {
 
 		try {
-			R42Converter converter = new R42Converter(rapidDefaults);
+			R42Converter converter = new R42Converter();
 			RPBSPPL0 r42Request = converter.convertRequest(lookupPhnRequest);
 			
 			RPBSPPL0 r42Response = eligibilityService.lookupPhn(r42Request);

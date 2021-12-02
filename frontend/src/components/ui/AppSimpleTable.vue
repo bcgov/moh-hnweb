@@ -22,18 +22,18 @@
 
 .simple-table th,
 .simple-table td {
-    padding: 12px 15px;
+  padding: 12px 15px;
 }
 
 .simple-table tbody tr {
-    border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
 }
 
 .simple-table tbody tr:nth-of-type(even) {
-    background-color: #f3f3f3;
+  background-color: #f3f3f3;
 }
 
 .simple-table tbody tr:last-of-type {
-    border-bottom: 2px solid #38598A;
+  border-bottom: 2px solid #38598A;
 }
 </style>

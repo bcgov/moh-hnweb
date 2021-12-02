@@ -5,7 +5,7 @@ import { helpers } from '@vuelidate/validators'
 /**
  * Validates that the PHN matches the accepted format.
  * This assumes the PHN is optional and an empty value won't
- * case validation failure.
+ * cause validation failure.
  */
 export function validateOptionalPHN(phn) {
   if (phn === undefined || phn === '') {

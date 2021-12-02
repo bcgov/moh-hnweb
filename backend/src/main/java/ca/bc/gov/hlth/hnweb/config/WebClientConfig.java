@@ -23,6 +23,7 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import ca.bc.gov.hlth.hnweb.exception.ExceptionType;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
@@ -117,8 +118,8 @@ public class WebClientConfig {
 			        .keyManager(keyManagerFactory)
 			        .build();
 		} catch (IOException | CertificateException | UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException e) {
-	        logger.error("Error creating SSL Context for {} due to {}.", url, e.toString());
-	        throw new HNWebException("SSL Context for could not be built, application will not start", e.getCause());
+	        logger.error("Error creating SSL Context for {} due to {}.", url, e.getMessage());
+	        throw new HNWebException(ExceptionType.SSL_FAILURE, e);
 		}
 	}
 	

@@ -7,7 +7,7 @@ export const resources = {
     checkEligibility: '/eligibility/check-eligibility',
     checkMspCoverageStatus: '/eligibility/check-msp-coverage-status',
     inquirePhn: '/eligibility/inquire-phn',
-    lookupPhn: '/eligibility/lookup-phn'
+    lookupPhn: '/eligibility/lookup-phn',
   }
 }
 
