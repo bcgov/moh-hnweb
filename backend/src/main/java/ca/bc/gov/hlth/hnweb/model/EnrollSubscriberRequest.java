@@ -2,6 +2,8 @@ package ca.bc.gov.hlth.hnweb.model;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * Request message for API call to enroll a subscriber 
  *
@@ -24,18 +26,23 @@ public class EnrollSubscriberRequest {
 	
 	private String groupMemberNumber;
 	
+	@JsonFormat(pattern="yyyyMMdd")
 	private LocalDate visaIssueDate;
 	
 	private String departmentNumber;
 	
+	@JsonFormat(pattern="yyyyMMdd")
 	private LocalDate visaExpiryDate;
 	
+	@JsonFormat(pattern="yyyyMMdd")
 	private LocalDate residenceDate;
 	
+	@JsonFormat(pattern="yyyyMMdd")
 	private LocalDate coverageEffectiveDate;
 	
 	private String telephone;
 	
+	@JsonFormat(pattern="yyyyMMdd")
 	private LocalDate coverageCancellationDate;
 	
 	private String address1;
