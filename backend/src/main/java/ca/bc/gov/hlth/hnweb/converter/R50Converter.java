@@ -1,5 +1,7 @@
 package ca.bc.gov.hlth.hnweb.converter;
 
+import java.time.LocalDate;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +12,10 @@ import ca.bc.gov.hlth.hnweb.model.R50Response;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIA;
+import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
+import ca.uhn.hl7v2.model.v24.segment.PID;
 import ca.uhn.hl7v2.util.Terser;
 
 /**
@@ -45,14 +49,15 @@ public class R50Converter extends BaseConverter {
 
     	populateMSH(r50.getMSH());
     	populateZHD(r50.getZHD());
-    	populatePID(r50.getPID(), phn);    	    	
+    	populatePID(r50.getPID(), phn, request.getDateOfBirth());    	    	
     	populateIN1(r50.getIN1(), request.getCoverageEffectiveDate());
-    	populateZIA(zia, request.getResidenceDate(), request.getSurname(), request.getFirstGivenName(), request.getSecondGivenName(), request.getTelephone(), request.getImmigrationCode(), request.getPriorResidenceCode());
+    	populateZIA(zia, request.getResidenceDate(), request.getSurname(), request.getGivenName(), request.getSecondName(), request.getTelephone(), request.getImmigrationCode(), request.getPriorResidenceCode());
     	populateZIAExtendedAddress1(zia, request.getAddress1(), request.getAddress2(),request.getAddress3(), request.getCity(), request.getProvince(), request.getPostalCode());
     	populateZIAExtendedAddress2(zia, request.getMailingAddress1(),request.getMailingAddress2(),request.getMailingAddress3(), request.getMailingAddressCity(), request.getMailingAddressProvince(), request.getMailingAddressPostalCode());
     	populateZIH(r50.getZIH()); 
     	populateZIK(r50.getZIK(), request.getVisaIssueDate(), request.getVisaExpiryDate());
-  
+    	logger.info("Request for enroll subscriber : {}",r50);
+    	
 		return r50;
 	}
 	
@@ -90,9 +95,14 @@ public class R50Converter extends BaseConverter {
 		} else if (StringUtils.equals(ackCode, AcknowledgementCode.AA.name())) {
 			response.setStatus(StatusEnum.SUCCESS);
 		}
-				
+		
 		return response;
 	}
+	
+	protected void populatePID(PID pid, String phn, LocalDate dateOfBirth ) throws HL7Exception {
+		V2MessageUtil.setPidValues(pid, phn, PID_NAMESPACE_ID, PID_ID_TYPE_CODE, "", dateOnlyFormatter.format(dateOfBirth), "");
+	}
+	
 	
 	protected String getReceivingApplication() {
 		return RECEIVING_APPLICATION;
@@ -101,7 +111,6 @@ public class R50Converter extends BaseConverter {
 	protected String getMessageType() {
 		return MESSAGE_TYPE;
 	}
-
-	
+		
 
 }

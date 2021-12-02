@@ -10,6 +10,12 @@ import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.MessageMetaData;
 import ca.bc.gov.hlth.hnweb.serialization.HL7Serializer;
 
+/**
+ * Contains methods to facilitate converter a GetPersonDeatilsRequest to and GetDemographics
+ * and from GetDemographicsRsponse to a GetPersonDeatilsResponse
+ *
+ */
+ 
 public class XmlConverter {
 
 	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(XmlConverter.class);
@@ -54,30 +60,33 @@ public class XmlConverter {
 		GetPersonDetailsResponse personDetails = new GetPersonDetailsResponse();
 		String messageDetails = respObj.getMessage().getDetails();
 		String messageText[] = messageDetails.split("\\|");
+		String message = "";
+		if (messageText.length > 1) {
+			message = messageText[1];
+		}
 		if (respObj.getResultCount() == 0) {
 			logger.debug("No result found for the Phn [{}]", respObj.getPerson().getPhn());
 
 			if (messageText.length > 0) {
 				personDetails.setStatus(StatusEnum.ERROR);
-				personDetails.setMessage(messageText[1]);
+				personDetails.setMessage(message);
 			}
 		} else {
 			personDetails.setPhn(respObj.getPerson().getPhn());
 			personDetails.setGivenName(respObj.getPerson().getDocumentedName().getFirstGivenName());
 			personDetails.setSecondName(respObj.getPerson().getDocumentedName().getSecondGivenName());
-			personDetails.setSecondName(respObj.getPerson().getDocumentedName().getSurname());
+			personDetails.setSurname(respObj.getPerson().getDocumentedName().getSurname());
 			personDetails.setDateOfBirth(respObj.getPerson().getBirthDate());
 
 			if (messageText.length > 0) {
-				if (messageText[1].contains("Warning")) {
+				if (message.contains("Warning")) {
 					personDetails.setStatus(StatusEnum.WARNING);
+					personDetails.setMessage(messageText[1]);
 				} else {
 					personDetails.setStatus(StatusEnum.SUCCESS);
-
 				}
 			}
 
-			personDetails.setMessage(messageText[1]);
 			logger.info(personDetails.toString());
 		}
 

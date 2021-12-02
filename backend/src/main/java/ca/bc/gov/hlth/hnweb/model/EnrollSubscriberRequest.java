@@ -2,6 +2,8 @@ package ca.bc.gov.hlth.hnweb.model;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * Request message for API call to enroll a subscriber 
  *
@@ -12,9 +14,9 @@ public class EnrollSubscriberRequest {
 	
 	private String surname;
 	
-	private String firstGivenName;
+	private String givenName;
 	
-	private String secondGivenName;
+	private String secondName;
 		
 	private String gender;
 	
@@ -24,18 +26,26 @@ public class EnrollSubscriberRequest {
 	
 	private String groupMemberNumber;
 	
+	@JsonFormat(pattern="yyyy-MM-dd")
+	private LocalDate dateOfBirth;
+	
+	@JsonFormat(pattern="yyyy-MM-dd")
 	private LocalDate visaIssueDate;
 	
 	private String departmentNumber;
 	
+	@JsonFormat(pattern="yyyy-MM-dd")
 	private LocalDate visaExpiryDate;
 	
+	@JsonFormat(pattern="yyyy-MM-dd")
 	private LocalDate residenceDate;
 	
+	@JsonFormat(pattern="yyyy-MM-dd")
 	private LocalDate coverageEffectiveDate;
 	
 	private String telephone;
 	
+	@JsonFormat(pattern="yyyy-MM-dd")
 	private LocalDate coverageCancellationDate;
 	
 	private String address1;
@@ -102,20 +112,20 @@ public class EnrollSubscriberRequest {
 		this.surname = familyName;
 	}
 
-	public String getFirstGivenName() {
-		return firstGivenName;
+	public String getGivenName() {
+		return givenName;
 	}
 
-	public void setFirstGivenName(String firstGivenName) {
-		this.firstGivenName = firstGivenName;
+	public void setGivenName(String firstGivenName) {
+		this.givenName = firstGivenName;
 	}
 
-	public String getSecondGivenName() {
-		return secondGivenName;
+	public String getSecondName() {
+		return secondName;
 	}
 
-	public void setSecondGivenName(String secondGivenName) {
-		this.secondGivenName = secondGivenName;
+	public void setSecondName(String secondGivenName) {
+		this.secondName = secondGivenName;
 	}
 
 	public String getImmigrationCode() {
@@ -132,6 +142,14 @@ public class EnrollSubscriberRequest {
 
 	public void setGroupMemberNumber(String groupMemberNumber) {
 		this.groupMemberNumber = groupMemberNumber;
+	}
+
+	public LocalDate getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(LocalDate dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
 	}
 
 	public LocalDate getVisaIssueDate() {
