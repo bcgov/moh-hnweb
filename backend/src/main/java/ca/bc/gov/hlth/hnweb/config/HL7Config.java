@@ -1,5 +1,9 @@
 package ca.bc.gov.hlth.hnweb.config;
 
+/**
+ *Config class to build GetDemographicsRequest
+ *
+ */
 public class HL7Config {
   private String senderDeviceRoot;
   private String senderDeviceExtension;

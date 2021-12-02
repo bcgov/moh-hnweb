@@ -10,6 +10,12 @@ import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.MessageMetaData;
 import ca.bc.gov.hlth.hnweb.serialization.HL7Serializer;
 
+/**
+ * Contains methods to facilitate converter a GetPersonDeatilsRequest to and GetDemographics
+ * and from GetDemographicsRsponse to a GetPersonDeatilsResponse
+ *
+ */
+ 
 public class XmlConverter {
 
 	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(XmlConverter.class);
