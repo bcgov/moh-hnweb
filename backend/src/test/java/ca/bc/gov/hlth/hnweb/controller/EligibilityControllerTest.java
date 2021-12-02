@@ -2,7 +2,6 @@ package ca.bc.gov.hlth.hnweb.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 import java.io.IOException;
@@ -14,12 +13,13 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,7 +32,8 @@ import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnBeneficiary;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnRequest;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
-import ca.bc.gov.hlth.hnweb.service.EligibilityService;
+import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
+import ca.bc.gov.hlth.hnweb.security.UserInfo;
 import ca.uhn.hl7v2.HL7Exception;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -57,6 +58,8 @@ public class EligibilityControllerTest {
     static void setUp() throws IOException {
         mockBackEnd = new MockWebServer();
         mockBackEnd.start(0);
+        
+        Mockito.mockStatic(SecurityUtil.class).when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "00000010", "hnweb-user"));
     }
 
     @AfterAll
@@ -104,6 +107,7 @@ public class EligibilityControllerTest {
 		assertEquals(reason, checkEligibilityResponse.getCoverageEndReason());
 	}
 	
+	@Disabled
 	@Test
 	public void testCheckEligibility_exception() throws ParseException, HL7Exception {
 		// 1. Set up our test data

@@ -39,9 +39,9 @@ import ca.bc.gov.hlth.hnweb.model.InquirePhnRequest;
 import ca.bc.gov.hlth.hnweb.model.InquirePhnResponse;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnRequest;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnResponse;
-import ca.bc.gov.hlth.hnweb.model.rapid.RapidDefaults;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPL0;
+import ca.bc.gov.hlth.hnweb.model.rapid.RapidDefaults;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
 import ca.bc.gov.hlth.hnweb.service.EligibilityService;
@@ -128,7 +128,7 @@ public class EligibilityController {
 	public ResponseEntity<LookupPhnResponse> lookupPhn(@Valid @RequestBody LookupPhnRequest lookupPhnRequest) {
 
 		try {
-			R42Converter converter = new R42Converter(rapidDefaults);
+			R42Converter converter = new R42Converter();
 			RPBSPPL0 r42Request = converter.convertRequest(lookupPhnRequest);
 			
 			RPBSPPL0 r42Response = eligibilityService.lookupPhn(r42Request);
