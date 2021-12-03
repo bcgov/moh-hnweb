@@ -28,7 +28,7 @@ public class R50Converter extends BaseConverter {
 	private static final Logger logger = LoggerFactory.getLogger(R50Converter.class);
 
 	private static final String MESSAGE_TYPE = "R50^Z06";
-	private static final String RECEIVING_APPLICATION = "RAICHK-BNF-CVST";
+	private static final String RECEIVING_APPLICATION = "RAIENROL-EMP";
 	
 	private String phn;
 	
@@ -49,8 +49,8 @@ public class R50Converter extends BaseConverter {
 
     	populateMSH(r50.getMSH());
     	populateZHD(r50.getZHD());
-    	populatePID(r50.getPID(), phn, request.getDateOfBirth());    	    	
-    	populateIN1(r50.getIN1(), request.getCoverageEffectiveDate());
+    	populatePID(r50.getPID(), phn, request.getDateOfBirth(), request.getGender());    	    	
+    	populateIN1(r50.getIN1(), request.getCoverageEffectiveDate(), request.getCoverageCancellationDate(), request.getGroupNumber(), request.getGroupMemberNumber(),request.getDepartmentNumber());
     	populateZIA(zia, request.getResidenceDate(), request.getSurname(), request.getGivenName(), request.getSecondName(), request.getTelephone(), request.getImmigrationCode(), request.getPriorResidenceCode());
     	populateZIAExtendedAddress1(zia, request.getAddress1(), request.getAddress2(),request.getAddress3(), request.getCity(), request.getProvince(), request.getPostalCode());
     	populateZIAExtendedAddress2(zia, request.getMailingAddress1(),request.getMailingAddress2(),request.getMailingAddress3(), request.getMailingAddressCity(), request.getMailingAddressProvince(), request.getMailingAddressPostalCode());
@@ -94,13 +94,14 @@ public class R50Converter extends BaseConverter {
 			response.setMessage(r50Response.getAcknowledgementMessage());
 		} else if (StringUtils.equals(ackCode, AcknowledgementCode.AA.name())) {
 			response.setStatus(StatusEnum.SUCCESS);
+			response.setMessage("");
 		}
 		
 		return response;
 	}
 	
-	protected void populatePID(PID pid, String phn, LocalDate dateOfBirth ) throws HL7Exception {
-		V2MessageUtil.setPidValues(pid, phn, PID_NAMESPACE_ID, PID_ID_TYPE_CODE, "", dateOnlyFormatter.format(dateOfBirth), "");
+	protected void populatePID(PID pid, String phn, LocalDate dateOfBirth, String gender) throws HL7Exception {
+		V2MessageUtil.setPidValues(pid, phn, PID_NAMESPACE_ID, PID_ID_TYPE_CODE, "", dateOnlyFormatter.format(dateOfBirth), gender);
 	}
 	
 	

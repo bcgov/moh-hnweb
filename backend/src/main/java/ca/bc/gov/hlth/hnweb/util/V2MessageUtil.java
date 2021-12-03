@@ -123,7 +123,7 @@ public class V2MessageUtil {
 //    	Pid3_PatientIdentifierList Not Supported     
     	pid.getPid4_AlternatePatientIDPID(0).parse(alternatePatientIdPid);
 //    	Pid5 PatientName Not Supported 
-    	pid.getPid7_DateTimeOfBirth().parse(dateTimeOfBirth);
+        pid.getPid7_DateTimeOfBirth().parse(dateTimeOfBirth);
     	pid.getPid8_AdministrativeSex().parse(administrativeSex);
     }
     
@@ -142,7 +142,7 @@ public class V2MessageUtil {
      */
     public static void setZiaValues(ZIA zia, String bcResidencyDate, String surname, String firstGivenName, String secondGivenName,  String telephone, String immigrationOrVisaCode, String priorResidenceCode) throws HL7Exception {
     	//e.g. ZIA||20210101|||||||||||||HELP^RERE^^^^^L|898 RETER ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^H~123 UIYUI ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^M|^PRN^PH^^^250^8578974|||||||S|AB^M
-    	String givenName  = firstGivenName + " " + secondGivenName;
+    	String givenName  = firstGivenName +  secondGivenName;
     	String areaCode = telephone.substring(0,3);
     	String phoneNumber = telephone.substring(3);
     	
@@ -157,7 +157,7 @@ public class V2MessageUtil {
     	
     	zia.getZia17_ExtendedTelephoneNumber().getPhoneNumber().parse(phoneNumber);
     	zia.getZia17_ExtendedTelephoneNumber().getTelecommunicationUseCode().parse(TelePhoneUseCode.PRN.name());
-
+    	
     	zia.getZia24_ImmigrationOrVisaCode().parse(immigrationOrVisaCode);
     	zia.getZia25_PriorResidenceCode().parse(priorResidenceCode);
     }

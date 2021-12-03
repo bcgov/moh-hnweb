@@ -20,13 +20,13 @@ public class EnrollSubscriberRequest {
 		
 	private String gender;
 	
-	private String groupnumber;
+	private String groupNumber;
 	
 	private String immigrationCode;
 	
 	private String groupMemberNumber;
 	
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyyMMdd")
 	private LocalDate dateOfBirth;
 	
 	@JsonFormat(pattern="yyyy-MM-dd")
@@ -96,12 +96,12 @@ public class EnrollSubscriberRequest {
 		this.gender = gender;
 	}
 
-	public String getGroupnumber() {
-		return groupnumber;
+	public String getGroupNumber() {
+		return groupNumber;
 	}
 
-	public void setGroupnumber(String groupnumber) {
-		this.groupnumber = groupnumber;
+	public void setGroupNumber(String groupnumber) {
+		this.groupNumber = groupnumber;
 	}
 
 	public String getSurname() {

@@ -145,6 +145,7 @@ public class EnrollmentControllerTest {
 		enrollSubscriberRequest.setDateOfBirth(LocalDate.of(1973, 8, 11));
 		enrollSubscriberRequest.setResidenceDate(LocalDate.now());
 		enrollSubscriberRequest.setCoverageEffectiveDate(LocalDate.now());
+		enrollSubscriberRequest.setCoverageCancellationDate(LocalDate.now());
 		enrollSubscriberRequest.setVisaIssueDate(LocalDate.now());
 		enrollSubscriberRequest.setVisaExpiryDate(LocalDate.now());
 		enrollSubscriberRequest.setAddress1("101 33A Street");
