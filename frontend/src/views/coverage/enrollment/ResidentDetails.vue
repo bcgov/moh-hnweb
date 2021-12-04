@@ -150,7 +150,7 @@ import { INPUT_DATE_FORMAT } from '../../../util/constants'
 
 import EnrollmentService from '../../../services/EnrollmentService'
 import useVuelidate from '@vuelidate/core'
-import { validateNumber, validateGroupMemberNumber, validateDepartmentNumber, validateTelephone, 
+import { validateGroupNumber, validateGroupMemberNumber, validateDepartmentNumber, validateTelephone, 
         VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
@@ -263,8 +263,7 @@ export default {
         console.log('registerVisaResident')
         this.searching = true
         try {
-          const isValid = true
-          await this.v$.$validate()
+          const isValid = await this.v$.$validate()
           if (!isValid) {
             this.$store.commit('alert/setErrorAlert');
             this.searching = false
