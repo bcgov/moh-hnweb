@@ -23,6 +23,7 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import ca.bc.gov.hlth.hnweb.exception.ExceptionType;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
@@ -62,10 +63,25 @@ public class WebClientConfig {
 	@Value("${R03.cert.password}")
 	private String r03CertPassword;
 	
+	@Value("${rapid.url}")
+	private String rapidUrl;
+	 
+	@Value("${rapid.user.name}")
+	private String rapidUserName;
+
+	@Value("${rapid.user.password}")
+	private String rapidUserPassword;
+
+	@Value("classpath:${rapid.cert.file}")
+	private Resource rapidCertFile;
+
+	@Value("${rapid.cert.password}")
+	private String rapidCertPassword;
+
 	@Bean("enrollmentWebClient")
     public WebClient enrollmentWebClient() throws HNWebException {
 
-		SslContext sslContext = getSSLContext(certFile, certPassword);
+		SslContext sslContext = getSSLContext(r50Url, certFile, certPassword);
 		
 	    HttpClient httpClient= HttpClient.create().secure(t -> t.sslContext(sslContext));
 		ClientHttpConnector connector= new ReactorClientHttpConnector(httpClient);
@@ -80,11 +96,10 @@ public class WebClientConfig {
                 .build();
     }
 	
-	
 	@Bean("hcimWebClient")
 	   public WebClient hcimWebClient() throws HNWebException {
 
-			SslContext sslContext = getSSLContext(r03CertFile, r03CertPassword);
+			SslContext sslContext = getSSLContext(r03Url, r03CertFile, r03CertPassword);
 			
 		    HttpClient httpClient= HttpClient.create().secure(t -> t.sslContext(sslContext));
 			ClientHttpConnector connector= new ReactorClientHttpConnector(httpClient);
@@ -98,7 +113,25 @@ public class WebClientConfig {
 	                .build();
 	    }
 
-	private SslContext getSSLContext(Resource certFile, String certPassword) throws HNWebException {
+	@Bean("rapidWebClient")
+    public WebClient rapidWebClient() throws HNWebException {
+
+		SslContext sslContext = getSSLContext(rapidUrl, rapidCertFile, rapidCertPassword);
+		
+	    HttpClient httpClient= HttpClient.create().secure(t -> t.sslContext(sslContext));
+		ClientHttpConnector connector= new ReactorClientHttpConnector(httpClient);
+	    
+		return WebClient.builder()
+	    		.clientConnector(connector)
+                .baseUrl(rapidUrl)
+                .filter(logRequest())
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE) 
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.ALL_VALUE) 
+                .defaultHeaders(header -> header.setBasicAuth(rapidUserName, rapidUserPassword))
+                .build();
+    }
+
+	private SslContext getSSLContext(String url, Resource certFile, String certPassword) throws HNWebException {
 
 		try {
 			KeyStore keyStore = KeyStore.getInstance(KEY_STORE_TYPE_PKCS12);
@@ -111,8 +144,8 @@ public class WebClientConfig {
 			        .keyManager(keyManagerFactory)
 			        .build();
 		} catch (IOException | CertificateException | UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException e) {
-	        logger.error("Error creating Enroll Subscriber SSL Context due to {}.", e.toString());
-	        throw new HNWebException("SSL Context for Enroll Subscriber could not be built, application will not start", e.getCause());
+	        logger.error("Error creating SSL Context for {} due to {}.", url, e.getMessage());
+	        throw new HNWebException(ExceptionType.SSL_FAILURE, e);
 		}
 	}
 	

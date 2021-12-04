@@ -71,6 +71,7 @@ export default {
     flex: 1;
     justify-content: flex-start;
     vertical-align: middle;
+    white-space: pre;
   }
 
   .alert-close {

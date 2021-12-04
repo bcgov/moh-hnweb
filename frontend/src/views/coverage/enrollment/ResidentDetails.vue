@@ -346,8 +346,8 @@ export default {
       return {
         groupNumber: {
           required,
-          validateNumber: helpers.withMessage(
-            VALIDATE_GROUP_NUMBER_MESSAGE, validateNumber
+          validateGroupNumber: helpers.withMessage(
+            VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber
           )
         },
         immigrationCode: {required},
