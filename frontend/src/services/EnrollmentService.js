@@ -21,16 +21,12 @@ export default {
   },
 
   registerResident(request) {
-    console.log(`Service registerResident: [PHN: ${request.phn}] [Group Number: ${request.groupNumber}]`)
+    console.log(`Service registerResident: [PHN: ${request.phn}] [Group Number: ${request.groupNumber}] [Prior Residence: ${request.priorResidenceCode}]`)
     // return apiRequest().then(axiosInstance => axiosInstance.post(resources.enrollment.addVisaResidentWithPHN, request))
     return {
       data: {
-          person: {
-          phn: request.phn,
-          name: 'Reg Test Data',
-        },
         status: 'success',
-        message: null
+        message: ''
       }
     }
   }

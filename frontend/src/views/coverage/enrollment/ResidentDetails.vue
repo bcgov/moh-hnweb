@@ -150,7 +150,7 @@ import { INPUT_DATE_FORMAT } from '../../../util/constants'
 
 import EnrollmentService from '../../../services/EnrollmentService'
 import useVuelidate from '@vuelidate/core'
-import { validateNumber, validateGroupMemberNumber, validateDepartmentNumber, validateTelephone, 
+import { validateGroupNumber, validateGroupMemberNumber, validateDepartmentNumber, validateTelephone, 
         VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
@@ -215,6 +215,7 @@ export default {
             { text: '', value: '' },
             { text: 'Student Authorization', value: 'S' },
           ],
+          // Province drop down options
           provinceOptions: [
             { text: '', value: '' },
             { text: 'Alberta', value: 'AB' },
@@ -231,7 +232,8 @@ export default {
             { text: 'Saskatchewan', value: 'SK' },
             { text: 'Yukon', value: 'YT' },
           ],
-          priorResidenceOptions: [
+           // Prior Residence drop down options
+         priorResidenceOptions: [
             { text: '', value: '' },
             { text: 'Alberta', value: 'AB' },
             { text: 'Manitoba', value: 'MB' },
@@ -261,16 +263,15 @@ export default {
         console.log('registerVisaResident')
         this.searching = true
         try {
-          const isValid = true
-          // await this.v$.$validate()
-          // if (!isValid) {
-          //   this.$store.commit('alert/setErrorAlert');
-          //   this.searching = false
-          //   return
-          // }
-          console.log('Emitting')
+          const isValid = await this.v$.$validate()
+          if (!isValid) {
+            this.$store.commit('alert/setErrorAlert');
+            this.searching = false
+            return
+          }
           this.$emit('register-resident', {
             phn: this.resident.phn,
+            dateOfBirth: this.resident.dateOfBirth,
             givenName: this.resident.givenName,	
             secondName: this.resident.secondName,        
             surname: this.resident.surname,
@@ -344,8 +345,8 @@ export default {
       return {
         groupNumber: {
           required,
-          validateNumber: helpers.withMessage(
-            VALIDATE_GROUP_NUMBER_MESSAGE, validateNumber
+          validateGroupNumber: helpers.withMessage(
+            VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber
           )
         },
         immigrationCode: {required},
