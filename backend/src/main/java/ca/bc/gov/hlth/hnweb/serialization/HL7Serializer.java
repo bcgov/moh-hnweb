@@ -14,6 +14,8 @@ import ca.bc.gov.hlth.hnweb.model.v3.Person;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.basic.DateConverter;
 import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -38,7 +40,7 @@ public class HL7Serializer {
   private static final String hl4DateFormat = "yyyyMMdd";
   private static final String shortSoapFormat = "yyyy-MM-dd";
   private static final String longSoapFormat = "yyyy-MM-ddThh:mm:ss";
-  private XStream xs = new XStream(new PureJavaReflectionProvider());
+  private XStream xs = new XStream(new DomDriver());
   private Map<Class, Transformer> mappings;
   private HL7Config hl7Config;
 

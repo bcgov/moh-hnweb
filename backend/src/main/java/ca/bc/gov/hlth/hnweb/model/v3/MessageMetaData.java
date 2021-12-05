@@ -16,16 +16,16 @@ public class MessageMetaData {
 	private String sourceSystemOverride;
 	private String organization;
 
-	public MessageMetaData() {
+	public MessageMetaData(String transactionId) {
 		timestamp = sdf.format(new Date());
 		Date expiry = new Date();
 		expiry.setDate(expiry.getDate() + 1);
 		expiryTime = sdf.format(expiry);
-		messageIdExt = "HOOPC" + timestamp;
+		messageIdExt = transactionId;
 	}
 
-	public MessageMetaData(String dataEntererExt, String sourceSystemOverride, String organization) {
-		this();
+	public MessageMetaData(String dataEntererExt, String sourceSystemOverride, String organization, String transactionId) {
+		this(transactionId);
 		this.dataEntererExt = dataEntererExt;
 		this.sourceSystemOverride = sourceSystemOverride;
 		this.organization = organization;

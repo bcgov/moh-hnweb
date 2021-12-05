@@ -1,6 +1,9 @@
 package ca.bc.gov.hlth.hnweb.converter;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.hlth.hnweb.config.HL7Config;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
@@ -8,30 +11,34 @@ import ca.bc.gov.hlth.hnweb.model.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.MessageMetaData;
+import ca.bc.gov.hlth.hnweb.model.v3.Name;
 import ca.bc.gov.hlth.hnweb.serialization.HL7Serializer;
+import ca.bc.gov.hlth.hnweb.util.V3MessageUtil;
 
 /**
- * Contains methods to facilitate converter a GetPersonDeatilsRequest to and GetDemographics
- * and from GetDemographicsRsponse to a GetPersonDeatilsResponse
+ * Converter class for V3 messages Contains methods to facilitate converter a
+ * GetPersonDeatilsRequest to and GetDemographics and from
+ * GetDemographicsRsponse to a GetPersonDeatilsResponse
  *
  */
- 
+
 public class XmlConverter {
 
-	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(XmlConverter.class);
-	private static final String dataEntererExt = "";
-	private static final String sourceSystemOverride = "HOOPC";
-	private static final String organization = "BCHCIM";
+	private static final Logger logger = LoggerFactory.getLogger(XmlConverter.class);
+	private static final String dataEntererExt = "SOURCESYSTEMUSERNAME";
+	private static final String sourceSystemOverride = "MOH_CRS";
+	private static final String organization = "MOH_CRS";
 	private static final String mrn_source = "MOH_CRS";
 	protected HL7Serializer hl7;
 	protected MessageMetaData mmd;
 
-	public XmlConverter() {
+	public XmlConverter(String transectionId) {
 		hl7 = new HL7Serializer(new HL7Config());
-		mmd = new MessageMetaData(dataEntererExt, sourceSystemOverride, organization);
+		mmd = new MessageMetaData(dataEntererExt, sourceSystemOverride, organization, transectionId);
 	}
 
 	/**
+	 * Serializes and creates soap wrapper around xml request.
 	 * @param phn
 	 * @return
 	 */
@@ -40,17 +47,22 @@ public class XmlConverter {
 
 		GetDemographicsRequest request = buildDemographicsRequest(phn);
 		Object formattedRequest = hl7.toXml(request, mmd);
-		String historyRequest = formattedRequest.toString();
-		logger.debug("Request XML : {} ", historyRequest);
-		return historyRequest;
+		String requestObj = V3MessageUtil.wrap(formattedRequest.toString());
+		logger.debug("Get Demographics wrapped xml request[{}]", requestObj);
+		return requestObj;
 
 	}
 
-	public GetPersonDetailsResponse convertResponse(String xmlString) {
-
-		GetDemographicsResponse demographicsResponse = hl7.fromXml(xmlString, GetDemographicsResponse.class);
-		logger.debug("Converted Demographics response : {} ", demographicsResponse.toString());
-		GetPersonDetailsResponse personDetailsResponse = buildPersonDetailsResponse(demographicsResponse);
+	/**
+	 * @param xmlString
+	 * @return
+	 * @throws IOException
+	 */
+	public GetPersonDetailsResponse convertResponse(String xmlString) throws IOException {
+		GetDemographicsResponse results = hl7.fromXml(xmlString, GetDemographicsResponse.class);
+		logger.debug("Converted Demographics response : {} ", results.toString());
+		
+		GetPersonDetailsResponse personDetailsResponse = buildPersonDetailsResponse(results);
 		logger.debug("Converted PersonDetails Response : {} ", personDetailsResponse);
 		return personDetailsResponse;
 
@@ -73,9 +85,13 @@ public class XmlConverter {
 			}
 		} else {
 			personDetails.setPhn(respObj.getPerson().getPhn());
-			personDetails.setGivenName(respObj.getPerson().getDocumentedName().getFirstGivenName());
-			personDetails.setSecondName(respObj.getPerson().getDocumentedName().getSecondGivenName());
-			personDetails.setSurname(respObj.getPerson().getDocumentedName().getSurname());
+			Name nameObj = respObj.getPerson().getDeclaredName();
+			if (nameObj == null)
+				nameObj = respObj.getPerson().getDocumentedName();
+			
+			personDetails.setGivenName(nameObj.getFirstGivenName());
+			personDetails.setSecondName(nameObj.getSecondGivenName());
+			personDetails.setSurname(nameObj.getSurname());
 			personDetails.setDateOfBirth(respObj.getPerson().getBirthDate());
 
 			if (messageText.length > 0) {
@@ -87,7 +103,7 @@ public class XmlConverter {
 				}
 			}
 
-			logger.info(personDetails.toString());
+			logger.info("Response message for given phn is: {}", personDetails.toString());
 		}
 
 		return personDetails;
@@ -95,7 +111,6 @@ public class XmlConverter {
 	}
 
 	private GetDemographicsRequest buildDemographicsRequest(String phn) {
-
 		GetDemographicsRequest getDemographics = new GetDemographicsRequest();
 		getDemographics.setPhn(phn);
 		getDemographics.setMrnSource(mrn_source);

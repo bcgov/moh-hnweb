@@ -12,17 +12,24 @@ import java.io.Reader;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import ca.bc.gov.hlth.hnweb.config.HL7Config;
+import ca.bc.gov.hlth.hnweb.converter.XmlConverter;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.MessageMetaData;
 import ca.bc.gov.hlth.hnweb.serialization.HL7Serializer;
+import ca.bc.gov.hlth.hnweb.service.EnrollmentService;
 
 
 public class HL7SerializerTest {
 
   private static final Logger log = LoggerFactory.getLogger(HL7SerializerTest.class);
+  
+ @Autowired
+ EnrollmentService service;
+  
 
   @Test
   public void test_toXML() throws Exception{
@@ -30,7 +37,7 @@ public class HL7SerializerTest {
     HL7Config hl7Config = new HL7Config();
     HL7Serializer hl7 = new HL7Serializer(hl7Config);
 
-    MessageMetaData mmd = new MessageMetaData();
+    MessageMetaData mmd = new MessageMetaData("testId");
     mmd.setDataEntererExt("train96");
     mmd.setOrganization("HOOPC");
     mmd.setSourceSystemOverride("BCHCIM");
@@ -38,6 +45,10 @@ public class HL7SerializerTest {
     getDemoQuery.setPhn("9862716574");
 
     Object request = hl7.toXml(getDemoQuery, mmd);
+    
+    
+    XmlConverter converter = new XmlConverter("testId");
+    converter.convertResponse(convertXMLFileToString());
     
     GetDemographicsResponse results = hl7.fromXml(convertXMLFileToString(), GetDemographicsResponse.class);
     assertEquals("9862716574", results.getPerson().getPhn());

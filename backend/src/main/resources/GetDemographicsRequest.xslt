@@ -21,7 +21,7 @@
 <!-- message version -->
             <versionCode code="V3PR1"/>
 <!-- interaction id -->
-            <interactionId root="2.16.840.1.113883.3.51.1.1.2" extension="HCIM_IN_GetDemographics.History"/>
+            <interactionId root="2.16.840.1.113883.3.51.1.1.2" extension="HCIM_IN_GetDemographics"/>
 <!-- processing code (P = production) -->
             <processingCode code="P"/>
 <!-- processing mode code (T = current processing) -->
@@ -111,7 +111,7 @@
         <queryByParameter>
             <queryByParameterPayload>
                 <person.id>
-                    <value root="2.16.840.1.113883.3.51.1.1.6" >
+                    <value root="2.16.840.1.113883.3.51.1.1.6.1" >
                         <xsl:attribute name="assigningAuthorityName">
                             <xsl:value-of select="mrnSource"/>
                         </xsl:attribute>

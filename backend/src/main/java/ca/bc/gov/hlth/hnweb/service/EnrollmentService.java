@@ -35,10 +35,6 @@ import ca.uhn.hl7v2.parser.Parser;
 public class EnrollmentService {
 
 	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(EnrollmentService.class);
-	private static final String dataEntererExt = "";
-	private static final String sourceSystemOverride = "HOOPC";
-	private static final String organization = "BCHCIM";
-	private static final String mrn_source = "MOH_CRS";
 
 	public static final String TRANSACTION_ID = "TransactionID";
 
@@ -78,7 +74,8 @@ public class EnrollmentService {
 	}
 	
 	 
-	  /**
+	 /**
+	 * Gets the demographic details by sending a V3 message to external endpoint.
 	 * @param xmlString
 	 * @param transactionId
 	 * @return

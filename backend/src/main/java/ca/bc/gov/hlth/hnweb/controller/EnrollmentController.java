@@ -71,50 +71,20 @@ public class EnrollmentController {
 	}
 	
 	@PostMapping("/person-details")
-	public ResponseEntity<GetPersonDetailsResponse> getDemographicDetails(@Valid @RequestBody GetPersonDetailsRequest requestObj) throws HL7Exception, IOException {
-		
+	public ResponseEntity<GetPersonDetailsResponse> getDemographicDetails(@Valid @RequestBody GetPersonDetailsRequest requestObj) throws HL7Exception, IOException {		
 		logger.info("Demographic request: {} ", requestObj.getPhn());
+		
 			
 		String transactionId = UUID.randomUUID().toString();
-		XmlConverter converter = new XmlConverter();
+		XmlConverter converter = new XmlConverter(transactionId);
 		
 		String xmlString = converter.convertRequest(requestObj.getPhn());
-		ResponseEntity<String> demoGraphicsResponse = enrollmentService.getDemographics(xmlString, transactionId);	
-		
-		//getDemoGraphicsResponse();
+				
+		ResponseEntity<String> demoGraphicsResponse = enrollmentService.getDemographics(xmlString, transactionId);		
 		GetPersonDetailsResponse personDetails = converter.convertResponse(demoGraphicsResponse.getBody());
 		ResponseEntity<GetPersonDetailsResponse> responseEntity = ResponseEntity.ok(personDetails);
 		
 		return responseEntity;
-	}
-	
-	private String getDemoGraphicsResponse() throws IOException {
-		// our XML file for this example
-		File xmlFile = new File("src\\main\\resources\\GetDemographicsResponse.xml");
-		        
-		 // Let's get XML file as String using BufferedReader
-		 // FileReader uses platform's default character encoding
-		 // if you need to specify a different encoding, 
-		 // use InputStreamReader
-		 Reader fileReader;
-				
-		 fileReader = new FileReader(xmlFile);
-				
-		 BufferedReader bufReader = new BufferedReader(fileReader);
-		        
-		 StringBuilder sb = new StringBuilder();
-		 String line = bufReader.readLine();
-		 while( line != null){
-		      sb.append(line).append("\n");
-		      line = bufReader.readLine();
-		  }
-		 String xml2String = sb.toString();
-		 logger.info("XML to String using BufferedReader : ");
-		 //logger.info(xml2String);
-		        
-		  bufReader.close();
-		        
-		  return xml2String;
 	}
 	
 	

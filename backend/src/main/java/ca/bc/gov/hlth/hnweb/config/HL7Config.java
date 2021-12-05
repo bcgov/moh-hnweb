@@ -20,14 +20,14 @@ public class HL7Config {
   public HL7Config() {
     hl7Version = "V3PR1";
     recieverDeviceRoot = "2.16.840.1.113883.3.51.1.1.4";
-    recieverDeviceExtension = "BCHCIM";
+    recieverDeviceExtension = "192.168.0.1";
     recieverOrgRoot = "2.16.840.1.113883.3.51.1.1.3";
-    recieverOrgExtension = "MOH_CRS";
+    recieverOrgExtension = "HCIM";
 
     senderDeviceRoot = "2.16.840.1.113883.3.51.1.1.5";
     senderDeviceExtension = "EWEB_PHN";
     senderOrgRoot = "2.16.840.1.113883.3.51.1.1.3";
-    senderOrgExtension = "HCIM";
+    senderOrgExtension = "MOH_CRS";
   }
 
   public String getHl7Version() {
