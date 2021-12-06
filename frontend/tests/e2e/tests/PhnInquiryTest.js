@@ -103,7 +103,7 @@ test('Check properly filled form passes validation and validate results (which c
     .expect(PhnInquiryPage.resultsRow1.child('td').nth(5).textContent).eql('N') 
 })
 
-test('Check cancel button clears the form', async t => {
+test('Check clear button clears the form', async t => {
   await t
     // Given I have a form filled out with data
     .typeText(PhnInquiryPage.phnInput1, '9000448000')

@@ -56,7 +56,7 @@ test('Check properly filled form passes validation', async t => {
         .expect(AlertPage.alertBannerText.textContent).contains(SUCCESS_MESSAGE)
 });
 
-test('Check cancel button clears the form', async t => {
+test('Check clear button clears the form', async t => {
 	await t
         // Given I have a form filled out with data
         .typeText(CheckEligibilityPage.phnInput, '9000448000')
