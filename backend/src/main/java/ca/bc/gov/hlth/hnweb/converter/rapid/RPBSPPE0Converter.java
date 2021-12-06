@@ -16,10 +16,10 @@ import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0Beneficiary;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0Data;
 
-public class R41Converter extends BaseRapidConverter {
+public class RPBSPPE0Converter extends BaseRapidConverter {
 	private static final String TRAN_CODE = "RPBSPPE0";
 
-	public R41Converter() {
+	public RPBSPPE0Converter() {
 		super();
 	}
 	
@@ -55,7 +55,7 @@ public class R41Converter extends BaseRapidConverter {
 
 		Boolean hasWarning = Boolean.FALSE;
 		String successMessage = null;
-		List<String> warningMessages = new ArrayList<String>();
+		List<String> warningMessages = new ArrayList<>();
 		
 		for (RPBSPPE0Beneficiary beneficiary: data.getBeneficiaries()) {
 			// Handle the individual statuses

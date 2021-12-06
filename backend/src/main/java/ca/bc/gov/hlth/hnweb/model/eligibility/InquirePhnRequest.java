@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InquirePhnRequest {
-	private List<String> phns = new ArrayList<String>();
+	private List<String> phns = new ArrayList<>();
 
 	public List<String> getPhns() {
 		return phns;

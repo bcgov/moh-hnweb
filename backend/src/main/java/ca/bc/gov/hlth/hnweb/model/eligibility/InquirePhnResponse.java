@@ -6,7 +6,7 @@ import java.util.List;
 import ca.bc.gov.hlth.hnweb.model.BaseResponse;
 
 public class InquirePhnResponse extends BaseResponse {
-	private List<InquirePhnBeneficiary> beneficiaries = new ArrayList<InquirePhnBeneficiary>();
+	private List<InquirePhnBeneficiary> beneficiaries = new ArrayList<>();
 
 	public List<InquirePhnBeneficiary> getBeneficiaries() {
 		return beneficiaries;

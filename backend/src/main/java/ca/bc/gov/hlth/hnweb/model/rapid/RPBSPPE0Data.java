@@ -13,7 +13,7 @@ public class RPBSPPE0Data {
 	/** 2 Eligibility Date No 0...10 .. */
 	private String eligibilityDate;
 	
-	private List<RPBSPPE0Beneficiary> beneficiaries = new ArrayList<RPBSPPE0Beneficiary>();
+	private List<RPBSPPE0Beneficiary> beneficiaries = new ArrayList<>();
 
 
 	public RPBSPPE0Data() {
@@ -43,7 +43,7 @@ public class RPBSPPE0Data {
 		StringBuilder sb = new StringBuilder();
 		
 		// Only use the first 10 PHNs
-		List<String> usablePhns = null;
+		List<String> usablePhns;
 		if (phns.size() > MAX_PHNS) {
 			usablePhns = phns.subList(0, MAX_PHNS);	
 		} else {

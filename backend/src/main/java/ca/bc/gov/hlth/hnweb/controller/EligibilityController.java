@@ -27,7 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.converter.MSHDefaults;
 import ca.bc.gov.hlth.hnweb.converter.R15Converter;
-import ca.bc.gov.hlth.hnweb.converter.rapid.R41Converter;
+import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPPE0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.R42Converter;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
@@ -97,12 +97,12 @@ public class EligibilityController {
 	public ResponseEntity<InquirePhnResponse> inquirePhn(@Valid @RequestBody InquirePhnRequest inquirePhnRequest) {
 
 		try {
-			R41Converter converter = new R41Converter();
-			RPBSPPE0 r41Request = converter.convertRequest(inquirePhnRequest);
+			RPBSPPE0Converter converter = new RPBSPPE0Converter();
+			RPBSPPE0 ppe0Request = converter.convertRequest(inquirePhnRequest);
 		
-			RPBSPPE0 r41Response = eligibilityService.inquirePhn(r41Request);	
+			RPBSPPE0 ppe0Response = eligibilityService.inquirePhn(ppe0Request);	
 			
-			InquirePhnResponse inquirePhnResponse = converter.convertResponse(r41Response);
+			InquirePhnResponse inquirePhnResponse = converter.convertResponse(ppe0Response);
 					
 			ResponseEntity<InquirePhnResponse> response = ResponseEntity.ok(inquirePhnResponse);
 
