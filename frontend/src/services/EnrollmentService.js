@@ -4,20 +4,20 @@ export default {
 
   getPersonDemographics(request) {
     console.log(`getPersonDemographics: PHN: ${request.phn}`)
-    // return apiRequest().then(axiosInstance => axiosInstance.post(resources.enrollment.person-details, request))
-    return {
-      data: {
-        person: {
-          phn: request.phn,
-          givenName: 'Test',	
-          secondName: 'The',        
-          surname: 'Data',
-          dateOfBirth: '19780212',
-        },
-        status: 'success',
-        message: null
-      }
-    }
+    return apiRequest().then(axiosInstance => axiosInstance.post(resources.enrollment.personDetails, request))
+    // return {
+    //   data: {
+    //     person: {
+    //       phn: request.phn,
+    //       givenName: 'Test',	
+    //       secondName: 'The',        
+    //       surname: 'Data',
+    //       dateOfBirth: '19780212',
+    //     },
+    //     status: 'success',
+    //     message: null
+    //   }
+    // }
   },
 
   registerResident(request) {

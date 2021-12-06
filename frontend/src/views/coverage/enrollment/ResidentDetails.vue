@@ -2,7 +2,7 @@
   <div>
     <AppRow>
       <AppCol class="col3">
-        <AppOutput label="PHN" :value="resident.phn"/>
+        <AppOutput label="PHN" :value="resident?.phn"/>
       </AppCol>
     </AppRow>
     <AppRow>
@@ -12,7 +12,7 @@
     </AppRow>
     <AppRow>
       <AppCol class="col3">
-        <AppOutput label="Date of Birth" :value="resident.dateOfBirth"/>
+        <AppOutput label="Date of Birth" :value="resident?.dateOfBirth"/>
       </AppCol>
     </AppRow>
     <form @submit.prevent="registerVisaResident">
