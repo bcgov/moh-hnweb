@@ -1,27 +1,18 @@
 package ca.bc.gov.hlth.hnweb.service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import ca.bc.gov.hlth.hnweb.config.HL7Config;
-import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsRequest;
-import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
-import ca.bc.gov.hlth.hnweb.model.StatusEnum;
+import ca.bc.gov.hlth.hnweb.exception.ExceptionType;
+import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
-import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
-import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
-import ca.bc.gov.hlth.hnweb.model.v3.MessageMetaData;
-import ca.bc.gov.hlth.hnweb.serialization.HL7Serializer;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.parser.Parser;
@@ -58,7 +49,7 @@ public class EnrollmentService {
 	 * @throws HL7Exception
 	 * @throws IOException
 	 */
-	public Message enrollSubscriber(R50 r50, String transactionId) throws HL7Exception, IOException {
+	public Message enrollSubscriber(R50 r50, String transactionId) throws HNWebException, HL7Exception{
 		
 		logger.debug("Enroll subscriber for Message ID [{}]; Transaction ID [{}]", r50.getMSH().getMsh10_MessageControlID(), transactionId);
 
@@ -67,6 +58,11 @@ public class EnrollmentService {
 		logger.debug("Updated V2 message:\n{}", r50v2RequiredFormat);
 		
 		ResponseEntity<String> response = postEnrollmentRequest(r50v2RequiredFormat, transactionId);
+		
+		if (response.getStatusCode() != HttpStatus.OK) {
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
+		}
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		
@@ -79,16 +75,20 @@ public class EnrollmentService {
 	 * @param xmlString
 	 * @param transactionId
 	 * @return
-	 * @throws HL7Exception
-	 * @throws IOException
+	 * @throws HNWebException
 	 */
 	public ResponseEntity<String> getDemographics(String xmlString, String transactionId)
-	      throws HL7Exception, IOException {
+	      throws HNWebException {
 		  
-	    ResponseEntity<String> getDemoResponse = postDemographicRequest(xmlString, transactionId); 
-	    logger.debug("Response Status: {} ; Message:\n{}", getDemoResponse.getStatusCode(), getDemoResponse.getBody());
+	    ResponseEntity<String> response = postDemographicRequest(xmlString, transactionId); 
+	    logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 	    
-	    return getDemoResponse;
+		if (response.getStatusCode() != HttpStatus.OK) {
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
+		}
+	    
+	    return response;
 	
 	 
 	 }
