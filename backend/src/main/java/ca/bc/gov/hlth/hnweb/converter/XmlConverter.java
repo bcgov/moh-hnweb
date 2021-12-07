@@ -99,6 +99,7 @@ public class XmlConverter {
 			personDetails.setSurname(nameObj.getSurname());
 		
 			personDetails.setDateOfBirth(birthDate);
+			personDetails.setGender(respObj.getPerson().getGender());
 
 			if (messageText.length > 0) {
 				if (message.contains("Warning")) {
