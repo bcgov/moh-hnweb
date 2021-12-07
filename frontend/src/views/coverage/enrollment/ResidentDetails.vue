@@ -279,11 +279,6 @@ export default {
           return
         }
         this.$emit('register-resident', {
-          phn: this.resident.phn,
-          dateOfBirth: this.resident.dateOfBirth,
-          givenName: this.resident.givenName,
-          secondName: this.resident.secondName,
-          surname: this.resident.surname,
           groupNumber: this.groupNumber,
           immigrationCode: this.immigrationCode,
           groupMemberNumber: this.groupMemberNumber,

@@ -98,10 +98,17 @@ export default {
       }
     },
     async registerResident(personDetails) {
-      console.log(`personDetails: [PHN: ${personDetails.phn}] [Gender: ${this.personResult?.person.gender}] [Surname: ${personDetails.surname}] [Group Number: ${personDetails.groupNumber}]`)
+      console.log(`[Group Number: ${personDetails.groupNumber}]`)
 
       try {
-        this.registrationResult = (await EnrollmentService.registerResident({gender: this.personResult?.person.gender, ...personDetails})).data
+        this.registrationResult = (await EnrollmentService.registerResident({
+          phn: this.personResult?.person.phn,
+          dateOfBirth: this.personResult?.person.dateOfBirth,
+          givenName: this.personResult?.person.givenName,
+          secondName: this.personResult?.person.secondName,
+          surname: this.personResult?.person.surname,
+          gender: this.personResult?.person.gender, 
+          ...personDetails})).data
         if (this.registrationResult?.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.registrationResult?.message)
           return

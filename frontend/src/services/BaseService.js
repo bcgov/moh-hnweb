@@ -3,7 +3,6 @@ import keycloak from '../keycloak';
 
 export const resources = {
   enrollment: {
-    enrollment: '/enrollment',
     personDetails: 'enrollment/person-details',
     addVisaResidentWithPHN: '/enrollment/enroll-subscriber',
   },
