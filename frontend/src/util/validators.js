@@ -60,12 +60,12 @@ export function validateDOB(dateOfBirth) {
 /**
  * Can be up to nine (9) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid.
  */
-export function validateGroupMemberNumber(value) {
-  if (value.length > 9) {
+export function validateGroupMemberNumber(groupMemberNumber) {
+  if (groupMemberNumber.length > 9) {
     return false
   }
   var invalidChars = /[\\|^\&]/;  
-  if (invalidChars.test(value)) {
+  if (invalidChars.test(groupMemberNumber)) {
     return false
   }
   return true
@@ -74,15 +74,18 @@ export function validateGroupMemberNumber(value) {
 /**
  * Can be up to nine (6) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid.
  */
- export function validateDepartmentNumber(value) {
-  return validateNumber(contractNumber, 6)
+ export function validateDepartmentNumber(departmentNumber) {
+  return validateNumber(departmentNumber, 6)
 }
 
 /**
  * Only numbers 0 to 9 are valid. Phone Number must be entered as seven (10) numbers in length with no space or hyphen.
  */
- export function validateTelephone(value) {
-  return validateNumber(contractNumber, 10)
+ export function validateTelephone(telephone) {
+  if (!helpers.req(telephone)) {
+    return true
+  }
+  return validateNumber(telephone, 10)
 } 
 
 /*
