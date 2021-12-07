@@ -7,7 +7,7 @@ import AppInputError from './AppInputError.vue'
     <label>{{ label }}</label>
   </div>
 
-  <select :class="inputClass" @change="$emit('update:modelValue', $event.target.value)" v-bind="$attrs">
+  <select :class="inputClass" :value="modelValue" @change="$emit('update:modelValue', $event.target.value)" v-bind="$attrs">
     <option v-for="option in options" v-bind:key="option.value" v-bind:value="option.value">
       {{ option.text }}
     </option>
