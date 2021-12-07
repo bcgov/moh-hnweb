@@ -30,19 +30,19 @@ const routes = [
     name: 'CoverageEnrollment',
     component: CoverageEnrollmentHome,
     redirect: {
-      name: 'AddVisaResidentWithoutPHN'
+      name: 'AddVisaResidentWithoutPHN',
     },
     children: [
       {
         path: 'addVisaResidentWithoutPHN',
         name: 'AddVisaResidentWithoutPHN',
-        component: AddVisaResidentWithoutPHN
+        component: AddVisaResidentWithoutPHN,
       },
       {
         path: 'addVisaResidentWithPHN',
         name: 'AddVisaResidentWithPHN',
-        component: AddVisaResidentWithPHN
-      }
+        component: AddVisaResidentWithPHN,
+      },
     ]
   },
   {

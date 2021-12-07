@@ -58,7 +58,7 @@ export function validateDOB(dateOfBirth) {
 }
 
 /**
- * Can be up to nine (9) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid.
+ * Validate Group Member Number. It can be up to nine (9) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid.
  */
 export function validateGroupMemberNumber(groupMemberNumber) {
   if (groupMemberNumber.length > 9) {
@@ -72,7 +72,7 @@ export function validateGroupMemberNumber(groupMemberNumber) {
 } 
 
 /**
- * Can be up to nine (6) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid.
+ * Validate Department Number. It can be up to nine (6) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid.
  */
  export function validateDepartmentNumber(departmentNumber) {
   return validateNumber(departmentNumber, 6)

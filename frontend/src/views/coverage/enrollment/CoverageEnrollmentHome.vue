@@ -4,15 +4,15 @@ import SubNavTab from '../../../components/template/SubNavTab.vue'
 </script>
 
 <template>
-    <TheSubNav>
-      <SubNavTab routeName="AddVisaResidentWithoutPHN" title="Add Study Permit holder without PHN" />
-      <SubNavTab routeName="AddVisaResidentWithPHN" title="Add Study Permit holder with PHN" />
-   </TheSubNav>
-   <router-view/>
+  <TheSubNav>
+    <SubNavTab routeName="AddVisaResidentWithoutPHN" title="Add Study Permit holder without PHN" />
+    <SubNavTab routeName="AddVisaResidentWithPHN" title="Add Study Permit holder with PHN" />
+  </TheSubNav>
+  <router-view />
 </template>
 
 <script>
-  export default {
-    name: 'CoverageEnrollmentHome',
-  }
+export default {
+  name: 'CoverageEnrollmentHome',
+}
 </script>

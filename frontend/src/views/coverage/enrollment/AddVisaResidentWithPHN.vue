@@ -20,21 +20,10 @@
 </template>
 
 <script>
-import AppButton from "../../../components/AppButton.vue";
 import AppCol from "../../../components/grid/AppCol.vue";
-import AppDateInput from "../../../components/AppDateInput.vue";
-import AppInput from "../../../components/AppInput.vue";
 import AppRow from "../../../components/grid/AppRow.vue";
 import AppOutput from "../../../components/AppOutput.vue";
-
-import Datepicker from "vue3-date-time-picker";
-import "vue3-date-time-picker/dist/main.css";
-import { INPUT_DATE_FORMAT } from "../../../util/constants";
-
 import EnrollmentService from "../../../services/EnrollmentService";
-import useVuelidate from "@vuelidate/core";
-import { validatePHN, VALIDATE_PHN_MESSAGE } from "../../../util/validators";
-import { required, helpers } from "@vuelidate/validators";
 import { formatPersonName } from "../../../util/utils"
 import ResidentPHN from "./ResidentPHN.vue"
 import ResidentDetails from "./ResidentDetails.vue";
@@ -42,9 +31,7 @@ import ResidentDetails from "./ResidentDetails.vue";
 export default {
   name: "AddVisaResidentWithPHN",
   components: {
-    AppButton,
     AppCol,
-    AppInput,
     AppRow,
     AppOutput,
     ResidentPHN,
@@ -71,7 +58,7 @@ export default {
       registrationResult: {
         status: '',
         message: null,
-      }
+      },
     };
   },
   created() {
@@ -79,7 +66,7 @@ export default {
       PHN_SEARCH: 'PHN_SEARCH',
       STUDENT_REGISTRATION: 'STUDENT_REGISTRATION',
       CONFIRMATION: 'CONFIRMATION'
-    }
+    },
     this.pageAction = this.PAGE_ACTION.PHN_SEARCH
   },
   computed: {
@@ -89,9 +76,7 @@ export default {
   },
   methods: {    
     async updateResident(phn) {
-      console.log("updateResident")
-      console.log(`Resident: [PHN: ${phn}]`
-      )
+      console.log(`Resident: [PHN: ${phn}]`)
       try {
         this.personResult = (await EnrollmentService.getPersonDemographics({ phn: phn })).data
         if (this.personResult?.status === 'error') {
@@ -99,7 +84,6 @@ export default {
           return
         }
 
-        console.log('Result returned')
         console.log(`Result: [PHN: ${this.personResult?.person.phn}] [Name: ${this.personResult?.person.givenName}] [DOB: ${this.personResult?.person.dateOfBirth}]`)
         if (this.personResult?.status === 'success') {
           console.log(`Success: ${this.personResult?.message}`)        
@@ -113,7 +97,6 @@ export default {
       }
     },
     async registerResident(personDetails) {
-      console.log("registerResident")
       console.log(`personDetails: [PHN: ${personDetails.phn}] [Surname: ${personDetails.surname}] [Group Number: ${personDetails.groupNumber}]`)
 
       try {
@@ -133,7 +116,7 @@ export default {
         console.log(`Error: ${err}`)
         this.$store.commit('alert/setErrorAlert', `${err}`)
       }
-    }
+    },
   },
-};
+}
 </script>

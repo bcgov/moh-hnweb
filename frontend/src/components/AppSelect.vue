@@ -3,9 +3,8 @@ import AppInputError from './AppInputError.vue'
 </script>
 
 <template>
-
   <div class="text_label">
-    <label>{{label}}</label>
+    <label>{{ label }}</label>
   </div>
 
   <select :class="inputClass" @change="$emit('update:modelValue', $event.target.value)" v-bind="$attrs">
@@ -14,8 +13,7 @@ import AppInputError from './AppInputError.vue'
     </option>
   </select>
 
-  <AppInputError :e-model="eModel" :label="label"/>
-  
+  <AppInputError :e-model="eModel" :label="label" />
 </template>
 
 <script>
@@ -30,11 +28,11 @@ export default {
   computed: {
     inputClass() {
       return {
-        'text_input': true,
-        'error-input' : this.eModel.$error,
+        text_input: true,
+        'error-input': this.eModel.$error,
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -53,8 +51,8 @@ export default {
   padding: 5px 5px 5px 7px;
 }
 
-.text_input[type="text"]:focus {
-  outline: 2px solid #3B99FC;
+.text_input[type='text']:focus {
+  outline: 2px solid #3b99fc;
   outline-offset: 1px;
 }
 
@@ -63,7 +61,6 @@ export default {
 }
 
 .error-input {
-  border-color: #D8292F !important;
+  border-color: #d8292f !important;
 }
-
 </style>

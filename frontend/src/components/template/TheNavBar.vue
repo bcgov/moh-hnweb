@@ -45,7 +45,7 @@ export default {
   data: function() {
     return {
       eligibilityDropdownKey: 0,
-      coverageEnrollmentDropDownKey: 0
+      coverageEnrollmentDropDownKey: 0,
     }
   },
   methods: {
