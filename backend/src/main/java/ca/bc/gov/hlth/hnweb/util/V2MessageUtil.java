@@ -1,5 +1,7 @@
 package ca.bc.gov.hlth.hnweb.util;
 
+import org.apache.commons.lang3.StringUtils;
+
 import ca.bc.gov.hlth.hnweb.model.v2.segment.HDR;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.QPD;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.SFT;
@@ -143,20 +145,24 @@ public class V2MessageUtil {
     public static void setZiaValues(ZIA zia, String bcResidencyDate, String surname, String firstGivenName, String secondGivenName,  String telephone, String immigrationOrVisaCode, String priorResidenceCode) throws HL7Exception {
     	//e.g. ZIA||20210101|||||||||||||HELP^RERE^^^^^L|898 RETER ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^H~123 UIYUI ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^M|^PRN^PH^^^250^8578974|||||||S|AB^M
     	String givenName  = firstGivenName +  secondGivenName;
-    	String areaCode = telephone.substring(0,3);
-    	String phoneNumber = telephone.substring(3);
+    	String areaCode = null;
+    	String phoneNumber = null;  	
     	
     	zia.getZia2_BCResidencyDate().parse(bcResidencyDate);
     	zia.getZia15_ExtendedPersonName().parse(surname);   	
     	zia.getZia15_ExtendedPersonName().getGivenName().parse(givenName);
     	zia.getZia15_ExtendedPersonName().getNameTypeCode().parse("L");;
     
+    	if(StringUtils.isNotBlank(telephone)) {   		
+    		areaCode = telephone.substring(0,3);
+    		phoneNumber = telephone.substring(3);
+        	
+    		zia.getZia17_ExtendedTelephoneNumber().getAreaCityCode().parse(areaCode);
+    		zia.getZia17_ExtendedTelephoneNumber().getTelecommunicationEquipmentType().parse("PH");
     	
-    	zia.getZia17_ExtendedTelephoneNumber().getAreaCityCode().parse(areaCode);
-    	zia.getZia17_ExtendedTelephoneNumber().getTelecommunicationEquipmentType().parse("PH");
-    	
-    	zia.getZia17_ExtendedTelephoneNumber().getPhoneNumber().parse(phoneNumber);
-    	zia.getZia17_ExtendedTelephoneNumber().getTelecommunicationUseCode().parse(TelePhoneUseCode.PRN.name());
+    		zia.getZia17_ExtendedTelephoneNumber().getPhoneNumber().parse(phoneNumber);
+    		zia.getZia17_ExtendedTelephoneNumber().getTelecommunicationUseCode().parse(TelePhoneUseCode.PRN.name());
+    	}
     	
     	zia.getZia24_ImmigrationOrVisaCode().parse(immigrationOrVisaCode);
     	zia.getZia25_PriorResidenceCode().parse(priorResidenceCode);
