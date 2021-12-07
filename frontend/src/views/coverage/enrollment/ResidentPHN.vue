@@ -49,7 +49,7 @@ export default {
     },
     data() {
       return {
-        phn: '9890608412',
+        phn: '',
         searching: false,
       }
     },
