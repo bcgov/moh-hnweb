@@ -51,6 +51,7 @@ export default {
           secondName: '',        
           surname: '',
           dateOfBirth: '',
+          gender: '',
         },
         status: '',
         message: null,
@@ -97,10 +98,10 @@ export default {
       }
     },
     async registerResident(personDetails) {
-      console.log(`personDetails: [PHN: ${personDetails.phn}] [Surname: ${personDetails.surname}] [Group Number: ${personDetails.groupNumber}]`)
+      console.log(`personDetails: [PHN: ${personDetails.phn}] [Gender: ${this.personResult?.person.gender}] [Surname: ${personDetails.surname}] [Group Number: ${personDetails.groupNumber}]`)
 
       try {
-        this.registrationResult = (await EnrollmentService.registerResident({...personDetails})).data
+        this.registrationResult = (await EnrollmentService.registerResident({gender: this.personResult?.person.gender, ...personDetails})).data
         if (this.registrationResult?.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.registrationResult?.message)
           return
@@ -112,6 +113,7 @@ export default {
           this.$store.commit('alert/setWarningAlert', this.registrationResult?.message)  
         }
         this.pageAction = this.PAGE_ACTION.CONFIRMATION
+        this.$store.commit('alert/setSuccessAlert', 'Transaction Successful')
       } catch (err) {
         console.log(`Error: ${err}`)
         this.$store.commit('alert/setErrorAlert', `${err}`)

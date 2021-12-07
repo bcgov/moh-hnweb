@@ -34,7 +34,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col4">
-          <AppInput :e-model="v$.departmentNumber" id="departmentNumber" label="Department Number - Optional" type="text" v-model.trim="departmentNumber" />
+          <AppInput :e-model="v$.departmentNumber" id="departmentNumber" label="Department Number" type="text" v-model.trim="departmentNumber" />
         </AppCol>
         <AppCol class="col4">
           <AppDateInput :e-model="v$.visaExpiryDate" id="visaExpiryDate" label="Visa Expiry Date" v-model="visaExpiryDate" />
@@ -309,7 +309,6 @@ export default {
           priorResidenceCode: this.priorResidenceCode,
           otherProvinceHealthcareNumber: this.otherProvinceHealthcareNumber,
         })
-        this.$store.commit('alert/setSuccessAlert', 'Transaction Successful')
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       } finally {
