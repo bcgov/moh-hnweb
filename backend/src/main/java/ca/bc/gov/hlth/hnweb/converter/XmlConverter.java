@@ -64,13 +64,14 @@ public class XmlConverter {
 		GetDemographicsResponse results = hl7.fromXml(xmlString, GetDemographicsResponse.class);
 		logger.debug("Converted Demographics response : {} ", results.toString());
 		
-		PersonDetailsResponse personDetailsResponse = buildPersonDetailsResponse(results);
+		PersonDetailsResponse personDetailsResponse = handleStatus(results);
 		logger.debug("Converted PersonDetails Response : {} ", personDetailsResponse);
 		return personDetailsResponse;
 
 	}
+	
 
-	private PersonDetailsResponse buildPersonDetailsResponse(GetDemographicsResponse respObj) {
+	private PersonDetailsResponse handleStatus(GetDemographicsResponse respObj) {
 		PersonDetailsResponse personDetailsResponse = new PersonDetailsResponse();
 		GetPersonDetailsResponse personDetails = new GetPersonDetailsResponse();
 		
@@ -88,19 +89,7 @@ public class XmlConverter {
 				personDetailsResponse.setMessage(message);
 			}
 		} else {
-			personDetails.setPhn(respObj.getPerson().getPhn());
-			Name nameObj = respObj.getPerson().getDeclaredName();
-			String birthDate = new SimpleDateFormat("yyyyMMdd").format(respObj.getPerson().getBirthDate());
-			if (nameObj == null)
-				nameObj = respObj.getPerson().getDocumentedName();
-			
-			personDetails.setGivenName(nameObj.getFirstGivenName());
-			personDetails.setSecondName(nameObj.getSecondGivenName());
-			personDetails.setSurname(nameObj.getSurname());
-		
-			personDetails.setDateOfBirth(birthDate);
-			personDetails.setGender(respObj.getPerson().getGender());
-
+			buildPersonDetails(respObj, personDetails);
 			if (messageText.length > 0) {
 				if (message.contains("Warning")) {
 					personDetailsResponse.setStatus(StatusEnum.WARNING);
@@ -114,9 +103,24 @@ public class XmlConverter {
 		}
 		
 		personDetailsResponse.setPerson(personDetails);
-
+		
 		return personDetailsResponse;
 
+	}
+
+	private void buildPersonDetails(GetDemographicsResponse respObj, GetPersonDetailsResponse personDetails) {
+		personDetails.setPhn(respObj.getPerson().getPhn());
+		Name nameObj = respObj.getPerson().getDeclaredName();
+		String birthDate = new SimpleDateFormat("yyyyMMdd").format(respObj.getPerson().getBirthDate());
+		if (nameObj == null)
+			nameObj = respObj.getPerson().getDocumentedName();
+		
+		personDetails.setGivenName(nameObj.getFirstGivenName());
+		personDetails.setSecondName(nameObj.getSecondGivenName());
+		personDetails.setSurname(nameObj.getSurname());
+
+		personDetails.setDateOfBirth(birthDate);
+		personDetails.setGender(respObj.getPerson().getGender());
 	}
 
 	private GetDemographicsRequest buildDemographicsRequest(String phn) {
