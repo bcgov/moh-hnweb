@@ -92,33 +92,47 @@ export default {
       console.log("updateResident")
       console.log(`Resident: [PHN: ${phn}]`
       )
-      this.personResult = (await EnrollmentService.getPersonDemographics({ phn: phn })).data
-      if (this.personResult?.status === 'error') {
-        this.$store.commit('alert/setErrorAlert', this.personResult?.message)
-        return
-      }
+      try {
+        this.personResult = (await EnrollmentService.getPersonDemographics({ phn: phn })).data
+        if (this.personResult?.status === 'error') {
+          this.$store.commit('alert/setErrorAlert', this.personResult?.message)
+          return
+        }
 
-      console.log('Result returned')
-      console.log(`Result: [PHN: ${this.personResult?.person.phn}] [Name: ${this.personResult?.person.givenName}] [DOB: ${this.personResult?.person.dateOfBirth}]`)
-      if (this.personResult?.status === 'success') {
-        console.log(`Success: ${this.personResult?.message}`)        
-      }             
-      this.pageAction = this.PAGE_ACTION.STUDENT_REGISTRATION
+        console.log('Result returned')
+        console.log(`Result: [PHN: ${this.personResult?.person.phn}] [Name: ${this.personResult?.person.givenName}] [DOB: ${this.personResult?.person.dateOfBirth}]`)
+        if (this.personResult?.status === 'success') {
+          console.log(`Success: ${this.personResult?.message}`)        
+        } else if (this.personResult?.status === 'warning') {
+          this.$store.commit('alert/setWarningAlert', this.personResult?.message)  
+        }          
+        this.pageAction = this.PAGE_ACTION.STUDENT_REGISTRATION
+      } catch(err) {
+        console.log(`Error: ${err}`)
+        this.$store.commit('alert/setErrorAlert', `${err}`)
+      }
     },
     async registerResident(personDetails) {
       console.log("registerResident")
-      console.log(`personDetails: [PHN: ${personDetails.phn}] [Surname: ${personDetails.surname}] [Group Number: ${personDetails.groupNumber}]`
-      )
-      this.registrationResult = (await EnrollmentService.registerResident({...personDetails})).data
-      if (this.registrationResult?.status === 'error') {
-        this.$store.commit('alert/setErrorAlert', this.registrationResult.message)
-        return
+      console.log(`personDetails: [PHN: ${personDetails.phn}] [Surname: ${personDetails.surname}] [Group Number: ${personDetails.groupNumber}]`)
+
+      try {
+        this.registrationResult = (await EnrollmentService.registerResident({...personDetails})).data
+        if (this.registrationResult?.status === 'error') {
+          this.$store.commit('alert/setErrorAlert', this.registrationResult?.message)
+          return
+        }
+        console.log('Registration Result returned')
+        if (this.registrationResult?.status === 'success') {
+          console.log(`Success: ${this.registrationResult.message}`)        
+        } else if (this.registrationResult?.status === 'warning') {
+          this.$store.commit('alert/setWarningAlert', this.registrationResult?.message)  
+        }
+        this.pageAction = this.PAGE_ACTION.CONFIRMATION
+      } catch (err) {
+        console.log(`Error: ${err}`)
+        this.$store.commit('alert/setErrorAlert', `${err}`)
       }
-      console.log('Registration Result returned')
-      if (this.registrationResult?.status === 'success') {
-        console.log(`Success: ${this.registrationResult.message}`)        
-      }             
-      this.pageAction = this.PAGE_ACTION.CONFIRMATION
     }
   },
 };
