@@ -119,7 +119,7 @@
 
       <AppRow>
         <AppCol class="col4">
-          <AppSelect :e-model="v$.priorResidenceCode" id="priorResidenceCode" label="Prior Residence Code - Optional" v-model="priorResidenceCode" :options="priorResidenceOptions" />
+          <AppSelect :e-model="v$.priorResidenceCode" id="priorResidenceCode" label="Prior Residence Code" v-model="priorResidenceCode" :options="priorResidenceOptions" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -361,6 +361,7 @@ export default {
       },
       visaIssueDate: { required },
       departmentNumber: {
+        required,
         validateDepartmentNumber: helpers.withMessage(VALIDATE_DEPARTMENT_NUMBER_MESSAGE, validateDepartmentNumber),
       },
       visaExpiryDate: { required },

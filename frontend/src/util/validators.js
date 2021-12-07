@@ -61,21 +61,17 @@ export function validateDOB(dateOfBirth) {
  * Validate Group Member Number. It can be up to nine (9) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid.
  */
 export function validateGroupMemberNumber(groupMemberNumber) {
-  if (groupMemberNumber.length > 9) {
-    return false
-  }
-  var invalidChars = /[\\|^\&]/;  
-  if (invalidChars.test(groupMemberNumber)) {
-    return false
-  }
-  return true
+  return validateSpecialChars(groupMemberNumber, 9)
 } 
 
 /**
- * Validate Department Number. It can be up to nine (6) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid.
+ * Validate Department Number. It can be up to six (6) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid.
  */
- export function validateDepartmentNumber(departmentNumber) {
-  return validateNumber(departmentNumber, 6)
+export function validateDepartmentNumber(departmentNumber) {
+  if (!helpers.req(departmentNumber)) {
+    return true
+  }
+  return validateSpecialChars(departmentNumber, 6)
 }
 
 /**
@@ -109,6 +105,21 @@ export function validateGroupMemberNumber(groupMemberNumber) {
     return false
   }
   if (!validateMod10(groupNumber)) {
+    return false
+  }
+  return true
+}
+
+/**
+ * Validate that input is allowed length and that it contains no invalid characters
+ */
+function validateSpecialChars(input, length) {
+  console.log(`validateSpecialChars [input ${input}] [length ${length}]`)
+  if (input.length > length) {
+    return false
+  }
+  var invalidChars = /[\\|^\&]/;  
+  if (invalidChars.test(input)) {
     return false
   }
   return true
@@ -169,7 +180,6 @@ export const VALIDATE_DOB_MESSAGE = "Date of Birth must not be in the future"
 export const VALIDATE_PHN_MESSAGE = "PHN format is invalid"
 export const VALIDATE_CONTRACT_NUMBER_MESSAGE = "MSP Contract Number is invalid"
 export const VALIDATE_GROUP_NUMBER_MESSAGE = "Group Number is invalid"
-//export const VALIDATE_GROUP_NUMBER_MESSAGE = "Only digits 0 to 9 are valid. Group Number must be entered as seven (7) digits in length."
-export const VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE = "Can be up to nine (9) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid."
-export const VALIDATE_DEPARTMENT_NUMBER_MESSAGE = "Can be up to nine (6) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid."
-export const VALIDATE_TELEPHONE_MESSAGE = "Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen."
+export const VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE = "Group Member Number is invalid"
+export const VALIDATE_DEPARTMENT_NUMBER_MESSAGE = "Department Number is invalid"
+export const VALIDATE_TELEPHONE_MESSAGE = "Telephone is invalid. Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen."
