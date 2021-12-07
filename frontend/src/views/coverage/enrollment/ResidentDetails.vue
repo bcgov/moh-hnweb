@@ -26,10 +26,10 @@
       </AppRow>
       <AppRow>
         <AppCol class="col4">
-          <AppInput :e-model="v$.groupMemberNumber" id="groupMemberNumber" label="Group Member Number - Optional" type="text" v-model.trim="groupMemberNumber" />
+          <AppInput :e-model="v$.groupMemberNumber" id="groupMemberNumber" label="Group Member Number (Optional)" type="text" v-model.trim="groupMemberNumber" />
         </AppCol>
         <AppCol class="col4">
-          <AppDateInput :e-model="v$.visaIssueDate" id="visaIssueDate" label="Visa Issue Date" v-model="visaIssueDate" />
+          <AppDateInput :e-model="v$.visaIssueDate" id="visaIssueDate" label="Permit Issue Date" v-model="visaIssueDate" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -37,7 +37,7 @@
           <AppInput :e-model="v$.departmentNumber" id="departmentNumber" label="Department Number" type="text" v-model.trim="departmentNumber" />
         </AppCol>
         <AppCol class="col4">
-          <AppDateInput :e-model="v$.visaExpiryDate" id="visaExpiryDate" label="Visa Expiry Date" v-model="visaExpiryDate" />
+          <AppDateInput :e-model="v$.visaExpiryDate" id="visaExpiryDate" label="Permit Expiry Date" v-model="visaExpiryDate" />
         </AppCol>
       </AppRow>
       <AppRow class="row1">
@@ -52,7 +52,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col4">
-          <AppInput :e-model="v$.telephone" id="telephone" label="Telephone - Optional" type="text" v-model.trim="telephone" placeholder="1234567890"/>
+          <AppInput :e-model="v$.telephone" id="telephone" label="Telephone (Optional)" type="text" v-model.trim="telephone" placeholder="1234567890"/>
         </AppCol>
         <AppCol class="col4">
           <AppDateInput :e-model="v$.coverageCancellationDate" id="coverageCancellationDate" label="Coverage Cancellation Date" v-model="coverageCancellationDate" />
@@ -66,12 +66,12 @@
       </AppRow>
       <AppRow>
         <AppCol class="col7">
-          <AppInput :e-model="v$.address2" id="address2" label="Line 2 - Optional" v-model="address2" />
+          <AppInput :e-model="v$.address2" id="address2" label="Line 2 (Optional)" v-model="address2" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col7">
-          <AppInput :e-model="v$.address3" id="address3" label="Line 3 - Optional" v-model="address3" />
+          <AppInput :e-model="v$.address3" id="address3" label="Line 3 (Optional)" v-model="address3" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -95,12 +95,12 @@
       </AppRow>
       <AppRow>
         <AppCol class="col7">
-          <AppInput :e-model="v$.mailingAddress2" id="mailingAddress2" label="Line 2 - Optional" v-model="mailingAddress2" />
+          <AppInput :e-model="v$.mailingAddress2" id="mailingAddress2" label="Line 2 (Optional)" v-model="mailingAddress2" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col7">
-          <AppInput :e-model="v$.mailingAddress3" id="mailingAddress3" label="Line 3 - Optional" v-model="mailingAddress3" />
+          <AppInput :e-model="v$.mailingAddress3" id="mailingAddress3" label="Line 3 (Optional)" v-model="mailingAddress3" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -127,7 +127,7 @@
           <AppInput
             :e-model="v$.otherProvinceHealthcareNumber"
             id="otherProvinceHealthcareNumber"
-            label="Other Province Healthcare Number (If Applicable) - Optional"
+            label="Other Province Healthcare Number (If Applicable) (Optional)"
             type="text"
             v-model.trim="otherProvinceHealthcareNumber"
           />
