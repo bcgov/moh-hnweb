@@ -1,9 +1,6 @@
 package ca.bc.gov.hlth.hnweb.model;
 
-import java.time.LocalDate;
-import java.util.Date;
-
-public class GetPersonDetailsResponse extends BaseResponse {
+public class GetPersonDetailsResponse {
 
 	private String phn;
 
@@ -13,7 +10,7 @@ public class GetPersonDetailsResponse extends BaseResponse {
 
 	private String surname;
 
-	private Date dateOfBirth;
+	private String dateOfBirth;
 
 	public String getPhn() {
 		return phn;
@@ -47,11 +44,11 @@ public class GetPersonDetailsResponse extends BaseResponse {
 		this.surname = surname;
 	}
 
-	public Date getDateOfBirth() {
+	public String getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-	public void setDateOfBirth(Date dateOfBirth) {
+	public void setDateOfBirth(String dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 

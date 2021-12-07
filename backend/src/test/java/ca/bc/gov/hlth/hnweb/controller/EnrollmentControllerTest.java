@@ -25,6 +25,7 @@ import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
+import ca.bc.gov.hlth.hnweb.model.PersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -89,10 +90,10 @@ public class EnrollmentControllerTest {
         GetPersonDetailsRequest getPersonQuery = new GetPersonDetailsRequest();
         getPersonQuery.setPhn("9862716574");
         
-        ResponseEntity<GetPersonDetailsResponse> response = enrollmentController.getDemographicDetails(getPersonQuery);
-        GetPersonDetailsResponse getPersonDetailsResponse = response.getBody();
-    	assertEquals("9862716574",  getPersonDetailsResponse.getPhn());	
-    	assertEquals("Robert", getPersonDetailsResponse.getGivenName());
+        ResponseEntity<PersonDetailsResponse> response = enrollmentController.getDemographicDetails(getPersonQuery);
+        PersonDetailsResponse getPersonDetailsResponse = response.getBody();
+    	assertEquals("9862716574",  getPersonDetailsResponse.getPerson().getPhn());	
+    	assertEquals("Robert", getPersonDetailsResponse.getPerson().getGivenName());
 		
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -112,8 +113,8 @@ public class EnrollmentControllerTest {
         GetPersonDetailsRequest getPersonQuery = new GetPersonDetailsRequest();
         getPersonQuery.setPhn("9862716574");
         
-        ResponseEntity<GetPersonDetailsResponse> response = enrollmentController.getDemographicDetails(getPersonQuery);
-        GetPersonDetailsResponse getPersonDetailsResponse = response.getBody();
+        ResponseEntity<PersonDetailsResponse> response = enrollmentController.getDemographicDetails(getPersonQuery);
+        PersonDetailsResponse getPersonDetailsResponse = response.getBody();
         assertEquals(StatusEnum.WARNING, getPersonDetailsResponse.getStatus());
         assertEquals(expectedMessageText, getPersonDetailsResponse.getMessage());
 		
