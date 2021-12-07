@@ -6,29 +6,24 @@ import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.hlth.hnweb.model.BaseResponse;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
-import ca.bc.gov.hlth.hnweb.model.rapid.RapidDefaults;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
-import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 
 public abstract class BaseRapidConverter {
 	protected static final Logger logger = LoggerFactory.getLogger(BaseRapidConverter.class);
 
+	protected static final String RAPID_DATE_FORMAT = "yyyy-MM-dd";
+	
 	protected static final String STATUS_CODE_SUCCESS = "RPBS9014";
 	
-	protected RapidDefaults rapidDefaults;
+	protected static final String STATUS_TEXT_SUCCESS = "TRANSACTION SUCCESSFUL";
 	
 	protected UserInfo userInfo;
 	
 	public BaseRapidConverter() {
 		super();
 		this.userInfo = SecurityUtil.loadUserInfo();
-	}
-	
-	@Deprecated
-	public BaseRapidConverter(RapidDefaults rapidDefaults) {
-		super();
-		this.rapidDefaults = rapidDefaults;
 	}
 	
 	protected void handleStatus(RPBSHeader header, BaseResponse response) {
@@ -50,6 +45,11 @@ public abstract class BaseRapidConverter {
 			response.setStatus(StatusEnum.WARNING);
 			response.setMessage(statusCode + " " + statusText);
 		}
+	}
+	
+	protected String convertBirthDate(String birthDate) {
+		// Convert the response Date from yyyy-MM-dd to yyyyMMdd
+		return StringUtils.remove(birthDate, "-");
 	}
 
 	public abstract String getTranCode();

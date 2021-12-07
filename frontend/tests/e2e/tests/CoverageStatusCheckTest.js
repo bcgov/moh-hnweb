@@ -117,7 +117,7 @@ test('Check Patient Restriction CheckBox check and uncheck work', async t => {
         .expect(CoverageStatusCheckPage.patientRestrictionCheckBox.checked).notOk();
 });
 
-test('Check cancel button clears the form', async t => {
+test('Check clear button clears the form', async t => {
     await makeVisible('checkSubsidyInsuredService');
     await makeVisible('checkLastEyeExam');
     await makeVisible('checkPatientRestriction');

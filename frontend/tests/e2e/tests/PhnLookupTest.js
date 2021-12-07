@@ -87,7 +87,7 @@ test('Check properly filled form passes validation and returns a warning message
     .expect(PhnLookupPage.resultsRow1.child('td').nth(3).textContent).eql('M') 
 })
 
-test('Check cancel button clears the form', async t => {
+test('Check clear button clears the form', async t => {
   await t
     // Given I have a form filled out with data
     .typeText(PhnLookupPage.groupNumberInput, '6337109')

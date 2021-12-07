@@ -11,8 +11,8 @@ public class RPBSPPL0 {
 	}
 
 	public RPBSPPL0(String message) {
-		String headerText = StringUtils.substring(message, 0, 144);
-		String bodyText = StringUtils.substring(message, 144);
+		String headerText = StringUtils.substring(message, 0, RPBSHeader.SEGMENT_LENGTH);
+		String bodyText = StringUtils.substring(message, RPBSHeader.SEGMENT_LENGTH);
 
 		rpbsHeader = new RPBSHeader(headerText);
 
