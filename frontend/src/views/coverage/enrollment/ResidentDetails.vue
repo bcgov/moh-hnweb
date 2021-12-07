@@ -52,7 +52,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col4">
-          <AppInput :e-model="v$.telephone" id="telephone" label="Telephone - Optional" type="text" v-model.trim="telephone" />
+          <AppInput :e-model="v$.telephone" id="telephone" label="Telephone - Optional" type="text" v-model.trim="telephone" placeholder="1234567890"/>
         </AppCol>
         <AppCol class="col4">
           <AppDateInput :e-model="v$.coverageCancellationDate" id="coverageCancellationDate" label="Coverage Cancellation Date" v-model="coverageCancellationDate" />
