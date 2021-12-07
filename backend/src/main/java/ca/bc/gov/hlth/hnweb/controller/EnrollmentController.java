@@ -28,6 +28,7 @@ import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.R50Response;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
+import ca.bc.gov.hlth.hnweb.model.PersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
 import ca.bc.gov.hlth.hnweb.service.EnrollmentService;
 import ca.uhn.hl7v2.HL7Exception;
@@ -85,7 +86,7 @@ public class EnrollmentController {
 	}
 
 	@PostMapping("/person-details")
-	public ResponseEntity<GetPersonDetailsResponse> getDemographicDetails(
+	public ResponseEntity<PersonDetailsResponse> getDemographicDetails(
 			@Valid @RequestBody GetPersonDetailsRequest requestObj) {
 		logger.info("Demographic request: {} ", requestObj.getPhn());
 
@@ -96,8 +97,8 @@ public class EnrollmentController {
 			String xmlString = converter.convertRequest(requestObj.getPhn());
 
 			ResponseEntity<String> demoGraphicsResponse = enrollmentService.getDemographics(xmlString, transactionId);
-			GetPersonDetailsResponse personDetails = converter.convertResponse(demoGraphicsResponse.getBody());
-			ResponseEntity<GetPersonDetailsResponse> responseEntity = ResponseEntity.ok(personDetails);
+			PersonDetailsResponse personDetails = converter.convertResponse(demoGraphicsResponse.getBody());
+			ResponseEntity<PersonDetailsResponse> responseEntity = ResponseEntity.ok(personDetails);
 
 			return responseEntity;
 		} catch (HNWebException hwe) {

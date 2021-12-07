@@ -1,12 +1,14 @@
 package ca.bc.gov.hlth.hnweb.converter;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.hlth.hnweb.config.HL7Config;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
+import ca.bc.gov.hlth.hnweb.model.PersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
@@ -58,18 +60,20 @@ public class XmlConverter {
 	 * @return
 	 * @throws IOException
 	 */
-	public GetPersonDetailsResponse convertResponse(String xmlString) throws IOException {
+	public PersonDetailsResponse convertResponse(String xmlString) throws IOException {
 		GetDemographicsResponse results = hl7.fromXml(xmlString, GetDemographicsResponse.class);
 		logger.debug("Converted Demographics response : {} ", results.toString());
 		
-		GetPersonDetailsResponse personDetailsResponse = buildPersonDetailsResponse(results);
+		PersonDetailsResponse personDetailsResponse = buildPersonDetailsResponse(results);
 		logger.debug("Converted PersonDetails Response : {} ", personDetailsResponse);
 		return personDetailsResponse;
 
 	}
 
-	private GetPersonDetailsResponse buildPersonDetailsResponse(GetDemographicsResponse respObj) {
+	private PersonDetailsResponse buildPersonDetailsResponse(GetDemographicsResponse respObj) {
+		PersonDetailsResponse personDetailsResponse = new PersonDetailsResponse();
 		GetPersonDetailsResponse personDetails = new GetPersonDetailsResponse();
+		
 		String messageDetails = respObj.getMessage().getDetails();
 		String messageText[] = messageDetails.split("\\|");
 		String message = "";
@@ -80,33 +84,37 @@ public class XmlConverter {
 			logger.debug("No result found for the Phn [{}]", respObj.getPerson().getPhn());
 
 			if (messageText.length > 0) {
-				personDetails.setStatus(StatusEnum.ERROR);
-				personDetails.setMessage(message);
+				personDetailsResponse.setStatus(StatusEnum.ERROR);
+				personDetailsResponse.setMessage(message);
 			}
 		} else {
 			personDetails.setPhn(respObj.getPerson().getPhn());
 			Name nameObj = respObj.getPerson().getDeclaredName();
+			String birthDate = new SimpleDateFormat("yyyyMMdd").format(respObj.getPerson().getBirthDate());
 			if (nameObj == null)
 				nameObj = respObj.getPerson().getDocumentedName();
 			
 			personDetails.setGivenName(nameObj.getFirstGivenName());
 			personDetails.setSecondName(nameObj.getSecondGivenName());
 			personDetails.setSurname(nameObj.getSurname());
-			personDetails.setDateOfBirth(respObj.getPerson().getBirthDate());
+		
+			personDetails.setDateOfBirth(birthDate);
 
 			if (messageText.length > 0) {
 				if (message.contains("Warning")) {
-					personDetails.setStatus(StatusEnum.WARNING);
-					personDetails.setMessage(messageText[1]);
+					personDetailsResponse.setStatus(StatusEnum.WARNING);
+					personDetailsResponse.setMessage(messageText[1]);
 				} else {
-					personDetails.setStatus(StatusEnum.SUCCESS);
+					personDetailsResponse.setStatus(StatusEnum.SUCCESS);
 				}
 			}
 
 			logger.info("Response message for given phn is: {}", personDetails.toString());
 		}
+		
+		personDetailsResponse.setPerson(personDetails);
 
-		return personDetails;
+		return personDetailsResponse;
 
 	}
 
