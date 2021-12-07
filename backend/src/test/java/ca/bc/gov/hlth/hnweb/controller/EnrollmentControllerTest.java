@@ -94,6 +94,7 @@ public class EnrollmentControllerTest {
         PersonDetailsResponse getPersonDetailsResponse = response.getBody();
     	assertEquals("9862716574",  getPersonDetailsResponse.getPerson().getPhn());	
     	assertEquals("Robert", getPersonDetailsResponse.getPerson().getGivenName());
+    	assertEquals("M", getPersonDetailsResponse.getPerson().getGender());
 		
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
