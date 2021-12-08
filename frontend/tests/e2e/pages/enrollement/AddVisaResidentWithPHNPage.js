@@ -18,7 +18,6 @@ class AddVisaResidentWithPHN {
         this.address3Input = Selector('#address3');
         this.cityInput = Selector('#city');
         this.provinceSelect = Selector('#province');
-        //this.provinceOptionInput = provinceInput.find('option');
         this.postalCodeInput = Selector('#postalCode');
         this.mailingAddress1Input = Selector('#mailingAddress1');
         this.mailingAddress2Input = Selector('#mailingAddress2');
