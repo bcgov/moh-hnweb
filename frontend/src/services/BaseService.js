@@ -4,7 +4,7 @@ import keycloak from '../keycloak';
 export const resources = {
   enrollment: {
     personDetails: 'enrollment/person-details',
-    addVisaResidentWithPHN: '/enrollment/enroll-subscriber',
+    enrollSubscriber: '/enrollment/enroll-subscriber',
   },
   eligibility: {
     checkEligibility: '/eligibility/check-eligibility',
