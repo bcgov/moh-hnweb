@@ -68,9 +68,6 @@ export function validateGroupMemberNumber(groupMemberNumber) {
  * Validate Department Number. It can be up to six (6) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid.
  */
 export function validateDepartmentNumber(departmentNumber) {
-  if (!helpers.req(departmentNumber)) {
-    return true
-  }
   return validateSpecialChars(departmentNumber, 6)
 }
 
