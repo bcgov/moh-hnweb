@@ -44,7 +44,7 @@ export default {
     return {
       pageAction: null,
       registrationOk: false,
-      personResult: {
+      getPersonDetailsResult: {
         person: {
           phn: '',
           givenName: '',	
@@ -79,7 +79,7 @@ export default {
     async updateResident(phn) {
       console.log(`Resident: [PHN: ${phn}]`)
       try {
-        this.personResult = (await EnrollmentService.getPersonDemographics({ phn: phn })).data
+        this.personResult = (await EnrollmentService.getPersonDetails({ phn: phn })).data
         if (this.personResult?.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.personResult?.message)
           return
