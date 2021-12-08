@@ -34,8 +34,8 @@
     </form>
   </div>
   <br />
-    <div v-if="searchOk">
-    <h2>Transaction Successful</h2>
+  <div v-if="searchOk">
+    <hr />
     <AppRow>
       <AppCol class="col3">
         <AppOutput label="PHN" :value="result.phn"/>
@@ -61,41 +61,47 @@
         <AppOutput label="Coverage End Date" :value="result.coverageEndDate"/>
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Coverage End Reason" :value="result.coverageEndReason"/>
+        <AppOutput label="Coverage End Reason" :value="coverageEndReasonText"/>
       </AppCol>
     </AppRow>    
     <br/>
-    <AppRow class="row">      
-      <AppCol class="col12">
-        <p>
-          <label>Subsidy Insured Service: </label>{{result.subsidyInsuredService}}
-        </p>
-      </AppCol>    
-    </AppRow>
-    <AppRow class="row">  
-      <AppCol class="col12">
-        <p>
-          <label>Date of Last Eye Examination: </label>{{result.dateOfLastEyeExamination}}
-        </p>
-      </AppCol>
-    </AppRow>
-    <AppRow class="row">      
-      <AppCol class="col12">
-        <p>
-          <label>Patient Restriction: </label>{{result.patientRestriction}}
-        </p>
-      </AppCol>               
-    </AppRow>
-    <AppRow class="row">      
-      <AppCol class="col12">
-        <p>{{result.carecardWarning}}</p>
-      </AppCol>               
-    </AppRow>         
+    <AppCard v-if="isPatientStatusRequest">
+      <AppRow class="row" v-if="checkSubsidyInsuredService">      
+        <AppCol class="col12">
+          <p>
+            <label>Subsidy Insured Service: </label>{{ subsidyInsuredServiceText }}
+          </p>
+        </AppCol>    
+      </AppRow>
+      <AppRow class="row" v-if="checkLastEyeExam">  
+        <AppCol class="col12">
+          <p>
+            <label>Date of Last Eye Examination: </label>{{dateOfLastEyeExaminationText}}
+          </p>
+        </AppCol>
+      </AppRow>
+      <AppRow class="row" v-if="checkPatientRestriction">      
+        <AppCol class="col12">
+          <p>
+            <label>Patient Restriction: </label>{{patientRestrictioText}}
+          </p>
+        </AppCol>               
+      </AppRow>
+    </AppCard>
+
+    <AppCard v-if="result.careCardWarning">
+      <p>{{result.careCardWarning}}</p>
+    </AppCard>
+
+    <AppCard v-if="result.clientInstructions">
+      <p>{{result.clientInstructions}}</p>
+    </AppCard>
   </div>
 </template>
 
 <script>
 import AppButton from '../../components/AppButton.vue'
+import AppCard from '../../components/AppCard.vue'
 import AppCheckbox from '../../components/AppCheckbox.vue'
 import AppCol from '../../components/grid/AppCol.vue'
 import AppDateInput from '../../components/AppDateInput.vue'
@@ -105,13 +111,13 @@ import AppRow from '../../components/grid/AppRow.vue'
 import EligibilityService from '../../services/EligibilityService'
 import useVuelidate from '@vuelidate/core'
 import { validateDOB, validatePHN, VALIDATE_DOB_MESSAGE, VALIDATE_PHN_MESSAGE } from '../../util/validators'
-import { API_DATE_FORMAT } from '../../util/constants'
+import { API_DATE_FORMAT, COVERAGE_END_REASONS } from '../../util/constants'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 
 export default {
   name: 'CoverageStatusCheck',
-  components: {AppButton, AppCheckbox, AppCol, AppDateInput, AppInput, AppOutput, AppRow},
+  components: {AppButton, AppCard, AppCheckbox, AppCol, AppDateInput, AppInput, AppOutput, AppRow},
   setup() {
     return {
       v$: useVuelidate()}
@@ -140,8 +146,10 @@ export default {
         subsidyInsuredService: '',
         dateOfLastEyeExamination: '',
         patientRestriction: '',
-        carecardWarning: '',
-        errorMessage: '',
+        careCardWarning: '',
+        clientInstructions: '',
+        status: '',
+        message: '',
       }
     }
   },
@@ -159,16 +167,33 @@ export default {
       }
       return name
     },
+    coverageEndReasonText() {
+      const reasonText = COVERAGE_END_REASONS.get(this.result.coverageEndReason)
+      return reasonText ? reasonText : this.result.coverageEndReason
+    },
+    isPatientStatusRequest() {
+      return this.result.subsidyInsuredService || this.result.dateOfLastEyeExamination || this.result.patientRestriction
+    },
+    subsidyInsuredServiceText() {
+      return this.result.subsidyInsuredService === 'N' ? 'THIS IS NOT AN INSURED BENEFIT' : this.result.subsidyInsuredService
+    },
+    dateOfLastEyeExaminationText() {
+      return this.result.dateOfLastEyeExamination === '' ? 'MSP HAS NOT PAID FOR AN EYE EXAM FOR THIS PHN IN THE LAST 24 MTHS FROM TODAY\'S DATE' : this.result.dateOfLastEyeExamination
+    },
+    patientRestrictionText() {
+      return this.result.patientRestriction === 'N' ? 'NO RESTRICTION' : this.result.patientRestriction
+    }
   },
   methods: {
     async submitForm() {
+      this.result = null
       this.searching = true
+      this.searchOk = false
+      this.$store.commit("alert/dismissAlert")
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
-          this.$store.commit('alert/setErrorAlert');
-          this.result = null
-          this.searching = false
+          this.showError()
           return
         }
         this.result = (await EligibilityService.checkCoverageStatus({
@@ -178,20 +203,29 @@ export default {
           checkSubsidyInsuredService: this.checkSubsidyInsuredService,
           checkLastEyeExam: this.checkLastEyeExam,
           checkPatientRestriction: this.checkPatientRestriction})).data
-        if (!this.result.errorMessage || this.result.errorMessage === '') {
-          this.searchOk = true
-          this.$store.commit('alert/setSuccessAlert', 'Search complete')
-        } else {
-          this.$store.commit('alert/setErrorAlert', this.result.errorMessage)
-          this.result = null
-          this.searchOk = false
+        
+        if (this.result.status === 'error') {
+          this.$store.commit('alert/setErrorAlert', this.result.message)
+          return
         }
+
+        this.searchOk = true
+        if (this.result.status === 'success') {
+          this.$store.commit('alert/setSuccessAlert', this.result.message || 'Transaction successful')
+        } else if (this.result.status === 'warning') {
+          this.$store.commit('alert/setWarningAlert', this.result.message)  
+        }  
 
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       } finally {
         this.searching = false;
       }
+    },
+    showError(error) {
+      this.$store.commit('alert/setErrorAlert', error)
+      this.result = {}
+      this.searching = false
     },
     resetForm() {
       this.phn = ''

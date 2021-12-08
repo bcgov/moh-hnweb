@@ -68,6 +68,21 @@ public class WebClientConfig {
 
 	@Value("${rapid.cert.password}")
 	private String rapidCertPassword;
+	
+	@Value("${hibc.url}")
+	private String hibcUrl;
+	 
+	@Value("${hibc.user.name}")
+	private String hibcUserName;
+
+	@Value("${hibc.user.password}")
+	private String hibcUserPassword;
+
+	@Value("classpath:${hibc.cert.file}")
+	private Resource hibcCertFile;
+
+	@Value("${hibc.cert.password}")
+	private String hibcCertPassword;
 
 	@Bean("enrollmentWebClient")
     public WebClient enrollmentWebClient() throws HNWebException {
@@ -84,6 +99,24 @@ public class WebClientConfig {
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE) 
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.ALL_VALUE) 
                 .defaultHeaders(header -> header.setBasicAuth(userName, userPassword))
+                .build();
+    }
+	
+	@Bean("hibcWebClient")
+    public WebClient hibcWebClient() throws HNWebException {
+
+		SslContext sslContext = getSSLContext(hibcUrl, hibcCertFile, hibcCertPassword);
+		
+	    HttpClient httpClient= HttpClient.create().secure(t -> t.sslContext(sslContext));
+		ClientHttpConnector connector= new ReactorClientHttpConnector(httpClient);
+	    
+		return WebClient.builder()
+	    		.clientConnector(connector)
+                .baseUrl(hibcUrl)
+                .filter(logRequest())
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE) 
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.ALL_VALUE) 
+                .defaultHeaders(header -> header.setBasicAuth(hibcUserName, hibcUserPassword))
                 .build();
     }
 	

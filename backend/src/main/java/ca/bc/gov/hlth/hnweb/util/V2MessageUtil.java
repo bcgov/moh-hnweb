@@ -31,6 +31,23 @@ public class V2MessageUtil {
 	private static final String VISA_ISSUE = "VISA_ISSUE";
     
 	private static final String VISA_XPIRY = "VISA_XPIRY";
+	
+	private static final String QCP_QUERY_TAG = "1";
+	
+	private static final String QPD_COVERAGE_INQUIRY_ENDRSN = "ENDRSN^^HNET9909";
+	private static final String QPD_COVERAGE_INQUIRY_CCARD = "CCARD^^HNET9909";
+	private static final String QPD_COVERAGE_INQUIRY_PVC = "PVC^^HNET9909";
+	private static final String QPD_COVERAGE_INQUIRY_EYE = "EYE^^HNET9909";
+	private static final String QPD_COVERAGE_INQUIRY_PRS = "PRS^^HNET9909";
+	
+	private static final String QPD_PATIENT_ASSIGNING_AUTHORITY = "CANBC";
+	private static final String QPD_PATIENT_ID_TYPE_CODE = "JHN";
+	private static final String QPD_PATIENT_ASSIGNING_FACILITY = "MOH";		
+	private static final String QPD_PAYOR_ORGANIZATION_ID = "00000754";
+
+	private static final String RCP_QUERY_PRIORITY = "I";
+	
+	private static final String ORGANIZATION_FORMAT = "^^%s^^^CANBC^XX^MOH";
 
 	public enum MessageType {
 		R15, E45, R50; 	//HIBC
@@ -251,36 +268,37 @@ public class V2MessageUtil {
 	 * @param checkPatientRestriction
 	 * @throws HL7Exception
 	 */
-	public static void setQpdValues(QPD qpd, String messageQueryName, String queryTag,
-			String phn, String dateOfBirth, String dateOfService,
+	public static void setQpdValues(QPD qpd, String messageQueryName,
+			String phn, String submittingAndProviderOrganization, String dateOfBirth, String dateOfService,
 			Boolean checkSubsidyInsuredService, Boolean checkLastEyeExam, Boolean checkPatientRestriction) throws HL7Exception {
-		
-//e.g.		QPD|E45^^HNET0003|1|^^00000001^^^CANBC^XX^MOH|^^00000001^^^CANBC^XX^MOH|^^00000754^^^CANBC^XX^MOH|9020198746^^^CANBC^JHN^MOH||19421112||||||19980601||PVC^^HNET9909||
-		
+
+		// e.g. QPD|E45^^HNET0003|1|^^00000001^^^CANBC^XX^MOH|^^00000001^^^CANBC^XX^MOH|^^00000754^^^CANBC^XX^MOH|9020198746^^^CANBC^JHN^MOH||19421112||||||19980601||PVC^^HNET9909||
 		qpd.getQpd1_MessageQueryName().parse(messageQueryName);
-		qpd.getQpd2_QueryTag().parse(queryTag);
-		
-		qpd.getQpd3_SubmittingOrganization().parse("^^00000001^^^CANBC^XX^MOH");
-		qpd.getQpd4_ProviderOrganization().parse("^^00000001^^^CANBC^XX^MOH");
-		qpd.getQpd5_PayorOrganization().parse("^^00000754^^^CANBC^XX^MOH");
+		qpd.getQpd2_QueryTag().parse(QCP_QUERY_TAG);
+
+		qpd.getQpd3_SubmittingOrganization().parse(String.format(ORGANIZATION_FORMAT, submittingAndProviderOrganization));
+		qpd.getQpd4_ProviderOrganization().parse(String.format(ORGANIZATION_FORMAT, submittingAndProviderOrganization));
+		qpd.getQpd5_PayorOrganization().parse(String.format(ORGANIZATION_FORMAT, QPD_PAYOR_ORGANIZATION_ID));
+
 		qpd.getQpd6_PatientIdentifierList().getCx1_ID().parse(phn); 
-		qpd.getQpd6_PatientIdentifierList().getCx4_AssigningAuthority().parse("CANBC");
-		qpd.getQpd6_PatientIdentifierList().getCx5_IdentifierTypeCode().parse("JHN");
-		qpd.getQpd6_PatientIdentifierList().getCx6_AssigningFacility().parse("MOH");
+		qpd.getQpd6_PatientIdentifierList().getCx4_AssigningAuthority().parse(QPD_PATIENT_ASSIGNING_AUTHORITY);
+		qpd.getQpd6_PatientIdentifierList().getCx5_IdentifierTypeCode().parse(QPD_PATIENT_ID_TYPE_CODE);
+		qpd.getQpd6_PatientIdentifierList().getCx6_AssigningFacility().parse(QPD_PATIENT_ASSIGNING_FACILITY);
+
 		qpd.getQpd8_DateTimeOfBirth().parse(dateOfBirth);
 		qpd.getQpd14_ServiceEffectiveDate().parse(dateOfService);
 
-		//build the repeating Coverage Inquiry Code field entries
-		qpd.getQpd16_CoverageInquiryCode(0).parse("ENDRSN^^HNET9909");
-		qpd.getQpd16_CoverageInquiryCode(1).parse("CCARD^^HNET9909");
+		// Build the repeating Coverage Inquiry Code field entries
+		qpd.getQpd16_CoverageInquiryCode(0).parse(QPD_COVERAGE_INQUIRY_ENDRSN);
+		qpd.getQpd16_CoverageInquiryCode(1).parse(QPD_COVERAGE_INQUIRY_CCARD);
 		if (checkSubsidyInsuredService) {
-			qpd.getQpd16_CoverageInquiryCode(2).parse("PVC^^HNET9909");
+			qpd.getQpd16_CoverageInquiryCode(2).parse(QPD_COVERAGE_INQUIRY_PVC);
 		}
 		if (checkLastEyeExam) {
-			qpd.getQpd16_CoverageInquiryCode(qpd.getCoverageInquiryCodeReps()).parse("EYE^^HNET9909");
+			qpd.getQpd16_CoverageInquiryCode(qpd.getCoverageInquiryCodeReps()).parse(QPD_COVERAGE_INQUIRY_EYE);
 		}
 		if (checkPatientRestriction) {
-			qpd.getQpd16_CoverageInquiryCode(qpd.getCoverageInquiryCodeReps()).parse("PRS^^HNET9909");
+			qpd.getQpd16_CoverageInquiryCode(qpd.getCoverageInquiryCodeReps()).parse(QPD_COVERAGE_INQUIRY_PRS);
 		}
 		
 	}
@@ -292,10 +310,9 @@ public class V2MessageUtil {
 	 * @param queryPriority
 	 * @throws HL7Exception
 	 */
-	public static void setRcpValues(RCP rcp, String queryPriority) throws HL7Exception {
-		//e.g. RCP|I|
-		
-		rcp.getRcp1_QueryPriority().parse(queryPriority);
+	public static void setRcpValues(RCP rcp) throws HL7Exception {
+		// e.g. RCP|I|
+		rcp.getRcp1_QueryPriority().parse(RCP_QUERY_PRIORITY);
 	}
 	
 	public static String correctMSH9(String v2, String messageType) {

@@ -147,10 +147,10 @@ public class V2MessageUtilTest {
 		//Create an E45 message  
     	E45 e45 = new E45();
 		
-    	V2MessageUtil.setQpdValues(e45.getQPD(), "E45^^HNET0003", "1", "9865827321", "19730131", "20210705", true, false, true);		
+    	V2MessageUtil.setQpdValues(e45.getQPD(), "E45^^HNET0003", "9865827321", "00000010", "19730131", "20210705", true, false, true);		
     	QPD qpd = e45.getQPD();		
 		String encoded = parser.doEncode(qpd, EncodingCharacters.getInstance(e45));		
-		assertEquals("QPD|E45^^HNET0003|1|^^00000001^^^CANBC^XX^MOH|^^00000001^^^CANBC^XX^MOH|^^00000754^^^CANBC^XX^MOH|9865827321^^^CANBC^JHN^MOH||19730131||||||20210705||ENDRSN^^HNET9909~CCARD^^HNET9909~PVC^^HNET9909~PRS^^HNET9909", encoded);
+		assertEquals("QPD|E45^^HNET0003|1|^^00000010^^^CANBC^XX^MOH|^^00000010^^^CANBC^XX^MOH|^^00000754^^^CANBC^XX^MOH|9865827321^^^CANBC^JHN^MOH||19730131||||||20210705||ENDRSN^^HNET9909~CCARD^^HNET9909~PVC^^HNET9909~PRS^^HNET9909", encoded);
 	}
 
 	@Test
@@ -159,7 +159,7 @@ public class V2MessageUtilTest {
 		//Create an E45 message  
     	E45 e45 = new E45();
 		
-    	V2MessageUtil.setRcpValues(e45.getRCP(), "I");		
+    	V2MessageUtil.setRcpValues(e45.getRCP());		
     	RCP rcp = e45.getRCP();		
 		String encoded = parser.doEncode(rcp, EncodingCharacters.getInstance(e45));		
 		assertEquals("RCP|I", encoded);
