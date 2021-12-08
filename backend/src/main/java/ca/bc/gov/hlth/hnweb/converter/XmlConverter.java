@@ -14,6 +14,8 @@ import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.MessageMetaData;
 import ca.bc.gov.hlth.hnweb.model.v3.Name;
+import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
+import ca.bc.gov.hlth.hnweb.security.UserInfo;
 import ca.bc.gov.hlth.hnweb.serialization.HL7Serializer;
 import ca.bc.gov.hlth.hnweb.util.V3MessageUtil;
 
@@ -27,16 +29,17 @@ import ca.bc.gov.hlth.hnweb.util.V3MessageUtil;
 public class XmlConverter {
 
 	private static final Logger logger = LoggerFactory.getLogger(XmlConverter.class);
-	private static final String dataEntererExt = "SOURCESYSTEMUSERNAME";
 	private static final String sourceSystemOverride = "MOH_CRS";
 	private static final String organization = "MOH_CRS";
 	private static final String mrn_source = "MOH_CRS";
 	protected HL7Serializer hl7;
 	protected MessageMetaData mmd;
+	protected UserInfo userInfo;
 
 	public XmlConverter(String transectionId) {
-		hl7 = new HL7Serializer(new HL7Config());
-		mmd = new MessageMetaData(dataEntererExt, sourceSystemOverride, organization, transectionId);
+		this.hl7 = new HL7Serializer(new HL7Config());
+		this.userInfo = SecurityUtil.loadUserInfo();
+		this.mmd = new MessageMetaData(userInfo.getUsername(), sourceSystemOverride, organization, transectionId);
 	}
 
 	/**

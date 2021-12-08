@@ -12,8 +12,8 @@ const ERROR_MESSAGE = 'Please correct errors before submitting';
 const SUCCESS_MESSAGE = 'HRPB242EINVALID SUBSCRIBER DATA FOUND. PLS CONTACT MSP.';
 const GROUPNUMBER_REQUIRED_MESSAGE = 'Group Number is required';
 const IMMIGRATION_CODE_REQUIRED_MESSAGE = 'Immigration Code is required';
-const VISA_ISSUE_DATE_REQUIRED_MESSAGE = 'Visa Issue Date is required';
-const VISA_EXPIRY_DATE_REQUIRED_MESSAGE = 'Visa Expiry Date is required';
+const PERMIT_ISSUE_DATE_REQUIRED_MESSAGE = 'Permit Issue Date is required';
+const PERMIT_EXPIRY_DATE_REQUIRED_MESSAGE = 'Permit Expiry Date is required';
 const RESIDENCE_DATE_REQUIRED_MESSAGE = 'Residence Date is required';
 const COVERAGE_EFFECTIVE_DATE_REQUIRED_MESSAGE = 'Coverage Effective Date is required';
 const COVERAGE_CANCELLATION_DATE_REQUIRED_MESSAGE = 'Coverage Cancellation Date is required';
@@ -22,8 +22,8 @@ const CITY_REQUIRED_MESSAGE = 'City is required';
 const PROVINCE_REQUIRED_MESSAGE = 'Province is required';
 const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required';
 const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid';
-const INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE = 'Can be up to nine (9) characters. Any alpha or numeric characters are allowed, except for |^  & which are invalid.';
-const INVALID_DEPARTMENT_NUMBER_VALIDATION_MESSAGE = 'Can be up to nine (6) characters. Any alpha or numeric characters are allowed, except for |^  & which are invalid.';
+const INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE = 'Group Member Number is invalid';
+const INVALID_DEPARTMENT_NUMBER_VALIDATION_MESSAGE = 'Department Number is invalid';
 const PHONE_NUMBER_VALIDATION_MESSAGE = 'Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.';
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addVisaResidentWithPHN'
@@ -41,7 +41,6 @@ test('Check required fields validation', async t => {
         .typeText(PersonDetails.phnInput, '9882807277')
         .click(PersonDetails.submitButton)
         .wait(1000)
-        .setTestSpeed(.02)
         // Given required fields aren't filled out 
         
         // When I click the submit button
@@ -50,8 +49,8 @@ test('Check required fields validation', async t => {
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
         .expect(AddVisaResidentWithPHNPage.ErrorText.nth(0).textContent).contains(GROUPNUMBER_REQUIRED_MESSAGE)
         .expect(AddVisaResidentWithPHNPage.ErrorText.nth(1).textContent).contains(IMMIGRATION_CODE_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(2).textContent).contains(VISA_ISSUE_DATE_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(4).textContent).contains(VISA_EXPIRY_DATE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(2).textContent).contains(PERMIT_ISSUE_DATE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(4).textContent).contains(PERMIT_EXPIRY_DATE_REQUIRED_MESSAGE)
         .expect(AddVisaResidentWithPHNPage.ErrorText.nth(5).textContent).contains(RESIDENCE_DATE_REQUIRED_MESSAGE)
         .expect(AddVisaResidentWithPHNPage.ErrorText.nth(6).textContent).contains(COVERAGE_EFFECTIVE_DATE_REQUIRED_MESSAGE)
         .expect(AddVisaResidentWithPHNPage.ErrorText.nth(7).textContent).contains(COVERAGE_CANCELLATION_DATE_REQUIRED_MESSAGE)
@@ -88,7 +87,6 @@ test('Check properly filled form passes validation', async t => {
 
         // When I click the submit button
 		.click(AddVisaResidentWithPHNPage.submitButton)
-        .wait(10000)
         // I expect a success message
         .expect(AlertPage.alertBannerText.textContent).contains(SUCCESS_MESSAGE)
 });
@@ -137,19 +135,21 @@ test('Check cancel button clears the form', async t => {
         .click(AddVisaResidentWithPHNPage.provinceSelect)
         .click(provinceOption.withText('British Columbia'))
         .typeText(AddVisaResidentWithPHNPage.postalCodeInput, 'V8V8V8')
+        .click(AddVisaResidentWithPHNPage.priorResidenceCodeInput)
+        .click(priorResidenceCodeOption.withText('British Columbia'))
     
         // When I click the cancel button
 		.click(AddVisaResidentWithPHNPage.cancelButton)
         // I expect the form to be cleared
         .expect(AddVisaResidentWithPHNPage.groupNumberInput.value).eql('')
-        //.expect(AddVisaResidentWithPHNPage.immigrationCodeSelect.value).eql('')
+        .expect(AddVisaResidentWithPHNPage.immigrationCodeSelect.value).eql('')
         .expect(AddVisaResidentWithPHNPage.visaIssueDateInput.value).eql('')
         .expect(AddVisaResidentWithPHNPage.visaExpiryDateInput.value).eql('')
         .expect(AddVisaResidentWithPHNPage.residenceDateInput.value).eql('')
         .expect(AddVisaResidentWithPHNPage.coverageEffectiveDateInput.value).eql('')
         .expect(AddVisaResidentWithPHNPage.coverageCancellationDateInput.value).eql('')
         .expect(AddVisaResidentWithPHNPage.cityInput.value).eql('')
-        //.expect(provinceSelect.value).eql('')
+        .expect(AddVisaResidentWithPHNPage.provinceSelect.value).eql('')
         .expect(AddVisaResidentWithPHNPage.postalCodeInput.value).eql('')
         .expect(AddVisaResidentWithPHNPage.telephoneInput.value).eql('')
 });
