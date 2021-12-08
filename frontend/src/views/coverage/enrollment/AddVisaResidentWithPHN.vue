@@ -3,12 +3,12 @@
     <ResidentPHN @update-resident="updateResident" />
   </div>
   <div v-else-if="pageAction === this.PAGE_ACTION.STUDENT_REGISTRATION">
-    <ResidentDetails :resident="this.personResult?.person" @register-resident="registerResident" />
+    <ResidentDetails :resident="this.getPersonDetailsResult?.person" @register-resident="registerResident" />
   </div>
   <div v-else-if="pageAction === this.PAGE_ACTION.CONFIRMATION">
     <AppRow>
       <AppCol class="col3">
-        <AppOutput label="PHN" :value="this.personResult?.person.phn"/>
+        <AppOutput label="PHN" :value="this.getPersonDetailsResult?.person.phn"/>
       </AppCol>
     </AppRow>
     <AppRow>
@@ -72,24 +72,24 @@ export default {
   },
   computed: {
     fullName() {
-      return formatPersonName(this.personResult?.person)
+      return formatPersonName(this.getPersonDetailsResult?.person)
     },
   },
   methods: {    
     async updateResident(phn) {
       console.log(`Resident: [PHN: ${phn}]`)
       try {
-        this.personResult = (await EnrollmentService.getPersonDetails({ phn: phn })).data
-        if (this.personResult?.status === 'error') {
-          this.$store.commit('alert/setErrorAlert', this.personResult?.message)
+        this.getPersonDetailsResult = (await EnrollmentService.getPersonDetails({ phn: phn })).data
+        if (this.getPersonDetailsResult?.status === 'error') {
+          this.$store.commit('alert/setErrorAlert', this.getPersonDetailsResult?.message)
           return
         }
 
-        console.log(`Result: [PHN: ${this.personResult?.person.phn}] [Name: ${this.personResult?.person.givenName}] [DOB: ${this.personResult?.person.dateOfBirth}]`)
-        if (this.personResult?.status === 'success') {
-          console.log(`Success: ${this.personResult?.message}`)        
-        } else if (this.personResult?.status === 'warning') {
-          this.$store.commit('alert/setWarningAlert', this.personResult?.message)  
+        console.log(`Result: [PHN: ${this.getPersonDetailsResult?.person.phn}] [Name: ${this.getPersonDetailsResult?.person.givenName}] [DOB: ${this.getPersonDetailsResult?.person.dateOfBirth}]`)
+        if (this.getPersonDetailsResult?.status === 'success') {
+          console.log(`Success: ${this.getPersonDetailsResult?.message}`)        
+        } else if (this.getPersonDetailsResult?.status === 'warning') {
+          this.$store.commit('alert/setWarningAlert', this.getPersonDetailsResult?.message)  
         }          
         this.pageAction = this.PAGE_ACTION.STUDENT_REGISTRATION
       } catch(err) {
@@ -102,12 +102,12 @@ export default {
 
       try {
         this.registrationResult = (await EnrollmentService.registerResident({
-          phn: this.personResult?.person.phn,
-          dateOfBirth: this.personResult?.person.dateOfBirth,
-          givenName: this.personResult?.person.givenName,
-          secondName: this.personResult?.person.secondName,
-          surname: this.personResult?.person.surname,
-          gender: this.personResult?.person.gender, 
+          phn: this.getPersonDetailsResult?.person.phn,
+          dateOfBirth: this.getPersonDetailsResult?.person.dateOfBirth,
+          givenName: this.getPersonDetailsResult?.person.givenName,
+          secondName: this.getPersonDetailsResult?.person.secondName,
+          surname: this.getPersonDetailsResult?.person.surname,
+          gender: this.getPersonDetailsResult?.person.gender, 
           ...personDetails})).data
         if (this.registrationResult?.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.registrationResult?.message)
