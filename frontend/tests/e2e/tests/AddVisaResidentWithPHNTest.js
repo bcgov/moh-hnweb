@@ -12,8 +12,8 @@ const ERROR_MESSAGE = 'Please correct errors before submitting';
 const SUCCESS_MESSAGE = 'HRPB242EINVALID SUBSCRIBER DATA FOUND. PLS CONTACT MSP.';
 const GROUPNUMBER_REQUIRED_MESSAGE = 'Group Number is required';
 const IMMIGRATION_CODE_REQUIRED_MESSAGE = 'Immigration Code is required';
-const VISA_ISSUE_DATE_REQUIRED_MESSAGE = 'Visa Issue Date is required';
-const VISA_EXPIRY_DATE_REQUIRED_MESSAGE = 'Visa Expiry Date is required';
+const PERMIT_ISSUE_DATE_REQUIRED_MESSAGE = 'Permit Issue Date is required';
+const PERMIT_EXPIRY_DATE_REQUIRED_MESSAGE = 'Permit Expiry Date is required';
 const RESIDENCE_DATE_REQUIRED_MESSAGE = 'Residence Date is required';
 const COVERAGE_EFFECTIVE_DATE_REQUIRED_MESSAGE = 'Coverage Effective Date is required';
 const COVERAGE_CANCELLATION_DATE_REQUIRED_MESSAGE = 'Coverage Cancellation Date is required';
@@ -49,8 +49,8 @@ test('Check required fields validation', async t => {
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
         .expect(AddVisaResidentWithPHNPage.ErrorText.nth(0).textContent).contains(GROUPNUMBER_REQUIRED_MESSAGE)
         .expect(AddVisaResidentWithPHNPage.ErrorText.nth(1).textContent).contains(IMMIGRATION_CODE_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(2).textContent).contains(VISA_ISSUE_DATE_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(4).textContent).contains(VISA_EXPIRY_DATE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(2).textContent).contains(PERMIT_ISSUE_DATE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(4).textContent).contains(PERMIT_EXPIRY_DATE_REQUIRED_MESSAGE)
         .expect(AddVisaResidentWithPHNPage.ErrorText.nth(5).textContent).contains(RESIDENCE_DATE_REQUIRED_MESSAGE)
         .expect(AddVisaResidentWithPHNPage.ErrorText.nth(6).textContent).contains(COVERAGE_EFFECTIVE_DATE_REQUIRED_MESSAGE)
         .expect(AddVisaResidentWithPHNPage.ErrorText.nth(7).textContent).contains(COVERAGE_CANCELLATION_DATE_REQUIRED_MESSAGE)
@@ -87,7 +87,6 @@ test('Check properly filled form passes validation', async t => {
 
         // When I click the submit button
 		.click(AddVisaResidentWithPHNPage.submitButton)
-        .wait(10000)
         // I expect a success message
         .expect(AlertPage.alertBannerText.textContent).contains(SUCCESS_MESSAGE)
 });
