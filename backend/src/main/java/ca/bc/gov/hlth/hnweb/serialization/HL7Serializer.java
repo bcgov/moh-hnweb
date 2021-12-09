@@ -1,7 +1,5 @@
 package ca.bc.gov.hlth.hnweb.serialization;
 
-import ca.bc.gov.hlth.hnweb.config.HL7Config;
-import ca.bc.gov.hlth.hnweb.model.Telecommunication;
 import ca.bc.gov.hlth.hnweb.model.v3.Address;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
@@ -10,6 +8,7 @@ import ca.bc.gov.hlth.hnweb.model.v3.Message;
 import ca.bc.gov.hlth.hnweb.model.v3.MessageMetaData;
 import ca.bc.gov.hlth.hnweb.model.v3.Name;
 import ca.bc.gov.hlth.hnweb.model.v3.Person;
+import ca.bc.gov.hlth.hnweb.model.v3.Telecommunication;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.basic.DateConverter;

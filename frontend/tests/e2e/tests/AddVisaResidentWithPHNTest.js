@@ -40,24 +40,25 @@ test('Check required fields validation', async t => {
     await t
         .typeText(PersonDetails.phnInput, '9882807277')
         .click(PersonDetails.submitButton)
-        .wait(1000)
+        .wait(5000)
         // Given required fields aren't filled out 
         
         // When I click the submit button
         .click(AddVisaResidentWithPHNPage.submitButton)
+        .wait(1000)
         // I expect an error message stating the page had errors and individual error messages for each required field
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(0).textContent).contains(GROUPNUMBER_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(1).textContent).contains(IMMIGRATION_CODE_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(2).textContent).contains(PERMIT_ISSUE_DATE_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(4).textContent).contains(PERMIT_EXPIRY_DATE_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(5).textContent).contains(RESIDENCE_DATE_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(6).textContent).contains(COVERAGE_EFFECTIVE_DATE_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(7).textContent).contains(COVERAGE_CANCELLATION_DATE_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(8).textContent).contains(HOME_ADDRESS_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(9).textContent).contains(CITY_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(10).textContent).contains(PROVINCE_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(11).textContent).contains(POSTAL_CODE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(0).textContent).contains(GROUPNUMBER_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(1).textContent).contains(IMMIGRATION_CODE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(2).textContent).contains(PERMIT_ISSUE_DATE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(4).textContent).contains(PERMIT_EXPIRY_DATE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(5).textContent).contains(RESIDENCE_DATE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(6).textContent).contains(COVERAGE_EFFECTIVE_DATE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(7).textContent).contains(COVERAGE_CANCELLATION_DATE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(8).textContent).contains(HOME_ADDRESS_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(9).textContent).contains(CITY_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(10).textContent).contains(PROVINCE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(11).textContent).contains(POSTAL_CODE_REQUIRED_MESSAGE)
 });
 
 test('Check properly filled form passes validation', async t => {
@@ -104,21 +105,19 @@ test('Check invalid field validation', async t => {
         // When I click the submit button
 		.click(AddVisaResidentWithPHNPage.submitButton)
         // I expect an error message stating the page had errors and an individual error message for the PHN format
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(0).textContent).contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(2).textContent).contains(INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(4).textContent).contains(INVALID_DEPARTMENT_NUMBER_VALIDATION_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.ErrorText.nth(8).textContent).contains(PHONE_NUMBER_VALIDATION_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(0).textContent).contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(2).textContent).contains(INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(4).textContent).contains(INVALID_DEPARTMENT_NUMBER_VALIDATION_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(8).textContent).contains(PHONE_NUMBER_VALIDATION_MESSAGE)
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
 
 });
 
 
-test('Check cancel button clears the form', async t => {	  
+test('Check clear button clears the form', async t => {	  
     await t
     .typeText(PersonDetails.phnInput, '9882807277')
     .click(PersonDetails.submitButton)
-        .wait(1000)
-        .setTestSpeed(.02)
         // Given the page is filled out correctly
         .typeText(AddVisaResidentWithPHNPage.groupNumberInput, '6337109')
         .click(AddVisaResidentWithPHNPage.immigrationCodeSelect)
@@ -138,8 +137,8 @@ test('Check cancel button clears the form', async t => {
         .click(AddVisaResidentWithPHNPage.priorResidenceCodeInput)
         .click(priorResidenceCodeOption.withText('British Columbia'))
     
-        // When I click the cancel button
-		.click(AddVisaResidentWithPHNPage.cancelButton)
+        // When I click the clear button
+		.click(AddVisaResidentWithPHNPage.clearButton)
         // I expect the form to be cleared
         .expect(AddVisaResidentWithPHNPage.groupNumberInput.value).eql('')
         .expect(AddVisaResidentWithPHNPage.immigrationCodeSelect.value).eql('')

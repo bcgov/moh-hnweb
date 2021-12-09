@@ -41,10 +41,7 @@ public class WebClientConfig {
 
 	@Value("${R50.url}")
 	private String r50Url;
-	
-	@Value("${R03.url}")
-	private String r03Url;
-	 
+		 
 	@Value("${R50.user.name}")
 	private String userName;
 
@@ -54,14 +51,17 @@ public class WebClientConfig {
 	@Value("classpath:${R50.cert.file}")
 	private Resource certFile;
 	
-	@Value("classpath:${R03.cert.file}")
-	private Resource r03CertFile;
-
 	@Value("${R50.cert.password}")
 	private String certPassword;
+
+	@Value("${hcim.url}")
+	private String hcimUrl;
 	
-	@Value("${R03.cert.password}")
-	private String r03CertPassword;
+	@Value("classpath:${hcim.cert.file}")
+	private Resource hcimCertFile;
+
+	@Value("${hcim.cert.password}")
+	private String hcimCertPassword;
 	
 	@Value("${rapid.url}")
 	private String rapidUrl;
@@ -97,21 +97,21 @@ public class WebClientConfig {
     }
 	
 	@Bean("hcimWebClient")
-	   public WebClient hcimWebClient() throws HNWebException {
+    public WebClient hcimWebClient() throws HNWebException {
 
-			SslContext sslContext = getSSLContext(r03Url, r03CertFile, r03CertPassword);
-			
-		    HttpClient httpClient= HttpClient.create().secure(t -> t.sslContext(sslContext));
-			ClientHttpConnector connector= new ReactorClientHttpConnector(httpClient);
-		    
-			return WebClient.builder()
-		    		.clientConnector(connector)
-		    		.baseUrl(r03Url)
-	                .filter(logRequest())
-	                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_XML_VALUE) 
-	                .defaultHeader(HttpHeaders.ACCEPT, MediaType.ALL_VALUE) 	             
-	                .build();
-	    }
+		SslContext sslContext = getSSLContext(hcimUrl, hcimCertFile, hcimCertPassword);
+		
+	    HttpClient httpClient= HttpClient.create().secure(t -> t.sslContext(sslContext));
+		ClientHttpConnector connector= new ReactorClientHttpConnector(httpClient);
+	    
+		return WebClient.builder()
+	    		.clientConnector(connector)
+                .baseUrl(hcimUrl)
+                .filter(logRequest())
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_XML_VALUE) 
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.ALL_VALUE) 
+                .build();
+    }
 
 	@Bean("rapidWebClient")
     public WebClient rapidWebClient() throws HNWebException {

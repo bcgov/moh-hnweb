@@ -1,6 +1,7 @@
 package ca.bc.gov.hlth.hnweb.service;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 import ca.bc.gov.hlth.hnweb.exception.ExceptionType;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
+import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
+import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
+import ca.bc.gov.hlth.hnweb.model.v3.MessageMetaData;
+import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
+import ca.bc.gov.hlth.hnweb.security.UserInfo;
+import ca.bc.gov.hlth.hnweb.serialization.HL7Config;
+import ca.bc.gov.hlth.hnweb.serialization.HL7Serializer;
+import ca.bc.gov.hlth.hnweb.util.V3MessageUtil;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.parser.Parser;
@@ -26,8 +35,12 @@ import ca.uhn.hl7v2.parser.Parser;
 public class EnrollmentService {
 
 	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(EnrollmentService.class);
-
+	private static final String SOURCE_SYSTEM_OVERRIDE = "MOH_CRS";
+	private static final String ORGANIZATION = "MOH_CRS";
 	public static final String TRANSACTION_ID = "TransactionID";
+	
+	protected HL7Serializer hl7Serializer;
+	protected MessageMetaData mmd;
 
 	@Autowired
 	private Parser parser;
@@ -49,10 +62,10 @@ public class EnrollmentService {
 	 * @throws HL7Exception
 	 * @throws IOException
 	 */
-	public Message enrollSubscriber(R50 r50, String transactionId) throws HNWebException, HL7Exception{
-		
+	public Message enrollSubscriber(R50 r50) throws HNWebException, HL7Exception{
+		String transactionId = UUID.randomUUID().toString();
 		logger.debug("Enroll subscriber for Message ID [{}]; Transaction ID [{}]", r50.getMSH().getMsh10_MessageControlID(), transactionId);
-
+		
 		String r50v2 = encodeR50ToV2(r50);		
 		String r50v2RequiredFormat = formatMessage(r50v2);
 		logger.debug("Updated V2 message:\n{}", r50v2RequiredFormat);
@@ -72,13 +85,25 @@ public class EnrollmentService {
 	 
 	 /**
 	 * Gets the demographic details by sending a V3 message to external endpoint.
-	 * @param xmlString
+	 * Calls HL7Serializer api to serialize and deserialize request/response
+	 * @param demographicsRequest
 	 * @param transactionId
 	 * @return
 	 * @throws HNWebException
 	 */
-	public ResponseEntity<String> getDemographics(String xmlString, String transactionId)
+	public GetDemographicsResponse getDemographics(GetDemographicsRequest demographicsRequest)
 	      throws HNWebException {
+		String transactionId = UUID.randomUUID().toString();
+		
+		hl7Serializer = new HL7Serializer(new HL7Config());
+		UserInfo userInfo = SecurityUtil.loadUserInfo();
+		mmd = new MessageMetaData(userInfo.getUsername(), SOURCE_SYSTEM_OVERRIDE, ORGANIZATION, transactionId);
+		
+		//Serialize request object
+		Object formattedRequest = hl7Serializer.toXml(demographicsRequest, mmd);
+		//Create soap wrapper
+		String xmlString = V3MessageUtil.wrap(formattedRequest.toString());
+		logger.debug("Get Demographics wrapped xml request[{}]", xmlString);
 		  
 	    ResponseEntity<String> response = postDemographicRequest(xmlString, transactionId); 
 	    logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
@@ -87,8 +112,10 @@ public class EnrollmentService {
 			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
 			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
 		}
+		//De-Serialize demographics response
+		GetDemographicsResponse getDemographicsResponse = hl7Serializer.fromXml(response.getBody(), GetDemographicsResponse.class);
 	    
-	    return response;
+	    return getDemographicsResponse;
 	
 	 
 	 }

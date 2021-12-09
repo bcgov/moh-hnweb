@@ -28,10 +28,10 @@ class AddVisaResidentWithPHN {
         this.priorResidenceCodeInput = Selector('#priorResidenceCode');
         this.otherProvinceHealthcareNumberInput = Selector('#otherProvinceHealthcareNumber');
 
-        this.ErrorText = Selector('div').withAttribute('class','error-text');
+        this.errorText = Selector('div').withAttribute('class','error-text');
 
         this.submitButton = Selector('button[type="submit"]');
-        this.cancelButton = Selector('button[type="button"]');
+        this.clearButton = Selector('button[type="button"]');
         
     }
 }

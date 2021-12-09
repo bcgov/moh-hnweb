@@ -24,7 +24,7 @@ import ca.uhn.hl7v2.model.v24.segment.PID;
 public abstract class BaseConverter {
 	protected static final String PID_NAMESPACE_ID = "BC";
 	protected static final String PID_ID_TYPE_CODE = "PH";
-	private static final String ZIH_COVERAGE_CAN_REASON = "D";
+	
 
 	protected static DateTimeFormatter dateOnlyFormatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_FORMAT_DATE_ONLY);
 	
@@ -59,31 +59,18 @@ public abstract class BaseConverter {
 		V2MessageUtil.setPidValues(pid, phn, PID_NAMESPACE_ID, PID_ID_TYPE_CODE, "", "", "");
 	}
 	
+	protected void populatePID(PID pid, String phn, LocalDate dateOfBirth, String gender) throws HL7Exception {
+		V2MessageUtil.setPidValues(pid, phn, PID_NAMESPACE_ID, PID_ID_TYPE_CODE, "", dateOnlyFormatter.format(dateOfBirth), gender);
+	}
+	
+	protected void populateIN1(IN1 in1, LocalDate planEffectiveDate) throws HL7Exception {
+		V2MessageUtil.setIn1Values(in1, null, null, null, dateOnlyFormatter.format(planEffectiveDate), null);
+	}
+	
 	protected void populateIN1(IN1 in1, LocalDate planEffectiveDate, LocalDate planCancellationDate, String groupNumber, String groupMemebrNumber, String immigrationCode ) throws HL7Exception {
 		V2MessageUtil.setIn1Values(in1, groupNumber, groupMemebrNumber, immigrationCode, dateOnlyFormatter.format(planEffectiveDate), dateOnlyFormatter.format(planCancellationDate));
 	}
 	
-	protected void populateZIA(ZIA zia, LocalDate bcResidencyDate, String surname, String firstGivenName, String secondGivenName, String telephone, String immigrationOrVisaCode, String priorResidenceCode) throws HL7Exception {
-		
-		V2MessageUtil.setZiaValues(zia, dateOnlyFormatter.format(bcResidencyDate), surname, firstGivenName, secondGivenName, telephone, immigrationOrVisaCode, priorResidenceCode);
-	}
 	
-	protected void populateZIAExtendedAddress1(ZIA zia, String addressLine1, String addressLine2, String addressLine3, String city, String province, String postalCode) throws HL7Exception {
-		
-		V2MessageUtil.setZiaExtendedAddrees1(zia, addressLine1, addressLine2, addressLine3, city, province, postalCode);
-	}
-	
-	protected void populateZIAExtendedAddress2(ZIA zia, String addressLine1, String addressLine2, String addressLine3, String city, String province, String postalCode) throws HL7Exception {
-		
-		V2MessageUtil.setZiaExtendedAddrees2(zia, addressLine1, addressLine2, addressLine3, city, province, postalCode);
-	}
-	
-	protected void populateZIH(ZIH zih) throws HL7Exception {
-		V2MessageUtil.setZihValues(zih, ZIH_COVERAGE_CAN_REASON);
-	}
-	
-	protected void populateZIK(ZIK zik, LocalDate documentArgumentValue1, LocalDate documentArgumentValue2) throws HL7Exception {
-		V2MessageUtil.setZikValues(zik, dateOnlyFormatter.format(documentArgumentValue1), dateOnlyFormatter.format(documentArgumentValue2));
-	}
 	
 }

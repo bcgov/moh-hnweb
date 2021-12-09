@@ -5,87 +5,95 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
- * Request message for API call to enroll a subscriber 
+ * Request message for API call to enroll a subscriber
  *
  */
 public class EnrollSubscriberRequest {
-	
+
 	private String phn;
-	
+
 	private String surname;
-	
+
 	private String givenName;
-	
+
 	private String secondName;
-		
+
 	private String gender;
-	
+
 	private String groupNumber;
-	
+
 	private String immigrationCode;
-	
+
 	private String groupMemberNumber;
-	
-	@JsonFormat(pattern="yyyyMMdd")
+
+	@JsonFormat(pattern = "yyyyMMdd")
 	private LocalDate dateOfBirth;
-	
-	@JsonFormat(pattern="yyyy-MM-dd")
+
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate visaIssueDate;
-	
+
 	private String departmentNumber;
-	
-	@JsonFormat(pattern="yyyy-MM-dd")
+
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate visaExpiryDate;
-	
-	@JsonFormat(pattern="yyyy-MM-dd")
+
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate residenceDate;
-	
-	@JsonFormat(pattern="yyyy-MM-dd")
+
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate coverageEffectiveDate;
-	
+
 	private String telephone;
-	
-	@JsonFormat(pattern="yyyy-MM-dd")
+
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate coverageCancellationDate;
-	
+
 	private String address1;
-	
+
 	private String address2;
-	
+
 	private String address3;
-	
+
 	private String city;
-	
+
 	private String province;
-	
+
 	private String country;
-	
+
 	private String postalCode;
-	
+
 	private String mailingAddress1;
-	
+
 	private String mailingAddress2;
-	
+
 	private String mailingAddress3;
-	
+
 	private String mailingAddressCity;
-	
+
 	private String mailingAddressProvince;
-	
+
 	private String mailingAddressCountry;
-	
+
 	private String mailingAddressPostalCode;
-	
+
 	private String priorResidenceCode;
-	
+
 	private String otherProvinceHealthcareNumber;
-	
+
 	public String getPhn() {
 		return phn;
 	}
 
 	public void setPhn(String phn) {
 		this.phn = phn;
+	}
+
+	public String getSurname() {
+		return surname;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
 	}
 
 	public String getGender() {
@@ -102,14 +110,6 @@ public class EnrollSubscriberRequest {
 
 	public void setGroupNumber(String groupnumber) {
 		this.groupNumber = groupnumber;
-	}
-
-	public String getSurname() {
-		return surname;
-	}
-
-	public void setSurname(String familyName) {
-		this.surname = familyName;
 	}
 
 	public String getGivenName() {
