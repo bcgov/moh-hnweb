@@ -14,9 +14,9 @@
 </template>
 
 <script>
-import AppCol from '../../../components/grid/AppCol.vue'
-import AppRow from '../../../components/grid/AppRow.vue'
-import AppOutput from '../../../components/AppOutput.vue'
+import AppCol from '../../grid/AppCol.vue'
+import AppRow from '../../grid/AppRow.vue'
+import AppOutput from '../../AppOutput.vue'
 import { formatPersonName } from '../../../util/utils'
 
 export default {

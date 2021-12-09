@@ -52,7 +52,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col4">
-          <AppInput :e-model="v$.telephone" id="telephone" label="Telephone (Optional)" type="text" v-model.trim="telephone" placeholder="1234567890"/>
+          <AppInput :e-model="v$.telephone" id="telephone" label="Telephone (Optional)" type="text" v-model.trim="telephone" placeholder="1234567890" />
         </AppCol>
         <AppCol class="col4">
           <AppDateInput :e-model="v$.coverageCancellationDate" id="coverageCancellationDate" label="Coverage Cancellation Date" v-model="coverageCancellationDate" />
@@ -124,13 +124,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col4">
-          <AppInput
-            :e-model="v$.otherProvinceHealthcareNumber"
-            id="otherProvinceHealthcareNumber"
-            label="Other Province Healthcare Number (If Applicable) (Optional)"
-            type="text"
-            v-model.trim="otherProvinceHealthcareNumber"
-          />
+          <AppInput :e-model="v$.otherProvinceHealthcareNumber" id="otherProvinceHealthcareNumber" label="Other Province Healthcare Number (If Applicable) (Optional)" type="text" v-model.trim="otherProvinceHealthcareNumber" />
         </AppCol>
       </AppRow>
 
@@ -142,24 +136,15 @@
   </div>
 </template>
 <script>
-import AppButton from '../../../components/AppButton.vue'
-import AppCol from '../../../components/grid/AppCol.vue'
-import AppDateInput from '../../../components/AppDateInput.vue'
-import AppInput from '../../../components/AppInput.vue'
-import AppRow from '../../../components/grid/AppRow.vue'
-import AppOutput from '../../../components/AppOutput.vue'
-import AppSelect from '../../../components/AppSelect.vue'
+import AppButton from '../../AppButton.vue'
+import AppCol from '../../grid/AppCol.vue'
+import AppDateInput from '../../AppDateInput.vue'
+import AppInput from '../../AppInput.vue'
+import AppRow from '../../grid/AppRow.vue'
+import AppOutput from '../../AppOutput.vue'
+import AppSelect from '../../AppSelect.vue'
 import useVuelidate from '@vuelidate/core'
-import {
-  validateGroupNumber,
-  validateGroupMemberNumber,
-  validateDepartmentNumber,
-  validateTelephone,
-  VALIDATE_GROUP_NUMBER_MESSAGE,
-  VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE,
-  VALIDATE_DEPARTMENT_NUMBER_MESSAGE,
-  VALIDATE_TELEPHONE_MESSAGE,
-} from '../../../util/validators'
+import { validateGroupNumber, validateGroupMemberNumber, validateDepartmentNumber, validateTelephone, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT } from '../../../util/constants'
@@ -271,12 +256,13 @@ export default {
     async registerVisaResident() {
       this.searching = true
       try {
-        const isValid = await this.v$.$validate()
-        if (!isValid) {
-          this.$store.commit('alert/setErrorAlert')
-          this.searching = false
-          return
-        }
+        const isValid = true
+        // await this.v$.$validate()
+        // if (!isValid) {
+        //   this.$store.commit('alert/setErrorAlert')
+        //   this.searching = false
+        //   return
+        // }
         this.$emit('register-resident', {
           groupNumber: this.groupNumber,
           immigrationCode: this.immigrationCode,

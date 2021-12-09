@@ -10,9 +10,9 @@ import AppRow from '../../../components/grid/AppRow.vue'
 import AppOutput from '../../../components/AppOutput.vue'
 import EnrollmentService from '../../../services/EnrollmentService'
 import { formatPersonName } from '../../../util/utils'
-import ResidentPHN from './ResidentPHN.vue'
-import ResidentDetails from './ResidentDetails.vue'
-import RegistrationConfirmation from './RegistrationConfirmation.vue'
+import ResidentPHN from '../../../components/coverage/enrollment/ResidentPHN.vue'
+import ResidentDetails from '../../../components/coverage/enrollment/ResidentDetails.vue'
+import RegistrationConfirmation from '../../../components/coverage/enrollment/RegistrationConfirmation.vue'
 
 export default {
   name: 'AddVisaResidentWithPHN',

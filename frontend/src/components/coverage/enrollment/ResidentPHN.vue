@@ -15,10 +15,10 @@
 </template>
 
 <script>
-import AppButton from '../../../components/AppButton.vue'
-import AppCol from '../../../components/grid/AppCol.vue'
-import AppRow from '../../../components/grid/AppRow.vue'
-import AppInput from '../../../components/AppInput.vue'
+import AppButton from '../../AppButton.vue'
+import AppCol from '../../grid/AppCol.vue'
+import AppRow from '../../grid/AppRow.vue'
+import AppInput from '../../AppInput.vue'
 import useVuelidate from '@vuelidate/core'
 import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
