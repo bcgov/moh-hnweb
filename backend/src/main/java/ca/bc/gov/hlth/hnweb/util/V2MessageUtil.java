@@ -47,6 +47,8 @@ public class V2MessageUtil {
 
 	private static final String RCP_QUERY_PRIORITY = "I";
 	
+	private static final String SFT_SOFTWARE_VERSION_NUMBER = "1.0";
+	
 	private static final String ORGANIZATION_FORMAT = "^^%s^^^CANBC^XX^MOH";
 
 	public enum MessageType {
@@ -241,17 +243,10 @@ public class V2MessageUtil {
 	 * @param softwareProductName
 	 * @throws HL7Exception
 	 */
-	public static void setSftValues(SFT sft, String standardVersionNumber, 
-			String softwareVendorOrganizationOrganizationName, String softwareVendorOrganizationIDNumber, String softwareVendorOrganizationAssigningAuthority, 
-			String softwareVersionNumber, String softwareProductName) throws HL7Exception {
+	public static void setSftValues(SFT sft) throws HL7Exception {
 		// e.g. SFT|1.0||testorg^^orgid^^^MOH|1.0|barebones||
-		
-		sft.getSFT1_StandardVersionNumber().parse(standardVersionNumber);
-		sft.getSFT3_SoftwareVendorOrganization().getXon1_OrganizationName().parse(softwareVendorOrganizationOrganizationName);
-		sft.getSFT3_SoftwareVendorOrganization().getXon3_IDNumber().parse(softwareVendorOrganizationIDNumber);
-		sft.getSFT3_SoftwareVendorOrganization().getXon6_AssigningAuthority().parse(softwareVendorOrganizationAssigningAuthority);
-		sft.getSFT4_SoftwareVersionNumber().parse(softwareVersionNumber);
-		sft.getSFT5_SoftwareProductName().parse(softwareProductName);		
+		// For E45 only SFT-4 is supported
+		sft.getSFT4_SoftwareVersionNumber().parse(SFT_SOFTWARE_VERSION_NUMBER);		
 	}
 
 	/**
@@ -291,13 +286,13 @@ public class V2MessageUtil {
 		// Build the repeating Coverage Inquiry Code field entries
 		qpd.getQpd16_CoverageInquiryCode(0).parse(QPD_COVERAGE_INQUIRY_ENDRSN);
 		qpd.getQpd16_CoverageInquiryCode(1).parse(QPD_COVERAGE_INQUIRY_CCARD);
-		if (checkSubsidyInsuredService) {
+		if (Boolean.TRUE.equals(checkSubsidyInsuredService)) {
 			qpd.getQpd16_CoverageInquiryCode(2).parse(QPD_COVERAGE_INQUIRY_PVC);
 		}
-		if (checkLastEyeExam) {
+		if (Boolean.TRUE.equals(checkLastEyeExam)) {
 			qpd.getQpd16_CoverageInquiryCode(qpd.getCoverageInquiryCodeReps()).parse(QPD_COVERAGE_INQUIRY_EYE);
 		}
-		if (checkPatientRestriction) {
+		if (Boolean.TRUE.equals(checkPatientRestriction)) {
 			qpd.getQpd16_CoverageInquiryCode(qpd.getCoverageInquiryCodeReps()).parse(QPD_COVERAGE_INQUIRY_PRS);
 		}
 		

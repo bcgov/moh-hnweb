@@ -47,7 +47,7 @@
         <AppOutput label="Birth Date" :value="result.dateOfBirth"/>
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Gender" :value="result.gender"/>
+        <AppOutput label="Gender" :value="gender"/>
       </AppCol>
     </AppRow>
     <AppRow>
@@ -55,35 +55,35 @@
         <AppOutput label="Date Of Service" :value="result.dateOfService"/>
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Eligible on Date of Service?" :value="result.eligibleOnDateOfService"/>
+        <AppOutput label="Eligible on Date of Service?" :value="eligibleOnDateOfService"/>
       </AppCol>
       <AppCol class="col3">
         <AppOutput label="Coverage End Date" :value="result.coverageEndDate"/>
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Coverage End Reason" :value="coverageEndReasonText"/>
+        <AppOutput label="Coverage End Reason" :value="coverageEndReason"/>
       </AppCol>
     </AppRow>    
     <br/>
     <AppCard v-if="isPatientStatusRequest">
-      <AppRow class="row" v-if="checkSubsidyInsuredService">      
+      <AppRow class="row" v-if="result.subsidyInsuredService">      
         <AppCol class="col12">
           <p>
-            <label>Subsidy Insured Service: </label>{{ subsidyInsuredServiceText }}
+            <label>Subsidy Insured Service: </label>{{ subsidyInsuredService }}
           </p>
         </AppCol>    
       </AppRow>
-      <AppRow class="row" v-if="checkLastEyeExam">  
+      <AppRow class="row" v-if="result.dateOfLastEyeExamination">  
         <AppCol class="col12">
           <p>
-            <label>Date of Last Eye Examination: </label>{{dateOfLastEyeExaminationText}}
+            <label>Date of Last Eye Examination: </label>{{ dateOfLastEyeExamination }}
           </p>
         </AppCol>
       </AppRow>
-      <AppRow class="row" v-if="checkPatientRestriction">      
+      <AppRow class="row" v-if="result.patientRestriction">      
         <AppCol class="col12">
           <p>
-            <label>Patient Restriction: </label>{{patientRestrictioText}}
+            <label>Patient Restriction: </label>{{ patientRestriction }}
           </p>
         </AppCol>               
       </AppRow>
@@ -167,21 +167,59 @@ export default {
       }
       return name
     },
-    coverageEndReasonText() {
-      const reasonText = COVERAGE_END_REASONS.get(this.result.coverageEndReason)
-      return reasonText ? reasonText : this.result.coverageEndReason
-    },
     isPatientStatusRequest() {
       return this.result.subsidyInsuredService || this.result.dateOfLastEyeExamination || this.result.patientRestriction
     },
-    subsidyInsuredServiceText() {
-      return this.result.subsidyInsuredService === 'N' ? 'THIS IS NOT AN INSURED BENEFIT' : this.result.subsidyInsuredService
+    coverageEndReason() {
+      const reasonText = COVERAGE_END_REASONS.get(this.result.coverageEndReason)
+      return reasonText ? reasonText : this.result.coverageEndReason
     },
-    dateOfLastEyeExaminationText() {
-      return this.result.dateOfLastEyeExamination === '' ? 'MSP HAS NOT PAID FOR AN EYE EXAM FOR THIS PHN IN THE LAST 24 MTHS FROM TODAY\'S DATE' : this.result.dateOfLastEyeExamination
+    eligibleOnDateOfService() {
+      return this.result.eligibleOnDateOfService === 'Y' ? 'YES' : 'NO'
     },
-    patientRestrictionText() {
-      return this.result.patientRestriction === 'N' ? 'NO RESTRICTION' : this.result.patientRestriction
+    gender() {
+      switch (this.result.gender) {
+        case 'M':
+          return 'MALE'
+        case 'F':
+          return 'FEMALE'
+        case 'U':
+          return 'UNKNOWN'
+        default:
+          return this.result.gender
+      }
+    },
+    subsidyInsuredService() {
+      switch (this.result.subsidyInsuredService) {
+        case 'Y':
+          return 'THIS IS AN INSURED BENEFIT'
+        case 'N':
+          return 'THIS IS NOT AN INSURED BENEFIT'
+        default:
+          return `SERVICES PD TO DATE - ${this.result.subsidyInsuredService}`
+      }
+    },
+    dateOfLastEyeExamination() {
+      switch (this.result.dateOfLastEyeExamination) {
+        case 'N':
+          return 'MSP HAS NOT PAID FOR AN EYE EXAM FOR THIS PHN IN THE LAST 24 MTHS FROM TODAY\'S DATE'
+        case 'ERROR':
+          return 'EYE SYSTEM UNAVAILABLE'
+        default:
+          return this.result.dateOfLastEyeExamination
+      }
+    },
+    patientRestriction() {
+      switch (this.result.patientRestriction) {
+        case 'Y':
+          return 'SEE MSP BULLETIN'
+        case 'N':
+          return 'NO RESTRICTION' 
+        case 'ERROR':
+          return 'UNAVAILABLE - CONTACT MSP'
+        default:
+          return this.result.patientRestriction
+      }
     }
   },
   methods: {

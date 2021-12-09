@@ -135,10 +135,10 @@ public class V2MessageUtilTest {
 		//Create an E45 message  
     	E45 e45 = new E45();
 		
-    	V2MessageUtil.setSftValues(e45.getSFT(), "1.0", "testorg", "101", "MOH", "1.0", "barebones");		
+    	V2MessageUtil.setSftValues(e45.getSFT());		
     	SFT sft = e45.getSFT();		
 		String encoded = parser.doEncode(sft, EncodingCharacters.getInstance(e45));		
-		assertEquals("SFT|1.0||testorg^^101^^^MOH|1.0|barebones", encoded);
+		assertEquals("SFT||||1.0", encoded);
 	}	
 
 	@Test

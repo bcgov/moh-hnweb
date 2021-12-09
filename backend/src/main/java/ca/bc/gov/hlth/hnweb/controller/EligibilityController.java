@@ -1,18 +1,7 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
-import static ca.bc.gov.hlth.hnweb.util.V2MessageUtil.SegmentType.ADJ;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +17,8 @@ import org.springframework.web.server.ResponseStatusException;
 import ca.bc.gov.hlth.hnweb.converter.E45Converter;
 import ca.bc.gov.hlth.hnweb.converter.MSHDefaults;
 import ca.bc.gov.hlth.hnweb.converter.R15Converter;
-import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPPE0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.R42Converter;
+import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPPE0Converter;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
@@ -44,15 +33,7 @@ import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPL0;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
 import ca.bc.gov.hlth.hnweb.service.EligibilityService;
-import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
-import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
-import ca.uhn.hl7v2.model.Segment;
-import ca.uhn.hl7v2.model.Varies;
-import ca.uhn.hl7v2.model.v24.datatype.CE;
-import ca.uhn.hl7v2.model.v24.datatype.ELD;
-import ca.uhn.hl7v2.model.v24.segment.ERR;
-import ca.uhn.hl7v2.util.Terser;
 
 /**
  * Handle requests related to Eligibility
@@ -63,9 +44,6 @@ import ca.uhn.hl7v2.util.Terser;
 public class EligibilityController {
 
 	private static final Logger logger = LoggerFactory.getLogger(EligibilityController.class);
-
-	@Deprecated
-	private static final String DATE_FORMAT_yyyyMMdd = "yyyyMMdd";
 
 	@Autowired
 	private EligibilityService eligibilityService;
@@ -155,7 +133,7 @@ public class EligibilityController {
 	}
 
 	@PostMapping("/check-msp-coverage-status")
-	public ResponseEntity<CheckMspCoverageStatusResponse> checkMspCoverageStatus(@Valid @RequestBody CheckMspCoverageStatusRequest checkMspCoverageStatusRequest) throws HL7Exception {
+	public ResponseEntity<CheckMspCoverageStatusResponse> checkMspCoverageStatus(@Valid @RequestBody CheckMspCoverageStatusRequest checkMspCoverageStatusRequest) {
 		
 		try {
 			E45Converter converter = new E45Converter(mshDefaults);
@@ -163,7 +141,7 @@ public class EligibilityController {
 			Message e45Response = eligibilityService.checkMspCoverageStatus(e45);
 			
 			CheckMspCoverageStatusResponse coverageResponse = converter.convertResponse(e45Response);
-			
+
 			ResponseEntity<CheckMspCoverageStatusResponse> response = ResponseEntity.ok(coverageResponse);
 
 			logger.info("checkEligibility response: {} ", coverageResponse);
@@ -183,4 +161,3 @@ public class EligibilityController {
 	}
 
 }
-

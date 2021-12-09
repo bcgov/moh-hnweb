@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ca.bc.gov.hlth.hnweb.model.BaseResponse;
 import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusResponse;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
@@ -95,7 +96,7 @@ public class E45Converter extends BaseConverter {
 	}
 	
 	private void populateSFT(SFT sft) throws HL7Exception {
-		V2MessageUtil.setSftValues(sft, "1.0", "testorg", "101", "MOH", "1.0", "barebones");
+		V2MessageUtil.setSftValues(sft);
 	}
 
 	private void populateQPD(QPD qpd, LocalDate dateOfBirth, LocalDate dateOfService, Boolean checkSubsidyInsuredService, 
@@ -120,7 +121,7 @@ public class E45Converter extends BaseConverter {
     	checkMspCoverageStatusResponse.setSecondName(secondName);
     	checkMspCoverageStatusResponse.setDateOfBirth(dateOfBirth);
     	checkMspCoverageStatusResponse.setGender(gender);
-    	checkMspCoverageStatusResponse.setDateOfService(dateOfService);    	
+    	checkMspCoverageStatusResponse.setDateOfService(dateOnlyFormatter.format(dateOfService));    	
 
     	// e.g. IN1|||00000754^^^CANBC^XX^MOH||||||||||||||||||||||Y
     	String planExpirationDate = terser.get("/.IN1-13-1");
@@ -167,7 +168,9 @@ public class E45Converter extends BaseConverter {
 					checkMspCoverageStatusResponse.setSubsidyInsuredService(adjustmentDescription);
 					break;
 				case ADJ_ID_EYE:
-					checkMspCoverageStatusResponse.setDateOfLastEyeExamination(adjustmentDescription);
+					// Unlike PVC and PRS, the V2 returns an empty segment if there is no date. That makes it difficult to determine if the value
+					// was not requested or not provided in the response. Substitute "N" instead and handle in the UI
+					checkMspCoverageStatusResponse.setDateOfLastEyeExamination(StringUtils.isNotBlank(adjustmentDescription) ? adjustmentDescription : "N");
 					break;
 				case ADJ_ID_PRS:
 					checkMspCoverageStatusResponse.setPatientRestriction(adjustmentDescription);
@@ -181,7 +184,7 @@ public class E45Converter extends BaseConverter {
 		});	
 	}
 	
-	private void mapErrorValues(Terser terser, Message message, CheckMspCoverageStatusResponse checkMspCoverageStatusResponse) throws HL7Exception {
+	private void mapErrorValues(Terser terser, Message message, BaseResponse response) throws HL7Exception {
 		/**
 		 * When checking for an error the MSA segment needs to be checked as even a success message has an ERR segment e.g.
 		 * 
@@ -210,8 +213,8 @@ public class E45Converter extends BaseConverter {
 			logger.warn("Error acknowledgement code {} received in the response.", msaAcknowledgementCode);
 			logger.warn("Error returned in E45 response was Error Code: {} ; Error Message: {}", statusCode, statusText);			
 		}
-		checkMspCoverageStatusResponse.setMessage(statusText);
-		checkMspCoverageStatusResponse.setStatus(status);
+		response.setMessage(statusText);
+		response.setStatus(status);
 	}
 
 }
