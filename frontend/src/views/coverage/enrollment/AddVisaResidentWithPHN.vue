@@ -1,18 +1,7 @@
 <template>
   <ResidentPHN v-if="isPhnSearch" @update-resident="updateResident" />
   <ResidentDetails v-else-if="isStudentRegistration" :resident="this.getPersonDetailsResult?.person" @register-resident="registerResident" />
-  <div v-else-if="isConfirmation">
-    <AppRow>
-      <AppCol class="col3">
-        <AppOutput label="PHN" :value="this.getPersonDetailsResult?.person.phn" />
-      </AppCol>
-    </AppRow>
-    <AppRow>
-      <AppCol>
-        <AppOutput label="Name" :value="fullName" />
-      </AppCol>
-    </AppRow>
-  </div>
+  <RegistrationConfirmation v-else-if="isConfirmation" :resident="this.getPersonDetailsResult?.person" />
 </template>
 
 <script>
@@ -23,6 +12,7 @@ import EnrollmentService from '../../../services/EnrollmentService'
 import { formatPersonName } from '../../../util/utils'
 import ResidentPHN from './ResidentPHN.vue'
 import ResidentDetails from './ResidentDetails.vue'
+import RegistrationConfirmation from './RegistrationConfirmation.vue'
 
 export default {
   name: 'AddVisaResidentWithPHN',
@@ -32,6 +22,7 @@ export default {
     AppOutput,
     ResidentPHN,
     ResidentDetails,
+    RegistrationConfirmation,
   },
   setup() {
     return {}
