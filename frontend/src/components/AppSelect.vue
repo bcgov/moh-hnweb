@@ -3,15 +3,16 @@ import AppInputError from './AppInputError.vue'
 </script>
 
 <template>
-  <div class="text_label">
-    <label>{{ label }}</label>
-  </div>
+  <label class="bc-gov-dropdown-label">{{ label }}</label>
 
-  <select :class="inputClass" :value="modelValue" @change="$emit('update:modelValue', $event.target.value)" v-bind="$attrs">
-    <option v-for="option in options" v-bind:key="option.value" v-bind:value="option.value">
-      {{ option.text }}
-    </option>
-  </select>
+  <div class="bc-gov-dropdown-wrapper">
+    <i class="fas fa-chevron-down"></i>
+    <select :class="dropdownClass" :value="modelValue" @change="$emit('update:modelValue', $event.target.value)" v-bind="$attrs">
+      <option v-for="option in options" v-bind:key="option.value" v-bind:value="option.value">
+        {{ option.text }}
+      </option>
+    </select>
+  </div>
 
   <AppInputError :e-model="eModel" :label="label" />
 </template>
@@ -26,9 +27,9 @@ export default {
     options: Object,
   },
   computed: {
-    inputClass() {
+    dropdownClass() {
       return {
-        text_input: true,
+        'bc-gov-dropdown': true,
         'error-input': this.eModel.$error,
       }
     },
@@ -37,29 +38,40 @@ export default {
 </script>
 
 <style scoped>
-.text_input {
-  font-family: 'BCSans', 'Noto Sans', Verdana, Arial, sans-serif;
+.bc-gov-dropdown-label {
+  margin-bottom: 10px;
+}
+
+.bc-gov-dropdown {
+  font-family: ‘BCSans’, ‘Noto Sans’, Verdana, Arial, sans-serif;
   font-size: 18px;
-}
-
-.text_input {
-  height: 34px;
+  color: #313132;
+  background: white;
+  box-shadow: none;
   border: 2px solid #606060;
-  margin-top: 5px;
-  margin-bottom: 15px;
-  border-radius: 4px;
-  padding: 5px 5px 5px 7px;
+  min-width: 200px;
+  padding: 8px 45px 8px 15px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
-.text_input[type='text']:focus {
-  outline: 2px solid #3b99fc;
+.fa-chevron-down {
+  pointer-events: none;
+  position: absolute;
+  top: calc(1em - 4px);
+  right: 1em;
+}
+
+.bc-gov-dropdown-wrapper {
+  position: relative;
+  display: inline;
+}
+
+:focus {
+  outline: 4px solid #3b99fc;
   outline-offset: 1px;
 }
-
-.text_label {
-  display: flex;
-}
-
 .error-input {
   border-color: #d8292f !important;
 }
