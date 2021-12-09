@@ -77,7 +77,6 @@ export default {
   },
   methods: {
     async updateResident(phn) {
-      console.log(`Resident: [PHN: ${phn}]`)
       try {
         const data = (await EnrollmentService.getPersonDetails({ phn: phn })).data
         this.getPersonDetailsResult = {
@@ -98,21 +97,15 @@ export default {
           return
         }
 
-        console.log(`Result: [PHN: ${this.getPersonDetailsResult?.person.phn}] [Name: ${this.getPersonDetailsResult?.person.givenName}] [DOB: ${this.getPersonDetailsResult?.person.dateOfBirth}]`)
-        if (this.getPersonDetailsResult?.status === 'success') {
-          console.log(`Success: ${this.getPersonDetailsResult?.message}`)
-        } else if (this.getPersonDetailsResult?.status === 'warning') {
+        if (this.getPersonDetailsResult?.status === 'warning') {
           this.$store.commit('alert/setWarningAlert', this.getPersonDetailsResult?.message)
         }
         this.pageAction = this.PAGE_ACTION.STUDENT_REGISTRATION
       } catch (err) {
-        console.log(`Error: ${err}`)
         this.$store.commit('alert/setErrorAlert', `${err}`)
       }
     },
     async registerResident(personDetails) {
-      console.log(`[Group Number: ${personDetails.groupNumber}]`)
-
       try {
         this.registrationResult = (
           await EnrollmentService.registerResident({
@@ -125,20 +118,18 @@ export default {
             ...personDetails,
           })
         ).data
+
         if (this.registrationResult?.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.registrationResult?.message)
           return
         }
-        console.log('Registration Result returned')
-        if (this.registrationResult?.status === 'success') {
-          console.log(`Success: ${this.registrationResult.message}`)
-        } else if (this.registrationResult?.status === 'warning') {
+
+        if (this.registrationResult?.status === 'warning') {
           this.$store.commit('alert/setWarningAlert', this.registrationResult?.message)
         }
         this.pageAction = this.PAGE_ACTION.CONFIRMATION
         this.$store.commit('alert/setSuccessAlert', 'Transaction Successful')
       } catch (err) {
-        console.log(`Error: ${err}`)
         this.$store.commit('alert/setErrorAlert', `${err}`)
       }
     },

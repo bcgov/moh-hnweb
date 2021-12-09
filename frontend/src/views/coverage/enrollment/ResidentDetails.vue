@@ -269,7 +269,6 @@ export default {
   },
   methods: {
     async registerVisaResident() {
-      console.log('registerVisaResident')
       this.searching = true
       try {
         const isValid = await this.v$.$validate()

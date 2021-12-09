@@ -111,7 +111,6 @@ export function validateDepartmentNumber(departmentNumber) {
  * Validate that input is allowed length and that it contains no invalid characters
  */
 function validateSpecialChars(input, length) {
-  console.log(`validateSpecialChars [input ${input}] [length ${length}]`)
   if (input.length > length) {
     return false
   }
@@ -126,7 +125,6 @@ function validateSpecialChars(input, length) {
  * Validates that the input is an integer number of the specified length.
  */
 function validateNumber(input, length) {
-  console.log('validateNumber')
   if (input.length != length) {
     return false
   }
@@ -144,7 +142,6 @@ function validateNumber(input, length) {
 }
 
 function validateMod10(input) {
-  console.log('validateMod10')
 	const numDigits = input.length
 	let sum = 0
 	let tmpDigit = 0

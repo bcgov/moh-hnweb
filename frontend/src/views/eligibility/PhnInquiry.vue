@@ -128,7 +128,6 @@ export default {
           this.showError('At least one PHN is required')
           return
         }
-        console.log(populatedPHNs)
         this.result = (await EligibilityService.inquirePhn({phns: populatedPHNs})).data
 
         if (!this.result.errorMessage || this.result.errorMessage === '') {
