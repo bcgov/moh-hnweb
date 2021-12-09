@@ -24,9 +24,6 @@ export default {
     ResidentDetails,
     RegistrationConfirmation,
   },
-  setup() {
-    return {}
-  },
   data() {
     return {
       pageAction: null,
