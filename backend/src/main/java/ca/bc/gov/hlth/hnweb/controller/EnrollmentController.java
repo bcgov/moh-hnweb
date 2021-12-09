@@ -1,10 +1,5 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -19,16 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import ca.bc.gov.hlth.hnweb.converter.XmlConverter;
-import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.converter.MSHDefaults;
 import ca.bc.gov.hlth.hnweb.converter.R50Converter;
-import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
+import ca.bc.gov.hlth.hnweb.converter.XmlConverter;
+import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
-import ca.bc.gov.hlth.hnweb.model.R50Response;
+import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
-import ca.bc.gov.hlth.hnweb.model.PersonDetailsResponse;
+import ca.bc.gov.hlth.hnweb.model.R50Response;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
 import ca.bc.gov.hlth.hnweb.service.EnrollmentService;
 import ca.uhn.hl7v2.HL7Exception;
@@ -85,8 +79,8 @@ public class EnrollmentController {
 		}
 	}
 
-	@PostMapping("/person-details")
-	public ResponseEntity<PersonDetailsResponse> getDemographicDetails(
+	@PostMapping("/get-person-details")
+	public ResponseEntity<GetPersonDetailsResponse> getPersonDetails(
 			@Valid @RequestBody GetPersonDetailsRequest requestObj) {
 		logger.info("Demographic request: {} ", requestObj.getPhn());
 
@@ -97,8 +91,8 @@ public class EnrollmentController {
 			String xmlString = converter.convertRequest(requestObj.getPhn());
 
 			ResponseEntity<String> demoGraphicsResponse = enrollmentService.getDemographics(xmlString, transactionId);
-			PersonDetailsResponse personDetails = converter.convertResponse(demoGraphicsResponse.getBody());
-			ResponseEntity<PersonDetailsResponse> responseEntity = ResponseEntity.ok(personDetails);
+			GetPersonDetailsResponse getPersonDetailsResponse = converter.convertResponse(demoGraphicsResponse.getBody());
+			ResponseEntity<GetPersonDetailsResponse> responseEntity = ResponseEntity.ok(getPersonDetailsResponse);
 
 			return responseEntity;
 		} catch (HNWebException hwe) {

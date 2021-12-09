@@ -3,7 +3,7 @@ import { apiRequest, resources } from './BaseService'
 export default {
   getPersonDetails(request) {
     console.log(`getPersonDemographics: PHN: ${request.phn}`)
-    return apiRequest().then((axiosInstance) => axiosInstance.post(resources.enrollment.personDetails, request))
+    return apiRequest().then((axiosInstance) => axiosInstance.post(resources.enrollment.getPersonDetails, request))
   },
 
   registerResident(request) {

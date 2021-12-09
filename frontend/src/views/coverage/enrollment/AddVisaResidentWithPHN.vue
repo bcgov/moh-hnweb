@@ -8,28 +8,28 @@
   <div v-else-if="pageAction === this.PAGE_ACTION.CONFIRMATION">
     <AppRow>
       <AppCol class="col3">
-        <AppOutput label="PHN" :value="this.getPersonDetailsResult?.person.phn"/>
+        <AppOutput label="PHN" :value="this.getPersonDetailsResult?.person.phn" />
       </AppCol>
     </AppRow>
     <AppRow>
       <AppCol>
-        <AppOutput label="Name" :value="fullName"/>
+        <AppOutput label="Name" :value="fullName" />
       </AppCol>
     </AppRow>
   </div>
 </template>
 
 <script>
-import AppCol from "../../../components/grid/AppCol.vue";
-import AppRow from "../../../components/grid/AppRow.vue";
-import AppOutput from "../../../components/AppOutput.vue";
-import EnrollmentService from "../../../services/EnrollmentService";
-import { formatPersonName } from "../../../util/utils"
-import ResidentPHN from "./ResidentPHN.vue"
-import ResidentDetails from "./ResidentDetails.vue";
+import AppCol from '../../../components/grid/AppCol.vue'
+import AppRow from '../../../components/grid/AppRow.vue'
+import AppOutput from '../../../components/AppOutput.vue'
+import EnrollmentService from '../../../services/EnrollmentService'
+import { formatPersonName } from '../../../util/utils'
+import ResidentPHN from './ResidentPHN.vue'
+import ResidentDetails from './ResidentDetails.vue'
 
 export default {
-  name: "AddVisaResidentWithPHN",
+  name: 'AddVisaResidentWithPHN',
   components: {
     AppCol,
     AppRow,
@@ -38,7 +38,7 @@ export default {
     ResidentDetails,
   },
   setup() {
-    return {};
+    return {}
   },
   data() {
     return {
@@ -47,8 +47,8 @@ export default {
       getPersonDetailsResult: {
         person: {
           phn: '',
-          givenName: '',	
-          secondName: '',        
+          givenName: '',
+          secondName: '',
           surname: '',
           dateOfBirth: '',
           gender: '',
@@ -60,26 +60,39 @@ export default {
         status: '',
         message: null,
       },
-    };
+    }
   },
   created() {
-    this.PAGE_ACTION = {
+    ;(this.PAGE_ACTION = {
       PHN_SEARCH: 'PHN_SEARCH',
       STUDENT_REGISTRATION: 'STUDENT_REGISTRATION',
-      CONFIRMATION: 'CONFIRMATION'
-    },
-    this.pageAction = this.PAGE_ACTION.PHN_SEARCH
+      CONFIRMATION: 'CONFIRMATION',
+    }),
+      (this.pageAction = this.PAGE_ACTION.PHN_SEARCH)
   },
   computed: {
     fullName() {
       return formatPersonName(this.getPersonDetailsResult?.person)
     },
   },
-  methods: {    
+  methods: {
     async updateResident(phn) {
       console.log(`Resident: [PHN: ${phn}]`)
       try {
-        this.getPersonDetailsResult = (await EnrollmentService.getPersonDetails({ phn: phn })).data
+        const data = (await EnrollmentService.getPersonDetails({ phn: phn })).data
+        this.getPersonDetailsResult = {
+          person: {
+            phn: data.phn,
+            givenName: data.givenName,
+            secondName: data.secondName,
+            surname: data.surname,
+            dateOfBirth: data.dateOfBirth,
+            gender: data.gender,
+          },
+          status: '',
+          message: null,
+        }
+
         if (this.getPersonDetailsResult?.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.getPersonDetailsResult?.message)
           return
@@ -87,12 +100,12 @@ export default {
 
         console.log(`Result: [PHN: ${this.getPersonDetailsResult?.person.phn}] [Name: ${this.getPersonDetailsResult?.person.givenName}] [DOB: ${this.getPersonDetailsResult?.person.dateOfBirth}]`)
         if (this.getPersonDetailsResult?.status === 'success') {
-          console.log(`Success: ${this.getPersonDetailsResult?.message}`)        
+          console.log(`Success: ${this.getPersonDetailsResult?.message}`)
         } else if (this.getPersonDetailsResult?.status === 'warning') {
-          this.$store.commit('alert/setWarningAlert', this.getPersonDetailsResult?.message)  
-        }          
+          this.$store.commit('alert/setWarningAlert', this.getPersonDetailsResult?.message)
+        }
         this.pageAction = this.PAGE_ACTION.STUDENT_REGISTRATION
-      } catch(err) {
+      } catch (err) {
         console.log(`Error: ${err}`)
         this.$store.commit('alert/setErrorAlert', `${err}`)
       }
@@ -101,23 +114,26 @@ export default {
       console.log(`[Group Number: ${personDetails.groupNumber}]`)
 
       try {
-        this.registrationResult = (await EnrollmentService.registerResident({
-          phn: this.getPersonDetailsResult?.person.phn,
-          dateOfBirth: this.getPersonDetailsResult?.person.dateOfBirth,
-          givenName: this.getPersonDetailsResult?.person.givenName,
-          secondName: this.getPersonDetailsResult?.person.secondName,
-          surname: this.getPersonDetailsResult?.person.surname,
-          gender: this.getPersonDetailsResult?.person.gender, 
-          ...personDetails})).data
+        this.registrationResult = (
+          await EnrollmentService.registerResident({
+            phn: this.getPersonDetailsResult?.person.phn,
+            dateOfBirth: this.getPersonDetailsResult?.person.dateOfBirth,
+            givenName: this.getPersonDetailsResult?.person.givenName,
+            secondName: this.getPersonDetailsResult?.person.secondName,
+            surname: this.getPersonDetailsResult?.person.surname,
+            gender: this.getPersonDetailsResult?.person.gender,
+            ...personDetails,
+          })
+        ).data
         if (this.registrationResult?.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.registrationResult?.message)
           return
         }
         console.log('Registration Result returned')
         if (this.registrationResult?.status === 'success') {
-          console.log(`Success: ${this.registrationResult.message}`)        
+          console.log(`Success: ${this.registrationResult.message}`)
         } else if (this.registrationResult?.status === 'warning') {
-          this.$store.commit('alert/setWarningAlert', this.registrationResult?.message)  
+          this.$store.commit('alert/setWarningAlert', this.registrationResult?.message)
         }
         this.pageAction = this.PAGE_ACTION.CONFIRMATION
         this.$store.commit('alert/setSuccessAlert', 'Transaction Successful')

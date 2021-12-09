@@ -1,6 +1,9 @@
 package ca.bc.gov.hlth.hnweb.model;
 
-public class GetPersonDetailsResponse {
+/**
+ *Wrapper class for GetPersonDetailsResponse
+ */
+public class GetPersonDetailsResponse extends BaseResponse {
 
 	private String phn;
 
@@ -64,9 +67,8 @@ public class GetPersonDetailsResponse {
 
 	@Override
 	public String toString() {
-		return "GetPersonDetails [phn=" + getPhn() + ", surname=" + getSurname()
-				+ "givenName=" + getGivenName() + "dateOfBirth=" + getDateOfBirth()
-				+ "]";
+		return "PersonDetailsResponse [phn=" + phn + ", givenName=" + givenName + ", secondName=" + secondName
+				+ ", surname=" + surname + ", dateOfBirth=" + dateOfBirth + ", gender=" + gender + "]";
 	}
-
+	
 }

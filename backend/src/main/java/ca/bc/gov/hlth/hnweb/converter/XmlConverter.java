@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.hlth.hnweb.config.HL7Config;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
-import ca.bc.gov.hlth.hnweb.model.PersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
@@ -63,20 +62,19 @@ public class XmlConverter {
 	 * @return
 	 * @throws IOException
 	 */
-	public PersonDetailsResponse convertResponse(String xmlString) throws IOException {
+	public GetPersonDetailsResponse convertResponse(String xmlString) throws IOException {
 		GetDemographicsResponse results = hl7.fromXml(xmlString, GetDemographicsResponse.class);
 		logger.debug("Converted Demographics response : {} ", results.toString());
 		
-		PersonDetailsResponse personDetailsResponse = handleStatus(results);
-		logger.debug("Converted PersonDetails Response : {} ", personDetailsResponse);
-		return personDetailsResponse;
+		GetPersonDetailsResponse getPersonDetailsResponse = handleStatus(results);
+		logger.debug("Converted PersonDetails Response : {} ", getPersonDetailsResponse);
+		return getPersonDetailsResponse;
 
 	}
 	
 
-	private PersonDetailsResponse handleStatus(GetDemographicsResponse respObj) {
-		PersonDetailsResponse personDetailsResponse = new PersonDetailsResponse();
-		GetPersonDetailsResponse personDetails = new GetPersonDetailsResponse();
+	private GetPersonDetailsResponse handleStatus(GetDemographicsResponse respObj) {
+		GetPersonDetailsResponse getPersonDetailsResponse = new GetPersonDetailsResponse();
 		
 		String messageDetails = respObj.getMessage().getDetails();
 		String messageText[] = messageDetails.split("\\|");
@@ -88,42 +86,40 @@ public class XmlConverter {
 			logger.debug("No result found for the Phn [{}]", respObj.getPerson().getPhn());
 
 			if (messageText.length > 0) {
-				personDetailsResponse.setStatus(StatusEnum.ERROR);
-				personDetailsResponse.setMessage(message);
+				getPersonDetailsResponse.setStatus(StatusEnum.ERROR);
+				getPersonDetailsResponse.setMessage(message);
 			}
 		} else {
-			buildPersonDetails(respObj, personDetails);
+			buildPersonDetails(respObj, getPersonDetailsResponse);
 			if (messageText.length > 0) {
 				if (message.contains("Warning")) {
-					personDetailsResponse.setStatus(StatusEnum.WARNING);
-					personDetailsResponse.setMessage(messageText[1]);
+					getPersonDetailsResponse.setStatus(StatusEnum.WARNING);
+					getPersonDetailsResponse.setMessage(messageText[1]);
 				} else {
-					personDetailsResponse.setStatus(StatusEnum.SUCCESS);
+					getPersonDetailsResponse.setStatus(StatusEnum.SUCCESS);
 				}
 			}
 
-			logger.info("Response message for given phn is: {}", personDetails.toString());
+			logger.debug("Response message received for phn: {}", getPersonDetailsResponse.getPhn());
 		}
 		
-		personDetailsResponse.setPerson(personDetails);
-		
-		return personDetailsResponse;
+		return getPersonDetailsResponse;
 
 	}
 
-	private void buildPersonDetails(GetDemographicsResponse respObj, GetPersonDetailsResponse personDetails) {
-		personDetails.setPhn(respObj.getPerson().getPhn());
+	private void buildPersonDetails(GetDemographicsResponse respObj, GetPersonDetailsResponse getPersonDetailsResponse) {
+		getPersonDetailsResponse.setPhn(respObj.getPerson().getPhn());
 		Name nameObj = respObj.getPerson().getDeclaredName();
 		String birthDate = new SimpleDateFormat("yyyyMMdd").format(respObj.getPerson().getBirthDate());
 		if (nameObj == null)
 			nameObj = respObj.getPerson().getDocumentedName();
 		
-		personDetails.setGivenName(nameObj.getFirstGivenName());
-		personDetails.setSecondName(nameObj.getSecondGivenName());
-		personDetails.setSurname(nameObj.getSurname());
+		getPersonDetailsResponse.setGivenName(nameObj.getFirstGivenName());
+		getPersonDetailsResponse.setSecondName(nameObj.getSecondGivenName());
+		getPersonDetailsResponse.setSurname(nameObj.getSurname());
 
-		personDetails.setDateOfBirth(birthDate);
-		personDetails.setGender(respObj.getPerson().getGender());
+		getPersonDetailsResponse.setDateOfBirth(birthDate);
+		getPersonDetailsResponse.setGender(respObj.getPerson().getGender());
 	}
 
 	private GetDemographicsRequest buildDemographicsRequest(String phn) {
