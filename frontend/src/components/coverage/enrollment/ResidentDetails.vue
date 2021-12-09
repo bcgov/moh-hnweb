@@ -129,7 +129,7 @@
       </AppRow>
 
       <AppRow>
-        <AppButton :disabled="searching" mode="primary" type="submit">Submit</AppButton>
+        <AppButton :disabled="submitting" mode="primary" type="submit">Submit</AppButton>
         <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
       </AppRow>
     </form>
@@ -177,8 +177,7 @@ export default {
   },
   data() {
     return {
-      searching: false,
-      searchOk: false,
+      submitting: false,
       //Add Visa Resident Fields
       groupNumber: '',
       immigrationCode: '',
@@ -254,13 +253,13 @@ export default {
   },
   methods: {
     async registerVisaResident() {
-      this.searching = true
+      this.submitting = true
       try {
         const isValid = true
         // await this.v$.$validate()
         // if (!isValid) {
         //   this.$store.commit('alert/setErrorAlert')
-        //   this.searching = false
+        //   this.submitting = false
         //   return
         // }
         this.$emit('register-resident', {
@@ -292,7 +291,7 @@ export default {
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       } finally {
-        this.searching = false
+        this.submitting = false
       }
     },
     resetForm() {
@@ -322,11 +321,7 @@ export default {
       this.otherProvinceHealthcareNumber = ''
       this.v$.$reset()
       this.$store.commit('alert/dismissAlert')
-      this.searching = false
-      this.registrationOk = false
-      this.v$.$reset()
-      this.$store.commit('alert/dismissAlert')
-      this.searching = false
+      this.submitting = false
     },
   },
   validations() {
