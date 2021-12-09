@@ -21,7 +21,7 @@
           <AppInput :e-model="v$.groupNumber" id="groupNumber" size="200" label="Group Number" type="text" v-model.trim="groupNumber" />
         </AppCol>
         <AppCol class="col4">
-          <AppSelect :e-model="v$.immigrationCode" id="immigrationCode" label="Immigration Code" v-model="immigrationCode" :options="immigrationCodeOptions" />
+          <AppSelect :e-model="v$.immigrationCode" id="immigrationCode" label="Immigration Code" v-model="immigrationCode" :options="getImmigrationCodeOptions" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -79,7 +79,7 @@
           <AppInput :e-model="v$.city" id="city" label="City" type="text" v-model.trim="city" />
         </AppCol>
         <AppCol class="col4">
-          <AppSelect :e-model="v$.province" id="province" label="Province" v-model="province" :options="provinceOptions" />
+          <AppSelect :e-model="v$.province" id="province" label="Province" v-model="province" :options="getProvinceOptions" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -108,7 +108,7 @@
           <AppInput :e-model="v$.mailingAddressCity" id="mailingAddressCity" label="City" type="text" v-model.trim="mailingAddressCity" />
         </AppCol>
         <AppCol class="col4">
-          <AppSelect :e-model="v$.mailingAddressProvince" id="mailingAddressProvince" label="Province" v-model="mailingAddressProvince" :options="provinceOptions" />
+          <AppSelect :e-model="v$.mailingAddressProvince" id="mailingAddressProvince" label="Province" v-model="mailingAddressProvince" :options="getProvinceOptions" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -119,7 +119,7 @@
 
       <AppRow>
         <AppCol class="col4">
-          <AppSelect :e-model="v$.priorResidenceCode" id="priorResidenceCode" label="Prior Residence Code" v-model="priorResidenceCode" :options="priorResidenceOptions" />
+          <AppSelect :e-model="v$.priorResidenceCode" id="priorResidenceCode" label="Prior Residence Code" v-model="priorResidenceCode" :options="getPriorResidenceOptions" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -203,13 +203,19 @@ export default {
       mailingAddressPostalCode: '',
       priorResidenceCode: '',
       otherProvinceHealthcareNumber: '',
-      // Immigration Code drop down options
-      immigrationCodeOptions: [
+    }
+  },
+  computed: {
+    // Immigration Code drop down options
+    getImmigrationCodeOptions() {
+      return [
         { text: '', value: '' },
         { text: 'Student Authorization', value: 'S' },
-      ],
-      // Province drop down options
-      provinceOptions: [
+      ]
+    },
+    // Province drop down options
+    getProvinceOptions() {
+      return [
         { text: '', value: '' },
         { text: 'Alberta', value: 'AB' },
         { text: 'British Columbia', value: 'BC' },
@@ -224,9 +230,11 @@ export default {
         { text: 'Quebec', value: 'QC' },
         { text: 'Saskatchewan', value: 'SK' },
         { text: 'Yukon', value: 'YT' },
-      ],
-      // Prior Residence drop down options
-      priorResidenceOptions: [
+      ]
+    },
+    // Prior Residence drop down options
+    getPriorResidenceOptions() {
+      return [
         { text: '', value: '' },
         { text: 'Alberta', value: 'AB' },
         { text: 'Manitoba', value: 'MB' },
@@ -243,10 +251,8 @@ export default {
         { text: 'U.S.A', value: 'US' },
         { text: 'Yukon', value: 'YT' },
         { text: 'British Columbia', value: 'BC' },
-      ],
-    }
-  },
-  computed: {
+      ]
+    },
     fullName() {
       return formatPersonName(this.resident)
     },
@@ -255,13 +261,12 @@ export default {
     async registerVisaResident() {
       this.submitting = true
       try {
-        const isValid = true
-        // await this.v$.$validate()
-        // if (!isValid) {
-        //   this.$store.commit('alert/setErrorAlert')
-        //   this.submitting = false
-        //   return
-        // }
+        const isValid = await this.v$.$validate()
+        if (!isValid) {
+          this.$store.commit('alert/setErrorAlert')
+          this.submitting = false
+          return
+        }
         this.$emit('register-resident', {
           groupNumber: this.groupNumber,
           immigrationCode: this.immigrationCode,
