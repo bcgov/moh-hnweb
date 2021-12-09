@@ -1,11 +1,7 @@
 <template>
-  <div v-if="pageAction === this.PAGE_ACTION.PHN_SEARCH">
-    <ResidentPHN @update-resident="updateResident" />
-  </div>
-  <div v-else-if="pageAction === this.PAGE_ACTION.STUDENT_REGISTRATION">
-    <ResidentDetails :resident="this.getPersonDetailsResult?.person" @register-resident="registerResident" />
-  </div>
-  <div v-else-if="pageAction === this.PAGE_ACTION.CONFIRMATION">
+  <ResidentPHN v-if="isPhnSearch" @update-resident="updateResident" />
+  <ResidentDetails v-else-if="isStudentRegistration" :resident="this.getPersonDetailsResult?.person" @register-resident="registerResident" />
+  <div v-else-if="isConfirmation">
     <AppRow>
       <AppCol class="col3">
         <AppOutput label="PHN" :value="this.getPersonDetailsResult?.person.phn" />
@@ -71,6 +67,16 @@ export default {
       (this.pageAction = this.PAGE_ACTION.PHN_SEARCH)
   },
   computed: {
+    isPhnSearch() {
+      console.log(`isPHN: ${this.pageAction}`)
+      return this.pageAction === this.PAGE_ACTION.PHN_SEARCH
+    },
+    isStudentRegistration() {
+      return this.pageAction === this.PAGE_ACTION.STUDENT_REGISTRATION
+    },
+    isConfirmation() {
+      return this.pageAction === this.PAGE_ACTION.CONFIRMATION
+    },
     fullName() {
       return formatPersonName(this.getPersonDetailsResult?.person)
     },
