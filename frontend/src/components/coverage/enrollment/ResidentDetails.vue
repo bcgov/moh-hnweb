@@ -40,12 +40,12 @@
           <AppDateInput :e-model="v$.visaExpiryDate" id="visaExpiryDate" label="Permit Expiry Date" v-model="visaExpiryDate" />
         </AppCol>
       </AppRow>
-      <AppRow class="row1">
+      <AppRow class="row-center">
         <AppCol class="col4">
           <AppDateInput :e-model="v$.residenceDate" id="residenceDate" label="Residence Date" v-model="residenceDate" />
         </AppCol>
       </AppRow>
-      <AppRow class="row1">
+      <AppRow class="row-center">
         <AppCol class="col4">
           <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" v-model="coverageEffectiveDate" />
         </AppCol>
