@@ -1,4 +1,4 @@
-package ca.bc.gov.hlth.hnweb.converter;
+package ca.bc.gov.hlth.hnweb.converter.hl7v2;
 
 import java.time.LocalDate;
 
@@ -6,9 +6,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ca.bc.gov.hlth.hnweb.converter.BaseConverter;
+import ca.bc.gov.hlth.hnweb.converter.MSHDefaults;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
-import ca.bc.gov.hlth.hnweb.model.R50Response;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIA;
@@ -17,7 +18,6 @@ import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIK;
 import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
-import ca.uhn.hl7v2.model.v24.segment.PID;
 import ca.uhn.hl7v2.util.Terser;
 
 /**
