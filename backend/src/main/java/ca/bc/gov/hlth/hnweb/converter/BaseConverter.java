@@ -5,9 +5,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZHD;
-import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIA;
-import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIH;
-import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIK;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
 import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;

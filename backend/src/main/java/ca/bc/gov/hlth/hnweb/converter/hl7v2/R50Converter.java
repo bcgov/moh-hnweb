@@ -56,10 +56,10 @@ public class R50Converter extends BaseConverter {
     	populateIN1(r50.getIN1(), request.getCoverageEffectiveDate(), request.getCoverageCancellationDate(), request.getGroupNumber(), request.getGroupMemberNumber(),request.getDepartmentNumber());
     	populateZIA(zia, LocalDate.now(), request.getSurname(), request.getGivenName(), request.getSecondName(), request.getTelephone(), request.getImmigrationCode(), request.getPriorResidenceCode());
     	populateZIAExtendedAddress1(zia, request.getAddress1(), request.getAddress2(),request.getAddress3(), request.getCity(), request.getProvince(), request.getPostalCode());
-    	populateZIAExtendedAddress2(zia, request.getMailingAddress1(),request.getMailingAddress2(),request.getMailingAddress3(), request.getMailingAddressCity(), request.getMailingAddressProvince(), request.getMailingAddressPostalCode());
+    	populateZIAExtendedAddress2(zia, request.getMailingAddress1(), request.getMailingAddress2(), request.getMailingAddress3(), request.getMailingAddressCity(), request.getMailingAddressProvince(), request.getMailingAddressPostalCode());
     	populateZIH(r50.getZIH()); 
     	populateZIK(r50.getZIK(), request.getVisaIssueDate(), request.getVisaExpiryDate());
-    	logger.info("Request for enroll subscriber : {}",r50);
+    	logger.info("Request for enroll subscriber : {}", r50);
     	
 		return r50;
 	}

@@ -3,6 +3,7 @@ package ca.bc.gov.hlth.hnweb.controller;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,7 @@ import ca.uhn.hl7v2.model.Message;
 @RestController
 public class EnrollmentController {
 
-	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(EnrollmentController.class);
+	private static final Logger logger = LoggerFactory.getLogger(EnrollmentController.class);
 
 	@Autowired
 	private EnrollmentService enrollmentService;

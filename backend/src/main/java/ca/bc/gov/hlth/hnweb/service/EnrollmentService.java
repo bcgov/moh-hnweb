@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,7 +35,7 @@ import ca.uhn.hl7v2.parser.Parser;
 @Service
 public class EnrollmentService {
 
-	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(EnrollmentService.class);
+	private static final Logger logger = LoggerFactory.getLogger(EnrollmentService.class);
 	private static final String SOURCE_SYSTEM_OVERRIDE = "MOH_CRS";
 	private static final String ORGANIZATION = "MOH_CRS";
 	public static final String TRANSACTION_ID = "TransactionID";
@@ -66,8 +67,7 @@ public class EnrollmentService {
 		String transactionId = UUID.randomUUID().toString();
 		logger.debug("Enroll subscriber for Message ID [{}]; Transaction ID [{}]", r50.getMSH().getMsh10_MessageControlID(), transactionId);
 		
-		String r50v2 = encodeR50ToV2(r50);		
-		String r50v2RequiredFormat = formatMessage(r50v2);
+		String r50v2RequiredFormat = formatMessage(r50);
 		logger.debug("Updated V2 message:\n{}", r50v2RequiredFormat);
 		
 		ResponseEntity<String> response = postEnrollmentRequest(r50v2RequiredFormat, transactionId);
@@ -175,8 +175,13 @@ public class EnrollmentService {
 	 * @param r50v2
 	 * @return
 	 */
-	private String formatMessage(String r50v2) {
-		return  r50v2.replaceFirst("\r", "||\r");
+	private String formatMessage(R50 r50) throws HL7Exception  {
+		
+		// Encode the message using the default HAPI parser and return it as a String
+    	String encodedMessage = parser.encode(r50);
+    	logger.debug("R50 Encoded Message:\n{}", encodedMessage);
+    	
+		return  encodedMessage.replaceFirst("\r", "||\r");
 	}
 	
 

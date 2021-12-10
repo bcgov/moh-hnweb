@@ -3,11 +3,7 @@ package ca.bc.gov.hlth.hnweb.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.AfterAll;
@@ -15,7 +11,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
@@ -31,6 +26,7 @@ import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
+import ca.bc.gov.hlth.hnweb.utils.TestUtil;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -42,9 +38,13 @@ import okhttp3.mockwebserver.RecordedRequest;
 @SpringBootTest
 public class EnrollmentControllerTest {
 
-	private static final String ACK = "MSH|^~\\&|RAIPRSN-NM-SRCH|BC00002041|HNWeb|moh_hnclient_dev|20211013124847.746-0700||ACK|71902|D|2.4\r\n" + 
+	private static final String ACK_ERROR = "MSH|^~\\&|RAIPRSN-NM-SRCH|BC00002041|HNWeb|moh_hnclient_dev|20211013124847.746-0700||ACK|71902|D|2.4\r\n" + 
 			"MSA|AE|20191108082211|NHR529E^SEVERE SYSTEM ERROR\r\n" + 
 			"ERR|^^^NHR529E";
+	
+	private static final String ACK_SUCCESS = "MSH|^~\\&|RAIPRSN-NM-SRCH|BC00002041|HNWeb|BC01000161|20210916104824||ACK|71902|D|2.4\r\n" + 
+			"MSA|AA|20210506160152|HJMB001ISUCCESSFULLY COMPLETED\r\n" + 
+			"ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED";
 	
 	public static MockWebServer mockBackEnd;
 	private static MockedStatic<SecurityUtil> mockStatic;
@@ -72,7 +72,7 @@ public class EnrollmentControllerTest {
     void testEnrollSubscriber_Error() throws Exception {    	
         
         mockBackEnd.enqueue(new MockResponse()
-        		.setBody(ACK)
+        		.setBody(ACK_ERROR)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
 
 		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();
@@ -89,12 +89,34 @@ public class EnrollmentControllerTest {
         assertEquals("/", recordedRequest.getPath());       
     }
     
+    @Test
+    void testEnrollSubscriber_Success() throws Exception {    	
+        
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(ACK_SUCCESS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+
+		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();
+		ResponseEntity<EnrollSubscriberResponse> enrollSubscriber = enrollmentController.enrollSubscriber(enrollSubscriberRequest);
+
+		//Check the response
+		assertEquals(StatusEnum.SUCCESS, enrollSubscriber.getBody().getStatus());
+		assertEquals("AA", enrollSubscriber.getBody().getAcknowledgementCode());
+		assertEquals("HJMB001ISUCCESSFULLY COMPLETED", enrollSubscriber.getBody().getAcknowledgementMessage());
+		
+		
+		//Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());       
+    }
     
     @Test
     void testGetDemographicsDetails_Success() throws Exception {    	
         
         mockBackEnd.enqueue(new MockResponse()
-        		.setBody(convertXMLFileToString("src\\test\\resources\\GetDemographicsResponse.xml"))
+        		.setBody(TestUtil.convertXMLFileToString("src\\test\\resources\\GetDemographicsResponse.xml"))
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
         GetPersonDetailsRequest getPersonQuery = new GetPersonDetailsRequest();
@@ -118,7 +140,7 @@ public class EnrollmentControllerTest {
     	String expectedMessageText = " Warning: The identifier you used in the query has been merged. The surviving identifier was returned.";
         
         mockBackEnd.enqueue(new MockResponse()
-        		.setBody(convertXMLFileToString("src\\test\\resources\\GetDemographicsResponse_NonSurvivor.xml"))
+        		.setBody(TestUtil.convertXMLFileToString("src\\test\\resources\\GetDemographicsResponse_NonSurvivor.xml"))
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
         GetPersonDetailsRequest getPersonQuery = new GetPersonDetailsRequest();
@@ -174,25 +196,5 @@ public class EnrollmentControllerTest {
 		return enrollSubscriberRequest;
 	}
     
-	 
-	private String convertXMLFileToString(String file) throws IOException
-	{
-	// our XML file for this example
-	    File xmlFile = new File(file);
-	 
-	    Reader fileReader;			
-		fileReader = new FileReader(xmlFile);
-		BufferedReader bufReader = new BufferedReader(fileReader);
-	        
-	    StringBuilder sb = new StringBuilder();
-	    String line = bufReader.readLine();
-	    while( line != null){
-	        sb.append(line).append("\n");
-	        line = bufReader.readLine();
-	    }
-	    String xml2String = sb.toString();	        
-	    bufReader.close();
-	        
-	    return xml2String;
-	}
+
 }

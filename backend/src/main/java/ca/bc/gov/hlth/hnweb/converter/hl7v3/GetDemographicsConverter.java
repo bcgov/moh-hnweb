@@ -10,14 +10,8 @@ import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
-import ca.bc.gov.hlth.hnweb.model.v3.MessageMetaData;
 import ca.bc.gov.hlth.hnweb.model.v3.Name;
-import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
-import ca.bc.gov.hlth.hnweb.security.UserInfo;
-import ca.bc.gov.hlth.hnweb.serialization.HL7Config;
-import ca.bc.gov.hlth.hnweb.serialization.HL7Serializer;
 import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
-import ca.bc.gov.hlth.hnweb.util.V3MessageUtil;
 
 /**
  * Converter class for V3 messages Contains methods to facilitate converter a
@@ -39,7 +33,10 @@ public class GetDemographicsConverter {
 	public GetDemographicsRequest convertRequest(String phn) {
 		logger.debug("Get Demographics details for PHN [{}]", phn);
 
-		GetDemographicsRequest demographicsRequest = buildDemographicsRequest(phn);
+		GetDemographicsRequest demographicsRequest = new GetDemographicsRequest();
+		demographicsRequest.setPhn(phn);
+		demographicsRequest.setMrnSource(MRN_SOURCE);
+		
 		return demographicsRequest;
 
 	}
@@ -52,13 +49,13 @@ public class GetDemographicsConverter {
 	public GetPersonDetailsResponse convertResponse(GetDemographicsResponse demographicsResponse) throws IOException {
 		logger.debug("Demographics response : {} ", demographicsResponse.toString());
 
-		GetPersonDetailsResponse getPersonDetailsResponse = handleStatus(demographicsResponse);
+		GetPersonDetailsResponse getPersonDetailsResponse = buildGetPersonDetailsResponse(demographicsResponse);
 		logger.debug("Converted PersonDetails Response : {} ", getPersonDetailsResponse);
 		return getPersonDetailsResponse;
 
 	}
 
-	private GetPersonDetailsResponse handleStatus(GetDemographicsResponse demographicsResponse) {
+	private GetPersonDetailsResponse buildGetPersonDetailsResponse(GetDemographicsResponse demographicsResponse) {
 		GetPersonDetailsResponse getPersonDetailsResponse = new GetPersonDetailsResponse();
 
 		String messageDetails = demographicsResponse.getMessage().getDetails();
@@ -107,16 +104,6 @@ public class GetDemographicsConverter {
 		String birthDate = new SimpleDateFormat(V2MessageUtil.DATE_FORMAT_DATE_ONLY).format(demographicsResponse.getPerson().getBirthDate());
 		personDetailsResponse.setDateOfBirth(birthDate);
 		personDetailsResponse.setGender(demographicsResponse.getPerson().getGender());
-	}
-
-	private GetDemographicsRequest buildDemographicsRequest(String phn) {
-		GetDemographicsRequest getDemographics = new GetDemographicsRequest();
-		getDemographics.setPhn(phn);
-		getDemographics.setMrnSource(MRN_SOURCE);
-		logger.debug("Creating request for the phn : {}", getDemographics.getPhn());
-
-		return getDemographics;
-
 	}
 
 }
