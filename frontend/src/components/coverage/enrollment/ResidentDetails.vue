@@ -209,14 +209,14 @@ export default {
     // Immigration Code drop down options
     getImmigrationCodeOptions() {
       return [
-        { text: '', value: '' },
+        { text: 'Select', value: '' },
         { text: 'Student Authorization', value: 'S' },
       ]
     },
     // Province drop down options
     getProvinceOptions() {
       return [
-        { text: '', value: '' },
+        { text: 'Select', value: '' },
         { text: 'Alberta', value: 'AB' },
         { text: 'British Columbia', value: 'BC' },
         { text: 'Manitoba', value: 'MB' },
@@ -235,7 +235,7 @@ export default {
     // Prior Residence drop down options
     getPriorResidenceOptions() {
       return [
-        { text: '', value: '' },
+        { text: 'Select', value: '' },
         { text: 'Alberta', value: 'AB' },
         { text: 'Manitoba', value: 'MB' },
         { text: 'New Brunswick', value: 'NB' },

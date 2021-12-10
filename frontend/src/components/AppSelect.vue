@@ -3,10 +3,12 @@ import AppInputError from './AppInputError.vue'
 </script>
 
 <template>
-  <label class="bc-gov-dropdown-label">{{ label }}</label>
+  <div class="bc-gov-dropdown-label">
+    <label>{{ label }}</label>
+  </div>
 
   <div class="bc-gov-dropdown-wrapper">
-    <i class="fas fa-chevron-down"></i>
+    <font-awesome-icon icon="chevron-down" />
     <select :class="dropdownClass" :value="modelValue" @change="$emit('update:modelValue', $event.target.value)" v-bind="$attrs">
       <option v-for="option in options" v-bind:key="option.value" v-bind:value="option.value">
         {{ option.text }}
@@ -39,7 +41,7 @@ export default {
 
 <style scoped>
 .bc-gov-dropdown-label {
-  margin-bottom: 10px;
+  display: flex;
 }
 
 .bc-gov-dropdown {
@@ -50,10 +52,15 @@ export default {
   box-shadow: none;
   border: 2px solid #606060;
   min-width: 200px;
-  padding: 8px 45px 8px 15px;
+  padding: 5px 5px 5px 7px;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+  /* custom - different from bc gov */
+  height: 34px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border-radius: 4px;
 }
 
 .fa-chevron-down {
@@ -61,15 +68,19 @@ export default {
   position: absolute;
   top: calc(1em - 4px);
   right: 1em;
+  border: 1px solid gray;
 }
 
 .bc-gov-dropdown-wrapper {
+  /* custom - different from bc gov */
+  /* display: inline; removed */
   position: relative;
-  display: inline;
+  display: flex;
+  flex-direction: column;
 }
 
 :focus {
-  outline: 4px solid #3b99fc;
+  outline: 2px solid #3b99fc;
   outline-offset: 1px;
 }
 .error-input {
