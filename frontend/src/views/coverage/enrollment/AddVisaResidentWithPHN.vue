@@ -81,8 +81,8 @@ export default {
             dateOfBirth: data.dateOfBirth,
             gender: data.gender,
           },
-          status: '',
-          message: null,
+          status: data.status,
+          message: data.message,
         }
 
         if (this.getPersonDetailsResult?.status === 'error') {
