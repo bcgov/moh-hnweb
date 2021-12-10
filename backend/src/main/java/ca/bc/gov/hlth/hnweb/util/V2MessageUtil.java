@@ -1,5 +1,7 @@
 package ca.bc.gov.hlth.hnweb.util;
 
+import org.apache.commons.lang3.StringUtils;
+
 import ca.bc.gov.hlth.hnweb.model.v2.segment.HDR;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.QPD;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.SFT;
@@ -57,6 +59,14 @@ public class V2MessageUtil {
 	
 	public enum SegmentType {
 		MSH, PID, QPD, ADJ
+	}
+	
+	public enum AddressType {
+		H, M;
+	}
+	
+	public enum TelePhoneUseCode {
+		PRN, ORN, WPN, EMR;
 	}
 
     /**
@@ -134,7 +144,7 @@ public class V2MessageUtil {
 //    	Pid3_PatientIdentifierList Not Supported     
     	pid.getPid4_AlternatePatientIDPID(0).parse(alternatePatientIdPid);
 //    	Pid5 PatientName Not Supported 
-    	pid.getPid7_DateTimeOfBirth().parse(dateTimeOfBirth);
+        pid.getPid7_DateTimeOfBirth().parse(dateTimeOfBirth);
     	pid.getPid8_AdministrativeSex().parse(administrativeSex);
     }
     
@@ -151,18 +161,52 @@ public class V2MessageUtil {
      * @param priorResidenceCode
      * @throws HL7Exception
      */
-    public static void setZiaValues(ZIA zia, String bcResidencyDate, String extendedPersonName, 
-    							String extendedAddress1, String extendedAddress2, 
-    							String extendedTelephoneNumber, String immigrationOrVisaCode, String priorResidenceCode) throws HL7Exception {
+    public static void setZiaValues(ZIA zia, String bcResidencyDate, String surname, String firstGivenName, String secondGivenName,  String telephone, String immigrationOrVisaCode, String priorResidenceCode) throws HL7Exception {
     	//e.g. ZIA||20210101|||||||||||||HELP^RERE^^^^^L|898 RETER ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^H~123 UIYUI ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^M|^PRN^PH^^^250^8578974|||||||S|AB^M
+    	String givenName  = firstGivenName +  secondGivenName;
+    	String areaCode = null;
+    	String phoneNumber = null;  	
     	
     	zia.getZia2_BCResidencyDate().parse(bcResidencyDate);
-    	zia.getZia15_ExtendedPersonName().parse(extendedPersonName);
-    	zia.getZia16_ExtendedAddress(0).parse(extendedAddress1);
-    	zia.getZia16_ExtendedAddress(1).parse(extendedAddress2);
-    	zia.getZia17_ExtendedTelephoneNumber().parse(extendedTelephoneNumber);
+    	zia.getZia15_ExtendedPersonName().parse(surname);   	
+    	zia.getZia15_ExtendedPersonName().getGivenName().parse(givenName);
+    	zia.getZia15_ExtendedPersonName().getNameTypeCode().parse("L");;
+    
+    	if(StringUtils.isNotBlank(telephone)) {   		
+    		areaCode = telephone.substring(0,3);
+    		phoneNumber = telephone.substring(3);
+        	
+    		zia.getZia17_ExtendedTelephoneNumber().getAreaCityCode().parse(areaCode);
+    		zia.getZia17_ExtendedTelephoneNumber().getTelecommunicationEquipmentType().parse("PH");
+    	
+    		zia.getZia17_ExtendedTelephoneNumber().getPhoneNumber().parse(phoneNumber);
+    		zia.getZia17_ExtendedTelephoneNumber().getTelecommunicationUseCode().parse(TelePhoneUseCode.PRN.name());
+    	}
+    	
     	zia.getZia24_ImmigrationOrVisaCode().parse(immigrationOrVisaCode);
     	zia.getZia25_PriorResidenceCode().parse(priorResidenceCode);
+    }
+    
+    public static void setZiaExtendedAddrees1(ZIA zia, String addressLine1, String addressLine2, String addressLine3, String city, String province, String postalCode) throws HL7Exception {
+
+    	zia.getZia16_ExtendedAddress(0).getZAD1_AddressLine1().parse(addressLine1);
+    	zia.getZia16_ExtendedAddress(0).getZAD2_AddressLine2().parse(addressLine2);  
+    	zia.getZia16_ExtendedAddress(0).getZAD3_AddressLine3().parse(addressLine3);  
+    	zia.getZia16_ExtendedAddress(0).getZAD20_City().parse(city);
+    	zia.getZia16_ExtendedAddress(0).getZAD21_Province().parse(province);
+    	zia.getZia16_ExtendedAddress(0).getZAD22_PostalCode().parse(postalCode);
+    	zia.getExtendedAddress(0).getZAD24_AddressType().parse(AddressType.H.name());
+    }
+    
+    public static void setZiaExtendedAddrees2(ZIA zia, String mailingAddressLine1,  String mailingAddressLine2,  String mailingAddressLine3, String city, String province, String postalCode) throws HL7Exception {
+
+    	zia.getZia16_ExtendedAddress(1).getZAD1_AddressLine1().parse(mailingAddressLine1);
+    	zia.getZia16_ExtendedAddress(1).getZAD2_AddressLine2().parse(mailingAddressLine2);
+    	zia.getZia16_ExtendedAddress(1).getZAD3_AddressLine3().parse(mailingAddressLine3);
+    	zia.getZia16_ExtendedAddress(1).getZAD20_City().parse(city);
+    	zia.getZia16_ExtendedAddress(1).getZAD21_Province().parse(province);
+    	zia.getZia16_ExtendedAddress(1).getZAD22_PostalCode().parse(postalCode);
+    	zia.getExtendedAddress(1).getZAD24_AddressType().parse(AddressType.M.name());
     }
 
     /**

@@ -1,14 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
+import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
+import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
+import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
+import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
+import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
+import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
 import Employees from './../views/Employees.vue'
 import Help from './../views/Help.vue'
 import Home from './../views/Home.vue'
-import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
-import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
 import NotFound from '../views/NotFound.vue'
-import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
-import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
-import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
 import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
 import PhnLookup from '../views/eligibility/PhnLookup.vue'
 
@@ -27,6 +29,21 @@ const routes = [
     path: '/coverage/enrollment',
     name: 'CoverageEnrollment',
     component: CoverageEnrollmentHome,
+    redirect: {
+      name: 'AddVisaResidentWithoutPHN',
+    },
+    children: [
+      {
+        path: 'addVisaResidentWithoutPHN',
+        name: 'AddVisaResidentWithoutPHN',
+        component: AddVisaResidentWithoutPHN,
+      },
+      {
+        path: 'addVisaResidentWithPHN',
+        name: 'AddVisaResidentWithPHN',
+        component: AddVisaResidentWithPHN,
+      },
+    ]
   },
   {
     path: '/eligibility',

@@ -71,14 +71,13 @@ public class V2MessageUtilTest {
 
 		//Create a R50 message 
     	R50 r50Zo6 = new R50();
-		
-    	V2MessageUtil.setZiaValues(r50Zo6.getZIA(), "20210101", "HELP^RERE^^^^^L", 
-				  "898 RETER ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^H", 
-			      "123 UIYUI ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^M", 
-			      "^PRN^PH^^^250^8578974", "S", "AB");		
-		ZIA zia = r50Zo6.getZIA();		
+    	ZIA zia = r50Zo6.getZIA();
+    	V2MessageUtil.setZiaValues(zia, "20210101", "HELP", "RERE", "",				 
+			      "2508578974", "S", "AB");	
+    	V2MessageUtil.setZiaExtendedAddrees1(zia, "1541", "22A street","sw", "Victoria", "BC", "T6T6T6");
+				
 		String ziaEncoded = parser.doEncode(zia, EncodingCharacters.getInstance(r50Zo6));		
-		assertEquals("ZIA||20210101|||||||||||||HELP^RERE^^^^^L|898 RETER ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^H~123 UIYUI ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^M|^PRN^PH^^^250^8578974|||||||S|AB", ziaEncoded);
+		assertEquals("ZIA||20210101|||||||||||||HELP^RERE^^^^^L|1541^22A street^sw^^^^^^^^^^^^^^^^^Victoria^BC^T6T6T6^^H|^PRN^PH^^^250^8578974|||||||S|AB", ziaEncoded);
 	}
 	
 	@Test

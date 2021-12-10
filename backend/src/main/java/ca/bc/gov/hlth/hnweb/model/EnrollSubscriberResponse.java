@@ -1,11 +1,7 @@
 package ca.bc.gov.hlth.hnweb.model;
 
-/**
- * Response message for API call to enroll a subscriber 
- *
- */
-public class EnrollSubscriberResponse {
-
+public class EnrollSubscriberResponse extends BaseResponse {
+	
 	private String messageId;
 
 	private String acknowledgementCode;
@@ -35,6 +31,5 @@ public class EnrollSubscriberResponse {
 	public void setAcknowledgementMessage(String acknowledgementMessage) {
 		this.acknowledgementMessage = acknowledgementMessage;
 	}
-	
 	
 }
