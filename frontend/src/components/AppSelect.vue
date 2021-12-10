@@ -68,7 +68,6 @@ export default {
   position: absolute;
   top: calc(1em - 4px);
   right: 1em;
-  border: 1px solid gray;
 }
 
 .bc-gov-dropdown-wrapper {

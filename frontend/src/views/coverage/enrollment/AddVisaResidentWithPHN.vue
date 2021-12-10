@@ -56,7 +56,6 @@ export default {
   },
   computed: {
     isPhnSearch() {
-      console.log(`isPHN: ${this.pageAction}`)
       return this.pageAction === this.PAGE_ACTION.PHN_SEARCH
     },
     isStudentRegistration() {
