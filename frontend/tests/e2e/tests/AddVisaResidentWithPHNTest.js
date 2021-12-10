@@ -20,6 +20,7 @@ const COVERAGE_CANCELLATION_DATE_REQUIRED_MESSAGE = 'Coverage Cancellation Date 
 const HOME_ADDRESS_REQUIRED_MESSAGE = 'Home Address Line 1 is required';
 const CITY_REQUIRED_MESSAGE = 'City is required';
 const PROVINCE_REQUIRED_MESSAGE = 'Province is required';
+const PRIOR_RESIDENCE_REQUIRED_MESSAGE = 'Prior Residence Code is required';
 const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required';
 const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid';
 const INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE = 'Group Member Number is invalid';
@@ -51,14 +52,15 @@ test('Check required fields validation', async t => {
         .expect(AddVisaResidentWithPHNPage.errorText.nth(0).textContent).contains(GROUPNUMBER_REQUIRED_MESSAGE)
         .expect(AddVisaResidentWithPHNPage.errorText.nth(1).textContent).contains(IMMIGRATION_CODE_REQUIRED_MESSAGE)
         .expect(AddVisaResidentWithPHNPage.errorText.nth(2).textContent).contains(PERMIT_ISSUE_DATE_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.errorText.nth(4).textContent).contains(PERMIT_EXPIRY_DATE_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.errorText.nth(5).textContent).contains(RESIDENCE_DATE_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.errorText.nth(6).textContent).contains(COVERAGE_EFFECTIVE_DATE_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.errorText.nth(7).textContent).contains(COVERAGE_CANCELLATION_DATE_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.errorText.nth(8).textContent).contains(HOME_ADDRESS_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.errorText.nth(9).textContent).contains(CITY_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.errorText.nth(10).textContent).contains(PROVINCE_REQUIRED_MESSAGE)
-        .expect(AddVisaResidentWithPHNPage.errorText.nth(11).textContent).contains(POSTAL_CODE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(3).textContent).contains(PERMIT_EXPIRY_DATE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(4).textContent).contains(RESIDENCE_DATE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(5).textContent).contains(COVERAGE_EFFECTIVE_DATE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(6).textContent).contains(COVERAGE_CANCELLATION_DATE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(7).textContent).contains(HOME_ADDRESS_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(8).textContent).contains(CITY_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(9).textContent).contains(PROVINCE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(10).textContent).contains(POSTAL_CODE_REQUIRED_MESSAGE)
+        .expect(AddVisaResidentWithPHNPage.errorText.nth(11).textContent).contains(PRIOR_RESIDENCE_REQUIRED_MESSAGE)
 });
 
 test('Check properly filled form passes validation', async t => {
