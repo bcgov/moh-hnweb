@@ -1,6 +1,6 @@
-package ca.bc.gov.hlth.hnweb.model;
+package ca.bc.gov.hlth.hnweb.model.eligibility;
 
-public class InquirePhnMatch {
+public class InquirePhnBeneficiary {
 	private String phn;
 
 	private String firstName;
@@ -69,6 +69,12 @@ public class InquirePhnMatch {
 
 	public void setPhn(String phn) {
 		this.phn = phn;
+	}
+
+	@Override
+	public String toString() {
+		return "InquirePhnBeneficiary [phn=" + phn + ", firstName=" + firstName + ", lastName=" + lastName + ", dateOfBirth=" + dateOfBirth
+				+ ", gender=" + gender + ", eligible=" + eligible + ", student=" + student + "]";
 	}
 
 }

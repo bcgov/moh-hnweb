@@ -3,6 +3,7 @@ package ca.bc.gov.hlth.hnweb.model.rapid;
 import org.apache.commons.lang3.StringUtils;
 
 public class RPBSHeader {
+	public static final int SEGMENT_LENGTH = 144;
 	public static final String IDENTIFER_ERRORMSG = "ERRORMSG";
 	public static final String IDENTIFER_RESPONSE = "RESPONSE";
 	
@@ -33,7 +34,7 @@ public class RPBSHeader {
 		this.userID = StringUtils.substring(message, 24, 56);
 		this.identifier = StringUtils.substring(message, 56, 64);
 		this.statusCode = StringUtils.substring(message, 64, 72);
-		this.statusText = StringUtils.substring(message, 72, 144);
+		this.statusText = StringUtils.substring(message, 72, SEGMENT_LENGTH);
 	}
 	
 	public String serialize() {

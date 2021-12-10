@@ -98,9 +98,9 @@ public class EligibilityService {
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		
-		// TODO (weskubo-cgi) Add status code handling
 		if (response.getStatusCode() != HttpStatus.OK) {
-			throw new HNWebException("Downstream error " + response.getStatusCode());
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
 		}
 		
 		RPBSPPE0 rpbsppe0Response = new RPBSPPE0(response.getBody());

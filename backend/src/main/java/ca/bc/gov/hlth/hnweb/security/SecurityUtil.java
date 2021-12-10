@@ -7,7 +7,9 @@ import org.springframework.security.oauth2.jwt.Jwt;
 public class SecurityUtil {
 	private static final String CLAIM_USERNAME = "preferred_username";
 	// TODO (weskubo-cgi) Verify the claim names
+	@SuppressWarnings("unused")
 	private static final String CLAIM_ORGANIZATION = "organization";
+	@SuppressWarnings("unused")
 	private static final String CLAIM_ROLE = "role";
 	
 	public static UserInfo loadUserInfo() {

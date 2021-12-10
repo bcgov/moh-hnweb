@@ -17,10 +17,10 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.server.ResponseStatusException;
@@ -29,6 +29,9 @@ import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
 import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusRequest;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
+import ca.bc.gov.hlth.hnweb.model.eligibility.InquirePhnBeneficiary;
+import ca.bc.gov.hlth.hnweb.model.eligibility.InquirePhnRequest;
+import ca.bc.gov.hlth.hnweb.model.eligibility.InquirePhnResponse;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnBeneficiary;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnRequest;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnResponse;
@@ -38,9 +41,18 @@ import ca.bc.gov.hlth.hnweb.security.UserInfo;
 import ca.uhn.hl7v2.HL7Exception;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 
 @SpringBootTest
 public class EligibilityControllerTest {
+	
+	private static final String R41_SUCCESS = "RPBSPGW0RPBSPPE000006412HN000002                        RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  9123456789                                                                                          2021-06-229123456789GFMSRHNISNAME                      GERHNIMODFNAME                               1970-09-09MRPBS9014TRANSACTION SUCCESSFUL                                                  Y                                                                                          N";
+	
+	private static final String R41_ERROR_NO_ELIGIBILITY_DATE = "RPBSPGW0RPBSPPE000006412HN000002                        ERRORMSGRPBS0057ELIGIBILITY DATE REQUIRED                                               9123456789           ";
+	
+	private static final String R41_WARNING_PHN_INVALID = "RPBSPGW0RPBSPPE000006412HN000002                        RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  9123456789                                                                                          2021-06-229123456789                                                                                           RPBS0073PHN INVALID";
+	
+	private static final String R41_WARNING_NOT_FOUND = "RPBSPGW0RPBSPPE000006412HN000002                        RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  91231231239456456456                                                                                2021-06-229123123123                                                                                           RPBS9145PHN NOT FOUND                                                                                                                                                       9456456456SMITH                              JENNIFER       JENNY                         2000-01-01FRPBS9014TRANSACTION SUCCESSFUL                                                  N                                                                                          N                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ";
 	
 	private static final String R42_SUCCESS = "RPBSPGW0RPBSPPL000000010HN000002                        RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  6803423266337109019123456789CHECKSETSNAME                      CHECSETFNAME   CHESERSNDNAME                 1970-01-01M                                                       ";
 
@@ -151,6 +163,137 @@ public class EligibilityControllerTest {
 		//TODO (daveb-hni) The response is hard-coded currently so this this needs to be updated to Web Client test similar to EnrollmentControllerTest.testEnrollSubscriber_Error() once the endpoint connection is completed in EligibilityController.checkMspCoverageStatus 		
 //		ResponseEntity<CheckMspCoverageStatusResponse> responseEntity = eligibilityController.checkMspCoverageStatus(checkMspCoverageStatusRequest);		
 	}
+	
+	@Test
+	public void testInquirePhn_success() throws InterruptedException {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R41_SUCCESS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        InquirePhnRequest inquirePhnRequest = new InquirePhnRequest();
+        inquirePhnRequest.getPhns().add("9123456789");
+        
+        ResponseEntity<InquirePhnResponse> response = eligibilityController.inquirePhn(inquirePhnRequest);
+        
+        InquirePhnResponse inquirePhnResponse = response.getBody();
+
+		// Check the response
+        assertEquals(StatusEnum.SUCCESS, inquirePhnResponse.getStatus());
+        assertEquals("TRANSACTION SUCCESSFUL", inquirePhnResponse.getMessage());
+		
+		// Check the client request is sent as expected
+        List<InquirePhnBeneficiary> beneficiaries = inquirePhnResponse.getBeneficiaries();
+        assertEquals(1, beneficiaries.size());
+        
+        InquirePhnBeneficiary beneficiary = beneficiaries.get(0);
+        
+        assertEquals("9123456789", beneficiary.getPhn());
+        assertEquals("GFMSRHNISNAME", beneficiary.getLastName());
+        assertEquals("GERHNIMODFNAME", beneficiary.getFirstName());
+        assertEquals("19700909", beneficiary.getDateOfBirth());
+        assertEquals("M", beneficiary.getGender());
+        assertEquals("Y", beneficiary.getEligible());
+        assertEquals("N", beneficiary.getStudent());        
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+	}
+	
+	@Test
+	public void testInquirePhn_error_noEligibilityDate() throws InterruptedException {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R41_ERROR_NO_ELIGIBILITY_DATE)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        InquirePhnRequest inquirePhnRequest = new InquirePhnRequest();
+        inquirePhnRequest.getPhns().add("9123456789");
+        
+        ResponseEntity<InquirePhnResponse> response = eligibilityController.inquirePhn(inquirePhnRequest);
+        
+        InquirePhnResponse inquirePhnResponse = response.getBody();
+
+		// Check the response
+        assertEquals(StatusEnum.ERROR, inquirePhnResponse.getStatus());
+        assertEquals("RPBS0057 ELIGIBILITY DATE REQUIRED", inquirePhnResponse.getMessage());
+		
+		// Check the client request is sent as expected
+        List<InquirePhnBeneficiary> beneficiaries = inquirePhnResponse.getBeneficiaries();
+        assertEquals(0, beneficiaries.size());   
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+	}
+	
+	@Test
+	public void testInquirePhn_warning_invalidPHN() throws InterruptedException {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R41_WARNING_PHN_INVALID)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        InquirePhnRequest inquirePhnRequest = new InquirePhnRequest();
+        inquirePhnRequest.getPhns().add("9123456789");
+        
+        ResponseEntity<InquirePhnResponse> response = eligibilityController.inquirePhn(inquirePhnRequest);
+        
+        InquirePhnResponse inquirePhnResponse = response.getBody();
+
+		// Check the response
+        assertEquals(StatusEnum.WARNING, inquirePhnResponse.getStatus());
+        assertEquals("RPBS0073 PHN INVALID (9123456789)", inquirePhnResponse.getMessage());
+		
+		// Check the client request is sent as expected
+        List<InquirePhnBeneficiary> beneficiaries = inquirePhnResponse.getBeneficiaries();
+        assertEquals(0, beneficiaries.size());   
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+	}
+	
+	@Test
+	public void testInquirePhn_warning_phnNotFound() throws InterruptedException {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R41_WARNING_NOT_FOUND)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        // There are two PHNs, one which generates a warning and one which is successful
+        InquirePhnRequest inquirePhnRequest = new InquirePhnRequest();
+        inquirePhnRequest.getPhns().add("9123123123");
+        inquirePhnRequest.getPhns().add("9456456456");
+        
+        ResponseEntity<InquirePhnResponse> response = eligibilityController.inquirePhn(inquirePhnRequest);
+        
+        InquirePhnResponse inquirePhnResponse = response.getBody();
+
+		// Check the response
+        assertEquals(StatusEnum.WARNING, inquirePhnResponse.getStatus());
+        assertEquals("RPBS9145 PHN NOT FOUND (9123123123)", inquirePhnResponse.getMessage());
+		
+		// Check the client request is sent as expected
+        List<InquirePhnBeneficiary> beneficiaries = inquirePhnResponse.getBeneficiaries();
+        assertEquals(1, beneficiaries.size());
+        
+        InquirePhnBeneficiary beneficiary = beneficiaries.get(0);
+        
+        assertEquals("9456456456", beneficiary.getPhn());
+        assertEquals("SMITH", beneficiary.getLastName());
+        assertEquals("JENNIFER       JENNY", beneficiary.getFirstName());
+        assertEquals("20000101", beneficiary.getDateOfBirth());
+        assertEquals("F", beneficiary.getGender());
+        assertEquals("N", beneficiary.getEligible());
+        assertEquals("N", beneficiary.getStudent());        
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+	}
+	
 	
 	@Test
 	public void testLookupPhn_success() {
@@ -270,7 +413,6 @@ public class EligibilityControllerTest {
     @DynamicPropertySource
     static void registerMockUrlProperty(DynamicPropertyRegistry registry) {
         registry.add("rapid.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
-        registry.add("rapid.r42Path", () -> "/");
     }
 	
 	private CheckMspCoverageStatusRequest createCheckMspCoverageStatusRequest(String phn, LocalDate dateOfBirth, LocalDate dateOfService,
@@ -288,3 +430,4 @@ public class EligibilityControllerTest {
 	}
 	
 }
+

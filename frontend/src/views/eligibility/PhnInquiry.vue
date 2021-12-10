@@ -49,9 +49,9 @@
       </form>
   </div>
   <br />
-  <div v-if="searchOk">
-    <h2>Transaction Successful</h2>
-    <AppSimpleTable>
+  <div v-if="searchOk && result.beneficiaries.length > 0">
+  <hr />
+    <AppSimpleTable id="resultsTable">
       <thead>
       <tr>
         <th>PHN</th>
@@ -63,8 +63,8 @@
       </tr>
       </thead>
       <tbody>
-        <tr v-for="match in result.matches">
-          <PhnInquiryMatch :match="match" />
+        <tr v-for="beneficiary in result.beneficiaries">
+          <PhnInquiryBeneficiary :beneficiary="beneficiary" />
         </tr>
       </tbody>
     </AppSimpleTable>
@@ -79,7 +79,7 @@ import AppInput from '../../components/AppInput.vue'
 import AppRow from '../../components/grid/AppRow.vue'
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
 import EligibilityService from '../../services/EligibilityService'
-import PhnInquiryMatch from '../../components/eligibility/PhnInquiryMatch.vue'
+import PhnInquiryBeneficiary from '../../components/eligibility/PhnInquiryBeneficiary.vue'
 import useVuelidate from '@vuelidate/core'
 import { validateOptionalPHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
 import { helpers } from '@vuelidate/validators'
@@ -87,7 +87,7 @@ import { helpers } from '@vuelidate/validators'
 export default {
   name: 'PhnInquiry',
   components: {
-    AppButton, AppCol, AppInput, AppRow, AppSimpleTable, PhnInquiryMatch
+    AppButton, AppCol, AppInput, AppRow, AppSimpleTable, PhnInquiryBeneficiary
   },
   setup() {
     return {
@@ -108,14 +108,18 @@ export default {
       searching: false,
       searchOk: false,
       result: {
-        errorMessage: '',
-        matches: [],
+        status: '',
+        message: '',
+        beneficiaries: [],
       },
     }
   },
   methods: {
     async submitForm() {
+      this.result = null
       this.searching = true
+      this.searchOk = false
+      this.$store.commit("alert/dismissAlert")
       try {
         const isValid = await this.v$.$validate()      
         if (!isValid) {
@@ -128,16 +132,19 @@ export default {
           this.showError('At least one PHN is required')
           return
         }
-        this.result = (await EligibilityService.inquirePhn({phns: populatedPHNs})).data
 
-        if (!this.result.errorMessage || this.result.errorMessage === '') {
-          this.searchOk = true
-          this.$store.commit('alert/setSuccessAlert', 'Search complete')
-        } else {
-          this.$store.commit('alert/setWarningAlert', this.result.errorMessage)
-          this.result = null
-          this.searchOk = false
+        this.result = (await EligibilityService.inquirePhn({phns: populatedPHNs})).data
+        if (this.result.status === 'error') {
+          this.$store.commit('alert/setErrorAlert', this.result.message)
+          return
         }
+
+        this.searchOk = true
+        if (this.result.status === 'success') {
+          this.$store.commit('alert/setSuccessAlert', this.result.message || 'Transaction successful')
+        } else if (this.result.status === 'warning') {
+          this.$store.commit('alert/setWarningAlert', this.result.message)  
+        }          
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       } finally {
