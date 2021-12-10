@@ -1,4 +1,4 @@
-package ca.bc.gov.hlth.hnweb.converter;
+package ca.bc.gov.hlth.hnweb.converter.hl7v2;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,7 +18,7 @@ import ca.uhn.hl7v2.model.v24.segment.PID;
  * @author wesley.kubo
  *
  */
-public abstract class BaseConverter {
+public abstract class BaseV2Converter {
 	protected static final String PID_NAMESPACE_ID = "BC";
 	protected static final String PID_ID_TYPE_CODE = "PH";
 	
@@ -37,7 +37,7 @@ public abstract class BaseConverter {
 	
 	protected abstract String getMessageType();
 
-	public BaseConverter(MSHDefaults mshDefaults) {
+	public BaseV2Converter(MSHDefaults mshDefaults) {
 		super();
 		this.mshDefaults = mshDefaults;
 		this.userInfo = SecurityUtil.loadUserInfo();

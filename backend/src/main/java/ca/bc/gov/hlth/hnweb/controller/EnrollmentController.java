@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import ca.bc.gov.hlth.hnweb.converter.MSHDefaults;
+import ca.bc.gov.hlth.hnweb.converter.hl7v2.MSHDefaults;
 import ca.bc.gov.hlth.hnweb.converter.hl7v2.R50Converter;
 import ca.bc.gov.hlth.hnweb.converter.hl7v3.GetDemographicsConverter;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;

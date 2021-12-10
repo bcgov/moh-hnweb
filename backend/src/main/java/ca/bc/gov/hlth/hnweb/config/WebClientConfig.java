@@ -112,20 +112,22 @@ public class WebClientConfig {
     }
 	
 	@Bean("hcimWebClient")
-	public WebClient hcimWebClient() throws HNWebException {
+    public WebClient hcimWebClient() throws HNWebException {
+
 		SslContext sslContext = getSSLContext(hcimUrl, hcimCertFile, hcimCertPassword);
-		HttpClient httpClient= HttpClient.create().secure(t -> t.sslContext(sslContext));
+		
+	    HttpClient httpClient= HttpClient.create().secure(t -> t.sslContext(sslContext));
 		ClientHttpConnector connector= new ReactorClientHttpConnector(httpClient);
-    
+	    
 		return WebClient.builder()
-    		.clientConnector(connector)
-            .baseUrl(hcimUrl)
-            .filter(logRequest())
-            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE) 
-            .defaultHeader(HttpHeaders.ACCEPT, MediaType.ALL_VALUE)
-            .build();
-	}
-	
+	    		.clientConnector(connector)
+                .baseUrl(hcimUrl)
+                .filter(logRequest())
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_XML_VALUE) 
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.ALL_VALUE) 
+                .build();
+    }
+
 	@Bean("hibcWebClient")
     public WebClient hibcWebClient() throws HNWebException {
 

@@ -1,4 +1,4 @@
-package ca.bc.gov.hlth.hnweb.converter;
+package ca.bc.gov.hlth.hnweb.converter.hl7v2;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

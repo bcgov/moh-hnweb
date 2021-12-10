@@ -1,4 +1,4 @@
-package ca.bc.gov.hlth.hnweb.converter;
+package ca.bc.gov.hlth.hnweb.converter.hl7v2;
 
 import static ca.bc.gov.hlth.hnweb.util.V2MessageUtil.SegmentType.ADJ;
 
@@ -30,7 +30,7 @@ import ca.uhn.hl7v2.model.v24.segment.ERR;
 import ca.uhn.hl7v2.model.v24.segment.RCP;
 import ca.uhn.hl7v2.util.Terser;
 
-public class E45Converter extends BaseConverter {
+public class E45Converter extends BaseV2Converter {
 	public static final Logger logger = LoggerFactory.getLogger(E45Converter.class);
 
 	private static final String MESSAGE_TYPE = "E45";

@@ -1,4 +1,4 @@
-package ca.bc.gov.hlth.hnweb.converter;
+package ca.bc.gov.hlth.hnweb.converter.hl7v2;
 
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
@@ -7,7 +7,7 @@ import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.util.Terser;
 
-public class R15Converter extends BaseConverter {
+public class R15Converter extends BaseV2Converter {
 
 	private static final String MESSAGE_TYPE = "R15";
 	private static final String RECEIVING_APPLICATION = "RAICHK-BNF-CVST";

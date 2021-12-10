@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClientException;
 import org.springframework.web.server.ResponseStatusException;
 
-import ca.bc.gov.hlth.hnweb.converter.E45Converter;
-import ca.bc.gov.hlth.hnweb.converter.MSHDefaults;
-import ca.bc.gov.hlth.hnweb.converter.R15Converter;
+import ca.bc.gov.hlth.hnweb.converter.hl7v2.E45Converter;
+import ca.bc.gov.hlth.hnweb.converter.hl7v2.MSHDefaults;
+import ca.bc.gov.hlth.hnweb.converter.hl7v2.R15Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.R42Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPPE0Converter;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
