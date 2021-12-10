@@ -13,6 +13,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,17 +55,22 @@ public class EligibilityControllerTest {
 	
 	public static MockWebServer mockBackEnd;
 	
+	private static MockedStatic<SecurityUtil> mockStatic;
+	
 	@BeforeAll
     static void setUp() throws IOException {
         mockBackEnd = new MockWebServer();
         mockBackEnd.start(0);
         
-        Mockito.mockStatic(SecurityUtil.class).when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "00000010", "hnweb-user"));
+        mockStatic = Mockito.mockStatic(SecurityUtil.class);
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "00000010", "hnweb-user"));
     }
 
     @AfterAll
     static void tearDown() throws IOException {
         mockBackEnd.shutdown();
+        mockStatic.close();
+       
     }
 	
 	/**

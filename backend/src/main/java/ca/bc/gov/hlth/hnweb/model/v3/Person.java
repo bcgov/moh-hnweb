@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
-import ca.bc.gov.hlth.hnweb.model.Telecommunication;
-
 public class Person {
 
   private Date birthDate;

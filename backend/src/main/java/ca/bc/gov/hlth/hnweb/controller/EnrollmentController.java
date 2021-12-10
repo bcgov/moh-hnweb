@@ -1,7 +1,5 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -15,15 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.converter.MSHDefaults;
-import ca.bc.gov.hlth.hnweb.converter.R50Converter;
-import ca.bc.gov.hlth.hnweb.converter.XmlConverter;
+import ca.bc.gov.hlth.hnweb.converter.hl7v2.R50Converter;
+import ca.bc.gov.hlth.hnweb.converter.hl7v3.GetDemographicsConverter;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
-import ca.bc.gov.hlth.hnweb.model.R50Response;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
+import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
+import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.service.EnrollmentService;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
@@ -57,14 +56,12 @@ public class EnrollmentController {
 		logger.info("Subscriber enroll request: {} ", enrollSubscriberRequest.getPhn());
 		try {
 			R50Converter converter = new R50Converter(mshDefaults);
-			R50 r50 = converter.convertRequest(enrollSubscriberRequest);
-			String transactionId = UUID.randomUUID().toString();
-			Message r50Message = enrollmentService.enrollSubscriber(r50, transactionId);
-			R50Response r50Response = converter.convertResponse(r50Message);
-			EnrollSubscriberResponse enrollSubscriberResponse = converter.buildEnrollSubscribeResponse(r50Response);
+			R50 r50 = converter.convertRequest(enrollSubscriberRequest);			
+			Message r50Message = enrollmentService.enrollSubscriber(r50);
+			EnrollSubscriberResponse enrollSubscriberResponse = converter.convertResponse(r50Message);
 			ResponseEntity<EnrollSubscriberResponse> responseEntity = ResponseEntity.ok(enrollSubscriberResponse);
 
-			logger.info("Subscriber enroll Response: {} ", r50Response.getAcknowledgementMessage());
+			logger.info("Subscriber enroll Response: {} ", enrollSubscriberResponse.getAcknowledgementMessage());
 
 			return responseEntity;
 		} catch (HNWebException hwe) {
@@ -81,18 +78,16 @@ public class EnrollmentController {
 
 	@PostMapping("/get-person-details")
 	public ResponseEntity<GetPersonDetailsResponse> getPersonDetails(
-			@Valid @RequestBody GetPersonDetailsRequest requestObj) {
-		logger.info("Demographic request: {} ", requestObj.getPhn());
+			@Valid @RequestBody GetPersonDetailsRequest personDetails) {
+		logger.info("Demographic request: {} ", personDetails.getPhn());
 
 		try {
-			String transactionId = UUID.randomUUID().toString();
-			XmlConverter converter = new XmlConverter(transactionId);
+			GetDemographicsConverter converter = new GetDemographicsConverter();
 
-			String xmlString = converter.convertRequest(requestObj.getPhn());
-
-			ResponseEntity<String> demoGraphicsResponse = enrollmentService.getDemographics(xmlString, transactionId);
-			GetPersonDetailsResponse getPersonDetailsResponse = converter.convertResponse(demoGraphicsResponse.getBody());
-			ResponseEntity<GetPersonDetailsResponse> responseEntity = ResponseEntity.ok(getPersonDetailsResponse);
+			GetDemographicsRequest demographicsRequest = converter.convertRequest(personDetails.getPhn());
+			GetDemographicsResponse demoGraphicsResponse = enrollmentService.getDemographics(demographicsRequest);
+			GetPersonDetailsResponse personDetailsResponse = converter.convertResponse(demoGraphicsResponse);
+			ResponseEntity<GetPersonDetailsResponse> responseEntity = ResponseEntity.ok(personDetailsResponse);
 
 			return responseEntity;
 		} catch (HNWebException hwe) {

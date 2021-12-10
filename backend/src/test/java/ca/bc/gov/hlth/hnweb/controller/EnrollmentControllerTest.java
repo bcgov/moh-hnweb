@@ -13,6 +13,9 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
@@ -26,6 +29,8 @@ import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
+import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
+import ca.bc.gov.hlth.hnweb.security.UserInfo;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -42,6 +47,8 @@ public class EnrollmentControllerTest {
 			"ERR|^^^NHR529E";
 	
 	public static MockWebServer mockBackEnd;
+	private static MockedStatic<SecurityUtil> mockStatic;
+	
 
 	@Autowired
 	private EnrollmentController enrollmentController;
@@ -50,11 +57,15 @@ public class EnrollmentControllerTest {
     static void setUp() throws IOException {
         mockBackEnd = new MockWebServer();
         mockBackEnd.start(0);
+        mockStatic = Mockito.mockStatic(SecurityUtil.class);
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "00000010", "hnweb-user"));
     }
 
     @AfterAll
     static void tearDown() throws IOException {
+    	mockStatic.close();
         mockBackEnd.shutdown();
+       
     }
     
     @Test
@@ -132,7 +143,7 @@ public class EnrollmentControllerTest {
      */
     @DynamicPropertySource
     static void registerMockUrlProperty(DynamicPropertyRegistry registry) {
-        registry.add("R03.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
+        registry.add("hcim.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
         registry.add("R50.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
     }
     

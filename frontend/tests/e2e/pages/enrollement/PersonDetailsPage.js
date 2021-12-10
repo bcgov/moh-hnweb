@@ -4,8 +4,8 @@ class PersonDetails {
     constructor () {
         this.phnInput = Selector('#phn'); 
         this.submitButton = Selector('button[type="submit"]');
-        this.cancelButton = Selector('button[type="button"]');        
-        this.ErrorText = Selector('div').withAttribute('class','error-text');
+        this.clearButton = Selector('button[type="button"]');        
+        this.errorText = Selector('div').withAttribute('class','error-text');
         
     }
 }

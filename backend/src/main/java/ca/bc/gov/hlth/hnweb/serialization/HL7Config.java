@@ -1,4 +1,4 @@
-package ca.bc.gov.hlth.hnweb.config;
+package ca.bc.gov.hlth.hnweb.serialization;
 
 /**
  *Config class to build GetDemographicsRequest

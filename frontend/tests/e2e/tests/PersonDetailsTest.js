@@ -2,7 +2,6 @@ import AddVisaResidentWithPHNPage from '../pages/enrollement/AddVisaResidentWith
 import AlertPage from '../pages/AlertPage';
 import PersonDetailsPage from '../pages/enrollement/PersonDetailsPage';
 import { SITE_UNDER_TEST } from '../configuration';
-import { Selector } from 'testcafe';
 import { regularAccUser } from '../roles/roles';
 
 const ERROR_MESSAGE = 'Please correct errors before submitting';
@@ -27,7 +26,7 @@ test('Check required fields validation', async t => {
         .click(PersonDetailsPage.submitButton)
         // I expect an error message stating the page had errors and individual error messages for each required field
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
-        .expect(PersonDetailsPage.ErrorText.nth(0).textContent).contains(PHN_REQUIRED_MESSAGE)
+        .expect(PersonDetailsPage.errorText.nth(0).textContent).contains(PHN_REQUIRED_MESSAGE)
 
 });
 
@@ -38,7 +37,7 @@ test('Check invalid phn format validation', async t => {
         // When I click the submit button
 		.click(PersonDetailsPage.submitButton)
         // I expect an error message stating the page had errors and an individual error message for the PHN format
-        .expect(PersonDetailsPage.ErrorText.nth(0).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
+        .expect(PersonDetailsPage.errorText.nth(0).textContent).contains(INVALID_PHN_ERROR_MESSAGE)
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
 });
 
@@ -47,19 +46,19 @@ test('Check properly filled form passes validation', async t => {
 	await t
         // Given I have a form filled out with data
         .typeText(PersonDetailsPage.phnInput, '9882807277')
-        .wait(5000)
+        .wait(1000)
         // When I click the submit button
 		.click(PersonDetailsPage.submitButton)
         // I expect the AddVisaResident page to be loaded
         .expect(AddVisaResidentWithPHNPage.groupNumberInput.exists).ok();
 });
 
-test('Check cancel button clears the form', async t => {
+test('Check clear button clears the form', async t => {
 	await t
         // Given I have a form filled out with data
         .typeText(PersonDetailsPage.phnInput, '9000448000')
         // When I click the cancel button
-		.click(PersonDetailsPage.cancelButton)
+		.click(PersonDetailsPage.clearButton)
         // I expect the form to be cleared
         .expect(PersonDetailsPage.phnInput.value).eql('')
 });
