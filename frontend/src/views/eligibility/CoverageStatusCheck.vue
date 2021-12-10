@@ -34,7 +34,7 @@
     </form>
   </div>
   <br />
-  <div v-if="searchOk">
+  <div id="result" v-if="searchOk">
     <hr />
     <AppRow>
       <AppCol class="col3">
@@ -65,7 +65,7 @@
       </AppCol>
     </AppRow>    
     <br/>
-    <AppCard v-if="isPatientStatusRequest">
+    <AppCard id="patientStatusRequest" v-if="isPatientStatusRequest">
       <AppRow class="row" v-if="result.subsidyInsuredService">      
         <AppCol class="col12">
           <p>
@@ -89,11 +89,11 @@
       </AppRow>
     </AppCard>
 
-    <AppCard v-if="result.careCardWarning">
+    <AppCard id="careCardWarning" v-if="result.careCardWarning">
       <p>{{result.careCardWarning}}</p>
     </AppCard>
 
-    <AppCard v-if="result.clientInstructions">
+    <AppCard id="clientInstructions" v-if="result.clientInstructions">
       <p>{{result.clientInstructions}}</p>
     </AppCard>
   </div>
@@ -257,7 +257,7 @@ export default {
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       } finally {
-        this.searching = false;
+        this.searching = false
       }
     },
     showError(error) {
@@ -274,7 +274,7 @@ export default {
       this.checkPatientRestriction = false
       this.result = null
       this.v$.$reset()
-      this.$store.commit("alert/dismissAlert");
+      this.$store.commit("alert/dismissAlert")
       this.searchOk = false
       this.searching = false
     }
