@@ -61,17 +61,17 @@
 
       <AppRow>
         <AppCol class="col7">
-          <AppInput :e-model="v$.address1" id="address1" label="Home Address Line 1" v-model="address1" />
+          <AppInput :e-model="v$.address1" id="address1" label="Home Address Line 1" type="text" v-model="address1" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col7">
-          <AppInput :e-model="v$.address2" id="address2" label="Line 2 (Optional)" v-model="address2" />
+          <AppInput :e-model="v$.address2" id="address2" label="Line 2 (Optional)" type="text" v-model="address2" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col7">
-          <AppInput :e-model="v$.address3" id="address3" label="Line 3 (Optional)" v-model="address3" />
+          <AppInput :e-model="v$.address3" id="address3" label="Line 3 (Optional)" type="text" v-model="address3" />
         </AppCol>
       </AppRow>
       <AppRow>
