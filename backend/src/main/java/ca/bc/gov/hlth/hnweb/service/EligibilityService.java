@@ -27,7 +27,10 @@ import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.parser.Parser;
 
 /**
- * Service for Eligibility (E45) requests
+ * Service for:
+ *  Eligibility request (R15)
+ *  PHN requests (R41, R42)
+ *  MSP Coverage request (E45)
  *
  */
 @Service
