@@ -19,8 +19,9 @@ import ca.uhn.hl7v2.model.v24.segment.PID;
  *
  */
 public abstract class BaseConverter {
-	private static final String PID_NAMESPACE_ID = "BC";
-	private static final String PID_ID_TYPE_CODE = "PH";
+	protected static final String PID_NAMESPACE_ID = "BC";
+	protected static final String PID_ID_TYPE_CODE = "PH";
+	
 
 	protected static DateTimeFormatter dateOnlyFormatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_FORMAT_DATE_ONLY);
 	
@@ -55,7 +56,18 @@ public abstract class BaseConverter {
 		V2MessageUtil.setPidValues(pid, phn, PID_NAMESPACE_ID, PID_ID_TYPE_CODE, "", "", "");
 	}
 	
+	protected void populatePID(PID pid, String phn, LocalDate dateOfBirth, String gender) throws HL7Exception {
+		V2MessageUtil.setPidValues(pid, phn, PID_NAMESPACE_ID, PID_ID_TYPE_CODE, "", dateOnlyFormatter.format(dateOfBirth), gender);
+	}
+	
 	protected void populateIN1(IN1 in1, LocalDate planEffectiveDate) throws HL7Exception {
 		V2MessageUtil.setIn1Values(in1, null, null, null, dateOnlyFormatter.format(planEffectiveDate), null);
 	}
+	
+	protected void populateIN1(IN1 in1, LocalDate planEffectiveDate, LocalDate planCancellationDate, String groupNumber, String groupMemebrNumber, String immigrationCode ) throws HL7Exception {
+		V2MessageUtil.setIn1Values(in1, groupNumber, groupMemebrNumber, immigrationCode, dateOnlyFormatter.format(planEffectiveDate), dateOnlyFormatter.format(planCancellationDate));
+	}
+	
+	
+	
 }

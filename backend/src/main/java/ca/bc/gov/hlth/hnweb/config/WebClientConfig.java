@@ -41,7 +41,7 @@ public class WebClientConfig {
 
 	@Value("${R50.url}")
 	private String r50Url;
-	 
+		 
 	@Value("${R50.user.name}")
 	private String userName;
 
@@ -50,9 +50,18 @@ public class WebClientConfig {
 
 	@Value("classpath:${R50.cert.file}")
 	private Resource certFile;
-
+	
 	@Value("${R50.cert.password}")
 	private String certPassword;
+
+	@Value("${hcim.url}")
+	private String hcimUrl;
+	
+	@Value("classpath:${hcim.cert.file}")
+	private Resource hcimCertFile;
+
+	@Value("${hcim.cert.password}")
+	private String hcimCertPassword;
 	
 	@Value("${rapid.url}")
 	private String rapidUrl;
@@ -87,6 +96,23 @@ public class WebClientConfig {
                 .build();
     }
 	
+	@Bean("hcimWebClient")
+    public WebClient hcimWebClient() throws HNWebException {
+
+		SslContext sslContext = getSSLContext(hcimUrl, hcimCertFile, hcimCertPassword);
+		
+	    HttpClient httpClient= HttpClient.create().secure(t -> t.sslContext(sslContext));
+		ClientHttpConnector connector= new ReactorClientHttpConnector(httpClient);
+	    
+		return WebClient.builder()
+	    		.clientConnector(connector)
+                .baseUrl(hcimUrl)
+                .filter(logRequest())
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_XML_VALUE) 
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.ALL_VALUE) 
+                .build();
+    }
+
 	@Bean("rapidWebClient")
     public WebClient rapidWebClient() throws HNWebException {
 

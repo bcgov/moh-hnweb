@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row" >
     <slot></slot>
   </div>
 </template>
@@ -11,11 +11,15 @@
 </script>
 <style scoped>
 .row {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    padding-bottom: 5px;
-    width: 100%;
-  }
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding-bottom: 5px;
+  width: 100%;
+}
   
+.row-center {
+  justify-content: center;
+}
+
 </style>

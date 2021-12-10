@@ -50,5 +50,8 @@
     flex: 0 0 50%;
     max-width: 50%;
   }
-  
+  .col7 {
+    flex: 0 0 66.66%;
+    max-width: 66.66%;
+  }
 </style>
