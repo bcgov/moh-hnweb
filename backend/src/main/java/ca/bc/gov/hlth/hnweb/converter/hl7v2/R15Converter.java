@@ -1,10 +1,18 @@
 package ca.bc.gov.hlth.hnweb.converter.hl7v2;
 
+import org.apache.commons.lang3.StringUtils;
+
+import ca.bc.gov.hlth.hnweb.model.BaseResponse;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
+import ca.bc.gov.hlth.hnweb.model.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
+import ca.uhn.hl7v2.model.Segment;
+import ca.uhn.hl7v2.model.v24.datatype.CE;
+import ca.uhn.hl7v2.model.v24.datatype.ELD;
+import ca.uhn.hl7v2.model.v24.segment.ERR;
 import ca.uhn.hl7v2.util.Terser;
 
 public class R15Converter extends BaseV2Converter {
@@ -41,7 +49,10 @@ public class R15Converter extends BaseV2Converter {
     	checkEligibilityResponse.setBeneficiaryOnDateChecked(terser.get("/.IN1-25-1"));
     	checkEligibilityResponse.setCoverageEndDate(terser.get("/.IN1-13-1"));
         checkEligibilityResponse.setCoverageEndReason(terser.get("/.ZIH-15"));
-        checkEligibilityResponse.setExclusionPeriodEndDate(terser.get("/.ZIH-16-1"));    		
+        checkEligibilityResponse.setExclusionPeriodEndDate(terser.get("/.ZIH-16-1"));
+        checkEligibilityResponse.setClientInstructions(terser.get("/.ZIH-17-1"));
+        
+        mapErrorValues(terser, message, checkEligibilityResponse);
 
 		return checkEligibilityResponse;
 	}

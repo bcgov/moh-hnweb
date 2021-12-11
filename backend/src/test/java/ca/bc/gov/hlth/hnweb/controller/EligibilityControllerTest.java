@@ -104,6 +104,20 @@ public class EligibilityControllerTest {
 			+ "ADJ|2|IN|||EYE^^HNET9908\r\n"
 			+ "ADJ|3|IN|||PRS^^HNET9908|N";
 	
+	private static final String R15_SUCCESS_ELIGIBLE = "MSH|^~\\&|RAICHK-BNF-CVST|BC00004000|ADT1|BC01400020|20211210185941|SSOMAX|R15|20200128094905|P|2.3||\r\n"
+			+ "MSA|AA|20200128094905|HJMB001ISUCCESSFULLY COMPLETED\r\n"
+			+ "ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED\r\n"
+			+ "ZTL|1^RD\r\n"
+			+ "IN1|1||||||||||||||||||||||||Y\r\n"
+			+ "ZIH||||||||||||||||||1";
+	
+	private static final String R15_SUCCESS_INELIGIBLE = "MSH|^~\\&|RAICHK-BNF-CVST|BC00004000|ADT1|BC01400020|20211210190504|SSOMAX|R15|20200421094901|P|2.3||\r\n"
+			+ "MSA|AA|20200421094901|HJMB001ISUCCESSFULLY COMPLETED\r\n"
+			+ "ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED\r\n"
+			+ "ZTL|1^RD\r\n"
+			+ "IN1|1||||||||||||20190731||||||||||||N\r\n"
+			+ "ZIH|||||||||||||||OOPM||MSP'S RECORDS INDICATE THAT THIS PERSON HAS MOVED PERMANENTLY FROM BC. PLEASE CONFIRM RESIDENCE, OBTAIN AND UPDATE ADDRESS AND TELEPHONE INFORMATION AND ADVISE PERSON TO CONTACT MSP TO RE-ESTABLISH ELIGIBILITY.|1";
+	
 	protected static DateTimeFormatter dateOnlyFormatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_FORMAT_DATE_ONLY);
 	
 	@Autowired
@@ -128,45 +142,63 @@ public class EligibilityControllerTest {
         mockStatic.close();
        
     }
-	
-	/**
-	 * TODO (weskubo-cgi) Update this test once downstream service is integrated using WebClient.
-	 * @throws ParseException
-	 */
-	@Disabled
-	@Test
-	public void testCheckEligibility_success() throws ParseException {
-		// 1. Set up our test data
-		String phn = "9890608412";
-		LocalDate eligibilityDate = LocalDate.now();
-		String reason = "This is a mocked out response";
-		
-		// 2. Create a mock response object
-		CheckEligibilityResponse mockResponse = new CheckEligibilityResponse();
-		mockResponse.setPhn(phn);
-		mockResponse.setCoverageEndReason("This is a mocked out response");
-		
-		R15 r15 = new R15();
-		//r15.getPID().
-		
-		// 3. Return the mock response object when the service is called
-		// Note, the parameters need to match what is sent
-		//when(eligibilityServiceMock.checkEligibility(r15)).thenReturn(mockResponse);
 
-		// 4. Perform assertions
-		// These assertions aren't that interested since our service is returning the REST model directly
-		// Once the service returns the HL7/Other business entity, the tests will be validating the conversion logic
-		// in the controller
-		CheckEligibilityRequest request = new CheckEligibilityRequest();
-		request.setPhn(phn);
-		request.setEligibilityDate(eligibilityDate);
-	
-		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(request);
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+	@Test
+	public void testCheckEligibility_success_eligible() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R15_SUCCESS_ELIGIBLE)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+
+		CheckEligibilityRequest checkEligibilityRequest = new CheckEligibilityRequest();
+		checkEligibilityRequest.setEligibilityDate(LocalDate.now());
+		checkEligibilityRequest.setPhn("9347984074");
+		
+		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(checkEligibilityRequest);
 		
 		CheckEligibilityResponse checkEligibilityResponse = response.getBody();
-		assertEquals(phn, checkEligibilityResponse.getPhn());
-		assertEquals(reason, checkEligibilityResponse.getCoverageEndReason());
+		assertEquals(StatusEnum.SUCCESS, checkEligibilityResponse.getStatus());
+        assertEquals("SUCCESSFULLY COMPLETED", checkEligibilityResponse.getMessage());
+
+        assertEquals("9347984074", checkEligibilityResponse.getPhn());
+        assertEquals("Y", checkEligibilityResponse.getBeneficiaryOnDateChecked());
+        assertNull(checkEligibilityResponse.getCoverageEndDate());
+        assertNull(checkEligibilityResponse.getCoverageEndReason());
+        assertNull(checkEligibilityResponse.getExclusionPeriodEndDate());
+        assertNull(checkEligibilityResponse.getClientInstructions());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));	
+	}
+	
+	@Test
+	public void testCheckEligibility_success_ineligible() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R15_SUCCESS_INELIGIBLE)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+
+		CheckEligibilityRequest checkEligibilityRequest = new CheckEligibilityRequest();
+		checkEligibilityRequest.setEligibilityDate(LocalDate.now());
+		checkEligibilityRequest.setPhn("9347984074");
+		
+		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(checkEligibilityRequest);
+		
+		CheckEligibilityResponse checkEligibilityResponse = response.getBody();
+		assertEquals(StatusEnum.SUCCESS, checkEligibilityResponse.getStatus());
+        assertEquals("SUCCESSFULLY COMPLETED", checkEligibilityResponse.getMessage());
+
+        assertEquals("9347984074", checkEligibilityResponse.getPhn());
+        assertEquals("N", checkEligibilityResponse.getBeneficiaryOnDateChecked());
+        assertEquals("20190731", checkEligibilityResponse.getCoverageEndDate());
+        assertEquals("OOPM",checkEligibilityResponse.getCoverageEndReason());
+        assertNull(checkEligibilityResponse.getExclusionPeriodEndDate());
+        assertEquals("MSP'S RECORDS INDICATE THAT THIS PERSON HAS MOVED PERMANENTLY FROM BC. PLEASE CONFIRM RESIDENCE, OBTAIN AND UPDATE ADDRESS AND TELEPHONE INFORMATION AND ADVISE PERSON TO CONTACT MSP TO RE-ESTABLISH ELIGIBILITY.", checkEligibilityResponse.getClientInstructions());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));	
 	}
 	
 	@Disabled

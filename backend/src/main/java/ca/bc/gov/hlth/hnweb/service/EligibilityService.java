@@ -1,8 +1,5 @@
 package ca.bc.gov.hlth.hnweb.service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -40,6 +37,9 @@ public class EligibilityService {
 	@Value("${hibc.e45Path}")
 	private String e45Path;
 	
+	@Value("${hibc.r15Path}")
+	private String r15Path;
+	
 	@Value("${rapid.r41Path}")
 	private String r41Path;
 	
@@ -48,14 +48,6 @@ public class EligibilityService {
 
 	@Autowired
 	private Parser parser;
-
-	private static final String R15_RESPONSE_ELIGIBLE = "MSH|^~\\&|RAICHK-BNF-CVST|BC00001013|HNWeb|moh_hnclient_dev|20211118181051|train96|R15|20210513182941|D|2.4||\r\n"
-			+ "MSA|AA|20210513182941|HJMB001ISUCCESSFULLY COMPLETED\r\n" + "ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED\r\n" + "ZTL|1^RD\r\n"
-			+ "IN1|1||||||||||||||||||||||||Y\r\n" + "ZIH||||||||||||||||||1";
-
-	private static final String R15_RESPONSE_INELIGIBLE = "MSH|^~\\&|RAICHK-BNF-CVST|BC00001013|HNWeb|moh_hnclient_dev|20211118181051|train96|R15|20210513182941|D|2.4||\r\n"
-			+ "MSA|AA|20210513182941|HJMB001ISUCCESSFULLY COMPLETED\r\n" + "ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED\r\n" + "ZTL|1^RD\r\n"
-			+ "IN1|1||||||||||||20221231||||||||||||N\r\n" + "ZIH|||||||||||||||DECEASED|20221201||1";
 
 	@Autowired
 	private WebClient hibcWebClient;
@@ -69,16 +61,12 @@ public class EligibilityService {
 	 * @return The R15 response.
 	 * @throws HL7Exception
 	 */
-	public Message checkEligibility(R15 r15) throws HL7Exception {
+	public Message checkEligibility(R15 r15) throws HNWebException, HL7Exception {
 		String r15v2 = parser.encode(r15);
 
-		// TODO (weskubo-hni) Send to actual endpoint when it's available, currently
-		// response is stubbed.
-//		ResponseEntity<String> response = postCheckEligibilityRequest(r15v2, UUID.randomUUID().toString());
-//		String responseBody = response.getBody();
-		String responseBody = generateCannedResponse(r15);
+		ResponseEntity<String> response = postHibcRequest(r15Path, r15v2);
 
-		return parseResponse(responseBody, "R15");
+		return parseResponse(response.getBody(), "R15");
 	}
 
 	public RPBSPPE0 inquirePhn(RPBSPPE0 rpbsppe0) throws HNWebException {
@@ -150,27 +138,6 @@ public class EligibilityService {
 		ResponseEntity<String> response = postHibcRequest(e45Path, e45v2);
 
 		return parseResponse(response.getBody(), "E45");
-	}
-
-	private String generateCannedResponse(R15 r15) {
-		Calendar serviceDate = Calendar.getInstance();
-		try {
-			serviceDate.setTime(new SimpleDateFormat("yyyyMMdd").parse(r15.getIN1().getPlanEffectiveDate().toString()));
-		} catch (ParseException e) {
-			// Ignore
-		}
-
-		Calendar today = Calendar.getInstance();
-
-		int yearsDiff = serviceDate.get(Calendar.YEAR) - today.get(Calendar.YEAR);
-
-		String cannedResponse = null;
-		if (yearsDiff > 1) {
-			cannedResponse = R15_RESPONSE_INELIGIBLE;
-		} else {
-			cannedResponse = R15_RESPONSE_ELIGIBLE;
-		}
-		return cannedResponse;
 	}
 
 	/**

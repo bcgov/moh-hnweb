@@ -11,10 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ca.bc.gov.hlth.hnweb.model.BaseResponse;
 import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusResponse;
-import ca.bc.gov.hlth.hnweb.model.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.HDR;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.QPD;
@@ -25,8 +23,6 @@ import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.model.Segment;
 import ca.uhn.hl7v2.model.Varies;
 import ca.uhn.hl7v2.model.v24.datatype.CE;
-import ca.uhn.hl7v2.model.v24.datatype.ELD;
-import ca.uhn.hl7v2.model.v24.segment.ERR;
 import ca.uhn.hl7v2.model.v24.segment.RCP;
 import ca.uhn.hl7v2.util.Terser;
 
@@ -182,39 +178,6 @@ public class E45Converter extends BaseV2Converter {
 				logger.error("Could not set Adjustment value"); 
 			}
 		});	
-	}
-	
-	private void mapErrorValues(Terser terser, Message message, BaseResponse response) throws HL7Exception {
-		/**
-		 * When checking for an error the MSA segment needs to be checked as even a success message has an ERR segment e.g.
-		 * 
-		 * MSA|AA||HJMB001ISUCCESSFULLY COMPLETED
-		 * ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED
-		 * 
-		 * So it needs to checked if there was actually an error.
-		 * e.g.
-		 * 
-		 * MSA|AE|20211108170321|ELIG0001DATE OF SERVICE EXCEEDS SYSTEM LIMITS. MUST BE WITHIN THE LAST 18 MONTHS. CONTACT MSP.
-		 * ERR|^^^ELIG0001&DATE OF SERVICE EXCEEDS SYSTEM LIMITS. MUST BE WITHIN THE LAST 18 MONTHS. CONTACT MSP.
-		 */
-		String msaAcknowledgementCode = terser.get("/.MSA-1-1");
-		StatusEnum status = StringUtils.equals(msaAcknowledgementCode, "AA") ? StatusEnum.SUCCESS : StatusEnum.ERROR;
-
-		Segment errSegment = (Segment) message.get("ERR");
-		ERR err = (ERR) errSegment; 
-		ELD eld = err.getErr1_ErrorCodeAndLocation(0) ;
-		CE eld4CodeIdentifyingError = eld.getEld4_CodeIdentifyingError();
-		String statusCode = eld4CodeIdentifyingError.getCe1_Identifier().encode();
-		String statusText = eld4CodeIdentifyingError.getCe2_Text().encode();
-
-		if (StatusEnum.SUCCESS == status) {
-			logger.debug("Successful acknowledgement code {} received in the response.", msaAcknowledgementCode);
-		} else {
-			logger.warn("Error acknowledgement code {} received in the response.", msaAcknowledgementCode);
-			logger.warn("Error returned in E45 response was Error Code: {} ; Error Message: {}", statusCode, statusText);			
-		}
-		response.setMessage(statusText);
-		response.setStatus(status);
 	}
 
 }

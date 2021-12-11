@@ -65,11 +65,18 @@ public class EligibilityController {
 
 			logger.info("checkEligibility response: {} ", checkEligibilityResponse);
 			return response;	
+		} catch (HNWebException hwe) {
+			switch (hwe.getType()) {
+			case DOWNSTREAM_FAILURE:
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
+			default:
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /lookup-phn request", hwe);				
+			}
+		} catch (WebClientException wce) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
 		} catch (Exception e) {
-			// TODO (weskubo-cgi) Update this with more specific error handling once downstream services are integrated
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /check-eligibility request", e);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /lookup-phn request", e);
 		}
-		
 	}	
 	
 	@PostMapping("/inquire-phn")
