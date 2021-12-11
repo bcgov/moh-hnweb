@@ -1,17 +1,32 @@
 name: BuildAndPush
-
+# Build the image and deploy in OpenShift environment
 env:
   registry-url: 'image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools'
   image-name: 'hnweb-frontend'
   image-tag: 'GithubActions'
 
 on:
-  push:
-    branches:
-    - 4241-hnweb-infrastructure
-  pull_request:
-    branches:
-    - 4241-hnweb-infrastructure
+  # Run the workflow manually, instead of on a push.
+  # The user specifies the name of the environment and 
+  # --------------------------------------------------------------------------
+  workflow_dispatch:
+    inputs:
+      namespace:
+        description: 'Enter namepsacae:'
+        required: true
+        default: c5839f-dev
+      buildConfig:
+        description: 'Enter build config name:'
+        required: true
+        default: hnweb-frontend-bc
+      branch:
+        description: 'Enter branch name:'
+        required: true
+        default: 4969-setup-hnweb
+
+  #push:
+  #  branches:
+  #  - 4969-setup-hnweb
 
 jobs:
   
@@ -19,23 +34,37 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Declare some variables
+    - name: Print some values using bash
       id: vars
       shell: bash
       run: |
         pwd
-        echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"    
+      #  echo "##[set-output name= ${{ github.event.inputs.build }};]$(echo ${GITHUB_REF#refs/heads/})"
+      #  echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"    
 
-    - name: Another step
+    - name: Another step without bash
       run: |
         echo "Branch: ${{ steps.vars.outputs.branch }}"
         echo "Sha: ${{ steps.vars.outputs.sha_short }}"
 
+      # Build the image using the specified build config
+      # Get its build ID
+      # Get the commit ID of that build
+      # Get the SHA256 signature of the image
+      # Tag the image with the commit ID and "dev"
+      # ------------------------------------------------
     - uses: actions/checkout@v2
     - name: Build the image and push to openshift regisrty
+      id: build-image
+      ref: ' ${{ github.event.inputs.branch }}'
       working-directory: ./frontend
       run: |
-        docker build . --file Dockerfile --tag ${{env.registry-url}}/${{env.image-name}}:${{env.image-tag}}
-        docker login -p ${{secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN}} -u github-actions-sa ${{env.registry-url}}
-        docker push ${{env.registry-url}}/${{env.image-name}}:${{env.image-tag}}
+        oc version
+        oc login --token=${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }} --server=${{ secrets.C5839F_OPENSHIFT_SERVER }}
+        oc -n  ${{ github.event.inputs.namespace }} start-build ${{ github.event.inputs.buildConfig }} --from-dir=. --follow
+        export BUILDID="$(oc -n ${{ github.event.inputs.namespace }} get -o=jsonpath="{.status.lastVersion}" buildconfig ${{ github.event.inputs.buildConfig }})"
+        export COMMITID="$(oc -n ${{ github.event.inputs.namespace }} get -o=jsonpath="{.spec.revision.git.commit}" build ${{ github.event.inputs.buildConfig }}-$BUILDID | cut -c1-7)"
+        export IMAGESHA="$(oc -n ${{ github.event.inputs.namespace }} get -o=jsonpath="{.status.output.to.imageDigest}" build ${{ github.event.inputs.buildConfig }}-$BUILDID)"
+        oc -n c5839f-tools tag hnweb-frontend@$IMAGESHA hnweb-frontend:$COMMITID hnweb-frontend:dev
+        echo "::set-output name=imagesha::$IMAGESHA"
+
