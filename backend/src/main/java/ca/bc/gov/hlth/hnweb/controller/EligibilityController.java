@@ -158,12 +158,12 @@ public class EligibilityController {
 			case DOWNSTREAM_FAILURE:
 				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
 			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /lookup-phn request", hwe);				
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /check-msp-coverage-status", hwe);				
 			}
 		} catch (WebClientException wce) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /lookup-phn request", e);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /check-msp-coverage-status", e);
 		}
 	}
 

@@ -232,7 +232,7 @@ public class EligibilityControllerTest {
 	}
 
 	@Test
-	public void testCheckMspCoverageStatus_success_ineligible() throws HL7Exception, InterruptedException {
+	public void testCheckMspCoverageStatus_success_ineligible() throws InterruptedException {
         mockBackEnd.enqueue(new MockResponse()
         		.setBody(E45_SUCCESS_INELIGIBLE)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
@@ -269,7 +269,7 @@ public class EligibilityControllerTest {
 	}
 	
 	@Test
-	public void testCheckMspCoverageStatus_success_eligible() throws HL7Exception, InterruptedException {
+	public void testCheckMspCoverageStatus_success_eligible() throws InterruptedException {
         mockBackEnd.enqueue(new MockResponse()
         		.setBody(E45_SUCCESS_ELIGIBLE)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
@@ -307,7 +307,7 @@ public class EligibilityControllerTest {
 	}
 	
 	@Test
-	public void testCheckMspCoverageStatus_error_phnInvalid() throws HL7Exception, InterruptedException {
+	public void testCheckMspCoverageStatus_error_phnInvalid() throws InterruptedException {
         mockBackEnd.enqueue(new MockResponse()
         		.setBody(E45_ERROR_PHN_INVALID)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
@@ -343,7 +343,7 @@ public class EligibilityControllerTest {
 	}
 	
 	@Test
-	public void testCheckMspCoverageStatus_error_dateOfBirthMismatch() throws HL7Exception, InterruptedException {
+	public void testCheckMspCoverageStatus_error_dateOfBirthMismatch() throws InterruptedException {
         mockBackEnd.enqueue(new MockResponse()
         		.setBody(E45_ERROR_DOB_MISMATCH)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));

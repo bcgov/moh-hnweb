@@ -24,7 +24,10 @@ import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.parser.Parser;
 
 /**
- * Service for Eligibility (E45) requests
+ * Service for:
+ *  Eligibility request (R15)
+ *  PHN requests (R41, R42)
+ *  MSP Coverage request (E45)
  *
  */
 @Service
@@ -34,9 +37,15 @@ public class EligibilityService {
 
 	public static final String TRANSACTION_ID = "TransactionID";
 	
-	@Value("${hibc.e45Path}")
+	@Value("${hibc.e45.path}")
 	private String e45Path;
+
+	@Value("${hibc.e45.username}")
+	private String e45Username;
 	
+	@Value("${hibc.e45.password}")
+	private String e45Password;
+
 	@Value("${hibc.r15Path}")
 	private String r15Path;
 	
@@ -64,7 +73,7 @@ public class EligibilityService {
 	public Message checkEligibility(R15 r15) throws HNWebException, HL7Exception {
 		String r15v2 = parser.encode(r15);
 
-		ResponseEntity<String> response = postHibcRequest(r15Path, r15v2);
+		ResponseEntity<String> response = postHibcRequest(r15Path, null, null, r15v2);
 
 		return parseResponse(response.getBody(), "R15");
 	}
@@ -120,12 +129,13 @@ public class EligibilityService {
 				.block();
 	}
 	
-	private ResponseEntity<String> postHibcRequest(String path, String data) {
+	private ResponseEntity<String> postHibcRequest(String path, String username, String password, String data) {
         return hibcWebClient
                 .post()
                 .uri(path)
                 .contentType(MediaType.TEXT_PLAIN)
                 .header(TRANSACTION_ID, UUID.randomUUID().toString())
+                .headers(header -> header.setBasicAuth(username, password))
                 .bodyValue(data)
                 .retrieve()
                 .toEntity(String.class)
@@ -135,7 +145,12 @@ public class EligibilityService {
 	public Message checkMspCoverageStatus(E45 e45) throws HNWebException, HL7Exception {
 
 		String e45v2 = parser.encode(e45);
-		ResponseEntity<String> response = postHibcRequest(e45Path, e45v2);
+		ResponseEntity<String> response = postHibcRequest(e45Path, e45Username, e45Password, e45v2);
+		
+		if (response.getStatusCode() != HttpStatus.OK) {
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
+		}
 
 		return parseResponse(response.getBody(), "E45");
 	}
