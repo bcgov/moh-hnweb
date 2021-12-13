@@ -141,7 +141,8 @@ public class WebClientConfig {
                 .baseUrl(hibcUrl)
                 .filter(logRequest())
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE) 
-                .defaultHeader(HttpHeaders.ACCEPT, MediaType.ALL_VALUE) 
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.ALL_VALUE)
+                // TODO (weskubo-cgi) Remove default headers and corresponding properties
                 .defaultHeaders(header -> header.setBasicAuth(hibcUserName, hibcUserPassword))
                 .build();
     }
