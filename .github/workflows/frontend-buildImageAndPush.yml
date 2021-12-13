@@ -24,9 +24,9 @@ on:
         required: true
         default: 4969-setup-hnweb
 
-  #push:
-  #  branches:
-  #  - 4969-setup-hnweb
+  push:
+    branches:
+    - 4969-setup-hnweb
 
 jobs:
   
