@@ -78,3 +78,19 @@ test('Add button loads Add Visa Resident page', async t => {
         //I expect the Add Visa Resident page to be loaded
         .expect(AddVisaResidentWithoutPHNPage.groupNumberInput.exists).ok();
 });
+
+test('Check clear button clears the form', async t => {
+	await t
+         // Given I have a form filled out with data
+         .typeText(NameSearchPage.surnameInput, 'Test Surname')
+         .typeText(NameSearchPage.firstNameInput, 'Test First Name')
+         .typeText(NameSearchPage.dateOfBirthInput, '20211108')
+         .typeText(NameSearchPage.secondNameInput, 'Test Second Name')
+        // When I click the clear button
+		.click(PersonDetailsPage.clearButton)
+        // I expect the form to be cleared
+        .expect(NameSearchPage.surnameInput.value).eql('')
+        .expect(NameSearchPage.firstNameInput.value).eql('')
+        .expect(NameSearchPage.secondNameInput.value).eql('')
+        .expect(NameSearchPage.dateOfBirthInput.value).eql('')
+});

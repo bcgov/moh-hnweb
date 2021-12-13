@@ -10,7 +10,7 @@ class NameSearch {
 
         this.submitButton = Selector('button[type="submit"]');
         this.addButton = Selector('button[type="add"]');
-        //this.clearButton = Selector('button[type="button"]');        
+        this.clearButton = Selector('button[type="button"]');        
         this.errorText = Selector('div').withAttribute('class','error-text');
         
     }
