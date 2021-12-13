@@ -60,7 +60,7 @@ jobs:
       run: |
         oc version
         oc login --token=${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }} --server=${{ secrets.C5839F_OPENSHIFT_SERVER }}
-        oc start-build ${{ github.event.inputs.buildConfig }} --from-dir=. 
+        oc start-build hnweb-frontend-bc --from-dir=. 
         # export BUILDID="$(oc -n ${{ github.event.inputs.namespace }} get -o=jsonpath="{.status.lastVersion}" buildconfig ${{ github.event.inputs.buildConfig }})"
         # export COMMITID="$(oc -n ${{ github.event.inputs.namespace }} get -o=jsonpath="{.spec.revision.git.commit}" build ${{ github.event.inputs.buildConfig }}-$BUILDID | cut -c1-7)"
         # export IMAGESHA="$(oc -n ${{ github.event.inputs.namespace }} get -o=jsonpath="{.status.output.to.imageDigest}" build ${{ github.event.inputs.buildConfig }}-$BUILDID)"
