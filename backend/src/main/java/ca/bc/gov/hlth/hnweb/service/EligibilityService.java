@@ -158,6 +158,11 @@ public class EligibilityService {
 
 		String e45v2 = parser.encode(e45);
 		ResponseEntity<String> response = postHibcRequest(e45Path, e45Username, e45Password, e45v2);
+		
+		if (response.getStatusCode() != HttpStatus.OK) {
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
+		}
 
 		return parseResponse(response.getBody(), "E45");
 	}
