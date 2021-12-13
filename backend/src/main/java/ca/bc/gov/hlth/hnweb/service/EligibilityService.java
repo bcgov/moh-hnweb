@@ -46,8 +46,14 @@ public class EligibilityService {
 	@Value("${hibc.e45.password}")
 	private String e45Password;
 
-	@Value("${hibc.r15Path}")
+	@Value("${hibc.r15.path}")
 	private String r15Path;
+	
+	@Value("${hibc.r15.username}")
+	private String r15Username;
+	
+	@Value("${hibc.r15.password}")
+	private String r15Password;
 	
 	@Value("${rapid.r41Path}")
 	private String r41Path;
@@ -73,9 +79,34 @@ public class EligibilityService {
 	public Message checkEligibility(R15 r15) throws HNWebException, HL7Exception {
 		String r15v2 = parser.encode(r15);
 
-		ResponseEntity<String> response = postHibcRequest(r15Path, null, null, r15v2);
+		ResponseEntity<String> response = postHibcRequest(r15Path, r15Username, r15Password, r15v2);
+		
+		if (response.getStatusCode() != HttpStatus.OK) {
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
+		}
 
 		return parseResponse(response.getBody(), "R15");
+	}
+	
+	/**
+	 * Checks for MSP Coverage Status based on the E45 request.
+	 * @param e45
+	 * @return
+	 * @throws HNWebException
+	 * @throws HL7Exception
+	 */
+	public Message checkMspCoverageStatus(E45 e45) throws HNWebException, HL7Exception {
+
+		String e45v2 = parser.encode(e45);
+		ResponseEntity<String> response = postHibcRequest(e45Path, e45Username, e45Password, e45v2);
+		
+		if (response.getStatusCode() != HttpStatus.OK) {
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
+		}
+
+		return parseResponse(response.getBody(), "E45");
 	}
 
 	public RPBSPPE0 inquirePhn(RPBSPPE0 rpbsppe0) throws HNWebException {
@@ -141,19 +172,6 @@ public class EligibilityService {
                 .toEntity(String.class)
                 .block();
     }	
-
-	public Message checkMspCoverageStatus(E45 e45) throws HNWebException, HL7Exception {
-
-		String e45v2 = parser.encode(e45);
-		ResponseEntity<String> response = postHibcRequest(e45Path, e45Username, e45Password, e45v2);
-		
-		if (response.getStatusCode() != HttpStatus.OK) {
-			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
-			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
-		}
-
-		return parseResponse(response.getBody(), "E45");
-	}
 
 	/**
 	 * Parse the V2 String and build a message from it that gets returned.

@@ -102,12 +102,12 @@ test('Check properly filled form passes validation for an ineligible PHN', async
     .expect(CoverageStatusCheckPage.clientInstructions.textContent).eql('MSP\'S RECORDS INDICATE THAT THIS PERSON HAS MOVED PERMANENTLY FROM BC. PLEASE CONFIRM RESIDENCE, OBTAIN AND UPDATE ADDRESS AND TELEPHONE INFORMATION AND ADVISE PERSON TO CONTACT MSP TO RE-ESTABLISH ELIGIBILITY.')
 })
 
-test('Check properly filled form passes validation for an ineligible PHN', async t => {
+test('Check properly filled form passes validation for an eligible PHN', async t => {
   const dateOfService = '20211201'
   await t
     // Given the page is filled out correctly
-    .typeText(CoverageStatusCheckPage.phnInput, '9395568139')
-    .typeText(CoverageStatusCheckPage.dateOfBirthInput, '19710919') 
+    .typeText(CoverageStatusCheckPage.phnInput, '9347984074')
+    .typeText(CoverageStatusCheckPage.dateOfBirthInput, '19850915') 
     // The date input doesn't seem to take a new value without clearing the original value
     .selectText(CoverageStatusCheckPage.dateOfServiceInput)
     .pressKey('delete')
@@ -121,18 +121,16 @@ test('Check properly filled form passes validation for an ineligible PHN', async
     // And the results to be populated
     .expect(CoverageStatusCheckPage.result.exists).ok()
     .expect(CoverageStatusCheckPage.resultRow1.exists).ok()
-    .expect(CoverageStatusCheckPage.resultRow1.child('div').nth(0).child('span').textContent).eql('9395568139') 
-    .expect(CoverageStatusCheckPage.resultRow1.child('div').nth(1).child('span').textContent).eql('PORTFOLIOXE, ROISHANNXD ECKAXK')
-    .expect(CoverageStatusCheckPage.resultRow1.child('div').nth(2).child('span').textContent).eql('19710919')
-    .expect(CoverageStatusCheckPage.resultRow1.child('div').nth(3).child('span').textContent).eql('FEMALE')
+    .expect(CoverageStatusCheckPage.resultRow1.child('div').nth(0).child('span').textContent).eql('9347984074') 
+    .expect(CoverageStatusCheckPage.resultRow1.child('div').nth(1).child('span').textContent).eql('GENUS ACRIDOTHERESXC, MOHAMMED-ALIMXB ANJUMXI')
+    .expect(CoverageStatusCheckPage.resultRow1.child('div').nth(2).child('span').textContent).eql('19850915')
+    .expect(CoverageStatusCheckPage.resultRow1.child('div').nth(3).child('span').textContent).eql('MALE')
 
     .expect(CoverageStatusCheckPage.resultRow2.exists).ok()
     .expect(CoverageStatusCheckPage.resultRow2.child('div').nth(0).child('span').textContent).eql(dateOfService)
-    .expect(CoverageStatusCheckPage.resultRow2.child('div').nth(1).child('span').textContent).eql('NO')
-    .expect(CoverageStatusCheckPage.resultRow2.child('div').nth(2).child('span').textContent).eql('20190731')
-    .expect(CoverageStatusCheckPage.resultRow2.child('div').nth(3).child('span').textContent).eql('OUT OF PROVINCE MOVE')
-
-    .expect(CoverageStatusCheckPage.clientInstructions.textContent).eql('MSP\'S RECORDS INDICATE THAT THIS PERSON HAS MOVED PERMANENTLY FROM BC. PLEASE CONFIRM RESIDENCE, OBTAIN AND UPDATE ADDRESS AND TELEPHONE INFORMATION AND ADVISE PERSON TO CONTACT MSP TO RE-ESTABLISH ELIGIBILITY.')
+    .expect(CoverageStatusCheckPage.resultRow2.child('div').nth(1).child('span').textContent).eql('YES')
+    .expect(CoverageStatusCheckPage.resultRow2.child('div').nth(2).child('span').textContent).eql('')
+    .expect(CoverageStatusCheckPage.resultRow2.child('div').nth(3).child('span').textContent).eql('')
 })
 
 test('Check Subsidy Insured Service CheckBox check and uncheck work', async t => {

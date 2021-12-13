@@ -36,12 +36,12 @@
         <AppOutput label="Coverage End Reason" :value="coverageEndReason"/>      
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Exclusion Period Date" :value="result.exclusionPeriodEndDate"/>      
+        <AppOutput label="Exclusion Period End Date" :value="result.exclusionPeriodEndDate"/>      
       </AppCol>
     </AppRow>
 
     <AppCard id="clientInstructions" v-if="result.clientInstructions">
-      <p>{{result.clientInstructions}}</p>
+      <p>{{ result.clientInstructions }}</p>
     </AppCard>
   </div>
 </template>

@@ -80,12 +80,6 @@ public class WebClientConfig {
 	
 	@Value("${hibc.url}")
 	private String hibcUrl;
-	 
-	@Value("${hibc.user.name}")
-	private String hibcUserName;
-
-	@Value("${hibc.user.password}")
-	private String hibcUserPassword;
 
 	@Value("classpath:${hibc.cert.file}")
 	private Resource hibcCertFile;
@@ -142,8 +136,6 @@ public class WebClientConfig {
                 .filter(logRequest())
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE) 
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.ALL_VALUE)
-                // TODO (weskubo-cgi) Remove default headers and corresponding properties
-                .defaultHeaders(header -> header.setBasicAuth(hibcUserName, hibcUserPassword))
                 .build();
     }
 

@@ -2,30 +2,25 @@ package ca.bc.gov.hlth.hnweb.controller;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
 import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
@@ -38,11 +33,9 @@ import ca.bc.gov.hlth.hnweb.model.eligibility.InquirePhnResponse;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnBeneficiary;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnRequest;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnResponse;
-import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
 import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
-import ca.uhn.hl7v2.HL7Exception;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -117,6 +110,13 @@ public class EligibilityControllerTest {
 			+ "ZTL|1^RD\r\n"
 			+ "IN1|1||||||||||||20190731||||||||||||N\r\n"
 			+ "ZIH|||||||||||||||OOPM||MSP'S RECORDS INDICATE THAT THIS PERSON HAS MOVED PERMANENTLY FROM BC. PLEASE CONFIRM RESIDENCE, OBTAIN AND UPDATE ADDRESS AND TELEPHONE INFORMATION AND ADVISE PERSON TO CONTACT MSP TO RE-ESTABLISH ELIGIBILITY.|1";
+
+	private static final String R15_ERROR_PHN_INVALID = "MSH|^~\\&|RAICHK-BNF-CVST|BC00004000|ADT1|BC01400020|20211213155557|SSOMAX|R15|20200421094902|P|2.3||\r\n"
+			+ "MSA|AE|20200421094902|HRPB059EPHN INVALID.\r\n"
+			+ "ERR|^^^HRPB059E&PHN INVALID.\r\n"
+			+ "ZTL|1^RD\r\n"
+			+ "IN1|1||||||||||||||||||||||||\r\n"
+			+ "ZIH||||||||||||||||||1";
 	
 	protected static DateTimeFormatter dateOnlyFormatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_FORMAT_DATE_ONLY);
 	
@@ -200,35 +200,34 @@ public class EligibilityControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));	
 	}
-	
-	@Disabled
-	@Test
-	public void testCheckEligibility_exception() throws ParseException, HL7Exception {
-		// 1. Set up our test data
-		String phn = "9890608411";
-		LocalDate eligibilityDate = LocalDate.now();
-		
-		// 2. Create a mock response object
-		CheckEligibilityResponse mockResponse = new CheckEligibilityResponse();
-		mockResponse.setPhn(phn);
-		mockResponse.setCoverageEndReason("This is a mocked out response");
-		
-		// 3. Return the mock response object when the service is called
-		// Note, the parameters need to match what is sent
-		// Force a failure on an invalid PHN
-		R15 r15 = new R15();
-		//when(eligibilityServiceMock.checkEligibility(r15)).thenThrow(new IllegalArgumentException());
 
-		CheckEligibilityRequest request = new CheckEligibilityRequest();
-		request.setPhn(phn);
-		request.setEligibilityDate(eligibilityDate);
+	@Test
+	public void testCheckEligibility_error_phnInvalid() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R15_ERROR_PHN_INVALID)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+
+		CheckEligibilityRequest checkEligibilityRequest = new CheckEligibilityRequest();
+		checkEligibilityRequest.setEligibilityDate(LocalDate.now());
+		checkEligibilityRequest.setPhn("9123456789");
 		
-		// 4. Perform assertions
-		ResponseStatusException responseException = assertThrows(ResponseStatusException.class, () -> {
-        	eligibilityController.checkEligibility(request);
-        });
-		assertEquals(HttpStatus.BAD_REQUEST, responseException.getStatus());
-		assertEquals("Bad /check-eligibility request", responseException.getReason());
+		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(checkEligibilityRequest);
+		
+		CheckEligibilityResponse checkEligibilityResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, checkEligibilityResponse.getStatus());
+        assertEquals("PHN INVALID.", checkEligibilityResponse.getMessage());
+
+        assertEquals("9123456789", checkEligibilityResponse.getPhn());
+        assertNull(checkEligibilityResponse.getBeneficiaryOnDateChecked());
+        assertNull(checkEligibilityResponse.getCoverageEndDate());
+        assertNull(checkEligibilityResponse.getCoverageEndReason());
+        assertNull(checkEligibilityResponse.getExclusionPeriodEndDate());
+        assertNull(checkEligibilityResponse.getClientInstructions());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
 	}
 
 	@Test
