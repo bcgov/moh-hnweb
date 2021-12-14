@@ -1,9 +1,12 @@
 name: BuildAndPush
 # Build the image and deploy in OpenShift environment
 env:
-  registry-url: 'image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools'
-  image-name: 'hnweb-frontend'
-  image-tag: 'GithubActions'
+  # Registries such as GHCR, Quay.io, and Docker Hub are supported.
+  IMAGE_REGISTRY: image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools
+  IMAGE_REGISTRY_USER: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_USER }}
+  IMAGE_REGISTRY_PASSWORD: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
+  IMAGE_NAME: hnweb-frontend
+  IMAGE_TAGS: 
 
 on:
   # Run the workflow manually, instead of on a push.
@@ -67,13 +70,21 @@ jobs:
         # oc -n c5839f-tools tag hnweb-frontend@$IMAGESHA hnweb-frontend:$COMMITID hnweb-frontend:dev
         # echo "::set-output name=imagesha::$IMAGESHA"
 
+    - name: Determine image tags
+      if: env.IMAGE_TAGS == ''
+      run: |
+        echo "Intial image tag is ${{ env.IMAGE_TAGS }}"
+        echo "IMAGE_TAGS=latest ${GITHUB_SHA::12} hnsesb-dev" | tee -a $GITHUB_ENV
+        echo "Final image tags is ${{ env.IMAGE_TAGS }}"
+
+
     # https://github.com/redhat-actions/buildah-build#readme
     - name: Build from Dockerfile
       id: build-via-docker
       uses: redhat-actions/buildah-build@v2
       with:
-        image: image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools/hnweb-frontend
-        tags: sample
+        image: hnweb-frontend
+        tags: ${{ env.IMAGE_TAGS }}
         context: ./frontend
         build-args: env=test
         # If you don't have a Dockerfile/Containerfile, refer to https://github.com/redhat-actions/buildah-build#scratch-build-inputs
@@ -81,3 +92,15 @@ jobs:
         # Otherwise, point this to your Dockerfile/Containerfile relative to the repository root.
         dockerfiles: |
           ./frontend/Dockerfile
+
+
+    # https://github.com/redhat-actions/push-to-registry#readme
+    - name: Push to registry
+      id: push-image
+      uses: redhat-actions/push-to-registry@v2
+      with:
+        image: ${{ steps.build-image.outputs.image }}
+        tags: ${{ steps.build-image.outputs.tags }}
+        registry: ${{ env.IMAGE_REGISTRY }}
+        username: ${{ env.IMAGE_REGISTRY_USER }}
+        password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
