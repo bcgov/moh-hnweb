@@ -80,10 +80,10 @@ jobs:
 
     # https://github.com/redhat-actions/buildah-build#readme
     - name: Build from Dockerfile
-      id: build-via-docker
+      id: build-image
       uses: redhat-actions/buildah-build@v2
       with:
-        image: image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools/hnweb-frontend
+        image: hnweb-frontend
         tags: ${{ env.IMAGE_TAGS }}
         context: ./frontend
         build-args: env=test
