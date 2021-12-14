@@ -7,7 +7,7 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppButton :disabled="searching" mode="primary" type="submit">Submit</AppButton>
+        <AppButton :submitting="searching" mode="primary" type="submit">Submit</AppButton>
         <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
       </AppRow>
     </form>

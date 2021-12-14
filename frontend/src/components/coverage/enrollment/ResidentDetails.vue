@@ -129,7 +129,7 @@
       </AppRow>
 
       <AppRow>
-        <AppButton :disabled="submitting" mode="primary" type="submit">Submit</AppButton>
+        <AppButton :submitting="submitting" mode="primary" type="submit">Submit</AppButton>
         <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
       </AppRow>
     </form>
