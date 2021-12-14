@@ -1,7 +1,7 @@
 package ca.bc.gov.hlth.hnweb.converter.hl7v2;
 
-import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
-import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
+import ca.bc.gov.hlth.hnweb.model.eligibility.CheckEligibilityRequest;
+import ca.bc.gov.hlth.hnweb.model.eligibility.CheckEligibilityResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;

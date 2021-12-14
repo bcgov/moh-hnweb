@@ -22,11 +22,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
-import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
-import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusRequest;
-import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusResponse;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
+import ca.bc.gov.hlth.hnweb.model.eligibility.CheckEligibilityRequest;
+import ca.bc.gov.hlth.hnweb.model.eligibility.CheckEligibilityResponse;
+import ca.bc.gov.hlth.hnweb.model.eligibility.CheckMspCoverageStatusRequest;
+import ca.bc.gov.hlth.hnweb.model.eligibility.CheckMspCoverageStatusResponse;
 import ca.bc.gov.hlth.hnweb.model.eligibility.InquirePhnBeneficiary;
 import ca.bc.gov.hlth.hnweb.model.eligibility.InquirePhnRequest;
 import ca.bc.gov.hlth.hnweb.model.eligibility.InquirePhnResponse;

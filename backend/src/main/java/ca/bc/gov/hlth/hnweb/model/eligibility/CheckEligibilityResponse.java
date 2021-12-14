@@ -1,4 +1,6 @@
-package ca.bc.gov.hlth.hnweb.model;
+package ca.bc.gov.hlth.hnweb.model.eligibility;
+
+import ca.bc.gov.hlth.hnweb.model.BaseResponse;
 
 public class CheckEligibilityResponse extends BaseResponse {
 	private String phn;

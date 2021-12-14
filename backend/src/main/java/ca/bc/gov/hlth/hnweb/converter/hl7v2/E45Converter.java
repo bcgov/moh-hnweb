@@ -11,8 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusRequest;
-import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusResponse;
+import ca.bc.gov.hlth.hnweb.model.eligibility.CheckMspCoverageStatusRequest;
+import ca.bc.gov.hlth.hnweb.model.eligibility.CheckMspCoverageStatusResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.HDR;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.QPD;
