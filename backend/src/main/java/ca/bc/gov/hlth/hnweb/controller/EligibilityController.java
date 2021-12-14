@@ -20,10 +20,10 @@ import ca.bc.gov.hlth.hnweb.converter.hl7v2.R15Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.R42Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPPE0Converter;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
-import ca.bc.gov.hlth.hnweb.model.CheckEligibilityRequest;
-import ca.bc.gov.hlth.hnweb.model.CheckEligibilityResponse;
-import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusRequest;
-import ca.bc.gov.hlth.hnweb.model.CheckMspCoverageStatusResponse;
+import ca.bc.gov.hlth.hnweb.model.eligibility.CheckEligibilityRequest;
+import ca.bc.gov.hlth.hnweb.model.eligibility.CheckEligibilityResponse;
+import ca.bc.gov.hlth.hnweb.model.eligibility.CheckMspCoverageStatusRequest;
+import ca.bc.gov.hlth.hnweb.model.eligibility.CheckMspCoverageStatusResponse;
 import ca.bc.gov.hlth.hnweb.model.eligibility.InquirePhnRequest;
 import ca.bc.gov.hlth.hnweb.model.eligibility.InquirePhnResponse;
 import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnRequest;
@@ -65,11 +65,18 @@ public class EligibilityController {
 
 			logger.info("checkEligibility response: {} ", checkEligibilityResponse);
 			return response;	
+		} catch (HNWebException hwe) {
+			switch (hwe.getType()) {
+			case DOWNSTREAM_FAILURE:
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
+			default:
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /check-eligibility request", hwe);				
+			}
+		} catch (WebClientException wce) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
 		} catch (Exception e) {
-			// TODO (weskubo-cgi) Update this with more specific error handling once downstream services are integrated
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /check-eligibility request", e);
 		}
-		
 	}	
 	
 	@PostMapping("/inquire-phn")

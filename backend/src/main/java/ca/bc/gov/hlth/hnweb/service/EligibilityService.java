@@ -1,8 +1,5 @@
 package ca.bc.gov.hlth.hnweb.service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -42,12 +39,21 @@ public class EligibilityService {
 	
 	@Value("${hibc.e45.path}")
 	private String e45Path;
-	
+
 	@Value("${hibc.e45.username}")
 	private String e45Username;
 	
 	@Value("${hibc.e45.password}")
 	private String e45Password;
+
+	@Value("${hibc.r15.path}")
+	private String r15Path;
+	
+	@Value("${hibc.r15.username}")
+	private String r15Username;
+	
+	@Value("${hibc.r15.password}")
+	private String r15Password;
 	
 	@Value("${rapid.r41Path}")
 	private String r41Path;
@@ -58,14 +64,6 @@ public class EligibilityService {
 	@Autowired
 	private Parser parser;
 
-	private static final String R15_RESPONSE_ELIGIBLE = "MSH|^~\\&|RAICHK-BNF-CVST|BC00001013|HNWeb|moh_hnclient_dev|20211118181051|train96|R15|20210513182941|D|2.4||\r\n"
-			+ "MSA|AA|20210513182941|HJMB001ISUCCESSFULLY COMPLETED\r\n" + "ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED\r\n" + "ZTL|1^RD\r\n"
-			+ "IN1|1||||||||||||||||||||||||Y\r\n" + "ZIH||||||||||||||||||1";
-
-	private static final String R15_RESPONSE_INELIGIBLE = "MSH|^~\\&|RAICHK-BNF-CVST|BC00001013|HNWeb|moh_hnclient_dev|20211118181051|train96|R15|20210513182941|D|2.4||\r\n"
-			+ "MSA|AA|20210513182941|HJMB001ISUCCESSFULLY COMPLETED\r\n" + "ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED\r\n" + "ZTL|1^RD\r\n"
-			+ "IN1|1||||||||||||20221231||||||||||||N\r\n" + "ZIH|||||||||||||||DECEASED|20221201||1";
-
 	@Autowired
 	private WebClient hibcWebClient;
 
@@ -75,21 +73,52 @@ public class EligibilityService {
 	/**
 	 * Checks for subject eligibility based on the R15 request.
 	 * 
+	 * @param r15
 	 * @return The R15 response.
+	 * @throws HNWebException
 	 * @throws HL7Exception
 	 */
-	public Message checkEligibility(R15 r15) throws HL7Exception {
+	public Message checkEligibility(R15 r15) throws HNWebException, HL7Exception {
 		String r15v2 = parser.encode(r15);
 
-		// TODO (weskubo-hni) Send to actual endpoint when it's available, currently
-		// response is stubbed.
-//		ResponseEntity<String> response = postCheckEligibilityRequest(r15v2, UUID.randomUUID().toString());
-//		String responseBody = response.getBody();
-		String responseBody = generateCannedResponse(r15);
+		ResponseEntity<String> response = postHibcRequest(r15Path, r15Username, r15Password, r15v2);
+		
+		if (response.getStatusCode() != HttpStatus.OK) {
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
+		}
 
-		return parseResponse(responseBody, "R15");
+		return parseResponse(response.getBody(), "R15");
+	}
+	
+	/**
+	 * Checks for MSP Coverage Status based on the E45 request.
+	 * 
+	 * @param e45
+	 * @return The E45 response.
+	 * @throws HNWebException
+	 * @throws HL7Exception
+	 */
+	public Message checkMspCoverageStatus(E45 e45) throws HNWebException, HL7Exception {
+
+		String e45v2 = parser.encode(e45);
+		ResponseEntity<String> response = postHibcRequest(e45Path, e45Username, e45Password, e45v2);
+		
+		if (response.getStatusCode() != HttpStatus.OK) {
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
+		}
+
+		return parseResponse(response.getBody(), "E45");
 	}
 
+	/**
+	 * Inquire on the PHN based on the R41/RPBSPPE0 request.
+	 * 
+	 * @param rpbsppe0
+	 * @return The RPBSPPE0 response.
+	 * @throws HNWebException
+	 */
 	public RPBSPPE0 inquirePhn(RPBSPPE0 rpbsppe0) throws HNWebException {
 		String rpbsppe0Str = rpbsppe0.serialize();
 
@@ -109,6 +138,13 @@ public class EligibilityService {
 		return rpbsppe0Response;
 	}
 	
+	/**
+	 * Lookup the PHN based on the R42/RPBSPPL0 request.
+	 * 
+	 * @param rpbsppl0
+	 * @return The RPBSPPL0 response.
+	 * @throws HNWebException
+	 */
 	public RPBSPPL0 lookupPhn(RPBSPPL0 rpbsppl0) throws HNWebException {
 		String rpbsppl0Str = rpbsppl0.serialize();
 
@@ -127,7 +163,6 @@ public class EligibilityService {
 
 		return rpbsppl0Response;
 	}
-	
 
 	private ResponseEntity<String> postRapidRequest(String path, String body) {
 		return rapidWebClient
@@ -153,40 +188,6 @@ public class EligibilityService {
                 .toEntity(String.class)
                 .block();
     }	
-
-	public Message checkMspCoverageStatus(E45 e45) throws HNWebException, HL7Exception {
-
-		String e45v2 = parser.encode(e45);
-		ResponseEntity<String> response = postHibcRequest(e45Path, e45Username, e45Password, e45v2);
-		
-		if (response.getStatusCode() != HttpStatus.OK) {
-			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
-			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
-		}
-
-		return parseResponse(response.getBody(), "E45");
-	}
-
-	private String generateCannedResponse(R15 r15) {
-		Calendar serviceDate = Calendar.getInstance();
-		try {
-			serviceDate.setTime(new SimpleDateFormat("yyyyMMdd").parse(r15.getIN1().getPlanEffectiveDate().toString()));
-		} catch (ParseException e) {
-			// Ignore
-		}
-
-		Calendar today = Calendar.getInstance();
-
-		int yearsDiff = serviceDate.get(Calendar.YEAR) - today.get(Calendar.YEAR);
-
-		String cannedResponse = null;
-		if (yearsDiff > 1) {
-			cannedResponse = R15_RESPONSE_INELIGIBLE;
-		} else {
-			cannedResponse = R15_RESPONSE_ELIGIBLE;
-		}
-		return cannedResponse;
-	}
 
 	/**
 	 * Parse the V2 String and build a message from it that gets returned.

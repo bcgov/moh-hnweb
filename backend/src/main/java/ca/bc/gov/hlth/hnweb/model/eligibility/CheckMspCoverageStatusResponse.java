@@ -1,4 +1,6 @@
-package ca.bc.gov.hlth.hnweb.model;
+package ca.bc.gov.hlth.hnweb.model.eligibility;
+
+import ca.bc.gov.hlth.hnweb.model.BaseResponse;
 
 /**
  * Response message for API call to check MSP coverage status
