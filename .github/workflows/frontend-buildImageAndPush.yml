@@ -72,6 +72,8 @@ jobs:
       id: build-via-docker
       uses: redhat-actions/buildah-build@v2
       with:
+        image: image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools/hnweb-frontend
+        tags: sample
         context: ./frontend
         build-args: env=test
         # If you don't have a Dockerfile/Containerfile, refer to https://github.com/redhat-actions/buildah-build#scratch-build-inputs
