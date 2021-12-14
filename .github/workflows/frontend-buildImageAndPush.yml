@@ -83,7 +83,7 @@ jobs:
       id: build-via-docker
       uses: redhat-actions/buildah-build@v2
       with:
-        image: hnweb-frontend
+        image: image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools/hnweb-frontend
         tags: ${{ env.IMAGE_TAGS }}
         context: ./frontend
         build-args: env=test
