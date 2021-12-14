@@ -74,7 +74,7 @@ jobs:
       if: env.IMAGE_TAGS == ''
       run: |
         echo "Intial image tag is ${{ env.IMAGE_TAGS }}"
-        echo "IMAGE_TAGS=latest ${GITHUB_SHA::12} hnsesb-dev" | tee -a $GITHUB_ENV
+        echo "IMAGE_TAGS=latest ${GITHUB_SHA::12} hnweb-dev" | tee -a $GITHUB_ENV
         echo "Final image tags is ${{ env.IMAGE_TAGS }}"
 
 
