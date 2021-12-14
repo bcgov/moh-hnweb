@@ -1,14 +1,18 @@
 <template>
-  <button :class="buttonClass" :disabled="disabled" :type="type">
+  <button :class="buttonClass" :disabled="submitting" :type="type">
     <slot></slot>
+      <span v-if="submitting">
+        <font-awesome-icon icon="spinner" class="fa-spin" />
+      </span>
   </button>
+
 </template>
 
 <script>
   export default {
     name: 'AppButton',
     props: {
-      disabled: {
+      submitting: {
         type: Boolean,
         default: false
       },
