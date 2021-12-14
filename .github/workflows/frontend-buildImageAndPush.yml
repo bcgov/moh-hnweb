@@ -80,7 +80,7 @@ jobs:
 
     # https://github.com/redhat-actions/buildah-build#readme
     - name: Build from Dockerfile
-      id: build-image
+      id: build-docker
       uses: redhat-actions/buildah-build@v2
       with:
         image: hnweb-frontend
@@ -99,8 +99,8 @@ jobs:
       id: push-image
       uses: redhat-actions/push-to-registry@v2
       with:
-        image: ${{ steps.build-image.outputs.image }}
-        tags: ${{ steps.build-image.outputs.tags }}
+        image: ${{ steps.build-docker.outputs.image }}
+        tags: ${{ steps.build-docker.outputs.tags }}
         registry: ${{ env.IMAGE_REGISTRY }}
         username: ${{ env.IMAGE_REGISTRY_USER }}
         password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
