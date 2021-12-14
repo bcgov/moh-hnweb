@@ -44,7 +44,7 @@ public class R15Converter extends BaseV2Converter {
         checkEligibilityResponse.setExclusionPeriodEndDate(terser.get("/.ZIH-16-1"));
         checkEligibilityResponse.setClientInstructions(terser.get("/.ZIH-17-1"));
         
-        mapErrorValues(terser, message, checkEligibilityResponse);
+        mapErrorValues(terser, checkEligibilityResponse);
 
 		return checkEligibilityResponse;
 	}

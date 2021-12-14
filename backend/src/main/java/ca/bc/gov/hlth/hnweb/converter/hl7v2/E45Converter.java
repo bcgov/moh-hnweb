@@ -70,7 +70,7 @@ public class E45Converter extends BaseV2Converter {
     	
     	mapPersonValues(terser, coverageResponse, dateOfService);
     	mapAdjustmentValues(message, coverageResponse);    	
-		mapErrorValues(terser, message, coverageResponse);
+		mapErrorValues(terser, coverageResponse);
 
 		return coverageResponse;
 	}
@@ -136,7 +136,7 @@ public class E45Converter extends BaseV2Converter {
     	 * ADJ|3|IN|||PRS^^HNET9908|N
     	 */
     	String[] names = message.getNames();
-    	if (!Arrays.stream(names).anyMatch(n -> StringUtils.equals(ADJ.name(), n))) {
+    	if (Arrays.stream(names).noneMatch(n -> StringUtils.equals(ADJ.name(), n))) {
     		return;
     	}
   

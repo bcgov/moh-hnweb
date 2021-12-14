@@ -78,7 +78,7 @@ public abstract class BaseV2Converter {
 		V2MessageUtil.setIn1Values(in1, groupNumber, groupMemebrNumber, immigrationCode, dateOnlyFormatter.format(planEffectiveDate), dateOnlyFormatter.format(planCancellationDate));
 	}
 
-	protected void mapErrorValues(Terser terser, Message message, BaseResponse response) throws HL7Exception {
+	protected void mapErrorValues(Terser terser, BaseResponse response) throws HL7Exception {
 		/**
 		 * When checking for an error the MSA segment needs to be checked as even a success message has an ERR segment e.g.
 		 * 

@@ -73,7 +73,9 @@ public class EligibilityService {
 	/**
 	 * Checks for subject eligibility based on the R15 request.
 	 * 
+	 * @param r15
 	 * @return The R15 response.
+	 * @throws HNWebException
 	 * @throws HL7Exception
 	 */
 	public Message checkEligibility(R15 r15) throws HNWebException, HL7Exception {
@@ -91,8 +93,9 @@ public class EligibilityService {
 	
 	/**
 	 * Checks for MSP Coverage Status based on the E45 request.
+	 * 
 	 * @param e45
-	 * @return
+	 * @return The E45 response.
 	 * @throws HNWebException
 	 * @throws HL7Exception
 	 */
@@ -109,6 +112,13 @@ public class EligibilityService {
 		return parseResponse(response.getBody(), "E45");
 	}
 
+	/**
+	 * Inquire on the PHN based on the R41/RPBSPPE0 request.
+	 * 
+	 * @param rpbsppe0
+	 * @return The RPBSPPE0 response.
+	 * @throws HNWebException
+	 */
 	public RPBSPPE0 inquirePhn(RPBSPPE0 rpbsppe0) throws HNWebException {
 		String rpbsppe0Str = rpbsppe0.serialize();
 
@@ -128,6 +138,13 @@ public class EligibilityService {
 		return rpbsppe0Response;
 	}
 	
+	/**
+	 * Lookup the PHN based on the R42/RPBSPPL0 request.
+	 * 
+	 * @param rpbsppl0
+	 * @return The RPBSPPL0 response.
+	 * @throws HNWebException
+	 */
 	public RPBSPPL0 lookupPhn(RPBSPPL0 rpbsppl0) throws HNWebException {
 		String rpbsppl0Str = rpbsppl0.serialize();
 
@@ -146,7 +163,6 @@ public class EligibilityService {
 
 		return rpbsppl0Response;
 	}
-	
 
 	private ResponseEntity<String> postRapidRequest(String path, String body) {
 		return rapidWebClient
