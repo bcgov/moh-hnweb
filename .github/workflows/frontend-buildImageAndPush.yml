@@ -104,3 +104,8 @@ jobs:
         registry: ${{ env.IMAGE_REGISTRY }}
         username: ${{ env.IMAGE_REGISTRY_USER }}
         password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
+
+    - name: Print digest information
+      id: print-digest
+      run: |
+        echo "Image digest pushed in repo is {{ steps.push-image.outputs.digest }}"
