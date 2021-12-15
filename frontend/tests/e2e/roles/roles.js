@@ -5,6 +5,6 @@ export const regularAccUser = Role(SITE_UNDER_TEST, async t => {
     await t
         .click('#zocial-moh_idp')
         .typeText('#username', 'hnweb1')
-        .typeText('#password', process.env.HNWEB1_TESTCAFE_PASSWORD)
+        .typeText('#password', 'hello123')
         .click("#kc-login");
 });

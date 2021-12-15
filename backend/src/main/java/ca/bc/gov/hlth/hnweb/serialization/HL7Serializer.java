@@ -1,6 +1,28 @@
 package ca.bc.gov.hlth.hnweb.serialization;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.basic.DateConverter;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+
 import ca.bc.gov.hlth.hnweb.model.v3.Address;
+import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesRequest;
+import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesResponse;
+import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesResult;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.MedicalRecordNumber;
@@ -10,25 +32,6 @@ import ca.bc.gov.hlth.hnweb.model.v3.Name;
 import ca.bc.gov.hlth.hnweb.model.v3.Person;
 import ca.bc.gov.hlth.hnweb.model.v3.Telecommunication;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.basic.DateConverter;
-import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
 /**
  * HL7Serializer is responsible for converting between HL7 V3 messages, and the native Java domain
  * model defined in the ca.bc.gov.health.hnweb.model package.
@@ -37,8 +40,6 @@ import javax.xml.transform.stream.StreamSource;
 public class HL7Serializer {
 
   private static final String hl4DateFormat = "yyyyMMdd";
-  private static final String shortSoapFormat = "yyyy-MM-dd";
-  private static final String longSoapFormat = "yyyy-MM-ddThh:mm:ss";
   private XStream xs = new XStream(new DomDriver());
   private Map<Class, Transformer> mappings;
   private HL7Config hl7Config;
@@ -56,13 +57,17 @@ public class HL7Serializer {
 
     xs.registerConverter(new DateConverter(hl4DateFormat, new String[] {hl4DateFormat}, true));
     xs.aliasType("getDemographics", GetDemographicsRequest.class);
+    xs.aliasType("findCandidatesResponse", FindCandidatesResponse.class);  
+    xs.aliasType("findCandidates", FindCandidatesRequest.class);
+    xs.aliasType("findCandidatesResult", FindCandidatesResult.class);
     xs.aliasType("getDemographicsResponse", GetDemographicsResponse.class);   
     xs.aliasType("person", Person.class);
     xs.aliasType("hl7Config", HL7Config.class);
     xs.aliasType("msgConfig", MessageMetaData.class);
 	xs.aliasType("medicalRecordNumber", MedicalRecordNumber.class);
 	xs.aliasType("telecommunication", Telecommunication.class);
-	xs.aliasType("address", Address.class); xs.aliasType("name", Name.class);
+	xs.aliasType("address", Address.class); 
+	xs.aliasType("name", Name.class);
 	xs.aliasType("message", Message.class);
 		 
 
