@@ -5,9 +5,6 @@
 </template>
 
 <script>
-import AppCol from '../../../components/grid/AppCol.vue'
-import AppRow from '../../../components/grid/AppRow.vue'
-import AppOutput from '../../../components/AppOutput.vue'
 import EnrollmentService from '../../../services/EnrollmentService'
 import { formatPersonName } from '../../../util/utils'
 import ResidentPHN from '../../../components/coverage/enrollment/ResidentPHN.vue'
@@ -17,9 +14,6 @@ import RegistrationConfirmation from '../../../components/coverage/enrollment/Re
 export default {
   name: 'AddVisaResidentWithPHN',
   components: {
-    AppCol,
-    AppRow,
-    AppOutput,
     ResidentPHN,
     ResidentDetails,
     RegistrationConfirmation,

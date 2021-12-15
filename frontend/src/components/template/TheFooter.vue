@@ -1,7 +1,3 @@
-<script setup>
-  import AppRow from '../grid/AppRow.vue'
-  import AppCol from '../grid/AppCol.vue'
-</script>
 <template>
   <footer class="footer">
     <div class="container">
