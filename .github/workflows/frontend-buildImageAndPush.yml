@@ -21,20 +21,22 @@ jobs:
     
     steps:
 
+    # Checkout code
+    - uses: actions/checkout@v2
+    - name: Check out code from repository
+      id: checkout
+      with:
+        ref: 4969-setup-hnweb
+      #working-directory: ./frontend
+
     # Generate the tags the image with the commit ID and "dev"
+    - id: determine-tags
     - name: Determine image tags
       if: env.IMAGE_TAGS == ''
       run: |
         echo "Intial image tag is ${{ env.IMAGE_TAGS }}"
         echo "IMAGE_TAGS=latest ${GITHUB_SHA::12} hnweb-dev" | tee -a $GITHUB_ENV
         echo "Final image tags is ${{ env.IMAGE_TAGS }}"
-
-    # Checkout code
-    - uses: actions/checkout@v2
-    - name: Check out code from repository
-      id: checkout
-      #working-directory: ./frontend
-
 
     # Build the image from docker file
     - name: Build from Dockerfile
