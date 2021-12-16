@@ -19,12 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # Build the image using the specified build config
-      # Get its build ID
-      # Get the commit ID of that build
-      # Get the SHA256 signature of the image
-      # Tag the image with the commit ID and "dev"
-      # ------------------------------------------------
+    # Check out the code
     - uses: actions/checkout@v2
     - name: Build the image and push to openshift regisrty
       id: build-image
@@ -33,16 +28,14 @@ jobs:
         oc version
         oc login --token=${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }} --server=${{ secrets.C5839F_OPENSHIFT_SERVER }}
 
-
+    # Determine the tags
     - name: Determine image tags
       if: env.IMAGE_TAGS == ''
       run: |
-        echo "Intial image tag is ${{ env.IMAGE_TAGS }}"
         echo "IMAGE_TAGS=latest ${GITHUB_SHA::12} hnweb-dev" | tee -a $GITHUB_ENV
-        echo "Final image tags is ${{ env.IMAGE_TAGS }}"
 
 
-    # https://github.com/redhat-actions/buildah-build#readme
+    # Build from docker file
     - name: Build from Dockerfile
       id: build-docker
       uses: redhat-actions/buildah-build@v2
@@ -51,9 +44,6 @@ jobs:
         tags: ${{ env.IMAGE_TAGS }}
         context: ./frontend
         build-args: env=test
-        # If you don't have a Dockerfile/Containerfile, refer to https://github.com/redhat-actions/buildah-build#scratch-build-inputs
-        # Or, perform a source-to-image build using https://github.com/redhat-actions/s2i-build
-        # Otherwise, point this to your Dockerfile/Containerfile relative to the repository root.
         dockerfiles: |
           ./frontend/Dockerfile
 
@@ -68,10 +58,6 @@ jobs:
         registry: ${{ env.IMAGE_REGISTRY }}
         username: ${{ env.IMAGE_REGISTRY_USER }}
         password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
-
-    - name: Print digest information
-      id: print-digest
-      run: echo "Image pushed to ${{ steps.push-image.outputs.digest }}"
 
     # Update the image ID in the manifest repository used by Argo CD.
     # We need to use the SSH deploy key to check out the manifest repo, set up
