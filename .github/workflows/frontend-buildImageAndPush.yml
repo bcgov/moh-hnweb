@@ -123,8 +123,9 @@ jobs:
       uses: actions/checkout@v2
       with:
         ssh-key: ${{ secrets.GITOPS_C5839F_PRIVATE_KEY }}
-        repository: ${{ secrets.GITOPS_C5839F_REPO }}
-        ref: '4969-setup-hnweb'
+        #repository: ${{ secrets.GITOPS_C5839F_REPO }}
+        repository: bcgov-c/tenant-gitops-c5839f
+        ref: 4969-setup-hnweb
 
     - name: Set up Kustomize
       uses: imranismail/setup-kustomize@v1
