@@ -23,15 +23,19 @@ public class FindCandidatesConverter {
 	private static final String WARNING = "Warning";
 	private static final Logger logger = LoggerFactory.getLogger(FindCandidatesConverter.class);
 
-	public FindCandidatesRequest convertRequest(String surname, String firstName, String secondName, String dateOfBirth,
+	public FindCandidatesRequest convertRequest(String surname, String firstGivenName, String secondGivenName, String dateOfBirth,
 			String gender) {
-		logger.debug("Find Candidates for Name: [{}] DOB: [{}]", surname + firstName, dateOfBirth);
-
+		logger.debug("Find Candidates for Name: [{}] DOB: [{}]", surname + firstGivenName, dateOfBirth);
+		
 		FindCandidatesRequest findCandidatesRequest = new FindCandidatesRequest();
-		findCandidatesRequest.setSurname(surname);
-		findCandidatesRequest.setFirstName(firstName);
-		findCandidatesRequest.setSecondName(secondName);
-		findCandidatesRequest.setDateOfBirth(dateOfBirth);
+		
+		Name name = new Name();
+		name.setSurname(surname);
+		name.setFirstGivenName(firstGivenName);
+		name.setSecondGivenName(secondGivenName);
+		
+		findCandidatesRequest.setName(name);	
+		findCandidatesRequest.setBirthDate(dateOfBirth);
 		findCandidatesRequest.setGender(gender);
 
 		return findCandidatesRequest;

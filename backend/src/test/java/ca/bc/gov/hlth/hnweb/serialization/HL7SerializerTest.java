@@ -68,8 +68,8 @@ public class HL7SerializerTest {
 		mmd.setSourceSystemOverride("BCHCIM");
 		FindCandidatesRequest getDemoQuery = new FindCandidatesRequest();
 		getDemoQuery.setSurname("Purple");
-		getDemoQuery.setFirstName("Barney");
-		getDemoQuery.setDateOfBirth("19400101");
+		getDemoQuery.setFirstGivenName("Barney");
+		getDemoQuery.setBirthDate("19400101");
 
 
 		Object request = hl7.toXml(getDemoQuery, mmd);

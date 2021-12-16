@@ -1,16 +1,25 @@
 package ca.bc.gov.hlth.hnweb.model.v3;
 
 public class FindCandidatesRequest {
+	private Name name;
 	
 	private String surname;
 	
-	private String firstName;
+	private String firstGivenName;
 	
 	private String secondName;
 	
 	private String gender;
 	
-	private String dateOfBirth;
+	private String birthDate;
+
+	public Name getName() {
+		return name;
+	}
+
+	public void setName(Name name) {
+		this.name = name;
+	}
 
 	public String getSurname() {
 		return surname;
@@ -20,12 +29,12 @@ public class FindCandidatesRequest {
 		this.surname = surname;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getFirstGivenName() {
+		return firstGivenName;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setFirstGivenName(String firstName) {
+		this.firstGivenName = firstName;
 	}
 
 	public String getSecondName() {
@@ -44,12 +53,12 @@ public class FindCandidatesRequest {
 		this.gender = gender;
 	}
 
-	public String getDateOfBirth() {
-		return dateOfBirth;
+	public String getBirthDate() {
+		return birthDate;
 	}
 
-	public void setDateOfBirth(String dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
+	public void setBirthDate(String dateOfBirth) {
+		this.birthDate = dateOfBirth;
 	}
 	
 }
