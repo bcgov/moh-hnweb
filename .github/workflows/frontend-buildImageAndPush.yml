@@ -123,7 +123,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         ssh-key: ${{ secrets.GITOPS_C5839F_PRIVATE_KEY }}
-        repository: ${{ GITOPS_C5839F_REPO }}
+        repository: ${{ secrets.GITOPS_C5839F_REPO }}
         ref: '4969-setup-hnweb'
 
     - name: Set up Kustomize
