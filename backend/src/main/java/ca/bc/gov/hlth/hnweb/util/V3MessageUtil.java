@@ -1,5 +1,8 @@
 package ca.bc.gov.hlth.hnweb.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  *Utility class for V3 messages
  *
@@ -21,6 +24,10 @@ public class V3MessageUtil {
 	public static String wrap(String xmlRequest) {
 		String formattedRequest = xmlRequest.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();
 		return SOAP_ENVELOPE_START + formattedRequest + SOAP_ENVELOPE_END;
+	}
+	
+	public static String convertDateToString(Date date) {
+		return new SimpleDateFormat(V2MessageUtil.DATE_FORMAT_DATE_ONLY).format(date);
 	}
 	
 }

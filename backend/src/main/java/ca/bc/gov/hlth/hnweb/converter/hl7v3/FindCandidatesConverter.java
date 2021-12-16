@@ -6,38 +6,43 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.nimbusds.oauth2.sdk.util.CollectionUtils;
+import org.springframework.util.CollectionUtils;
 
 import ca.bc.gov.hlth.hnweb.model.GetNameSearchResponse;
 import ca.bc.gov.hlth.hnweb.model.NameSearchResult;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
+import ca.bc.gov.hlth.hnweb.model.v3.Address;
 import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesResult;
+import ca.bc.gov.hlth.hnweb.model.v3.Name;
+import ca.bc.gov.hlth.hnweb.util.V3MessageUtil;
 
 public class FindCandidatesConverter {
 
 	private static final String WARNING = "Warning";
 	private static final Logger logger = LoggerFactory.getLogger(FindCandidatesConverter.class);
-	
 
-	
-	public FindCandidatesRequest convertRequest(String surname, String firstName , String secondName, String dateOfBirth, String gender) {
-		logger.debug("Find Candidates for Name: [{}] DOB: [{}]", surname + firstName , dateOfBirth );
-
-		FindCandidatesRequest findCandidatesRequest = new FindCandidatesRequest();
-		findCandidatesRequest.setSurname(surname);
-		findCandidatesRequest.setFirstName(firstName);
-		findCandidatesRequest.setSecondName(secondName);
-		findCandidatesRequest.setDateOfBirth(dateOfBirth);
-		findCandidatesRequest.setGender(gender);
+	public FindCandidatesRequest convertRequest(String surname, String firstGivenName, String secondGivenName, String dateOfBirth,
+			String gender) {
+		logger.debug("Find Candidates for Name: [{}] DOB: [{}]", surname + firstGivenName, dateOfBirth);
 		
+		FindCandidatesRequest findCandidatesRequest = new FindCandidatesRequest();
+		
+		Name name = new Name();
+		name.setSurname(surname);
+		name.setFirstGivenName(firstGivenName);
+		name.setSecondGivenName(secondGivenName);
+		
+		findCandidatesRequest.setName(name);	
+		findCandidatesRequest.setBirthDate(dateOfBirth);
+		findCandidatesRequest.setGender(gender);
+
 		return findCandidatesRequest;
 
 	}
 
-		public GetNameSearchResponse convertResponse(FindCandidatesResponse findCandidatesResponse) throws IOException {
+	public GetNameSearchResponse convertResponse(FindCandidatesResponse findCandidatesResponse) throws IOException {
 		logger.debug("Find Candidates response : {} ", findCandidatesResponse.toString());
 
 		GetNameSearchResponse getNameSearchResponse = buildGetNameSearchResponse(findCandidatesResponse);
@@ -56,7 +61,7 @@ public class FindCandidatesConverter {
 			message = messageText[1];
 		}
 		if (findCandidatesResponse.getResultCount() == 0) {
-			logger.debug("No result found for the Phn [{}]", "");
+			logger.debug("No result found ");
 
 			if (messageText.length > 0) {
 				getNameSearchResponse.setStatus(StatusEnum.ERROR);
@@ -73,7 +78,6 @@ public class FindCandidatesConverter {
 				}
 			}
 
-			logger.debug("Response message received for phn: {}", getNameSearchResponse.getResults().get(0).getPersonNameDisplay());
 		}
 
 		return getNameSearchResponse;
@@ -86,18 +90,37 @@ public class FindCandidatesConverter {
 
 		List<FindCandidatesResult> candidatesResult = findCandidatesResponse.getResults();
 
-		NameSearchResult nameSearchResult = new NameSearchResult();
-
-		if (CollectionUtils.isNotEmpty(candidatesResult)) {
+		if (!CollectionUtils.isEmpty(candidatesResult)) {
 			candidatesResult.forEach(ns -> {
-				nameSearchResult.setPerson(ns.getPerson());
+				NameSearchResult nameSearchResult = new NameSearchResult();
+				nameSearchResult.setPhn(ns.getPerson().getPhn());
+				Name nameObj = ns.getPerson().getDeclaredName();
+				if (nameObj == null) {
+					nameObj = ns.getPerson().getDocumentedName();
+				}
+				nameSearchResult.setGender(ns.getPerson().getGender());
+				nameSearchResult.setGivenName(nameObj.getFirstGivenName());
+				nameSearchResult.setSecondName(nameObj.getSecondGivenName());
+				nameSearchResult.setSurname(nameObj.getSurname());
+
+				String birthDate = V3MessageUtil.convertDateToString(ns.getPerson().getBirthDate());
+				nameSearchResult.setDateOfBirth(birthDate);
+
+				Address address = ns.getPerson().getPhysicalAddress();
+				if (address != null) {
+					nameSearchResult.setAddressLine1(ns.getPerson().getPhysicalAddress().getAddressLine1());
+					nameSearchResult.setCity(ns.getPerson().getPhysicalAddress().getCity());
+					nameSearchResult.setProvince(ns.getPerson().getPhysicalAddress().getProvince());
+					nameSearchResult.setPostalCode(ns.getPerson().getPhysicalAddress().getPostalCode());
+				}
+
 				nameSearchResult.setScore(ns.getScore());
+				nameSearchList.add(nameSearchResult);
 
 			});
-			nameSearchList.add(nameSearchResult);
 
 		}
-		
+
 		getNameSearchResponse.setResults(nameSearchList);
 	}
 

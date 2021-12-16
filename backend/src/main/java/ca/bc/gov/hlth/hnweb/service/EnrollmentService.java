@@ -142,7 +142,7 @@ public class EnrollmentService {
 		Object formattedRequest = hl7Serializer.toXml(findCandidatesRequest, mmd);
 		//Create soap wrapper
 		String xmlString = V3MessageUtil.wrap(formattedRequest.toString());
-		logger.debug("Get Demographics wrapped xml request[{}]", xmlString);
+		logger.debug("Get Name Search wrapped xml request[{}]", xmlString);
 		  
 	    ResponseEntity<String> response = postHcimRequest(xmlString, transactionId); 
 	    logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
@@ -151,7 +151,7 @@ public class EnrollmentService {
 			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
 			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
 		}
-		//De-Serialize demographics response
+		//De-Serialize findCandidate response
 		FindCandidatesResponse findCandidatesResponse = hl7Serializer.fromXml(response.getBody(), FindCandidatesResponse.class);
 	    
 	    return findCandidatesResponse;
