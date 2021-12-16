@@ -132,7 +132,7 @@ jobs:
       - name: Update image ID and commit change
         if: ${{ success() }}
         run: |
-          cd /overlays/dev
+          cd hnweb-devops/overlays/dev
           kustomize edit set image "frontend-image=image-registry.openshift-image-registry.svc:5000/c5839f-tools/hnweb-frontend@${{ steps.push-image.outputs.digest }}"
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
