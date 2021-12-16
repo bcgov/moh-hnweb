@@ -14,9 +14,6 @@
 </template>
 
 <script>
-import AppCol from '../../grid/AppCol.vue'
-import AppRow from '../../grid/AppRow.vue'
-import AppOutput from '../../AppOutput.vue'
 import { formatPersonName } from '../../../util/utils'
 
 export default {
@@ -25,11 +22,6 @@ export default {
     resident: {
       phn: '',
     },
-  },
-  components: {
-    AppCol,
-    AppOutput,
-    AppRow,
   },
   computed: {
     fullName() {

@@ -43,7 +43,7 @@
         </AppCol>
       </AppRow>                        
       <AppRow>
-        <AppButton :disabled="searching" mode="primary" type="submit">Submit</AppButton>
+        <AppButton :submitting="searching" mode="primary" type="submit">Submit</AppButton>
         <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
       </AppRow>
       </form>
@@ -73,10 +73,6 @@
 </template>
 
 <script>
-import AppButton from '../../components/AppButton.vue'
-import AppCol from '../../components/grid/AppCol.vue'
-import AppInput from '../../components/AppInput.vue'
-import AppRow from '../../components/grid/AppRow.vue'
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
 import EligibilityService from '../../services/EligibilityService'
 import PhnInquiryBeneficiary from '../../components/eligibility/PhnInquiryBeneficiary.vue'
@@ -87,7 +83,7 @@ import { helpers } from '@vuelidate/validators'
 export default {
   name: 'PhnInquiry',
   components: {
-    AppButton, AppCol, AppInput, AppRow, AppSimpleTable, PhnInquiryBeneficiary
+    AppSimpleTable, PhnInquiryBeneficiary
   },
   setup() {
     return {

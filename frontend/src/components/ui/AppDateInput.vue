@@ -22,7 +22,7 @@
 import Datepicker from 'vue3-date-time-picker';
 import AppInputError from './AppInputError.vue'
 import 'vue3-date-time-picker/dist/main.css'
-import { INPUT_DATE_FORMAT } from '../util/constants.js'
+import { INPUT_DATE_FORMAT } from '../../util/constants.js'
 
   export default {
     name: 'AppDateInput',

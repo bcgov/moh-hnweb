@@ -6,8 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ca.bc.gov.hlth.hnweb.converter.BaseConverter;
-import ca.bc.gov.hlth.hnweb.converter.MSHDefaults;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
@@ -25,7 +23,7 @@ import ca.uhn.hl7v2.util.Terser;
  * and from Message to an EnrollSubscriberResponse.
  *
  */
-public class R50Converter extends BaseConverter {
+public class R50Converter extends BaseV2Converter {
 
 	private static final Logger logger = LoggerFactory.getLogger(R50Converter.class);
 

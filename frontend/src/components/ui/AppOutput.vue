@@ -3,7 +3,7 @@
   <div class="text_label">
     <label>{{label}}</label>
   </div>
-  {{value}}
+  <span>{{value}}</span>
   
 </template>
 
