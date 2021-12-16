@@ -22,11 +22,10 @@ public class FindCandidatesConverter {
 
 	private static final String WARNING = "Warning";
 	private static final Logger logger = LoggerFactory.getLogger(FindCandidatesConverter.class);
-	
 
-	
-	public FindCandidatesRequest convertRequest(String surname, String firstName , String secondName, String dateOfBirth, String gender) {
-		logger.debug("Find Candidates for Name: [{}] DOB: [{}]", surname + firstName , dateOfBirth );
+	public FindCandidatesRequest convertRequest(String surname, String firstName, String secondName, String dateOfBirth,
+			String gender) {
+		logger.debug("Find Candidates for Name: [{}] DOB: [{}]", surname + firstName, dateOfBirth);
 
 		FindCandidatesRequest findCandidatesRequest = new FindCandidatesRequest();
 		findCandidatesRequest.setSurname(surname);
@@ -34,12 +33,12 @@ public class FindCandidatesConverter {
 		findCandidatesRequest.setSecondName(secondName);
 		findCandidatesRequest.setDateOfBirth(dateOfBirth);
 		findCandidatesRequest.setGender(gender);
-		
+
 		return findCandidatesRequest;
 
 	}
 
-		public GetNameSearchResponse convertResponse(FindCandidatesResponse findCandidatesResponse) throws IOException {
+	public GetNameSearchResponse convertResponse(FindCandidatesResponse findCandidatesResponse) throws IOException {
 		logger.debug("Find Candidates response : {} ", findCandidatesResponse.toString());
 
 		GetNameSearchResponse getNameSearchResponse = buildGetNameSearchResponse(findCandidatesResponse);
@@ -75,7 +74,6 @@ public class FindCandidatesConverter {
 				}
 			}
 
-			//logger.debug("Response message received for phn: {}", getNameSearchResponse.getResults().get(0).getPersonNameDisplay());
 		}
 
 		return getNameSearchResponse;
@@ -88,39 +86,37 @@ public class FindCandidatesConverter {
 
 		List<FindCandidatesResult> candidatesResult = findCandidatesResponse.getResults();
 
-
 		if (!CollectionUtils.isEmpty(candidatesResult)) {
 			candidatesResult.forEach(ns -> {
 				NameSearchResult nameSearchResult = new NameSearchResult();
 				nameSearchResult.setPhn(ns.getPerson().getPhn());
-				Name nameObj = ns.getPerson().getDeclaredName();		
+				Name nameObj = ns.getPerson().getDeclaredName();
 				if (nameObj == null) {
 					nameObj = ns.getPerson().getDocumentedName();
-				}				
+				}
 				nameSearchResult.setGender(ns.getPerson().getGender());
 				nameSearchResult.setGivenName(nameObj.getFirstGivenName());
 				nameSearchResult.setSecondName(nameObj.getSecondGivenName());
 				nameSearchResult.setSurname(nameObj.getSurname());
-				
+
 				String birthDate = V3MessageUtil.convertDateToString(ns.getPerson().getBirthDate());
 				nameSearchResult.setDateOfBirth(birthDate);
-				
+
 				Address address = ns.getPerson().getPhysicalAddress();
-				if (address!=null) {
-				nameSearchResult.setAddressLine1(ns.getPerson().getPhysicalAddress().getAddressLine1());
-				nameSearchResult.setCity(ns.getPerson().getPhysicalAddress().getCity());
-				nameSearchResult.setProvince(ns.getPerson().getPhysicalAddress().getProvince());
-				nameSearchResult.setPostalCode(ns.getPerson().getPhysicalAddress().getPostalCode());
+				if (address != null) {
+					nameSearchResult.setAddressLine1(ns.getPerson().getPhysicalAddress().getAddressLine1());
+					nameSearchResult.setCity(ns.getPerson().getPhysicalAddress().getCity());
+					nameSearchResult.setProvince(ns.getPerson().getPhysicalAddress().getProvince());
+					nameSearchResult.setPostalCode(ns.getPerson().getPhysicalAddress().getPostalCode());
 				}
-		
+
 				nameSearchResult.setScore(ns.getScore());
 				nameSearchList.add(nameSearchResult);
 
 			});
-		
 
 		}
-		
+
 		getNameSearchResponse.setResults(nameSearchList);
 	}
 
