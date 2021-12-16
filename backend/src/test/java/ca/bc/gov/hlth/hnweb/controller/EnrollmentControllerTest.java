@@ -21,6 +21,8 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
+import ca.bc.gov.hlth.hnweb.model.GetNameSearchRequest;
+import ca.bc.gov.hlth.hnweb.model.GetNameSearchResponse;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
@@ -45,6 +47,8 @@ public class EnrollmentControllerTest {
 	private static final String ACK_SUCCESS = "MSH|^~\\&|RAIPRSN-NM-SRCH|BC00002041|HNWeb|BC01000161|20210916104824||ACK|71902|D|2.4\r\n" + 
 			"MSA|AA|20210506160152|HJMB001ISUCCESSFULLY COMPLETED\r\n" + 
 			"ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED";
+	
+	private static final String MESSAGE = " No results were returned. Please refine your search criteria, and try again.";
 	
 	public static MockWebServer mockBackEnd;
 	private static MockedStatic<SecurityUtil> mockStatic;
@@ -151,6 +155,58 @@ public class EnrollmentControllerTest {
         assertEquals(StatusEnum.WARNING, getPersonDetailsResponse.getStatus());
         assertEquals(expectedMessageText, getPersonDetailsResponse.getMessage());
 		
+		//Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());
+    }
+    
+    @Test
+    void testGetNameSearch_Multi() throws Exception {    	
+        
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(TestUtil.convertXMLFileToString("src\\test\\resources\\FindCandidatesResponse_Multiples.xml"))
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+        
+        GetNameSearchRequest getNameSearchRequest = new GetNameSearchRequest();
+        getNameSearchRequest.setGivenName("TestGiven");
+        getNameSearchRequest.setSurname("TestSurname");
+        getNameSearchRequest.setGender("M");
+        getNameSearchRequest.setDateOfBirth("20200101");
+        	       
+        ResponseEntity<GetNameSearchResponse> response = enrollmentController.getNameSearch(getNameSearchRequest);
+        GetNameSearchResponse getNameSearchResponse = response.getBody();
+        assertEquals(3, getNameSearchResponse.getResults().size());
+        assertEquals(31.0, getNameSearchResponse.getResults().get(0).getScore());
+        assertEquals(-53.0, getNameSearchResponse.getResults().get(1).getScore());
+        assertEquals(-56.0, getNameSearchResponse.getResults().get(2).getScore());
+    			
+		//Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());
+    }
+    
+    
+    @Test
+    void testGetNameSearch_NoRecords() throws Exception {    	
+        
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(TestUtil.convertXMLFileToString("src\\test\\resources\\FindCandidatesResponse_NoMatches.xml"))
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+        
+        GetNameSearchRequest getNameSearchRequest = new GetNameSearchRequest();
+        getNameSearchRequest.setGivenName("TestGiven");
+        getNameSearchRequest.setSurname("TestSurname");
+        getNameSearchRequest.setGender("M");
+        getNameSearchRequest.setDateOfBirth("20200101");
+        	       
+        ResponseEntity<GetNameSearchResponse> response = enrollmentController.getNameSearch(getNameSearchRequest);
+        GetNameSearchResponse getNameSearchResponse = response.getBody();
+        assertEquals(MESSAGE, getNameSearchResponse.getMessage());
+    			
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
