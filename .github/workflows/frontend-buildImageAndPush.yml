@@ -1,4 +1,4 @@
-name: BuildAndPush
+name: frontend-BuildImageAndPush
 # Build the image and deploy in OpenShift environment
 env:
   # Registries such as GHCR, Quay.io, and Docker Hub are supported.
@@ -9,24 +9,6 @@ env:
   IMAGE_TAGS: 
 
 on:
-  # Run the workflow manually, instead of on a push.
-  # The user specifies the values 
-  # --------------------------------------------------------------------------
-  workflow_dispatch:
-    inputs:
-      namespace:
-        description: 'Enter namepsacae:'
-        required: true
-        default: c5839f-dev
-      buildConfig:
-        description: 'Enter build config name:'
-        required: true
-        default: hnweb-frontend-bc
-      branch:
-        description: 'Enter branch name:'
-        required: true
-        default: 4969-setup-hnweb
-
   push:
     branches:
     - 4969-setup-hnweb
@@ -34,42 +16,11 @@ on:
 jobs:
   
   buildAndPush:
+
     runs-on: ubuntu-latest
     
     steps:
-    - name: Print some values using bash
-      id: vars
-      shell: bash
-      run: |
-        pwd
-      #  echo "##[set-output name= ${{ github.event.inputs.build }};]$(echo ${GITHUB_REF#refs/heads/})"
-      #  echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"    
-
-    - name: Another step without bash
-      run: |
-        echo "Branch: ${{ steps.vars.outputs.branch }}"
-        echo "Sha: ${{ steps.vars.outputs.sha_short }}"
-
-      # Build the image using the specified build config
-      # Get its build ID
-      # Get the commit ID of that build
-      # Get the SHA256 signature of the image
-      # Tag the image with the commit ID and "dev"
-      # ------------------------------------------------
-    - uses: actions/checkout@v2
-    - name: Build the image and push to openshift regisrty
-      id: build-image
-      working-directory: ./frontend
-      run: |
-        oc version
-        oc login --token=${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }} --server=${{ secrets.C5839F_OPENSHIFT_SERVER }}
-        # oc start-build hnweb-frontend-bc --from-dir=. 
-        # export BUILDID="$(oc -n ${{ github.event.inputs.namespace }} get -o=jsonpath="{.status.lastVersion}" buildconfig ${{ github.event.inputs.buildConfig }})"
-        # export COMMITID="$(oc -n ${{ github.event.inputs.namespace }} get -o=jsonpath="{.spec.revision.git.commit}" build ${{ github.event.inputs.buildConfig }}-$BUILDID | cut -c1-7)"
-        # export IMAGESHA="$(oc -n ${{ github.event.inputs.namespace }} get -o=jsonpath="{.status.output.to.imageDigest}" build ${{ github.event.inputs.buildConfig }}-$BUILDID)"
-        # oc -n c5839f-tools tag hnweb-frontend@$IMAGESHA hnweb-frontend:$COMMITID hnweb-frontend:dev
-        # echo "::set-output name=imagesha::$IMAGESHA"
-
+    # Generate the tags the image with the commit ID and "dev"
     - name: Determine image tags
       if: env.IMAGE_TAGS == ''
       run: |
@@ -77,8 +28,7 @@ jobs:
         echo "IMAGE_TAGS=latest ${GITHUB_SHA::12} hnweb-dev" | tee -a $GITHUB_ENV
         echo "Final image tags is ${{ env.IMAGE_TAGS }}"
 
-
-    # https://github.com/redhat-actions/buildah-build#readme
+    # Build the image from docker file
     - name: Build from Dockerfile
       id: build-docker
       uses: redhat-actions/buildah-build@v2
@@ -87,14 +37,10 @@ jobs:
         tags: ${{ env.IMAGE_TAGS }}
         context: ./frontend
         build-args: env=test
-        # If you don't have a Dockerfile/Containerfile, refer to https://github.com/redhat-actions/buildah-build#scratch-build-inputs
-        # Or, perform a source-to-image build using https://github.com/redhat-actions/s2i-build
-        # Otherwise, point this to your Dockerfile/Containerfile relative to the repository root.
         dockerfiles: |
           ./frontend/Dockerfile
 
-
-    # https://github.com/redhat-actions/push-to-registry#readme
+    # Push the image from docker file
     - name: Push to registry
       id: push-image
       uses: redhat-actions/push-to-registry@v2
@@ -104,10 +50,6 @@ jobs:
         registry: ${{ env.IMAGE_REGISTRY }}
         username: ${{ env.IMAGE_REGISTRY_USER }}
         password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
-
-    - name: Print digest information
-      id: print-digest
-      run: echo "Image pushed to ${{ steps.push-image.outputs.digest }}"
 
     # Update the image ID in the manifest repository used by Argo CD.
     # We need to use the SSH deploy key to check out the manifest repo, set up
@@ -123,8 +65,8 @@ jobs:
       uses: actions/checkout@v2
       with:
         ssh-key: ${{ secrets.GITOPS_C5839F_PRIVATE_KEY }}
-        #repository: ${{ secrets.GITOPS_C5839F_REPO }}
-        repository: bcgov-c/tenant-gitops-c5839f
+        repository: ${{ secrets.GITOPS_C5839F_REPO }}
+        # After gitops merge to main is complete, remove the name of branch from here
         ref: 4969-setup-hnweb
 
     - name: Set up Kustomize
