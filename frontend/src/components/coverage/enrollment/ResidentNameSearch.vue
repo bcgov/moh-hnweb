@@ -95,7 +95,7 @@ export default {
           this.searching = false
           return
         }
-        this.$emit('update-resident', { surname, firstName, secondName, dateOfBirth, gender })
+        this.$emit('search-for-candidates', { surname, firstName, secondName, dateOfBirth, gender })
       } catch (err) {
         console.log(`Error ${err}`)
         this.$store.commit('alert/setErrorAlert', `${err}`)

@@ -1,5 +1,5 @@
 <template>
-  <ResidentNameSearch v-if="isNameSearch" @update-resident="updateResident" />
+  <ResidentNameSearch v-if="isNameSearch" @search-for-candidates="searchForCandidates" />
 </template>
 
 <script>
@@ -14,14 +14,7 @@ export default {
     return {
       pageAction: null,
       getPersonDetailsResult: {
-        person: {
-          phn: '',
-          givenName: '',
-          secondName: '',
-          surname: '',
-          dateOfBirth: '',
-          gender: '',
-        },
+        candidates: [],
         status: '',
         message: null,
       },
@@ -51,9 +44,15 @@ export default {
     },
   },
   methods: {
-    async updateResident(phn) {
+    async searchForCandidates(searchCriteria) {
       try {
-        const data = (await EnrollmentService.getPersonDetails({ phn: '' })).data
+        const data = (await EnrollmentService.performNameSearch({
+          givenName: ,
+          secondName: '',
+          surname: '',
+          dateOfBirth: '',
+          gender: '',
+        })).data
         this.getPersonDetailsResult = {
           person: {
             phn: data.phn,

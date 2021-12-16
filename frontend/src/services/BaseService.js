@@ -1,8 +1,9 @@
-import axios from 'axios';
-import keycloak from '../keycloak';
+import axios from 'axios'
+import keycloak from '../keycloak'
 
 export const resources = {
   enrollment: {
+    performNameSearch: 'enrollment/get-name-search',
     getPersonDetails: 'enrollment/get-person-details',
     enrollSubscriber: '/enrollment/enroll-subscriber',
   },
@@ -16,12 +17,12 @@ export const resources = {
 
 export function apiRequest() {
   function createAxios() {
-    const baseURL = import.meta.env.VITE_SERVICE_URL;
-      return axios.create({
-        baseURL: baseURL,
-        headers: {Authorization: 'Bearer ' + keycloak.token}
-      });
-    }
+    const baseURL = import.meta.env.VITE_SERVICE_URL
+    return axios.create({
+      baseURL: baseURL,
+      headers: { Authorization: 'Bearer ' + keycloak.token },
+    })
+  }
   return keycloak.updateToken(0).then(createAxios)
 }
 
