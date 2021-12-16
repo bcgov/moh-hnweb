@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-
 import { helpers } from '@vuelidate/validators'
 
 /**
@@ -59,6 +58,30 @@ export function validateDOB(dateOfBirth) {
 }
 
 /**
+ * Validate Group Member Number. It can be up to nine (9) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid.
+ */
+export function validateGroupMemberNumber(groupMemberNumber) {
+  return validateSpecialChars(groupMemberNumber, 9)
+} 
+
+/**
+ * Validate Department Number. It can be up to six (6) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid.
+ */
+export function validateDepartmentNumber(departmentNumber) {
+  return validateSpecialChars(departmentNumber, 6)
+}
+
+/**
+ * Only numbers 0 to 9 are valid. Phone Number must be entered as seven (10) numbers in length with no space or hyphen.
+ */
+ export function validateTelephone(telephone) {
+  if (!helpers.req(telephone)) {
+    return true
+  }
+  return validateNumber(telephone, 10)
+} 
+
+/*
  * Validates that the Contract Number is valid.
  */
  export function validateContractNumber(contractNumber) {
@@ -85,10 +108,23 @@ export function validateDOB(dateOfBirth) {
 }
 
 /**
+ * Validate that input is allowed length and that it contains no invalid characters
+ */
+function validateSpecialChars(input, length) {
+  if (input.length > length) {
+    return false
+  }
+  var invalidChars = /[\\|^\&]/;  
+  if (invalidChars.test(input)) {
+    return false
+  }
+  return true
+}
+
+/**
  * Validates that the input is an integer number of the specified length.
  */
 function validateNumber(input, length) {
-  console.log('validateNumber')
   if (input.length != length) {
     return false
   }
@@ -106,7 +142,6 @@ function validateNumber(input, length) {
 }
 
 function validateMod10(input) {
-  console.log('validateMod10')
 	const numDigits = input.length
 	let sum = 0
 	let tmpDigit = 0
@@ -139,3 +174,6 @@ export const VALIDATE_DOB_MESSAGE = "Date of Birth must not be in the future"
 export const VALIDATE_PHN_MESSAGE = "PHN format is invalid"
 export const VALIDATE_CONTRACT_NUMBER_MESSAGE = "MSP Contract Number is invalid"
 export const VALIDATE_GROUP_NUMBER_MESSAGE = "Group Number is invalid"
+export const VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE = "Group Member Number is invalid"
+export const VALIDATE_DEPARTMENT_NUMBER_MESSAGE = "Department Number is invalid"
+export const VALIDATE_TELEPHONE_MESSAGE = "Telephone is invalid. Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen."

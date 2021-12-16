@@ -71,14 +71,13 @@ public class V2MessageUtilTest {
 
 		//Create a R50 message 
     	R50 r50Zo6 = new R50();
-		
-    	V2MessageUtil.setZiaValues(r50Zo6.getZIA(), "20210101", "HELP^RERE^^^^^L", 
-				  "898 RETER ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^H", 
-			      "123 UIYUI ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^M", 
-			      "^PRN^PH^^^250^8578974", "S", "AB");		
-		ZIA zia = r50Zo6.getZIA();		
+    	ZIA zia = r50Zo6.getZIA();
+    	V2MessageUtil.setZiaValues(zia, "20210101", "HELP", "RERE", "",				 
+			      "2508578974", "S", "AB");	
+    	V2MessageUtil.setZiaExtendedAddrees1(zia, "1541", "22A street","sw", "Victoria", "BC", "T6T6T6");
+				
 		String ziaEncoded = parser.doEncode(zia, EncodingCharacters.getInstance(r50Zo6));		
-		assertEquals("ZIA||20210101|||||||||||||HELP^RERE^^^^^L|898 RETER ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^H~123 UIYUI ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^M|^PRN^PH^^^250^8578974|||||||S|AB", ziaEncoded);
+		assertEquals("ZIA||20210101|||||||||||||HELP^RERE^^^^^L|1541^22A street^sw^^^^^^^^^^^^^^^^^Victoria^BC^T6T6T6^^H|^PRN^PH^^^250^8578974|||||||S|AB", ziaEncoded);
 	}
 	
 	@Test
@@ -135,10 +134,10 @@ public class V2MessageUtilTest {
 		//Create an E45 message  
     	E45 e45 = new E45();
 		
-    	V2MessageUtil.setSftValues(e45.getSFT(), "1.0", "testorg", "101", "MOH", "1.0", "barebones");		
+    	V2MessageUtil.setSftValues(e45.getSFT());		
     	SFT sft = e45.getSFT();		
 		String encoded = parser.doEncode(sft, EncodingCharacters.getInstance(e45));		
-		assertEquals("SFT|1.0||testorg^^101^^^MOH|1.0|barebones", encoded);
+		assertEquals("SFT||||1.0", encoded);
 	}	
 
 	@Test
@@ -147,10 +146,10 @@ public class V2MessageUtilTest {
 		//Create an E45 message  
     	E45 e45 = new E45();
 		
-    	V2MessageUtil.setQpdValues(e45.getQPD(), "E45^^HNET0003", "1", "9865827321", "19730131", "20210705", true, false, true);		
+    	V2MessageUtil.setQpdValues(e45.getQPD(), "E45^^HNET0003", "9865827321", "00000010", "19730131", "20210705", true, false, true);		
     	QPD qpd = e45.getQPD();		
 		String encoded = parser.doEncode(qpd, EncodingCharacters.getInstance(e45));		
-		assertEquals("QPD|E45^^HNET0003|1|^^00000001^^^CANBC^XX^MOH|^^00000001^^^CANBC^XX^MOH|^^00000754^^^CANBC^XX^MOH|9865827321^^^CANBC^JHN^MOH||19730131||||||20210705||ENDRSN^^HNET9909~CCARD^^HNET9909~PVC^^HNET9909~PRS^^HNET9909", encoded);
+		assertEquals("QPD|E45^^HNET0003|1|^^00000010^^^CANBC^XX^MOH|^^00000010^^^CANBC^XX^MOH|^^00000754^^^CANBC^XX^MOH|9865827321^^^CANBC^JHN^MOH||19730131||||||20210705||ENDRSN^^HNET9909~CCARD^^HNET9909~PVC^^HNET9909~PRS^^HNET9909", encoded);
 	}
 
 	@Test
@@ -159,7 +158,7 @@ public class V2MessageUtilTest {
 		//Create an E45 message  
     	E45 e45 = new E45();
 		
-    	V2MessageUtil.setRcpValues(e45.getRCP(), "I");		
+    	V2MessageUtil.setRcpValues(e45.getRCP());		
     	RCP rcp = e45.getRCP();		
 		String encoded = parser.doEncode(rcp, EncodingCharacters.getInstance(e45));		
 		assertEquals("RCP|I", encoded);

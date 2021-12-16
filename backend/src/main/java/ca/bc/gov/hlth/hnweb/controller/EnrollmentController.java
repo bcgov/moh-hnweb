@@ -1,25 +1,32 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
-import java.io.IOException;
-import java.util.UUID;
-
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
+import ca.bc.gov.hlth.hnweb.converter.hl7v2.MSHDefaults;
+import ca.bc.gov.hlth.hnweb.converter.hl7v2.R50Converter;
+import ca.bc.gov.hlth.hnweb.converter.hl7v3.GetDemographicsConverter;
+import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
+import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsRequest;
+import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
+import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
+import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.service.EnrollmentService;
-import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
-import ca.uhn.hl7v2.util.Terser;
 
 /**
  * Handles request related to R50 Enroll Subscriber. These will include:
@@ -28,78 +35,72 @@ import ca.uhn.hl7v2.util.Terser;
  * <li>Z04
  * <li>Z05
  * <li>Z06
- * <ul>		 
+ * <ul>
  *
  */
 @RequestMapping("/enrollment")
 @RestController
 public class EnrollmentController {
-	
-	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(EnrollmentController.class);
+
+	private static final Logger logger = LoggerFactory.getLogger(EnrollmentController.class);
 
 	@Autowired
 	private EnrollmentService enrollmentService;
-	
-	@PostMapping("/enroll-subscriber")
-	public EnrollSubscriberResponse enrollSubscriber(@Valid @RequestBody EnrollSubscriberRequest enrollSubscriberRequest) throws HL7Exception, IOException {
-		
-		logger.info("Subscriber enroll request: {} ", enrollSubscriberRequest.getPhn());
-		
-		R50 r50 = convertEnrollSubscriberRequestToR50(enrollSubscriberRequest);		
-		String transactionId = UUID.randomUUID().toString();		
-		Message message = enrollmentService.enrollSubscriber(r50, transactionId);		
-		EnrollSubscriberResponse enrollSubscriberResponse = convertAckToEnrollSubscriberResponse(message);
-		
-		logger.info("Subscriber enroll Response: {} ", enrollSubscriberResponse.getAcknowledgementMessage());
-		
-		return enrollSubscriberResponse;
-	}
-	
-    private R50 convertEnrollSubscriberRequestToR50(EnrollSubscriberRequest enrollSubscriberRequest) throws HL7Exception {
-    	
-    	//Create a default R50 message with MSH-9 set to R50 Z06 
-    	R50 r50 = new R50(); 
-    	setSegmentValues(r50, enrollSubscriberRequest);    	     	
-    	return r50;
-    	
-    }
 
-    private EnrollSubscriberResponse convertAckToEnrollSubscriberResponse(Message message) throws HL7Exception {
-    	
-    	EnrollSubscriberResponse enrollSubscriberResponse = new EnrollSubscriberResponse();
-    	
-    	// Use a Terser to access the message info
-    	Terser terser = new Terser(message);
-    	          
-    	/* 
-    	 * Retrieve required info by specifying the location
-    	 */ 
-    	String messageId = terser.get("/.MSH-10-1");
-    	String acknowledgementCode = terser.get("/.MSA-1-1");
-    	String acknowledgementMessage = terser.get("/.MSA-3-1");
-    	
-    	logger.debug("ACK message response code [{}] and message [{}]", acknowledgementCode, acknowledgementMessage);
-    	
-    	enrollSubscriberResponse.setMessageId(messageId);
-    	enrollSubscriberResponse.setAcknowledgementCode(acknowledgementCode);
-		enrollSubscriberResponse.setAcknowledgementMessage(acknowledgementMessage);
-    	
-    	return enrollSubscriberResponse;
-    }
-    
-   	private void setSegmentValues(R50 r50, EnrollSubscriberRequest enrollSubscriberRequest) throws HL7Exception {
-   		
-   		//TODO (daveb-hni) This has been stubbed for now. Populate actual values from the correct source, e.g. the Enrollment Request Screen, when the related story is implemented.
-    	V2MessageUtil.setMshValues(r50.getMSH(), "HNWeb", "BC01000030", "RAIENROL-EMP", "BC00001013", "20200529114230", "10-ANother", "R50^Z06", "20200529114230", "D");
-		V2MessageUtil.setZhdValues(r50.getZHD(), "20200529114230", "00000010", "HNAIADMINISTRATION", "2.4");
-    	V2MessageUtil.setPidValues(r50.getPID(), enrollSubscriberRequest.getPhn(), "BC", "PH", "", "19700303", "M");   	  
-    	V2MessageUtil.setZiaValues(r50.getZIA(), "20210101", "HELP^RERE^^^^^L", 
-    											  "898 RETER ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^H", 
-    										      "123 UIYUI ST^^^^^^^^^^^^^^^^^^^VICTORIA^BC^V8V8V8^^M", 
-    										      "^PRN^PH^^^250^8578974", "S", "AB");
-    	V2MessageUtil.setIn1Values(r50.getIN1(), "6337109", "789446", "123456", "20190501", "20201231");
-    	V2MessageUtil.setZihValues(r50.getZIH(), "D");        	
-    	V2MessageUtil.setZikValues(r50.getZIK(), "20210101", "20221231");    	
-    }
+	@Autowired
+	private MSHDefaults mshDefaults;
+
+	@PostMapping("/enroll-subscriber")
+	public ResponseEntity<EnrollSubscriberResponse> enrollSubscriber(
+			@Valid @RequestBody EnrollSubscriberRequest enrollSubscriberRequest) throws HL7Exception, HNWebException {
+
+		logger.info("Subscriber enroll request: {} ", enrollSubscriberRequest.getPhn());
+		try {
+			R50Converter converter = new R50Converter(mshDefaults);
+			R50 r50 = converter.convertRequest(enrollSubscriberRequest);			
+			Message r50Message = enrollmentService.enrollSubscriber(r50);
+			EnrollSubscriberResponse enrollSubscriberResponse = converter.convertResponse(r50Message);
+			ResponseEntity<EnrollSubscriberResponse> responseEntity = ResponseEntity.ok(enrollSubscriberResponse);
+
+			logger.info("Subscriber enroll Response: {} ", enrollSubscriberResponse.getAcknowledgementMessage());
+
+			return responseEntity;
+		} catch (HNWebException hwe) {
+			switch (hwe.getType()) {
+			case DOWNSTREAM_FAILURE:
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
+			default:
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /enroll subscriber request", hwe);
+			}
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /enroll subscriber request", e);
+		}
+	}
+
+	@PostMapping("/get-person-details")
+	public ResponseEntity<GetPersonDetailsResponse> getPersonDetails(
+			@Valid @RequestBody GetPersonDetailsRequest personDetails) {
+		logger.info("Demographic request: {} ", personDetails.getPhn());
+
+		try {
+			GetDemographicsConverter converter = new GetDemographicsConverter();
+
+			GetDemographicsRequest demographicsRequest = converter.convertRequest(personDetails.getPhn());
+			GetDemographicsResponse demoGraphicsResponse = enrollmentService.getDemographics(demographicsRequest);
+			GetPersonDetailsResponse personDetailsResponse = converter.convertResponse(demoGraphicsResponse);
+			ResponseEntity<GetPersonDetailsResponse> responseEntity = ResponseEntity.ok(personDetailsResponse);
+
+			return responseEntity;
+		} catch (HNWebException hwe) {
+			switch (hwe.getType()) {
+			case DOWNSTREAM_FAILURE:
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
+			default:
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /person-details request", hwe);
+			}
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /person-details request", e);
+		}
+	}
 
 }

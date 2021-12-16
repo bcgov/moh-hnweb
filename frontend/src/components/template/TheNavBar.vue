@@ -19,8 +19,14 @@
         <li id="coverage-maintenance-link" :class="tabClass($route, 'CoverageMaintenance')">
           <router-link @click="resetAlert" :to="{ name: 'CoverageMaintenance'}">Coverage Maintenance</router-link>
         </li>
-        <li id="coverage-enrollment-link" :class="tabClass($route, 'CoverageEnrollment')">
-          <router-link @click="resetAlert" :to="{ name: 'CoverageEnrollment'}">Coverage Enrollment</router-link>
+        <li id="coverage-enrollment-link" :class="menuTabClass($route, '/coverage/enrollment')">
+          <div class="dropdown" :key="coverageEnrollmentDropDownKey" v-on:click="this.refreshEnrollment">
+            <router-link @click="resetAlert" :to="{ name: 'CoverageEnrollment'}">Coverage Enrollment</router-link>
+            <div class="dropdown-content">
+              <router-link @click="resetAlert" :class="menuClass($route, 'AddVisaResidentWithoutPHN')" :to="{ name: 'AddVisaResidentWithoutPHN'}">Add Study Permit holder without PHN</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'AddVisaResidentWithPHN')" :to="{ name: 'AddVisaResidentWithPHN'}">Add Study Permit holder with PHN</router-link>
+            </div>
+          </div>
         </li>
         <li id="manage-employees-link" :class="tabClass($route, 'ManageEmployees')">
           <router-link @click="resetAlert" :to="{ name: 'ManageEmployees'}">Manage Employees</router-link>
@@ -38,7 +44,8 @@ export default {
   name: 'TheNavBar',
   data: function() {
     return {
-      eligibilityDropdownKey: 0
+      eligibilityDropdownKey: 0,
+      coverageEnrollmentDropDownKey: 0,
     }
   },
   methods: {
@@ -47,6 +54,9 @@ export default {
     },
     refreshEligibility() {
       this.eligibilityDropdownKey += 1
+    },
+    refreshCoverageEnrollment() {
+      this.coverageEnrollmentDropDownKey += 1
     },
     menuClass(route, routeName) {
       return this.tabClass(route, routeName)

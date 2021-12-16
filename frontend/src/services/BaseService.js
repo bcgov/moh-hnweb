@@ -1,14 +1,17 @@
 import axios from 'axios';
-
 import keycloak from '../keycloak';
 
 export const resources = {
+  enrollment: {
+    getPersonDetails: 'enrollment/get-person-details',
+    enrollSubscriber: '/enrollment/enroll-subscriber',
+  },
   eligibility: {
     checkEligibility: '/eligibility/check-eligibility',
     checkMspCoverageStatus: '/eligibility/check-msp-coverage-status',
     inquirePhn: '/eligibility/inquire-phn',
     lookupPhn: '/eligibility/lookup-phn',
-  }
+  },
 }
 
 export function apiRequest() {
