@@ -10,6 +10,7 @@
       :format="inputDateFormat"
       placeholder="YYYYMMDD"
       :text-input="true"
+      :uid="$attrs.id"
       v-model="value" 
     />
   </div>

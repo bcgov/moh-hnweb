@@ -3,7 +3,7 @@ import { Selector } from 'testcafe'
 class CheckEligibility {
   constructor() {
     this.phnInput = Selector('#phn')
-    this.eligibilityDate = Selector('div#eligibilityDate > div > div > div > input')
+    this.eligibilityDate = Selector('#dp-input-eligibilityDate')
     this.errorText = Selector('div').withAttribute('class', 'error-text')
 
     this.submitButton = Selector('button[type="submit"]')

@@ -3,8 +3,8 @@ import { Selector } from 'testcafe'
 class CoverageStatusCheck {
   constructor() {
     this.phnInput = Selector('#phn')
-    this.dateOfBirthInput = Selector('div#dateOfBirth > div > div > div > input')
-    this.dateOfServiceInput = Selector('div#dateOfService > div > div > div > input')
+    this.dateOfBirthInput = Selector('#dp-input-dateOfBirth')
+    this.dateOfServiceInput = Selector('#dp-input-dateOfService')
     this.subsidyInsuredServiceCheckBox = Selector('#checkSubsidyInsuredService', { timeout: 1000 })
     this.dateOfLastEyeExaminationCheckBox = Selector('#checkLastEyeExam', { timeout: 1000 })
     this.patientRestrictionCheckBox = Selector('#checkPatientRestriction', { timeout: 1000 })
