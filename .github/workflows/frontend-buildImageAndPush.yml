@@ -20,10 +20,11 @@ jobs:
     
     steps:
     # Check out the code
-    - uses: actions/checkout@v2
-    - name: Build the image and push to openshift regisrty
-      id: build-image
-      working-directory: ./frontend
+    - name: Check out code
+      id: checkout
+      uses: actions/checkout@v2
+      with:
+        ref: 4969-setup-hnweb      
 
     # Determine the tags
     - name: Determine image tags
@@ -44,8 +45,6 @@ jobs:
         dockerfiles: |
           ./frontend/Dockerfile
 
-
-    # https://github.com/redhat-actions/push-to-registry#readme
     - name: Push to registry
       id: push-image
       uses: redhat-actions/push-to-registry@v2
