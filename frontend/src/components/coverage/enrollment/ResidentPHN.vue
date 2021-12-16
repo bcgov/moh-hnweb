@@ -15,22 +15,12 @@
 </template>
 
 <script>
-import AppButton from '../../AppButton.vue'
-import AppCol from '../../grid/AppCol.vue'
-import AppRow from '../../grid/AppRow.vue'
-import AppInput from '../../AppInput.vue'
 import useVuelidate from '@vuelidate/core'
 import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 
 export default {
   name: 'ResidentPHN',
-  components: {
-    AppButton,
-    AppCol,
-    AppRow,
-    AppInput,
-  },
   setup() {
     return {
       v$: useVuelidate(),

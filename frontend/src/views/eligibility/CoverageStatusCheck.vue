@@ -100,14 +100,8 @@
 </template>
 
 <script>
-import AppButton from '../../components/AppButton.vue'
-import AppCard from '../../components/AppCard.vue'
-import AppCheckbox from '../../components/AppCheckbox.vue'
-import AppCol from '../../components/grid/AppCol.vue'
-import AppDateInput from '../../components/AppDateInput.vue'
-import AppInput from '../../components/AppInput.vue'
-import AppOutput from '../../components/AppOutput.vue'
-import AppRow from '../../components/grid/AppRow.vue'
+import AppCard from '../../components/ui/AppCard.vue'
+import AppCheckbox from '../../components/ui/AppCheckbox.vue'
 import EligibilityService from '../../services/EligibilityService'
 import useVuelidate from '@vuelidate/core'
 import { validateDOB, validatePHN, VALIDATE_DOB_MESSAGE, VALIDATE_PHN_MESSAGE } from '../../util/validators'
@@ -117,7 +111,7 @@ import dayjs from 'dayjs'
 
 export default {
   name: 'CoverageStatusCheck',
-  components: {AppButton, AppCard, AppCheckbox, AppCol, AppDateInput, AppInput, AppOutput, AppRow},
+  components: { AppCard, AppCheckbox },
   setup() {
     return {
       v$: useVuelidate()}

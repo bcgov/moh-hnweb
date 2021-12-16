@@ -40,10 +40,6 @@
 </template>
 
 <script>
-import AppButton from '../../components/AppButton.vue'
-import AppCol from '../../components/grid/AppCol.vue'
-import AppInput from '../../components/AppInput.vue'
-import AppRow from '../../components/grid/AppRow.vue'
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
 import EligibilityService from '../../services/EligibilityService'
 import PhnLookupBeneficiary from '../../components/eligibility/PhnLookupBeneficiary.vue'
@@ -54,7 +50,7 @@ import { helpers, required } from '@vuelidate/validators'
 export default {
   name: 'PhnInquiry',
   components: {
-    AppButton, AppCol, AppInput, AppRow, AppSimpleTable, PhnLookupBeneficiary
+    AppSimpleTable, PhnLookupBeneficiary
   },
   setup() {
     return {

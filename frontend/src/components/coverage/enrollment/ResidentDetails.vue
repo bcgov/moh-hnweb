@@ -136,13 +136,7 @@
   </div>
 </template>
 <script>
-import AppButton from '../../AppButton.vue'
-import AppCol from '../../grid/AppCol.vue'
-import AppDateInput from '../../AppDateInput.vue'
-import AppInput from '../../AppInput.vue'
-import AppRow from '../../grid/AppRow.vue'
-import AppOutput from '../../AppOutput.vue'
-import AppSelect from '../../AppSelect.vue'
+import AppSelect from '../../ui/AppSelect.vue'
 import useVuelidate from '@vuelidate/core'
 import { validateGroupNumber, validateGroupMemberNumber, validateDepartmentNumber, validateTelephone, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
@@ -162,12 +156,6 @@ export default {
     },
   },
   components: {
-    AppButton,
-    AppCol,
-    AppDateInput,
-    AppInput,
-    AppOutput,
-    AppRow,
     AppSelect,
   },
   setup() {

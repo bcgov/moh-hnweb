@@ -47,13 +47,7 @@
 </template>
 
 <script>
-import AppButton from '../../components/AppButton.vue'
-import AppCard from '../../components/AppCard.vue'
-import AppCol from '../../components/grid/AppCol.vue'
-import AppDateInput from '../../components/AppDateInput.vue'
-import AppInput from '../../components/AppInput.vue'
-import AppOutput from '../../components/AppOutput.vue'
-import AppRow from '../../components/grid/AppRow.vue'
+import AppCard from '../../components/ui/AppCard.vue'
 import EligibilityService from '../../services/EligibilityService'
 import useVuelidate from '@vuelidate/core'
 import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
@@ -64,7 +58,7 @@ import dayjs from 'dayjs'
 export default {
   name: 'CheckEligibility',
   components: {
-    AppButton, AppCard, AppCol, AppDateInput, AppInput, AppOutput, AppRow
+    AppCard
   },
   setup() {
     return {
