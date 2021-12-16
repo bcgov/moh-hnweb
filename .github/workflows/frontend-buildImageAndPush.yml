@@ -19,19 +19,6 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Print some values using bash
-      id: vars
-      shell: bash
-      run: |
-        pwd
-      #  echo "##[set-output name= ${{ github.event.inputs.build }};]$(echo ${GITHUB_REF#refs/heads/})"
-      #  echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"    
-
-    - name: Another step without bash
-      run: |
-        echo "Branch: ${{ steps.vars.outputs.branch }}"
-        echo "Sha: ${{ steps.vars.outputs.sha_short }}"
-
       # Build the image using the specified build config
       # Get its build ID
       # Get the commit ID of that build
