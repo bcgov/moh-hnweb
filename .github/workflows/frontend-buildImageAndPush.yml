@@ -24,9 +24,6 @@ jobs:
     - name: Build the image and push to openshift regisrty
       id: build-image
       working-directory: ./frontend
-      run: |
-        oc version
-        oc login --token=${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }} --server=${{ secrets.C5839F_OPENSHIFT_SERVER }}
 
     # Determine the tags
     - name: Determine image tags
