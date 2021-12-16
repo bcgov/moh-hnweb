@@ -23,11 +23,18 @@ jobs:
 
     # Checkout code
     - uses: actions/checkout@v2
-    - name: Check out code from repository
+    - name: checkout
       id: checkout
-      with:
-        ref: 4969-setup-hnweb
-      #working-directory: ./frontend
+      working-directory: ./frontend
+      run: |
+        oc version
+        oc login --token=${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }} --server=${{ secrets.C5839F_OPENSHIFT_SERVER }}
+        # oc start-build hnweb-frontend-bc --from-dir=. 
+        # export BUILDID="$(oc -n ${{ github.event.inputs.namespace }} get -o=jsonpath="{.status.lastVersion}" buildconfig ${{ github.event.inputs.buildConfig }})"
+        # export COMMITID="$(oc -n ${{ github.event.inputs.namespace }} get -o=jsonpath="{.spec.revision.git.commit}" build ${{ github.event.inputs.buildConfig }}-$BUILDID | cut -c1-7)"
+        # export IMAGESHA="$(oc -n ${{ github.event.inputs.namespace }} get -o=jsonpath="{.status.output.to.imageDigest}" build ${{ github.event.inputs.buildConfig }}-$BUILDID)"
+        # oc -n c5839f-tools tag hnweb-frontend@$IMAGESHA hnweb-frontend:$COMMITID hnweb-frontend:dev
+        # echo "::set-output name=imagesha::$IMAGESHA"
 
     # Generate the tags the image with the commit ID and "dev"
     - id: determine-tags
