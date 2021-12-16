@@ -107,4 +107,4 @@ jobs:
 
     - name: Print digest information
       id: print-digest
-      run: echo "Image pushed to ${{ steps.push-image.outputs.registry-paths }}"
+      run: echo "Image pushed to ${{ steps.push-image.outputs.digest }}"
