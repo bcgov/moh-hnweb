@@ -22,12 +22,17 @@
 </template>
 
 <script>
+  import SecurityService from './services/SecurityService.js'
   export default {
     name: 'App',
     data: function () {
       return {
         dev: import.meta.env.DEV,
       }
+    },
+    async created() {
+      const permissions = (await SecurityService.getPermissions()).data
+      this.$store.dispatch('auth/setPermissions', permissions)
     }
   }
 </script>

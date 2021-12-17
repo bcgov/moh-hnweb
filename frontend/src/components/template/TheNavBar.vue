@@ -9,7 +9,7 @@
           <div class="dropdown" :key="eligibilityDropdownKey" v-on:click="this.refreshEligibility()">
             <router-link @click="resetAlert" :to="{ name: 'Eligibility'}">Eligibility & PHN</router-link>
             <div class="dropdown-content">
-              <router-link @click="resetAlert" :class="menuClass($route, 'CheckEligibility')" :to="{ name: 'CheckEligibility'}">Check Eligibility</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'CheckEligibility')" :to="{ name: 'CheckEligibility'}" v-if="hasPermission('R16')">Check Eligibility</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'PhnInquiry')" :to="{ name: 'PhnInquiry'}">PHN Inquiry</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'PhnLookup')" :to="{ name: 'PhnLookup'}">PHN Lookup</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'CoverageStatusCheck')" :to="{ name: 'CoverageStatusCheck'}">MSP Coverage Status Check</router-link>
@@ -49,6 +49,7 @@ export default {
     }
   },
   methods: {
+    ...mapGetters({hasPermission})
     resetAlert: function () {
       this.$store.commit('alert/dismissAlert');
     },
@@ -67,6 +68,9 @@ export default {
     menuTabClass(route, routePath) {
       return route.path.startsWith(routePath) ? 'active' : 'inactive';
     },
+    hasPermission(permission) {
+      return this.$store.getters['auth/hasPermission'](permission)
+    }
   }
 }
 </script>

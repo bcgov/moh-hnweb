@@ -26,3 +26,12 @@ v2:
 rapid:
   header: 
     organization: "00000010"
+
+security:
+  rolePermissions:
+    E45:
+      - E45
+    Eligibility:
+      - E45
+      - R15
+      - R41

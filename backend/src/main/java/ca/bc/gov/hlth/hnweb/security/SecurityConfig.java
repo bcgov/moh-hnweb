@@ -3,6 +3,7 @@ package ca.bc.gov.hlth.hnweb.security;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,21 +23,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${config.allowed-origins}")
     private String allowedOrigins;
+    
+    @Autowired
+    private KeycloakClientRoleConverter keycloakClientRoleConverter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        final JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakClientRoleConverter());
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(keycloakClientRoleConverter);
 
         http
         	.cors(Customizer.withDefaults())
             .authorizeRequests()
             .mvcMatchers(HttpMethod.GET, "/docs/**").permitAll()
-            // TODO (weskubo-cgi) Replace these with the correct role loaded from application.yaml
-            .mvcMatchers(HttpMethod.GET,"/eligibility/**").fullyAuthenticated()
-            .mvcMatchers(HttpMethod.GET,"/r41/**").hasRole("manage-clients")
-            //.mvcMatchers(HttpMethod.GET, "/r41/**").permitAll()
+            .mvcMatchers(HttpMethod.POST,"/eligibility/check-msp-coverage-status").hasRole("E45")
+            .mvcMatchers(HttpMethod.POST,"/eligibility/check-eligibility").hasRole("R15")
+            .mvcMatchers(HttpMethod.POST,"/enrollment/**").fullyAuthenticated()
+            .mvcMatchers(HttpMethod.GET,"/security/**").fullyAuthenticated()
             .mvcMatchers("/*").denyAll()
             .and()
             .oauth2ResourceServer().jwt()
@@ -44,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin(allowedOrigins);
         configuration.addAllowedHeader("*");
