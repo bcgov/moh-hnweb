@@ -1,19 +1,23 @@
 <template>
-  <ResidentNameSearch v-if="isNameSearch" @search-for-candidates="searchForCandidates" />
+  <NameSearch v-if="isNameSearch" @search-for-candidates="searchForCandidates" />
+  <NameSearchResults v-else-if="isNameSearchResults" :candidates="this.nameSearchResult.candidates" @add-candidate="addCandidate" />
 </template>
 
 <script>
 import EnrollmentService from '../../../services/EnrollmentService'
-import ResidentNameSearch from '../../../components/coverage/enrollment/ResidentNameSearch.vue'
+import NameSearch from '../../../components/coverage/enrollment/NameSearch.vue'
+import NameSearchResults from '../../../components/coverage/enrollment/NameSearchResults.vue'
+
 export default {
   name: 'AddVisaResidentWithoutPHN',
   components: {
-    ResidentNameSearch,
+    NameSearch,
+    NameSearchResults,
   },
   data() {
     return {
       pageAction: null,
-      getPersonDetailsResult: {
+      nameSearchResult: {
         candidates: [],
         status: '',
         message: null,
@@ -27,6 +31,7 @@ export default {
   created() {
     this.PAGE_ACTION = {
       NAME_SEARCH: 'NAME_SEARCH',
+      NAME_SEARCH_RESULTS: 'NAME_SEARCH_RESULTS',
       STUDENT_REGISTRATION: 'STUDENT_REGISTRATION',
       CONFIRMATION: 'CONFIRMATION',
     }
@@ -35,6 +40,9 @@ export default {
   computed: {
     isNameSearch() {
       return this.pageAction === this.PAGE_ACTION.NAME_SEARCH
+    },
+    isNameSearchResults() {
+      return this.pageAction === this.PAGE_ACTION.NAME_SEARCH_RESULTS
     },
     isStudentRegistration() {
       return this.pageAction === this.PAGE_ACTION.STUDENT_REGISTRATION
@@ -45,39 +53,37 @@ export default {
   },
   methods: {
     async searchForCandidates(searchCriteria) {
+      console.log(`perform name search [${searchCriteria.surname}]`)
       try {
-        const data = (await EnrollmentService.performNameSearch({
-          givenName: ,
-          secondName: '',
-          surname: '',
-          dateOfBirth: '',
-          gender: '',
-        })).data
-        this.getPersonDetailsResult = {
-          person: {
-            phn: data.phn,
-            givenName: data.givenName,
-            secondName: data.secondName,
-            surname: data.surname,
-            dateOfBirth: data.dateOfBirth,
-            gender: data.gender,
-          },
-          status: data.status,
-          message: data.message,
-        }
+        this.nameSearchResult = (await EnrollmentService.performNameSearch(searchCriteria)).data
+        console.log(`Results: Status: [${this.nameSearchResult.status}], Message [${this.nameSearchResult.message}], Size [${this.nameSearchResult.candidates.length}]`)
 
-        if (this.getPersonDetailsResult?.status === 'error') {
-          this.$store.commit('alert/setErrorAlert', this.getPersonDetailsResult?.message)
+        if (this.nameSearchResult?.status === 'error') {
+          this.$store.commit('alert/setErrorAlert', this.nameSearchResult?.message)
           return
         }
 
-        if (this.getPersonDetailsResult?.status === 'warning') {
-          this.$store.commit('alert/setWarningAlert', this.getPersonDetailsResult?.message)
+        if (this.nameSearchResult?.status === 'warning') {
+          this.$store.commit('alert/setWarningAlert', this.nameSearchResult?.message)
         }
-        this.pageAction = this.PAGE_ACTION.STUDENT_REGISTRATION
+
+        if (this.nameSearchResult.candidates.length == 0) {
+          console.log(`Zero results, setting warning: [${this.nameSearchResult.message}]`)
+          this.$store.commit('alert/setWarningAlert', 'No results found')
+          return
+        } else if (this.nameSearchResult.candidates.length === 1) {
+          console.log('One result, load registration')
+          this.pageAction = this.PAGE_ACTION.STUDENT_REGISTRATION
+        } else {
+          console.log('Multiple result, load search results')
+          this.pageAction = this.PAGE_ACTION.NAME_SEARCH_RESULTS
+        }
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       }
+    },
+    addCandidate(candidate) {
+      console.log(`adding candidate [${candidate.surname}; ${candidate.phn}`)
     },
   },
 }

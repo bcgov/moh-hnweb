@@ -27,7 +27,7 @@ export default {
     eModel: Object,
     label: String,
     modelValue: String,
-    group: [],
+    group: Array,
   },
   watch: {
     modelValue: function (val) {

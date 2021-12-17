@@ -7,6 +7,10 @@
         </AppCol>
       </AppRow>
       <AppRow>
+        <AppButton :disabled="searching" mode="primary" type="submit">Submit</AppButton>
+        <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
+      </AppRow>
+      <AppRow>
         <AppCol class="col3">
           <AppInput :e-model="v$.firstName" id="firstName" label="First Name" type="text" v-model.trim="firstName" />
         </AppCol>
@@ -27,20 +31,11 @@
           <AppRadioButtonGroup :e-model="v$.gender" id="gender" label="Gender" :group="this.GENDER_RADIO_BUTTON_GROUP" v-model="gender" />
         </AppCol>
       </AppRow>
-      <AppRow>
-        <AppButton :disabled="searching" mode="primary" type="submit">Submit</AppButton>
-        <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
-      </AppRow>
     </form>
   </div>
 </template>
 
 <script>
-import AppButton from '../../AppButton.vue'
-import AppCol from '../../grid/AppCol.vue'
-import AppRow from '../../grid/AppRow.vue'
-import AppDateInput from '../../AppDateInput.vue'
-import AppInput from '../../AppInput.vue'
 import AppRadioButtonGroup from '../../ui/AppRadioButtonGroup.vue'
 import useVuelidate from '@vuelidate/core'
 import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../../util/validators'
@@ -49,11 +44,6 @@ import { required, helpers } from '@vuelidate/validators'
 export default {
   name: 'ResidentNameSearch',
   components: {
-    AppButton,
-    AppCol,
-    AppRow,
-    AppInput,
-    AppDateInput,
     AppRadioButtonGroup,
   },
   setup() {
@@ -87,6 +77,7 @@ export default {
   },
   methods: {
     async submitForm() {
+      console.log(`submit name search [${this.surname}]`)
       this.searching = true
       try {
         const isValid = await this.v$.$validate()
@@ -95,7 +86,7 @@ export default {
           this.searching = false
           return
         }
-        this.$emit('search-for-candidates', { surname, firstName, secondName, dateOfBirth, gender })
+        this.$emit('search-for-candidates', { surname: this.surname, givenName: this.firstName, secondName: this.secondName, dateOfBirth: this.dateOfBirth, gender: this.gender })
       } catch (err) {
         console.log(`Error ${err}`)
         this.$store.commit('alert/setErrorAlert', `${err}`)
@@ -117,17 +108,17 @@ export default {
   validations() {
     return {
       surname: {
-        required,
+        // required,
       },
       firstName: {
-        required,
+        // required,
       },
       secondName: {},
       dateOfBirth: {
-        required,
+        // required,
       },
       gender: {
-        required,
+        // required,
       },
     }
   },
