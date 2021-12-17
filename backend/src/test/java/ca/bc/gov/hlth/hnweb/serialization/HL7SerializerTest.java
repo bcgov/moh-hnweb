@@ -1,10 +1,10 @@
 package ca.bc.gov.hlth.hnweb.serialization;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -47,7 +47,7 @@ public class HL7SerializerTest {
 		getDemoQuery.setPhn("9862716574");
 
 		Object request = hl7.toXml(getDemoQuery, mmd);
-		//assertNotNull(request);
+		assertNotNull(request);
 				
 		GetDemographicsResponse demographicsResponse = hl7.fromXml(TestUtil.convertXMLFileToString(path), GetDemographicsResponse.class);
 		assertEquals("9862716574", demographicsResponse.getPerson().getPhn());
@@ -78,7 +78,6 @@ public class HL7SerializerTest {
 		FindCandidatesResponse demographicsResponse = hl7.fromXml(TestUtil.convertXMLFileToString(path1), FindCandidatesResponse.class);
 		assertEquals("9999999999", demographicsResponse.getResults().get(0).getPerson().getPhn());
 		assertEquals(3, demographicsResponse.getResultCount());
-		mockStatic.close();
 
 	}
 

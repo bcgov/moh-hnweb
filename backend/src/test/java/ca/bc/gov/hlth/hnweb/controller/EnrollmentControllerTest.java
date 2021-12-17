@@ -163,7 +163,7 @@ public class EnrollmentControllerTest {
     }
     
     @Test
-    void testGetNameSearch_Multi() throws Exception {    	
+    void testGetNameSearch_MultiRecords() throws Exception {    	
         
         mockBackEnd.enqueue(new MockResponse()
         		.setBody(TestUtil.convertXMLFileToString("src\\test\\resources\\FindCandidatesResponse_Multiples.xml"))
@@ -177,10 +177,10 @@ public class EnrollmentControllerTest {
         	       
         ResponseEntity<GetNameSearchResponse> response = enrollmentController.getNameSearch(getNameSearchRequest);
         GetNameSearchResponse getNameSearchResponse = response.getBody();
-        assertEquals(3, getNameSearchResponse.getResults().size());
-        assertEquals(31.0, getNameSearchResponse.getResults().get(0).getScore());
-        assertEquals(-53.0, getNameSearchResponse.getResults().get(1).getScore());
-        assertEquals(-56.0, getNameSearchResponse.getResults().get(2).getScore());
+        assertEquals(3, getNameSearchResponse.getCandidates().size());
+        assertEquals(31.0, getNameSearchResponse.getCandidates().get(0).getScore());
+        assertEquals(-53.0, getNameSearchResponse.getCandidates().get(1).getScore());
+        assertEquals(-56.0, getNameSearchResponse.getCandidates().get(2).getScore());
     			
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
