@@ -5,8 +5,10 @@ target/
 !**/src/test/**/target/
 
 ### Cert Files ###
-**/keystore/
-**/application-*.yaml
+src/main/resources/keystore/
+
+### Secure properties ###
+src/main/resources/application-*.yaml
 
 ### STS ###
 .apt_generated
