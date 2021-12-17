@@ -14,17 +14,23 @@ public class NameSearchResult {
 
 	private String gender;
 
-	private String addressLine1;
+	private String address1;
 	
-	private String addressLine2;
+	private String address2;
 	
-	private String addressLine3;
+	private String address3;
 
 	private String city;
 
 	private String province;
 
 	private String postalCode;
+	
+	private String assigningAuthority;
+	
+	private String identifierTypeCode;
+	
+	private String currentRecord;
 	
 	private double score;
 
@@ -76,28 +82,28 @@ public class NameSearchResult {
 		this.gender = gender;
 	}
 
-	public String getAddressLine1() {
-		return addressLine1;
+	public String getAddress1() {
+		return address1;
 	}
 
-	public void setAddressLine1(String address) {
-		addressLine1 = address;
+	public void setAddress1(String address) {
+		address1 = address;
 	}
 
-	public String getAddressLine2() {
-		return addressLine2;
+	public String getAddress2() {
+		return address2;
 	}
 
-	public void setAddressLine2(String addressLine2) {
-		this.addressLine2 = addressLine2;
+	public void setAddress2(String addressLine2) {
+		this.address2 = addressLine2;
 	}
 
-	public String getAddressLine3() {
-		return addressLine3;
+	public String getAddress3() {
+		return address3;
 	}
 
-	public void setAddressLine3(String addressLine3) {
-		this.addressLine3 = addressLine3;
+	public void setAddress3(String addressLine3) {
+		this.address3 = addressLine3;
 	}
 
 	public String getCity() {
@@ -127,8 +133,32 @@ public class NameSearchResult {
 	public NameSearchResult() {
 	}
 
+	public String getCurrentRecord() {
+		return currentRecord;
+	}
+
+	public void setCurrentRecord(String currentRecord) {
+		this.currentRecord = currentRecord;
+	}
+
 	public double getScore() {
 		return score;
+	}
+
+	public String getAssigningAuthority() {
+		return assigningAuthority;
+	}
+
+	public void setAssigningAuthority(String assigningAuthority) {
+		this.assigningAuthority = assigningAuthority;
+	}
+
+	public String getIdentifierTypeCode() {
+		return identifierTypeCode;
+	}
+
+	public void setIdentifierTypeCode(String identifierTypeCode) {
+		this.identifierTypeCode = identifierTypeCode;
 	}
 
 	public void setScore(double score) {

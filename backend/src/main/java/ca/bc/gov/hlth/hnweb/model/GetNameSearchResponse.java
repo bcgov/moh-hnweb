@@ -4,14 +4,14 @@ import java.util.List;
 
 public class GetNameSearchResponse extends BaseResponse {
 
-	private List<NameSearchResult> results;
+	private List<NameSearchResult> candidates;
 
-	public List<NameSearchResult> getResults() {
-		return results;
+	public List<NameSearchResult> getCandidates() {
+		return candidates;
 	}
 
-	public void setResults(List<NameSearchResult> results) {
-		this.results = results;
+	public void setCandidates(List<NameSearchResult> results) {
+		this.candidates = results;
 	}
 	
 }

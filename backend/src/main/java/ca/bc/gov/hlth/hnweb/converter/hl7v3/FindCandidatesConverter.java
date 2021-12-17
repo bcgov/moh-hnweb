@@ -3,6 +3,7 @@ package ca.bc.gov.hlth.hnweb.converter.hl7v3;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,21 +21,21 @@ import ca.bc.gov.hlth.hnweb.util.V3MessageUtil;
 
 public class FindCandidatesConverter {
 
-	private static final String WARNING = "Warning";
+	private static final String IDENTIFIER_TYPE_CODE = "PH";
 	private static final Logger logger = LoggerFactory.getLogger(FindCandidatesConverter.class);
 
-	public FindCandidatesRequest convertRequest(String surname, String firstGivenName, String secondGivenName, String dateOfBirth,
-			String gender) {
+	public FindCandidatesRequest convertRequest(String surname, String firstGivenName, String secondGivenName,
+			String dateOfBirth, String gender) {
 		logger.debug("Find Candidates for Name: [{}] DOB: [{}]", surname + firstGivenName, dateOfBirth);
-		
+
 		FindCandidatesRequest findCandidatesRequest = new FindCandidatesRequest();
-		
+
 		Name name = new Name();
 		name.setSurname(surname);
 		name.setFirstGivenName(firstGivenName);
 		name.setSecondGivenName(secondGivenName);
-		
-		findCandidatesRequest.setName(name);	
+
+		findCandidatesRequest.setName(name);
 		findCandidatesRequest.setBirthDate(dateOfBirth);
 		findCandidatesRequest.setGender(gender);
 
@@ -60,28 +61,16 @@ public class FindCandidatesConverter {
 		if (messageText.length > 1) {
 			message = messageText[1];
 		}
-		if (findCandidatesResponse.getResultCount() == 0) {
-			logger.debug("No result found ");
+		getNameSearchResponse.setMessage(message);
+		getNameSearchResponse.setStatus(StatusEnum.SUCCESS);
 
-			if (messageText.length > 0) {
-				getNameSearchResponse.setStatus(StatusEnum.ERROR);
-				getNameSearchResponse.setMessage(message);
-			}
-		} else {
+		if (findCandidatesResponse.getResultCount() > 0) {
+
 			buildNameSearch(findCandidatesResponse, getNameSearchResponse);
-			if (messageText.length > 0) {
-				if (message.contains(WARNING)) {
-					getNameSearchResponse.setStatus(StatusEnum.WARNING);
-					getNameSearchResponse.setMessage(messageText[1]);
-				} else {
-					getNameSearchResponse.setStatus(StatusEnum.SUCCESS);
-				}
-			}
 
 		}
 
 		return getNameSearchResponse;
-
 	}
 
 	private void buildNameSearch(FindCandidatesResponse findCandidatesResponse,
@@ -94,13 +83,19 @@ public class FindCandidatesConverter {
 			candidatesResult.forEach(ns -> {
 				NameSearchResult nameSearchResult = new NameSearchResult();
 				nameSearchResult.setPhn(ns.getPerson().getPhn());
+				nameSearchResult.setIdentifierTypeCode(IDENTIFIER_TYPE_CODE);
+
+				if (!CollectionUtils.isEmpty(ns.getPerson().getMedicalRecordNumbers())) {
+					nameSearchResult.setAssigningAuthority(ns.getPerson().getMedicalRecordNumbers().get(0).getSource());
+				}
+
 				Name nameObj = ns.getPerson().getDeclaredName();
 				if (nameObj == null) {
 					nameObj = ns.getPerson().getDocumentedName();
 				}
 				nameSearchResult.setGender(ns.getPerson().getGender());
 				nameSearchResult.setGivenName(nameObj.getFirstGivenName());
-				nameSearchResult.setSecondName(nameObj.getSecondGivenName());
+				nameSearchResult.setSecondName(Optional.ofNullable(nameObj.getSecondGivenName()).orElse(""));
 				nameSearchResult.setSurname(nameObj.getSurname());
 
 				String birthDate = V3MessageUtil.convertDateToString(ns.getPerson().getBirthDate());
@@ -108,7 +103,11 @@ public class FindCandidatesConverter {
 
 				Address address = ns.getPerson().getPhysicalAddress();
 				if (address != null) {
-					nameSearchResult.setAddressLine1(ns.getPerson().getPhysicalAddress().getAddressLine1());
+					nameSearchResult.setAddress1(ns.getPerson().getPhysicalAddress().getAddressLine1());
+					nameSearchResult.setAddress2(
+							Optional.ofNullable(ns.getPerson().getPhysicalAddress().getAddressLine2()).orElse(""));
+					nameSearchResult.setAddress3(
+							Optional.ofNullable(ns.getPerson().getPhysicalAddress().getAddressLine3()).orElse(""));
 					nameSearchResult.setCity(ns.getPerson().getPhysicalAddress().getCity());
 					nameSearchResult.setProvince(ns.getPerson().getPhysicalAddress().getProvince());
 					nameSearchResult.setPostalCode(ns.getPerson().getPhysicalAddress().getPostalCode());
@@ -121,7 +120,7 @@ public class FindCandidatesConverter {
 
 		}
 
-		getNameSearchResponse.setResults(nameSearchList);
+		getNameSearchResponse.setCandidates(nameSearchList);
 	}
 
 }
