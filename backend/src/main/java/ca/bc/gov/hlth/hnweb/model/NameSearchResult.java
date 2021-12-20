@@ -30,7 +30,7 @@ public class NameSearchResult {
 	
 	private String identifierTypeCode;
 	
-	private String currentRecord;
+	private String nameTypeCode;
 	
 	private double score;
 
@@ -133,12 +133,12 @@ public class NameSearchResult {
 	public NameSearchResult() {
 	}
 
-	public String getCurrentRecord() {
-		return currentRecord;
+	public String getNameTypeCode() {
+		return nameTypeCode;
 	}
 
-	public void setCurrentRecord(String currentRecord) {
-		this.currentRecord = currentRecord;
+	public void setNameTypeCode(String currentRecord) {
+		this.nameTypeCode = currentRecord;
 	}
 
 	public double getScore() {
