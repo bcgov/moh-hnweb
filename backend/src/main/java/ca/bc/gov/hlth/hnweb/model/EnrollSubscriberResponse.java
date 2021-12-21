@@ -8,6 +8,8 @@ public class EnrollSubscriberResponse extends BaseResponse {
 	
 	private String acknowledgementMessage;
 	
+	private String phn;
+	
 	public String getMessageId() {
 		return messageId;
 	}
@@ -30,6 +32,14 @@ public class EnrollSubscriberResponse extends BaseResponse {
 
 	public void setAcknowledgementMessage(String acknowledgementMessage) {
 		this.acknowledgementMessage = acknowledgementMessage;
+	}
+
+	public String getPhn() {
+		return phn;
+	}
+
+	public void setPhn(String pid) {
+		this.phn = pid;
 	}
 	
 }

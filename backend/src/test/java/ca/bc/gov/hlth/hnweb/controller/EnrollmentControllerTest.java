@@ -48,6 +48,14 @@ public class EnrollmentControllerTest {
 			"MSA|AA|20210506160152|HJMB001ISUCCESSFULLY COMPLETED\r\n" + 
 			"ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED";
 	
+	private static final String ACK_SUCCESS_Z05 = "MSH|^~\\&|RAIENROL-EMP|BC00001013|HNWeb|HN-WEB|20211220180303|test|R50^Y00|20211220160240|D|2.4\r\n" + 
+			"MSA|AA|20210506160152|HJMB001ISUCCESSFULLY COMPLETED\r\n" + 
+			"PID||9873808694^^^BC^PH^MOH";
+	
+	private static final String ACK_ERROR_Z05 = "MSH|^~\\&|RAIENROL-EMP|BC00001013|HNWeb|HN-WEB|20211220180303|test|R50^Y00|20211220160240|D|2.4\r\n"+
+			"MSA|AE|20211220160240|HRPB187ECOVERAGE MUST BE MORE THAN 2 MONTHS AFTER VISA ISSUE/RESIDENCE DATE\r\n" +
+			"ERR|^^^HRPB187E&COVERAGE MUST BE MORE THAN 2 MONTHS AFTER VISA ISSUE/RESIDENCE DATE";
+	
 	private static final String MESSAGE = " No results were returned. Please refine your search criteria, and try again.";
 	
 	public static MockWebServer mockBackEnd;
@@ -73,13 +81,14 @@ public class EnrollmentControllerTest {
     }
     
     @Test
-    void testEnrollSubscriber_Error() throws Exception {    	
+    void testEnrollSubscriber_Z06_Error() throws Exception {    	
         
         mockBackEnd.enqueue(new MockResponse()
         		.setBody(ACK_ERROR)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
 
 		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();
+		enrollSubscriberRequest.setPhn("123456789");
 		ResponseEntity<EnrollSubscriberResponse> enrollSubscriber = enrollmentController.enrollSubscriber(enrollSubscriberRequest);
 
 		//Check the response
@@ -94,13 +103,35 @@ public class EnrollmentControllerTest {
     }
     
     @Test
-    void testEnrollSubscriber_Success() throws Exception {    	
+    void testEnrollSubscriber_Z05_Error() throws Exception {    	
+        
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(ACK_ERROR_Z05)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+
+		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();		
+		ResponseEntity<EnrollSubscriberResponse> enrollSubscriber = enrollmentController.enrollSubscriber(enrollSubscriberRequest);
+
+		//Check the response
+		assertEquals(StatusEnum.ERROR, enrollSubscriber.getBody().getStatus());
+		assertEquals("HRPB187ECOVERAGE MUST BE MORE THAN 2 MONTHS AFTER VISA ISSUE/RESIDENCE DATE", enrollSubscriber.getBody().getMessage());
+		
+		//Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());       
+    }
+    
+    @Test
+    void testEnrollSubscriber_Z06_Success() throws Exception {    	
         
         mockBackEnd.enqueue(new MockResponse()
         		.setBody(ACK_SUCCESS)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
 
 		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();
+		enrollSubscriberRequest.setPhn("123456789");
 		ResponseEntity<EnrollSubscriberResponse> enrollSubscriber = enrollmentController.enrollSubscriber(enrollSubscriberRequest);
 
 		//Check the response
@@ -115,6 +146,31 @@ public class EnrollmentControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertEquals("/", recordedRequest.getPath());       
     }
+    
+    @Test
+    void testEnrollSubscriber_Z05_Success() throws Exception {    	
+        
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(ACK_SUCCESS_Z05)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+
+		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();
+		ResponseEntity<EnrollSubscriberResponse> enrollSubscriber = enrollmentController.enrollSubscriber(enrollSubscriberRequest);
+
+		//Check the response
+		assertEquals(StatusEnum.SUCCESS, enrollSubscriber.getBody().getStatus());
+		assertEquals("AA", enrollSubscriber.getBody().getAcknowledgementCode());
+		assertEquals("HJMB001ISUCCESSFULLY COMPLETED", enrollSubscriber.getBody().getAcknowledgementMessage());
+		assertEquals("9873808694", enrollSubscriber.getBody().getPhn());
+		
+		
+		//Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());       
+    }
+    
     
     @Test
     void testGetDemographicsDetails_Success() throws Exception {    	
@@ -227,7 +283,6 @@ public class EnrollmentControllerTest {
     
     private EnrollSubscriberRequest createEnrollSubscriberRequest() {
 		EnrollSubscriberRequest enrollSubscriberRequest = new EnrollSubscriberRequest();
-		enrollSubscriberRequest.setPhn("123456789");
 		enrollSubscriberRequest.setGivenName("FirstName");
 		enrollSubscriberRequest.setSecondName("SecondName");
 		enrollSubscriberRequest.setSurname("FamilyName");
