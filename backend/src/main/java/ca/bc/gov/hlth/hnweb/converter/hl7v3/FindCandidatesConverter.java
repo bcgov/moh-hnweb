@@ -22,6 +22,7 @@ import ca.bc.gov.hlth.hnweb.util.V3MessageUtil;
 public class FindCandidatesConverter {
 
 	private static final String IDENTIFIER_TYPE_CODE = "PH";
+	private static final String ASSIGNING_AUTHORITY = "BC";
 	private static final Logger logger = LoggerFactory.getLogger(FindCandidatesConverter.class);
 
 	public FindCandidatesRequest convertRequest(String surname, String firstGivenName, String secondGivenName,
@@ -84,11 +85,8 @@ public class FindCandidatesConverter {
 				NameSearchResult nameSearchResult = new NameSearchResult();
 				nameSearchResult.setPhn(ns.getPerson().getPhn());
 				nameSearchResult.setIdentifierTypeCode(IDENTIFIER_TYPE_CODE);
-
-				if (!CollectionUtils.isEmpty(ns.getPerson().getMedicalRecordNumbers())) {
-					nameSearchResult.setAssigningAuthority(ns.getPerson().getMedicalRecordNumbers().get(0).getSource());
-				}
-
+				nameSearchResult.setAssigningAuthority(ASSIGNING_AUTHORITY);
+				
 				Name nameObj = ns.getPerson().getDeclaredName();
 				if (nameObj == null) {
 					nameObj = ns.getPerson().getDocumentedName();

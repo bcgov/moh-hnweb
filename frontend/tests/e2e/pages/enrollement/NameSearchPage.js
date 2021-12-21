@@ -5,7 +5,7 @@ class NameSearch {
         this.surnameInput = Selector('#surname'); 
         this.firstNameInput = Selector('#firstName');
         this.secondNameInput = Selector('#secondName');
-        this.dateOfBirthInput  = Selector('div#dateOfBirth > div > div > div > input');
+        this.dateOfBirthInput  = Selector('#dp-input-dateOfBirth');
         this.radioButton = Selector('#gender');
 
         this.submitButton = Selector('button[type="submit"]');

@@ -27,10 +27,12 @@ public class R50Converter extends BaseV2Converter {
 
 	private static final Logger logger = LoggerFactory.getLogger(R50Converter.class);
 
-	private static final String MESSAGE_TYPE = "R50^Z06";
+	private static String MESSAGE_TYPE;
+	private static final String MESSAGE_TYPE_TRIGGER_TYPE = "Y00";
+	private static final String MESSAGE_TYPE_Z05  = "R50^Z05";
+	private static final String MESSAGE_TYPE_Z06  = "R50^Z06";
 	private static final String RECEIVING_APPLICATION = "RAIENROL-EMP";
 	private static final String ZIH_COVERAGE_CAN_REASON = "D";
-	
 	private String phn;
 	
 	public enum AcknowledgementCode {
@@ -43,12 +45,13 @@ public class R50Converter extends BaseV2Converter {
 	
 	public R50 convertRequest(EnrollSubscriberRequest request) throws HL7Exception {
 		phn = request.getPhn();
-								
-    	//Create a default R50 message with MSH-9 set to R50 Z06 
+		setMessageType();	
+		
+    	//Create a default R50 message with MSH-9 set to R50 Z05/Z06 
     	R50 r50 = new R50(); 
     	ZIA zia = r50.getZIA();
-
-    	populateMSH(r50.getMSH());
+   	   	
+     	populateMSH(r50.getMSH());
     	populateZHD(r50.getZHD());
     	populatePID(r50.getPID(), phn, request.getDateOfBirth(), request.getGender());    	    	
     	populateIN1(r50.getIN1(), request.getCoverageEffectiveDate(), request.getCoverageCancellationDate(), request.getGroupNumber(), request.getGroupMemberNumber(),request.getDepartmentNumber());
@@ -72,8 +75,13 @@ public class R50Converter extends BaseV2Converter {
     	 * Retrieve required info by specifying the location
     	 */ 
     	String messageId = terser.get("/.MSH-10-1");
+    	String triggerType = terser.get("/.MSH-9-2");
     	String acknowledgementCode = terser.get("/.MSA-1-1");
     	String acknowledgementMessage = terser.get("/.MSA-3-1");
+    	if(acknowledgementCode.contentEquals("AA") && !StringUtils.isEmpty(triggerType) && triggerType.equals(MESSAGE_TYPE_TRIGGER_TYPE)) {
+    	String pid = terser.get("/.PID-2-1");
+    	enrollSubscriberResponse.setPhn(pid);
+    	}
     	
     	logger.debug("ACK message response code [{}] and message [{}]", acknowledgementCode, acknowledgementMessage);
     	
@@ -124,14 +132,16 @@ public class R50Converter extends BaseV2Converter {
 		V2MessageUtil.setZikValues(zik, dateOnlyFormatter.format(documentArgumentValue1), dateOnlyFormatter.format(documentArgumentValue2));
 	}
 	
-
-	
 	protected String getReceivingApplication() {
 		return RECEIVING_APPLICATION;
 	}
 	
 	protected String getMessageType() {
 		return MESSAGE_TYPE;
+	}
+
+	protected void setMessageType() {		
+		MESSAGE_TYPE = StringUtils.isEmpty(phn) ? MESSAGE_TYPE_Z05 : MESSAGE_TYPE_Z06;
 	}
 		
 
