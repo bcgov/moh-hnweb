@@ -1,6 +1,7 @@
 package ca.bc.gov.hlth.hnweb.converter.hl7v3;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +27,7 @@ public class FindCandidatesConverter {
 	private static final Logger logger = LoggerFactory.getLogger(FindCandidatesConverter.class);
 
 	public FindCandidatesRequest convertRequest(String surname, String firstGivenName, String secondGivenName,
-			String dateOfBirth, String gender) {
+			LocalDate dateOfBirth, String gender) {
 		logger.debug("Find Candidates for Name: [{}] DOB: [{}]", surname + firstGivenName, dateOfBirth);
 
 		FindCandidatesRequest findCandidatesRequest = new FindCandidatesRequest();
@@ -37,7 +38,7 @@ public class FindCandidatesConverter {
 		name.setSecondGivenName(secondGivenName);
 
 		findCandidatesRequest.setName(name);
-		findCandidatesRequest.setBirthDate(dateOfBirth);
+		findCandidatesRequest.setBirthDate(V3MessageUtil.dateOnlyFormatter.format(dateOfBirth));
 		findCandidatesRequest.setGender(gender);
 
 		return findCandidatesRequest;
@@ -95,6 +96,7 @@ public class FindCandidatesConverter {
 				nameSearchResult.setGivenName(nameObj.getFirstGivenName());
 				nameSearchResult.setSecondName(Optional.ofNullable(nameObj.getSecondGivenName()).orElse(""));
 				nameSearchResult.setSurname(nameObj.getSurname());
+				nameSearchResult.setNameTypeCode(nameObj.getType());
 
 				String birthDate = V3MessageUtil.convertDateToString(ns.getPerson().getBirthDate());
 				nameSearchResult.setDateOfBirth(birthDate);

@@ -40,19 +40,19 @@ import okhttp3.mockwebserver.RecordedRequest;
 @SpringBootTest
 public class EnrollmentControllerTest {
 
-	private static final String ACK_ERROR = "MSH|^~\\&|RAIPRSN-NM-SRCH|BC00002041|HNWeb|moh_hnclient_dev|20211013124847.746-0700||ACK|71902|D|2.4\r\n" + 
+	private static final String Z06_ERROR = "MSH|^~\\&|RAIPRSN-NM-SRCH|BC00002041|HNWeb|moh_hnclient_dev|20211013124847.746-0700||ACK|71902|D|2.4\r\n" + 
 			"MSA|AE|20191108082211|NHR529E^SEVERE SYSTEM ERROR\r\n" + 
 			"ERR|^^^NHR529E";
 	
-	private static final String ACK_SUCCESS = "MSH|^~\\&|RAIPRSN-NM-SRCH|BC00002041|HNWeb|BC01000161|20210916104824||ACK|71902|D|2.4\r\n" + 
+	private static final String Z06_SUCCESS = "MSH|^~\\&|RAIPRSN-NM-SRCH|BC00002041|HNWeb|BC01000161|20210916104824||ACK|71902|D|2.4\r\n" + 
 			"MSA|AA|20210506160152|HJMB001ISUCCESSFULLY COMPLETED\r\n" + 
 			"ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED";
 	
-	private static final String ACK_SUCCESS_Z05 = "MSH|^~\\&|RAIENROL-EMP|BC00001013|HNWeb|HN-WEB|20211220180303|test|R50^Y00|20211220160240|D|2.4\r\n" + 
+	private static final String ZO5_SUCCESS = "MSH|^~\\&|RAIENROL-EMP|BC00001013|HNWeb|HN-WEB|20211220180303|test|R50^Y00|20211220160240|D|2.4\r\n" + 
 			"MSA|AA|20210506160152|HJMB001ISUCCESSFULLY COMPLETED\r\n" + 
 			"PID||9873808694^^^BC^PH^MOH";
 	
-	private static final String ACK_ERROR_Z05 = "MSH|^~\\&|RAIENROL-EMP|BC00001013|HNWeb|HN-WEB|20211220180303|test|R50^Y00|20211220160240|D|2.4\r\n"+
+	private static final String Z05_ERROR = "MSH|^~\\&|RAIENROL-EMP|BC00001013|HNWeb|HN-WEB|20211220180303|test|R50^Y00|20211220160240|D|2.4\r\n"+
 			"MSA|AE|20211220160240|HRPB187ECOVERAGE MUST BE MORE THAN 2 MONTHS AFTER VISA ISSUE/RESIDENCE DATE\r\n" +
 			"ERR|^^^HRPB187E&COVERAGE MUST BE MORE THAN 2 MONTHS AFTER VISA ISSUE/RESIDENCE DATE";
 	
@@ -84,7 +84,7 @@ public class EnrollmentControllerTest {
     void testEnrollSubscriber_Z06_Error() throws Exception {    	
         
         mockBackEnd.enqueue(new MockResponse()
-        		.setBody(ACK_ERROR)
+        		.setBody(Z06_ERROR)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
 
 		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();
@@ -106,7 +106,7 @@ public class EnrollmentControllerTest {
     void testEnrollSubscriber_Z05_Error() throws Exception {    	
         
         mockBackEnd.enqueue(new MockResponse()
-        		.setBody(ACK_ERROR_Z05)
+        		.setBody(Z05_ERROR)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
 
 		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();		
@@ -127,7 +127,7 @@ public class EnrollmentControllerTest {
     void testEnrollSubscriber_Z06_Success() throws Exception {    	
         
         mockBackEnd.enqueue(new MockResponse()
-        		.setBody(ACK_SUCCESS)
+        		.setBody(Z06_SUCCESS)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
 
 		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();
@@ -151,7 +151,7 @@ public class EnrollmentControllerTest {
     void testEnrollSubscriber_Z05_Success() throws Exception {    	
         
         mockBackEnd.enqueue(new MockResponse()
-        		.setBody(ACK_SUCCESS_Z05)
+        		.setBody(ZO5_SUCCESS)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
 
 		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();
@@ -229,7 +229,7 @@ public class EnrollmentControllerTest {
         getNameSearchRequest.setGivenName("TestGiven");
         getNameSearchRequest.setSurname("TestSurname");
         getNameSearchRequest.setGender("M");
-        getNameSearchRequest.setDateOfBirth("20200101");
+        getNameSearchRequest.setDateOfBirth(LocalDate.of(1973, 8, 11));
         	       
         ResponseEntity<GetNameSearchResponse> response = enrollmentController.getNameSearch(getNameSearchRequest);
         GetNameSearchResponse getNameSearchResponse = response.getBody();
@@ -257,7 +257,7 @@ public class EnrollmentControllerTest {
         getNameSearchRequest.setGivenName("TestGiven");
         getNameSearchRequest.setSurname("TestSurname");
         getNameSearchRequest.setGender("M");
-        getNameSearchRequest.setDateOfBirth("20200101");
+        getNameSearchRequest.setDateOfBirth(LocalDate.of(1973, 8, 11));
         	       
         ResponseEntity<GetNameSearchResponse> response = enrollmentController.getNameSearch(getNameSearchRequest);
         GetNameSearchResponse getNameSearchResponse = response.getBody();
