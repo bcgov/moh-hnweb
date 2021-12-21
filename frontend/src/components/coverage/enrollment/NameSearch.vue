@@ -77,7 +77,6 @@ export default {
   },
   methods: {
     async submitForm() {
-      console.log(`submit name search [${this.surname}]`)
       this.searching = true
       try {
         const isValid = await this.v$.$validate()
