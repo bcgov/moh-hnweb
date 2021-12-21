@@ -1,6 +1,7 @@
 package ca.bc.gov.hlth.hnweb.util;
 
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -15,6 +16,8 @@ public class V3MessageUtil {
 	public static final String SOAP_ENVELOPE_END = "</soapenv:Body></soapenv:Envelope>";
 	
 	public static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+	
+	public static DateTimeFormatter dateOnlyFormatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_FORMAT_DATE_ONLY);
 	
 	/**
 	 * Omits XML header and wraps the request in a standard soap envelope

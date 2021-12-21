@@ -1,5 +1,9 @@
 package ca.bc.gov.hlth.hnweb.model;
 
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class GetNameSearchRequest extends BaseResponse {
 
 	private String givenName;
@@ -8,7 +12,8 @@ public class GetNameSearchRequest extends BaseResponse {
 
 	private String surname;
 
-	private String dateOfBirth;
+	@JsonFormat(pattern="yyyy-MM-dd")
+	private LocalDate dateOfBirth;
 	
 	private String gender;
 
@@ -37,11 +42,11 @@ public class GetNameSearchRequest extends BaseResponse {
 		this.surname = surname;
 	}
 
-	public String getDateOfBirth() {
+	public LocalDate getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-	public void setDateOfBirth(String dateOfBirth) {
+	public void setDateOfBirth(LocalDate dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 
