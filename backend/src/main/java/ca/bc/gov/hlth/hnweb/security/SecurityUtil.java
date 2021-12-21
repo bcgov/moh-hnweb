@@ -47,8 +47,6 @@ public class SecurityUtil {
 		
 		// TODO (weskubo-cgi) Validate the audience matches the client before retrieveing the roles		
         Map<String, Object> resourceAccesses = (Map<String, Object>) jwt.getClaims().get(CLAIM_RESOURCE_ACCESS);
-        
-        System.out.println(jwt.getAudience());
 
         if (resourceAccesses == null) {
         	return permissions;
