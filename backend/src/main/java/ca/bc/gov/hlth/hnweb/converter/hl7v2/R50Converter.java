@@ -55,7 +55,7 @@ public class R50Converter extends BaseV2Converter {
     	populateZHD(r50.getZHD());
     	populatePID(r50.getPID(), phn, request.getDateOfBirth(), request.getGender());    	    	
     	populateIN1(r50.getIN1(), request.getCoverageEffectiveDate(), request.getCoverageCancellationDate(), request.getGroupNumber(), request.getGroupMemberNumber(),request.getDepartmentNumber());
-    	populateZIA(zia, LocalDate.now(), request.getSurname(), request.getGivenName(), request.getSecondName(), request.getTelephone(), request.getImmigrationCode(), request.getPriorResidenceCode());
+    	populateZIA(zia, request.getResidenceDate(), request.getSurname(), request.getGivenName(), request.getSecondName(), request.getTelephone(), request.getImmigrationCode(), request.getPriorResidenceCode());
     	populateZIAExtendedAddress1(zia, request.getAddress1(), request.getAddress2(),request.getAddress3(), request.getCity(), request.getProvince(), request.getPostalCode());
     	populateZIAExtendedAddress2(zia, request.getMailingAddress1(), request.getMailingAddress2(), request.getMailingAddress3(), request.getMailingAddressCity(), request.getMailingAddressProvince(), request.getMailingAddressPostalCode());
     	populateZIH(r50.getZIH()); 
@@ -70,7 +70,7 @@ public class R50Converter extends BaseV2Converter {
     	
     	// Uses a Terser to access the message info
     	Terser terser = new Terser(message);
-    	
+    	logger.debug("Response message : {}", message.toString());
     	/* 
     	 * Retrieve required info by specifying the location
     	 */ 
@@ -78,10 +78,12 @@ public class R50Converter extends BaseV2Converter {
     	String triggerType = terser.get("/.MSH-9-2");
     	String acknowledgementCode = terser.get("/.MSA-1-1");
     	String acknowledgementMessage = terser.get("/.MSA-3-1");
-    	if(acknowledgementCode.contentEquals("AA") && !StringUtils.isEmpty(triggerType) && triggerType.equals(MESSAGE_TYPE_TRIGGER_TYPE)) {
-    	String pid = terser.get("/.PID-2-1");
-    	enrollSubscriberResponse.setPhn(pid);
-    	}
+    	
+    	if (acknowledgementCode.contentEquals("AA") && !StringUtils.isEmpty(triggerType)
+				&& triggerType.equals(MESSAGE_TYPE_TRIGGER_TYPE)) {
+			String pid = terser.get("/.PID-2-1");
+			enrollSubscriberResponse.setPhn(pid);
+		}
     	
     	logger.debug("ACK message response code [{}] and message [{}]", acknowledgementCode, acknowledgementMessage);
     	

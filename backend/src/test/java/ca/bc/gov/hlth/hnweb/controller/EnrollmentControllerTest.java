@@ -49,14 +49,14 @@ public class EnrollmentControllerTest {
 			"ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED";
 	
 	private static final String ZO5_SUCCESS = "MSH|^~\\&|RAIENROL-EMP|BC00001013|HNWeb|HN-WEB|20211220180303|test|R50^Y00|20211220160240|D|2.4\r\n" + 
-			"MSA|AA|20210506160152|HJMB001ISUCCESSFULLY COMPLETED\r\n" + 
+			"MSA|AA|20210506160152|HJMB001ITRANSACTION SUCCESSFUL\r\n" + 
 			"PID||9873808694^^^BC^PH^MOH";
 	
 	private static final String Z05_ERROR = "MSH|^~\\&|RAIENROL-EMP|BC00001013|HNWeb|HN-WEB|20211220180303|test|R50^Y00|20211220160240|D|2.4\r\n"+
 			"MSA|AE|20211220160240|HRPB187ECOVERAGE MUST BE MORE THAN 2 MONTHS AFTER VISA ISSUE/RESIDENCE DATE\r\n" +
 			"ERR|^^^HRPB187E&COVERAGE MUST BE MORE THAN 2 MONTHS AFTER VISA ISSUE/RESIDENCE DATE";
 	
-	private static final String MESSAGE = " No results were returned. Please refine your search criteria, and try again.";
+	private static final String NO_RECORD_MESSAGE = " No results were returned. Please refine your search criteria, and try again.";
 	
 	public static MockWebServer mockBackEnd;
 	private static MockedStatic<SecurityUtil> mockStatic;
@@ -160,7 +160,7 @@ public class EnrollmentControllerTest {
 		//Check the response
 		assertEquals(StatusEnum.SUCCESS, enrollSubscriber.getBody().getStatus());
 		assertEquals("AA", enrollSubscriber.getBody().getAcknowledgementCode());
-		assertEquals("HJMB001ISUCCESSFULLY COMPLETED", enrollSubscriber.getBody().getAcknowledgementMessage());
+		assertEquals("HJMB001ITRANSACTION SUCCESSFUL", enrollSubscriber.getBody().getAcknowledgementMessage());
 		assertEquals("9873808694", enrollSubscriber.getBody().getPhn());
 		
 		
@@ -261,7 +261,7 @@ public class EnrollmentControllerTest {
         	       
         ResponseEntity<GetNameSearchResponse> response = enrollmentController.getNameSearch(getNameSearchRequest);
         GetNameSearchResponse getNameSearchResponse = response.getBody();
-        assertEquals(MESSAGE, getNameSearchResponse.getMessage());
+        assertEquals(NO_RECORD_MESSAGE, getNameSearchResponse.getMessage());
     			
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
