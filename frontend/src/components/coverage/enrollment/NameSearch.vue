@@ -38,7 +38,8 @@
 <script>
 import AppRadioButtonGroup from '../../ui/AppRadioButtonGroup.vue'
 import useVuelidate from '@vuelidate/core'
-import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../../util/validators'
+import dayjs from 'dayjs'
+import { API_DATE_FORMAT } from '../../../util/constants'
 import { required, helpers } from '@vuelidate/validators'
 
 export default {
@@ -53,8 +54,8 @@ export default {
   },
   data() {
     return {
-      surname: '',
-      firstName: '',
+      surname: 'PURPLE',
+      firstName: 'BARNEY',
       secondName: '',
       dateOfBirth: null,
       gender: null,
@@ -63,9 +64,9 @@ export default {
   },
   created() {
     this.GENDER_RADIO_BUTTON_GROUP = [
-      { label: 'Male', value: 'male' },
-      { label: 'Female', value: 'female' },
-      { label: 'Unknown', value: 'unknown' },
+      { label: 'Male', value: 'M' },
+      { label: 'Female', value: 'F' },
+      { label: 'Unknown', value: 'U' },
     ]
   },
   computed: {
@@ -85,7 +86,13 @@ export default {
           this.searching = false
           return
         }
-        this.$emit('search-for-candidates', { surname: this.surname, givenName: this.firstName, secondName: this.secondName, dateOfBirth: this.dateOfBirth, gender: this.gender })
+        this.$emit('search-for-candidates', {
+          surname: this.surname,
+          givenName: this.firstName,
+          secondName: this.secondName,
+          dateOfBirth: dayjs(this.dateOfBirth).format(API_DATE_FORMAT),
+          gender: this.gender,
+        })
       } catch (err) {
         console.log(`Error ${err}`)
         this.$store.commit('alert/setErrorAlert', `${err}`)
