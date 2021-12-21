@@ -15,11 +15,11 @@ import ca.bc.gov.hlth.hnweb.security.SecurityProperties;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 
 /**
- * Handles security related requests.
+ * Handles requests related to user security.
  */
-@RequestMapping("/security")
+@RequestMapping("/user")
 @RestController
-public class SecurityController {
+public class UserController {
 
     @Autowired
     private SecurityProperties securityProperties;

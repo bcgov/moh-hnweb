@@ -5,14 +5,14 @@
         <li id="home-link" :class="tabClass($route, 'Home')">
           <router-link @click="resetAlert" :to="{ name: 'Home'}">Home</router-link>
         </li>
-        <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')">
+        <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
           <div class="dropdown" :key="eligibilityDropdownKey" v-on:click="this.refreshEligibility()">
             <router-link @click="resetAlert" :to="{ name: 'Eligibility'}">Eligibility & PHN</router-link>
             <div class="dropdown-content">
-              <router-link @click="resetAlert" :class="menuClass($route, 'CheckEligibility')" :to="{ name: 'CheckEligibility'}" v-if="hasPermission('R16')">Check Eligibility</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'CheckEligibility')" :to="{ name: 'CheckEligibility'}" >Check Eligibility</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'PhnInquiry')" :to="{ name: 'PhnInquiry'}">PHN Inquiry</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'PhnLookup')" :to="{ name: 'PhnLookup'}">PHN Lookup</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'CoverageStatusCheck')" :to="{ name: 'CoverageStatusCheck'}">MSP Coverage Status Check</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'CoverageStatusCheck')" :to="{ name: 'CoverageStatusCheck'}" v-if="hasPermission('E45')">MSP Coverage Status Check</router-link>
             </div>
           </div>
         </li>
@@ -49,7 +49,6 @@ export default {
     }
   },
   methods: {
-    ...mapGetters({hasPermission})
     resetAlert: function () {
       this.$store.commit('alert/dismissAlert');
     },
@@ -70,6 +69,10 @@ export default {
     },
     hasPermission(permission) {
       return this.$store.getters['auth/hasPermission'](permission)
+    },
+    hasEligibilityPermission() {
+      const hasPermission = this.$store.getters['auth/hasPermission']
+      return hasPermission('E45') || hasPermission('R15')
     }
   }
 }

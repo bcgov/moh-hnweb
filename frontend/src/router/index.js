@@ -58,8 +58,8 @@ const routes = [
         path: 'checkEligibility',
         name: 'CheckEligibility',
         component: CheckEligibility,
-        beforeEnter: (to, from, next) => {
-          return hasPermission('R16') ? next() : next({name: 'Home'})
+        beforeEnter: (to, _, next) => {
+          handleAuth(to, next, 'R15')
         }
       },
       {
@@ -76,6 +76,9 @@ const routes = [
         path: 'coverageStatusCheck',
         name: 'CoverageStatusCheck',
         component: CoverageStatusCheck,
+        beforeEnter: (to, from, next) => {
+          handleAuth(to, next, 'E45')
+        }
       },
     ],
   },
@@ -97,8 +100,18 @@ const routes = [
 ]
 
 function hasPermission(permission) {
-  const permissions = store.getters['auth/getPermissions']
   return store.getters['auth/hasPermission'](permission)
+}
+
+function handleAuth(to, next, permission) {
+  const permissions = store.getters['auth/getPermissions']
+  console.log('handleAuth ' + permissions)
+  if (hasPermission(permission)) {
+    next()
+  } else {
+    store.commit('alert/setErrorAlert', `You are not authorized to access ${to.path}`)
+    next({name: 'Home'})
+  }
 }
 
 const router = createRouter({

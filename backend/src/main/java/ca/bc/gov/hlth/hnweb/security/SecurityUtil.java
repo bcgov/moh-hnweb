@@ -9,6 +9,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 
+/**
+ * Utility class for working with authentication, tokens.
+ */
 public class SecurityUtil {
 	private static final String CLAIM_RESOURCE_ACCESS = "resource_access";
 
@@ -17,6 +20,7 @@ public class SecurityUtil {
 	@SuppressWarnings("unused")
 	private static final String CLAIM_ORGANIZATION = "organization";
 	
+	// TODO (weskubo-cgi) Update this to use a Service specific client
 	private static final String KEYCLOAK_CLIENT = "HN-WEB";
 	
 	private static final String USER_ROLES = "roles";
@@ -40,8 +44,12 @@ public class SecurityUtil {
 	@SuppressWarnings("unchecked")
 	private static List<String> loadRoles(Jwt jwt) {
 		List<String> permissions = new ArrayList<>();
+		
+		// TODO (weskubo-cgi) Validate the audience matches the client before retrieveing the roles		
         Map<String, Object> resourceAccesses = (Map<String, Object>) jwt.getClaims().get(CLAIM_RESOURCE_ACCESS);
         
+        System.out.println(jwt.getAudience());
+
         if (resourceAccesses == null) {
         	return permissions;
         }

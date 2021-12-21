@@ -13,8 +13,8 @@ export const resources = {
     inquirePhn: '/eligibility/inquire-phn',
     lookupPhn: '/eligibility/lookup-phn',
   },
-  security: {
-    permissions: '/security/permissions'
+  user: {
+    permissions: '/user/permissions'
   },
 }
 

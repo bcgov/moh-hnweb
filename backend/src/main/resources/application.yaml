@@ -27,6 +27,7 @@ rapid:
   header: 
     organization: "00000010"
 
+# Mapping of roles (SPGs) to specific permissions
 security:
   rolePermissions:
     E45:

@@ -15,10 +15,23 @@ import AppInput from './components/ui/AppInput.vue'
 import AppOutput from './components/ui/AppOutput.vue'
 import keycloak from './keycloak'
 import router from './router'
+import UserService from './services/UserService'
 import store from './store'
 
 keycloak.onAuthSuccess = function () {
-  
+
+  // Retrieve the User permission immediately after Keycloak login
+  // The permissions are required by the router which may be invoked
+  // before App is created
+  // Once the permissions data is available, then we create the App
+  UserService.getPermissions().then(resp => {
+    store.dispatch('auth/setPermissions', resp.data)
+    initApp()
+  })
+
+}
+
+function initApp() {
   const app = createApp(App)
 
   app.component('AppCol', AppCol)
