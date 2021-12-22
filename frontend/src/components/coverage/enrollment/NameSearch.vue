@@ -7,10 +7,6 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppButton :disabled="searching" mode="primary" type="submit">Submit</AppButton>
-        <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
-      </AppRow>
-      <AppRow>
         <AppCol class="col3">
           <AppInput :e-model="v$.firstName" id="firstName" label="First Name" type="text" v-model.trim="firstName" />
         </AppCol>
@@ -29,6 +25,10 @@
         <AppCol class="col4">
           <AppRadioButtonGroup :e-model="v$.gender" id="gender" label="Gender" :group="this.GENDER_RADIO_BUTTON_GROUP" v-model="gender" />
         </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppButton :disabled="searching" mode="primary" type="submit">Submit</AppButton>
+        <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
       </AppRow>
     </form>
   </div>

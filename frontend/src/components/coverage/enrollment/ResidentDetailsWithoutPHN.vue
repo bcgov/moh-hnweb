@@ -30,15 +30,17 @@
           <AppInput :e-model="v$.surname" id="surname" label="Surname" type="text" v-model.trim="surname" />
         </AppCol>
         <AppCol class="col4">
+          <AppDateInput :e-model="v$.residenceDate" id="residenceDate" label="Residence Date" v-model="residenceDate" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col4">
           <AppInput :e-model="v$.givenName" id="givenName" label="First Name" type="text" v-model.trim="givenName" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col4">
           <AppInput :e-model="v$.secondName" id="secondName" label="Second Name" type="text" v-model.trim="secondName" />
-        </AppCol>
-        <AppCol class="col4">
-          <AppDateInput :e-model="v$.residenceDate" id="residenceDate" label="Residence Date" v-model="residenceDate" />
         </AppCol>
       </AppRow>
       <AppRow>
