@@ -21,8 +21,8 @@ on:
 #        default: main
   push:
     branches: [ main, 4969-setup-hnweb ]
-      paths: 
-      - "frontend/**"
+    paths: 
+    - "frontend/**"
 
 jobs:
   
