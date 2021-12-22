@@ -27,7 +27,6 @@
       </AppRow>
       <AppRow>
         <AppCol class="col4">
-          Main Screen Gender: {{ gender }}
           <AppRadioButtonGroup :e-model="v$.gender" id="gender" label="Gender" :group="this.GENDER_RADIO_BUTTON_GROUP" v-model="gender" />
         </AppCol>
       </AppRow>
@@ -54,7 +53,7 @@ export default {
   },
   data() {
     return {
-      surname: 'PURPLE',
+      surname: 'N',
       firstName: 'BARNEY',
       secondName: '',
       dateOfBirth: null,
@@ -86,6 +85,7 @@ export default {
           this.searching = false
           return
         }
+        console.log(`Person [${this.firstName}]`)
         this.$emit('search-for-candidates', {
           surname: this.surname,
           givenName: this.firstName,

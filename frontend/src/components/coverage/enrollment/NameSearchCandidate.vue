@@ -111,8 +111,8 @@ export default {
     selectCandidate() {
       this.submitting = true
       console.log(`selected candidate [${this.candidate.surname}; ${this.candidate.phn}`)
-      this.$emit('select-candidate', this.candidate)
-      this.submitting = false
+      this.$store.commit('studyPermitHolder/setResident', this.candidate)
+      this.$router.push({ name: 'AddVisaResidentWithPHN', query: { pageAction: 'REGISTRATION' } })
     },
   },
 }

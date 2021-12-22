@@ -1,8 +1,8 @@
 <template>
   <NameSearch v-if="isNameSearch" @search-for-candidates="searchForCandidates" />
-  <NameSearchResults v-else-if="isNameSearchResults" :candidates="this.nameSearchResult.candidates" @add-candidate="addCandidate" />
+  <NameSearchResults v-else-if="isNameSearchResults" :candidates="this.nameSearchResult.candidates" />
   <ResidentDetailsWithoutPHN v-else-if="isStudentRegistration" :resident="this.registrationPerson" @register-resident="registerResident" />
-  <RegistrationConfirmation v-else-if="isConfirmation" :resident="this.getPersonDetailsResult?.person" />
+  <RegistrationConfirmation v-else-if="isConfirmation" :resident="this.registrationPerson" />
 </template>
 
 <script>
@@ -29,6 +29,7 @@ export default {
         message: null,
       },
       registrationResult: {
+        phn: '',
         status: '',
         message: null,
       },
@@ -46,7 +47,7 @@ export default {
     this.PAGE_ACTION = {
       NAME_SEARCH: 'NAME_SEARCH',
       NAME_SEARCH_RESULTS: 'NAME_SEARCH_RESULTS',
-      STUDENT_REGISTRATION: 'STUDENT_REGISTRATION',
+      REGISTRATION: 'REGISTRATION',
       CONFIRMATION: 'CONFIRMATION',
     }
     this.pageAction = this.PAGE_ACTION.NAME_SEARCH
@@ -59,7 +60,7 @@ export default {
       return this.pageAction === this.PAGE_ACTION.NAME_SEARCH_RESULTS
     },
     isStudentRegistration() {
-      return this.pageAction === this.PAGE_ACTION.STUDENT_REGISTRATION
+      return this.pageAction === this.PAGE_ACTION.REGISTRATION
     },
     isConfirmation() {
       return this.pageAction === this.PAGE_ACTION.CONFIRMATION
@@ -67,7 +68,7 @@ export default {
   },
   methods: {
     async searchForCandidates(searchCriteria) {
-      console.log(`perform name search [${searchCriteria.surname}]`)
+      console.log(`perform name search [${searchCriteria.surname}] [${searchCriteria.givenName}]`)
       try {
         this.nameSearchResult = (await EnrollmentService.performNameSearch(searchCriteria)).data
         console.log(`Results: Status: [${this.nameSearchResult.status}], Message [${this.nameSearchResult.message}], Size [${this.nameSearchResult.candidates.length}]`)
@@ -83,13 +84,16 @@ export default {
 
         if (!this.nameSearchResult.candidates || this.nameSearchResult.candidates.length == 0) {
           //found no result so need to register and enroll without a PHN
-          console.log(`Zero results, setting warning: [${this.nameSearchResult.message}]`)
-          this.pageAction = this.PAGE_ACTION.STUDENT_REGISTRATION
+          console.log(`Zero results, need to register and enroll without a PHN`)
+
+          this.registrationPerson = { ...searchCriteria }
+
+          this.pageAction = this.PAGE_ACTION.REGISTRATION
           return
         } else if (this.nameSearchResult.candidates.length === 1) {
           //found 1 result so can auto select it for use in Register with PHN
           console.log('One result, load registration')
-          this.$router.push({ name: 'AddVisaResidentWithPHN' }) //, params: { userId: '123' }
+          this.$router.push({ name: 'AddVisaResidentWithPHN', query: { pageAction: 'REGISTRATION' } })
         } else {
           console.log('Multiple result, load search results')
           this.pageAction = this.PAGE_ACTION.NAME_SEARCH_RESULTS
@@ -98,32 +102,9 @@ export default {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       }
     },
-    addCandidate(candidate) {
-      console.log(`adding candidate [${candidate.surname}; ${candidate.phn}`)
-      this.pageAction = this.PAGE_ACTION.STUDENT_REGISTRATION
-      this.registrationPerson = {
-        phn: candidate.phn,
-        givenName: candidate.givenName,
-        secondName: candidate.secondName,
-        surname: candidate.surname,
-        dateOfBirth: candidate.dateOfBirth,
-        gender: candidate.gender,
-      }
-      this.$router.push({ name: 'AddVisaResidentWithPHN' }) //, params: { userId: '123' }
-    },
     async registerResident(personDetails) {
       try {
-        this.registrationResult = (
-          await EnrollmentService.registerResident({
-            phn: this.registrationPerson?.person.phn,
-            dateOfBirth: this.registrationPerson?.person.dateOfBirth,
-            givenName: this.registrationPerson?.person.givenName,
-            secondName: this.registrationPerson?.person.secondName,
-            surname: this.registrationPerson?.person.surname,
-            gender: this.registrationPerson?.person.gender,
-            ...personDetails,
-          })
-        ).data
+        this.registrationResult = (await EnrollmentService.registerResident({ ...personDetails })).data
 
         if (this.registrationResult?.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.registrationResult?.message)
@@ -133,6 +114,7 @@ export default {
         if (this.registrationResult?.status === 'warning') {
           this.$store.commit('alert/setWarningAlert', this.registrationResult?.message)
         }
+        this.registrationPerson = { ...personDetails, phn: this.registrationResult.phn }
         this.pageAction = this.PAGE_ACTION.CONFIRMATION
         this.$store.commit('alert/setSuccessAlert', 'Transaction Successful')
       } catch (err) {

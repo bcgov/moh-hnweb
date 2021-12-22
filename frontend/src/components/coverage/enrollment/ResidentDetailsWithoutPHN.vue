@@ -27,7 +27,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col4">
-          <AppInput :e-model="v$.surname" id="surname" label="Surname" type="text" v-model.trim="resident.surname" />
+          <AppInput :e-model="v$.surname" id="surname" label="Surname" type="text" v-model.trim="surname" />
         </AppCol>
         <AppCol class="col4">
           <AppInput :e-model="v$.givenName" id="givenName" label="First Name" type="text" v-model.trim="givenName" />
@@ -37,18 +37,18 @@
         <AppCol class="col4">
           <AppInput :e-model="v$.secondName" id="secondName" label="Second Name" type="text" v-model.trim="secondName" />
         </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col4">
-          <AppInput :e-model="v$.dateOfBirth" id="dateOfBirth" label="Date Of Birth" type="text" v-model.trim="dateOfBirth" />
-        </AppCol>
         <AppCol class="col4">
           <AppDateInput :e-model="v$.residenceDate" id="residenceDate" label="Residence Date" v-model="residenceDate" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col4">
-          <AppInput :e-model="v$.gender" id="gender" label="Gender" type="text" v-model.trim="gender" />
+          <AppRadioButtonGroup :e-model="v$.gender" id="gender" label="Gender" :group="this.GENDER_RADIO_BUTTON_GROUP" v-model="gender" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col4">
+          <AppDateInput :e-model="v$.dateOfBirth" id="dateOfBirth" label="Date Of Birth" v-model="dateOfBirth" />
         </AppCol>
         <AppCol class="col4">
           <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" v-model="coverageEffectiveDate" />
@@ -147,6 +147,7 @@ import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT } from '../../../util/constants'
 import { formatPersonName } from '../../../util/utils'
+import AppRadioButtonGroup from '../../ui/AppRadioButtonGroup.vue'
 
 export default {
   name: 'ResidentDetailsWithoutPHN',
@@ -161,17 +162,26 @@ export default {
   },
   components: {
     AppSelect,
+    AppRadioButtonGroup,
   },
   setup() {
     return {
       v$: useVuelidate(),
     }
   },
+  created() {
+    console.log(`Resident: [${this.resident.surname}] [${this.resident.givenName}]`)
+    this.GENDER_RADIO_BUTTON_GROUP = [
+      { label: 'Male', value: 'M' },
+      { label: 'Female', value: 'F' },
+      { label: 'Unknown', value: 'U' },
+    ]
+  },
   data() {
     return {
       submitting: false,
       //Add  Resident Fields
-      givenName: this.resident.giveName,
+      givenName: this.resident.givenName,
       secondName: this.resident.secondName,
       surname: this.resident.surname,
       dateOfBirth: this.resident.dateOfBirth,
@@ -265,17 +275,17 @@ export default {
           return
         }
         this.$emit('register-resident', {
-          givenName: this.giveName,
+          givenName: this.givenName,
           secondName: this.secondName,
           surname: this.surname,
-          dateOfBirth: this.dateOfBirth,
+          dateOfBirth: dayjs(this.dateOfBirth).format(API_DATE_FORMAT),
           gender: this.gender,
           groupNumber: this.groupNumber,
           immigrationCode: this.immigrationCode,
           groupMemberNumber: this.groupMemberNumber,
-          permitIssueDate: dayjs(this.permitIssueDate).format(API_DATE_FORMAT),
+          visaIssueDate: dayjs(this.permitIssueDate).format(API_DATE_FORMAT),
           departmentNumber: this.departmentNumber,
-          permitExpiryDate: dayjs(this.permitExpiryDate).format(API_DATE_FORMAT),
+          visaExpiryDate: dayjs(this.permitExpiryDate).format(API_DATE_FORMAT),
           residenceDate: dayjs(this.residenceDate).format(API_DATE_FORMAT),
           coverageEffectiveDate: dayjs(this.coverageEffectiveDate).format(API_DATE_FORMAT),
           telephone: this.telephone,

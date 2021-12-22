@@ -143,18 +143,10 @@ import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT } from '../../../util/constants'
 import { formatPersonName } from '../../../util/utils'
+import { mapState } from 'vuex'
 
 export default {
   name: 'ResidentDetails',
-  props: {
-    resident: {
-      phn: '',
-      givenName: '',
-      secondName: '',
-      surname: '',
-      dateOfBirth: '',
-    },
-  },
   components: {
     AppSelect,
   },
@@ -194,6 +186,9 @@ export default {
     }
   },
   computed: {
+    ...mapState('studyPermitHolder', {
+      resident: (state) => state.resident,
+    }),
     // Immigration Code drop down options
     getImmigrationCodeOptions() {
       return [
