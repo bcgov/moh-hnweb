@@ -20,8 +20,7 @@ on:
 #        required: true
 #        default: main
   push:
-    branches:
-    - 4969-setup-hnweb
+    branches: [ main, 4969-setup-hnweb ]
       paths: 
       - "frontend/**"
 
