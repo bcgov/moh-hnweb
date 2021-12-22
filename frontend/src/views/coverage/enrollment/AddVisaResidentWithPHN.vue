@@ -1,6 +1,6 @@
 <template>
   <ResidentPHN v-if="isPhnSearch" @update-resident="updateResident" />
-  <ResidentDetails v-else-if="isStudentRegistration" :resident="this.getPersonDetailsResult?.person" @register-resident="registerResident" />
+  <ResidentDetails v-else-if="isStudentRegistration" @register-resident="registerResident" />
   <RegistrationConfirmation v-else-if="isConfirmation" :resident="this.getPersonDetailsResult?.person" />
 </template>
 
@@ -41,19 +41,20 @@ export default {
     }
   },
   created() {
-    ;(this.PAGE_ACTION = {
+    this.PAGE_ACTION = {
       PHN_SEARCH: 'PHN_SEARCH',
-      STUDENT_REGISTRATION: 'STUDENT_REGISTRATION',
+      REGISTRATION: 'REGISTRATION',
       CONFIRMATION: 'CONFIRMATION',
-    }),
-      (this.pageAction = this.PAGE_ACTION.PHN_SEARCH)
+    }
+    console.log(`route pageAction ${this.$route.query.pageAction}`)
+    this.pageAction = this.$route.query.pageAction ? this.$route.query.pageAction : this.PAGE_ACTION.PHN_SEARCH
   },
   computed: {
     isPhnSearch() {
       return this.pageAction === this.PAGE_ACTION.PHN_SEARCH
     },
     isStudentRegistration() {
-      return this.pageAction === this.PAGE_ACTION.STUDENT_REGISTRATION
+      return this.pageAction === this.PAGE_ACTION.REGISTRATION
     },
     isConfirmation() {
       return this.pageAction === this.PAGE_ACTION.CONFIRMATION
@@ -87,7 +88,9 @@ export default {
         if (this.getPersonDetailsResult?.status === 'warning') {
           this.$store.commit('alert/setWarningAlert', this.getPersonDetailsResult?.message)
         }
-        this.pageAction = this.PAGE_ACTION.STUDENT_REGISTRATION
+
+        this.$store.commit('studyPermitHolder/setResident', this.getPersonDetailsResult.person)
+        this.pageAction = this.PAGE_ACTION.REGISTRATION
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       }
