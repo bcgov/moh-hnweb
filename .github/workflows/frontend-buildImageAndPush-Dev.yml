@@ -13,17 +13,17 @@ on:
   # The user specifies the name of the build config to use, which should be an
   #   API build config.
   # --------------------------------------------------------------------------
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Enter branch name:'
-        required: true
-        default: main
-#  push:
-#    branches:
-#    - 4969-setup-hnweb
-#      paths: 
-#      - "frontend/**"
+#  workflow_dispatch:
+#    inputs:
+#      branch:
+#        description: 'Enter branch name:'
+#        required: true
+#        default: main
+  push:
+    branches:
+    - 4969-setup-hnweb
+      paths: 
+      - "frontend/**"
 
 jobs:
   
