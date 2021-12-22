@@ -19,7 +19,6 @@ const getters = {
 
 const actions = {
   setPermissions(context, permissions) {
-    console.log('setPermissions ' + permissions)
     context.commit('setPermissions', permissions)
   }
 }

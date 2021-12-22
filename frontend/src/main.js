@@ -20,7 +20,7 @@ import store from './store'
 
 keycloak.onAuthSuccess = function () {
 
-  // Retrieve the User permission immediately after Keycloak login
+  // Retrieve the User permissions immediately after Keycloak login
   // The permissions are required by the router which may be invoked
   // before App is created
   // Once the permissions data is available, then we create the App

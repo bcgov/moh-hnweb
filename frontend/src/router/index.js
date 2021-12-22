@@ -105,7 +105,6 @@ function hasPermission(permission) {
 
 function handleAuth(to, next, permission) {
   const permissions = store.getters['auth/getPermissions']
-  console.log('handleAuth ' + permissions)
   if (hasPermission(permission)) {
     next()
   } else {
