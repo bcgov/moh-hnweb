@@ -62,7 +62,7 @@ on:
      branch:
        description: 'Enter branch name:'
        required: true
-       default: main
+       default: 4969-setup-hnweb
   # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
 
   # push:
@@ -124,6 +124,8 @@ jobs:
 
     - name: Check out repository
       uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.inputs.branch }}
 
     - name: Determine app name
       if: env.APP_NAME == ''
