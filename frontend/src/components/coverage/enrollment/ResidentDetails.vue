@@ -166,7 +166,7 @@ export default {
       departmentNumber: '',
       visaExpiryDate: null,
       residenceDate: null,
-      coverageEffectiveDate: null,
+      coverageEffectiveDate: dayjs().startOf('month').toDate(),
       telephone: '',
       coverageCancellationDate: null,
       address1: '',
@@ -184,6 +184,24 @@ export default {
       priorResidenceCode: '',
       otherProvinceHealthcareNumber: '',
     }
+  },
+  created() {
+    this.telephone = this.resident.telephone
+    this.address1 = this.resident.address1
+    this.address1 = this.resident?.address1
+    this.address2 = this.resident?.address2
+    this.address3 = this.resident.address3
+    this.city = this.resident?.city
+    this.province = this.resident.province
+    this.postalCode = this.resident.postalCode
+    this.mailingAddress1 = this.resident.mailingAddress1
+    this.mailingAddress2 = this.resident.mailingAddress2
+    this.mailingAddress3 = this.resident.mailingAddress3
+    this.mailingAddressCity = this.resident.mailingAddressCity
+    this.mailingAddressProvince = this.resident.mailingAddressProvince
+    this.mailingAddressPostalCode = this.resident.mailingAddressPostalCode
+    this.priorResidenceCode = this.resident.priorResidenceCode
+    this.otherProvinceHealthcareNumber = this.resident.otherProvinceHealthcareNumber
   },
   computed: {
     ...mapState('studyPermitHolder', {
@@ -290,7 +308,7 @@ export default {
       this.departmentNumber = ''
       this.visaExpiryDate = null
       this.residenceDate = null
-      this.coverageEffectiveDate = null
+      this.coverageEffectiveDate = dayjs().startOf('month').toDate()
       this.telephone = ''
       this.coverageCancellationDate = null
       this.address1 = ''

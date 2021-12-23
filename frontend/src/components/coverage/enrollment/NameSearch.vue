@@ -53,8 +53,8 @@ export default {
   },
   data() {
     return {
-      surname: 'N',
-      firstName: 'BARNEY',
+      surname: 'dumpty',
+      firstName: 'humpty',
       secondName: '',
       dateOfBirth: null,
       gender: null,
