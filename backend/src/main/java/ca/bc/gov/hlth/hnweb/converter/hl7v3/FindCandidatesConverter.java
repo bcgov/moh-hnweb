@@ -112,6 +112,18 @@ public class FindCandidatesConverter {
 					nameSearchResult.setProvince(ns.getPerson().getPhysicalAddress().getProvince());
 					nameSearchResult.setPostalCode(ns.getPerson().getPhysicalAddress().getPostalCode());
 				}
+				
+				Address mailingAddress = ns.getPerson().getMailingAddress();
+				if (mailingAddress != null) {
+					nameSearchResult.setAddress1(ns.getPerson().getMailingAddress().getAddressLine1());
+					nameSearchResult.setAddress2(
+							Optional.ofNullable(ns.getPerson().getMailingAddress().getAddressLine2()).orElse(""));
+					nameSearchResult.setAddress3(
+							Optional.ofNullable(ns.getPerson().getMailingAddress().getAddressLine3()).orElse(""));
+					nameSearchResult.setCity(ns.getPerson().getMailingAddress().getCity());
+					nameSearchResult.setProvince(ns.getPerson().getMailingAddress().getProvince());
+					nameSearchResult.setPostalCode(ns.getPerson().getMailingAddress().getPostalCode());
+				}
 
 				nameSearchResult.setScore(ns.getScore());
 				nameSearchList.add(nameSearchResult);

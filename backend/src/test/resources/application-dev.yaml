@@ -7,17 +7,7 @@ config:
 
 server:
   port: 9090
-
-# Configuration for Enroll Subscriber (R50) endpoint
-R50:
-  url: 
-  user: 
-    name: 
-    password: 
-  cert:
-    file: keystore/testcert.pfx
-    password: abc123
-    
+   
 # Configuration for RAPID (R32, R40, R41, R42) endpoint
 rapid:
   url: 
@@ -50,6 +40,10 @@ hibc:
     username: 
     password: 
   r15:
+    path: 
+    username: 
+    password:
+  r50:
     path: 
     username: 
     password: 

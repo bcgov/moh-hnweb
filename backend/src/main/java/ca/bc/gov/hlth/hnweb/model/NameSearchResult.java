@@ -32,6 +32,20 @@ public class NameSearchResult {
 	
 	private String nameTypeCode;
 	
+	private String mailingAddress1;
+
+	private String mailingAddress2;
+
+	private String mailingAddress3;
+
+	private String mailingAddressCity;
+
+	private String mailingAddressProvince;
+
+	private String mailingAddressCountry;
+
+	private String mailingAddressPostalCode;
+	
 	private double score;
 
 	public String getPhn() {
@@ -139,6 +153,62 @@ public class NameSearchResult {
 
 	public void setNameTypeCode(String currentRecord) {
 		this.nameTypeCode = currentRecord;
+	}
+
+	protected String getMailingAddress1() {
+		return mailingAddress1;
+	}
+
+	protected void setMailingAddress1(String mailingAddress1) {
+		this.mailingAddress1 = mailingAddress1;
+	}
+
+	protected String getMailingAddress2() {
+		return mailingAddress2;
+	}
+
+	protected void setMailingAddress2(String mailingAddress2) {
+		this.mailingAddress2 = mailingAddress2;
+	}
+
+	protected String getMailingAddress3() {
+		return mailingAddress3;
+	}
+
+	protected void setMailingAddress3(String mailingAddress3) {
+		this.mailingAddress3 = mailingAddress3;
+	}
+
+	protected String getMailingAddressCity() {
+		return mailingAddressCity;
+	}
+
+	protected void setMailingAddressCity(String mailingAddressCity) {
+		this.mailingAddressCity = mailingAddressCity;
+	}
+
+	protected String getMailingAddressProvince() {
+		return mailingAddressProvince;
+	}
+
+	protected void setMailingAddressProvince(String mailingAddressProvince) {
+		this.mailingAddressProvince = mailingAddressProvince;
+	}
+
+	protected String getMailingAddressCountry() {
+		return mailingAddressCountry;
+	}
+
+	protected void setMailingAddressCountry(String mailingAddressCountry) {
+		this.mailingAddressCountry = mailingAddressCountry;
+	}
+
+	protected String getMailingAddressPostalCode() {
+		return mailingAddressPostalCode;
+	}
+
+	protected void setMailingAddressPostalCode(String mailingAddressPostalCode) {
+		this.mailingAddressPostalCode = mailingAddressPostalCode;
 	}
 
 	public double getScore() {

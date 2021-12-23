@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -44,12 +45,21 @@ public class EnrollmentService {
 	
 	protected HL7Serializer hl7Serializer;
 	protected MessageMetaData mmd;
+	
+	@Value("${hibc.r50.path}")
+	private String r50Path;
+
+	@Value("${hibc.r50.username}")
+	private String r50Username;
+	
+	@Value("${hibc.r50.password}")
+	private String r50Password;
 
 	@Autowired
 	private Parser parser;
-    
+    	
 	@Autowired
-	private WebClient enrollmentWebClient;
+	private WebClient hibcWebClient;
 	
 	@Autowired
 	private WebClient hcimWebClient;
@@ -72,7 +82,7 @@ public class EnrollmentService {
 		String r50v2RequiredFormat = formatMessage(r50);
 		logger.debug("Updated V2 message:\n{}", r50v2RequiredFormat);
 		
-		ResponseEntity<String> response = postEnrollmentRequest(r50v2RequiredFormat, transactionId);
+		ResponseEntity<String> response = postHibcRequest(r50Path, r50Username, r50Password, r50v2RequiredFormat);
 		
 		if (response.getStatusCode() != HttpStatus.OK) {
 			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
@@ -171,16 +181,18 @@ public class EnrollmentService {
 	    	
 	}
 	
-	private ResponseEntity<String> postEnrollmentRequest(String data, String transactionId) {
-        return enrollmentWebClient
+	private ResponseEntity<String> postHibcRequest(String path, String username, String password, String data) {
+        return hibcWebClient
                 .post()
+                .uri(path)
                 .contentType(MediaType.TEXT_PLAIN)
-                .header(TRANSACTION_ID, transactionId)
+                .header(TRANSACTION_ID, UUID.randomUUID().toString())
+                .headers(header -> header.setBasicAuth(username, password))
                 .bodyValue(data)
                 .retrieve()
                 .toEntity(String.class)
                 .block();
-    }	
+    }
 	 	
    
     private Message parseR50v2ToAck(String v2) throws HL7Exception {
