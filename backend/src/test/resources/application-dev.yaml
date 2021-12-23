@@ -15,7 +15,7 @@ R50:
     name: 
     password: 
   cert:
-    file: keystore/testcert.pfx
+    file: classpath:keystore/testcert.pfx
     password: abc123
     
 # Configuration for RAPID (R32, R40, R41, R42) endpoint
@@ -27,7 +27,7 @@ rapid:
     name: 
     password: 
   cert:
-    file: keystore/testcert.pfx 
+    file: classpath:keystore/testcert.pfx 
     password: abc123
 
 # V2 message construction
@@ -39,7 +39,7 @@ v2:
 hcim:
   url:  
   cert:
-    file: keystore/testcert.pfx 
+    file: classpath:keystore/testcert.pfx 
     password: abc123
     
 # Configuration for HIBC (E45, R15, R50) endpoints
@@ -54,5 +54,5 @@ hibc:
     username: 
     password: 
   cert:
-    file: keystore/testcert.pfx
+    file: classpath:keystore/testcert.pfx
     password: abc123
