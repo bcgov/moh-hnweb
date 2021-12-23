@@ -186,7 +186,7 @@ export default {
       givenName: this.resident.givenName,
       secondName: this.resident.secondName,
       surname: this.resident.surname,
-      dateOfBirth: this.resident.dateOfBirth,
+      dateOfBirth: dayjs(this.resident.dateOfBirth).toDate(),
       gender: this.resident.gender,
       groupNumber: '',
       immigrationCode: '',
@@ -195,7 +195,7 @@ export default {
       departmentNumber: '',
       permitExpiryDate: null,
       residenceDate: null,
-      coverageEffectiveDate: null,
+      coverageEffectiveDate: dayjs().startOf('month').toDate(),
       telephone: '',
       coverageCancellationDate: null,
       address1: '',
@@ -326,7 +326,7 @@ export default {
       this.departmentNumber = ''
       this.permitExpiryDate = null
       this.residenceDate = null
-      this.coverageEffectiveDate = null
+      this.coverageEffectiveDate = dayjs().startOf('month').toDate()
       this.telephone = ''
       this.coverageCancellationDate = null
       this.address1 = ''

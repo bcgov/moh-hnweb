@@ -10,6 +10,8 @@ import { formatPersonName } from '../../../util/utils'
 import ResidentPHN from '../../../components/coverage/enrollment/ResidentPHN.vue'
 import ResidentDetails from '../../../components/coverage/enrollment/ResidentDetails.vue'
 import RegistrationConfirmation from '../../../components/coverage/enrollment/RegistrationConfirmation.vue'
+import dayjs from 'dayjs'
+import { API_DATE_FORMAT } from '../../../util/constants'
 
 export default {
   name: 'AddVisaResidentWithPHN',
@@ -100,7 +102,7 @@ export default {
         this.registrationResult = (
           await EnrollmentService.registerResident({
             phn: this.getPersonDetailsResult?.person.phn,
-            dateOfBirth: this.getPersonDetailsResult?.person.dateOfBirth,
+            dateOfBirth: dayjs(this.getPersonDetailsResult?.person.dateOfBirth).format(API_DATE_FORMAT),
             givenName: this.getPersonDetailsResult?.person.givenName,
             secondName: this.getPersonDetailsResult?.person.secondName,
             surname: this.getPersonDetailsResult?.person.surname,

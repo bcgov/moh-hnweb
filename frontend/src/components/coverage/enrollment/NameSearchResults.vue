@@ -2,7 +2,7 @@
   <div>
     <p>Number of Matches: {{ candidates.length }}</p>
     <div v-for="candidate in candidates">
-      <NameSearchCandidate :candidate="candidate" @select-candidate="selectCandidate" />
+      <NameSearchCandidate :candidate="candidate" />
     </div>
   </div>
 </template>
@@ -16,12 +16,6 @@ export default {
   },
   components: {
     NameSearchCandidate,
-  },
-  methods: {
-    selectCandidate(candidate) {
-      console.log(`selected candidate from results [${candidate.surname}; ${candidate.phn}`)
-      this.$emit('add-candidate', candidate)
-    },
   },
 }
 </script>

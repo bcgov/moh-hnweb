@@ -3,36 +3,36 @@
     <div class="container">
       <ul>
         <li id="home-link" :class="tabClass($route, 'Home')">
-          <router-link @click="resetAlert" :to="{ name: 'Home'}">Home</router-link>
+          <router-link @click="resetAlert" :to="{ name: 'Home' }">Home</router-link>
         </li>
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')">
           <div class="dropdown" :key="eligibilityDropdownKey" v-on:click="this.refreshEligibility()">
-            <router-link @click="resetAlert" :to="{ name: 'Eligibility'}">Eligibility & PHN</router-link>
+            <router-link @click="resetAlert" :to="{ name: 'Eligibility' }">Eligibility & PHN</router-link>
             <div class="dropdown-content">
-              <router-link @click="resetAlert" :class="menuClass($route, 'CheckEligibility')" :to="{ name: 'CheckEligibility'}">Check Eligibility</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'PhnInquiry')" :to="{ name: 'PhnInquiry'}">PHN Inquiry</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'PhnLookup')" :to="{ name: 'PhnLookup'}">PHN Lookup</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'CoverageStatusCheck')" :to="{ name: 'CoverageStatusCheck'}">MSP Coverage Status Check</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'CheckEligibility')" :to="{ name: 'CheckEligibility' }">Check Eligibility</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'PhnInquiry')" :to="{ name: 'PhnInquiry' }">PHN Inquiry</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'PhnLookup')" :to="{ name: 'PhnLookup' }">PHN Lookup</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'CoverageStatusCheck')" :to="{ name: 'CoverageStatusCheck' }">MSP Coverage Status Check</router-link>
             </div>
           </div>
         </li>
         <li id="coverage-maintenance-link" :class="tabClass($route, 'CoverageMaintenance')">
-          <router-link @click="resetAlert" :to="{ name: 'CoverageMaintenance'}">Coverage Maintenance</router-link>
+          <router-link @click="resetAlert" :to="{ name: 'CoverageMaintenance' }">Coverage Maintenance</router-link>
         </li>
         <li id="coverage-enrollment-link" :class="menuTabClass($route, '/coverage/enrollment')">
           <div class="dropdown" :key="coverageEnrollmentDropDownKey" v-on:click="this.refreshEnrollment">
-            <router-link @click="resetAlert" :to="{ name: 'CoverageEnrollment'}">Coverage Enrollment</router-link>
+            <router-link @click="resetAlert" :to="{ name: 'CoverageEnrollment' }">Coverage Enrollment</router-link>
             <div class="dropdown-content">
-              <router-link @click="resetAlert" :class="menuClass($route, 'AddVisaResidentWithoutPHN')" :to="{ name: 'AddVisaResidentWithoutPHN'}">Add Study Permit holder without PHN</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'AddVisaResidentWithPHN')" :to="{ name: 'AddVisaResidentWithPHN'}">Add Study Permit holder with PHN</router-link>
+              <router-link @click="resetCoverageEnrollment" :class="menuClass($route, 'AddVisaResidentWithoutPHN')" :to="{ name: 'AddVisaResidentWithoutPHN' }">Add Study Permit holder without PHN</router-link>
+              <router-link @click="resetCoverageEnrollment" :class="menuClass($route, 'AddVisaResidentWithPHN')" :to="{ name: 'AddVisaResidentWithPHN' }">Add Study Permit holder with PHN</router-link>
             </div>
           </div>
         </li>
         <li id="manage-employees-link" :class="tabClass($route, 'ManageEmployees')">
-          <router-link @click="resetAlert" :to="{ name: 'ManageEmployees'}">Manage Employees</router-link>
+          <router-link @click="resetAlert" :to="{ name: 'ManageEmployees' }">Manage Employees</router-link>
         </li>
         <li id="help-link" :class="tabClass($route, 'Help')">
-          <router-link @click="resetAlert" :to="{ name: 'Help'}">Help</router-link>
+          <router-link @click="resetAlert" :to="{ name: 'Help' }">Help</router-link>
         </li>
       </ul>
     </div>
@@ -42,15 +42,20 @@
 <script>
 export default {
   name: 'TheNavBar',
-  data: function() {
+  data: function () {
     return {
       eligibilityDropdownKey: 0,
       coverageEnrollmentDropDownKey: 0,
     }
   },
   methods: {
+    resetCoverageEnrollment: function () {
+      console.log('resetting Coverage Enrollment')
+      this.$store.commit('alert/dismissAlert')
+      this.$store.commit('studyPermitHolder/resetResident')
+    },
     resetAlert: function () {
-      this.$store.commit('alert/dismissAlert');
+      this.$store.commit('alert/dismissAlert')
     },
     refreshEligibility() {
       this.eligibilityDropdownKey += 1
@@ -62,59 +67,59 @@ export default {
       return this.tabClass(route, routeName)
     },
     tabClass(route, routeName) {
-      return route.name === routeName ? 'active' : 'inactive';
+      return route.name === routeName ? 'active' : 'inactive'
     },
     menuTabClass(route, routePath) {
-      return route.path.startsWith(routePath) ? 'active' : 'inactive';
+      return route.path.startsWith(routePath) ? 'active' : 'inactive'
     },
-  }
+  },
 }
 </script>
 
 <style scoped>
 /* Main Navigation */
 nav {
-    height: 40px;
-    background-color: #38598A;
+  height: 40px;
+  background-color: #38598a;
 }
 nav .container {
-    max-width: 1320px;
-    min-width: 1100px;
-    margin: 0 auto;
-    padding: 0 60px;
+  max-width: 1320px;
+  min-width: 1100px;
+  margin: 0 auto;
+  padding: 0 60px;
 }
 nav .container ul {
   padding: 0;
 }
 nav .container ul li {
-    color: #FFFFFF;
-    display: inline-block;
-    height: 40px;
-    line-height: 40px;
-    vertical-align: top;
-    font-weight: bold;
+  color: #ffffff;
+  display: inline-block;
+  height: 40px;
+  line-height: 40px;
+  vertical-align: top;
+  font-weight: bold;
 }
 nav .container ul li.active {
-    background-color: #496DA2;
+  background-color: #496da2;
 }
 nav .container ul li:first-child {
-    margin-left: -20px;
+  margin-left: -20px;
 }
 nav .container ul li:hover {
-    cursor: pointer;
-    background-color: #496DA2;
+  cursor: pointer;
+  background-color: #496da2;
 }
 nav .container ul li a {
-    display: block;
-    font-size: 1rem;
-    line-height: 40px;
-    color: #FFFFFF;
-    text-decoration: none;
-    height: 40px;
-    padding: 0 20px;
+  display: block;
+  font-size: 1rem;
+  line-height: 40px;
+  color: #ffffff;
+  text-decoration: none;
+  height: 40px;
+  padding: 0 20px;
 }
 nav .container ul li a:focus {
-    background-color: #496DA2;
+  background-color: #496da2;
 }
 
 /* The container <div> - needed to position the dropdown content */
@@ -125,12 +130,12 @@ nav .container ul li a:focus {
 
 /* Dropdown Content (Hidden by Default) */
 .dropdown-content {
-  background-clip:  padding-box;
+  background-clip: padding-box;
   display: none;
   position: absolute;
-  background-color: #496DA2;
+  background-color: #496da2;
   min-width: 200px;
-  box-shadow: 0px 6px 6px 0px rgba(0,0,0,0.4);
+  box-shadow: 0px 6px 6px 0px rgba(0, 0, 0, 0.4);
   z-index: 1;
   width: fit-content;
   white-space: nowrap;
@@ -141,7 +146,6 @@ nav .container ul li .dropdown-content a {
   font-size: 14px;
   font-weight: normal;
 }
-
 
 nav .container ul li .dropdown-content a.active {
   font-weight: bold;
@@ -155,11 +159,10 @@ nav .container ul li .dropdown-content a.active {
 
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
-  display: table ;
+  display: table;
 }
 
 .dropdown-content a:target {
   display: none;
 }
-
 </style>

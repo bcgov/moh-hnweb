@@ -11,10 +11,11 @@ const state = {
 
 const mutations = {
   setResident(state, resident) {
+    console.log(`resident: [${resident.phn}] [${resident.surname}]`)
     state.resident = resident
   },
   resetResident(state) {
-    resident = {
+    state.resident = {
       phn: '',
       givenName: '',
       secondName: '',
