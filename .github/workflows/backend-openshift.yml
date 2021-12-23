@@ -53,12 +53,24 @@ env:
   IMAGE_TAGS: "openshift-workflow"
 
 on:
+  # Run the workflow manually, instead of on a push.
+  # The user specifies the name of the build config to use, which should be an
+  #   API build config.
+  # --------------------------------------------------------------------------
+  workflow_dispatch:
+   inputs:
+     branch:
+       description: 'Enter branch name:'
+       required: true
+       default: main
   # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
-  push:
-    # Edit to the branch(es) you want to build and deploy on each push.
-    branches: [ main ]
-    paths: 
-    - "backend/**"
+
+  # push:
+  #   # Edit to the branch(es) you want to build and deploy on each push.
+  #   branches: [ main, 4969-setup-hnweb ]
+  #   paths: 
+  #   - "backend/**"
+
 
 jobs:
   openshift-ci-cd:
