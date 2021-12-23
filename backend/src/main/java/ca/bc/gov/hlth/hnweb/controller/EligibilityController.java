@@ -17,7 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 import ca.bc.gov.hlth.hnweb.converter.hl7v2.E45Converter;
 import ca.bc.gov.hlth.hnweb.converter.hl7v2.MSHDefaults;
 import ca.bc.gov.hlth.hnweb.converter.hl7v2.R15Converter;
-import ca.bc.gov.hlth.hnweb.converter.rapid.R42Converter;
+import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPPL0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPPE0Converter;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.eligibility.CheckEligibilityRequest;
@@ -51,6 +51,13 @@ public class EligibilityController {
 	@Autowired
 	private MSHDefaults mshDefaults;
 	
+	/**
+	 * Checks eligibility for the PHN for the specified date.
+	 * Maps to the legacy R15.
+	 *  
+	 * @param checkEligibilityRequest
+	 * @return The result of the query
+	 */
 	@PostMapping("/check-eligibility")
 	public ResponseEntity<CheckEligibilityResponse> checkEligibility(@Valid @RequestBody CheckEligibilityRequest checkEligibilityRequest) {
 
@@ -78,7 +85,14 @@ public class EligibilityController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /check-eligibility request", e);
 		}
 	}	
-	
+
+	/**
+	 * Inquiries on a list of PHNs.
+	 * Maps to the legacy R41.
+	 *  
+	 * @param inquirePhnRequest
+	 * @return The result of the query
+	 */
 	@PostMapping("/inquire-phn")
 	public ResponseEntity<InquirePhnResponse> inquirePhn(@Valid @RequestBody InquirePhnRequest inquirePhnRequest) {
 
@@ -109,11 +123,18 @@ public class EligibilityController {
 		
 	}
 	
+	/**
+	 * Lookup PHNs based on the contract number and group number.
+	 * Maps to the legacy R42.
+	 *  
+	 * @param lookupPhnRequest
+	 * @return The result of the query
+	 */
 	@PostMapping("/lookup-phn")
 	public ResponseEntity<LookupPhnResponse> lookupPhn(@Valid @RequestBody LookupPhnRequest lookupPhnRequest) {
 
 		try {
-			R42Converter converter = new R42Converter();
+			RPBSPPL0Converter converter = new RPBSPPL0Converter();
 			RPBSPPL0 r42Request = converter.convertRequest(lookupPhnRequest);
 			
 			RPBSPPL0 r42Response = eligibilityService.lookupPhn(r42Request);
@@ -139,6 +160,13 @@ public class EligibilityController {
 		}		
 	}
 
+	/**
+	 * Checks coverage status for the PHN/birthDate on the specified date.
+	 * Maps to the legacy E45.
+	 *  
+	 * @param checkMspCoverageStatusRequest
+	 * @return The result of the query
+	 */
 	@PostMapping("/check-msp-coverage-status")
 	public ResponseEntity<CheckMspCoverageStatusResponse> checkMspCoverageStatus(@Valid @RequestBody CheckMspCoverageStatusRequest checkMspCoverageStatusRequest) {
 		

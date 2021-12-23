@@ -9,8 +9,8 @@
           <div class="dropdown" :key="eligibilityDropdownKey" v-on:click="this.refreshEligibility()">
             <router-link @click="resetAlert" :to="{ name: 'Eligibility'}">Eligibility & PHN</router-link>
             <div class="dropdown-content">
-              <router-link @click="resetAlert" :class="menuClass($route, 'CheckEligibility')" :to="{ name: 'CheckEligibility'}" >Check Eligibility</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'PhnInquiry')" :to="{ name: 'PhnInquiry'}">PHN Inquiry</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'CheckEligibility')" :to="{ name: 'CheckEligibility'}" v-if="hasPermission('R15')">Check Eligibility</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'PhnInquiry')" :to="{ name: 'PhnInquiry'}" v-if="hasPermission('R41')">PHN Inquiry</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'PhnLookup')" :to="{ name: 'PhnLookup'}">PHN Lookup</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'CoverageStatusCheck')" :to="{ name: 'CoverageStatusCheck'}" v-if="hasPermission('E45')">MSP Coverage Status Check</router-link>
             </div>
@@ -72,7 +72,7 @@ export default {
     },
     hasEligibilityPermission() {
       const hasPermission = this.$store.getters['auth/hasPermission']
-      return hasPermission('E45') || hasPermission('R15')
+      return hasPermission('E45') || hasPermission('R15') || hasPermission('R41')
     }
   }
 }
