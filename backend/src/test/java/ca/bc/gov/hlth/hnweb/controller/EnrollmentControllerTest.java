@@ -278,7 +278,7 @@ public class EnrollmentControllerTest {
     @DynamicPropertySource
     static void registerMockUrlProperty(DynamicPropertyRegistry registry) {
         registry.add("hcim.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
-        registry.add("R50.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
+        registry.add("hibc.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
     }
     
     private EnrollSubscriberRequest createEnrollSubscriberRequest() {
