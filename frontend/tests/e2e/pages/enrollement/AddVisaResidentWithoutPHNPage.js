@@ -3,7 +3,7 @@ import { Selector } from 'testcafe';
 class AddVisaResidentWithoutPHN {
     constructor () {
         this.surnameInput = Selector('#surname'); 
-        this.firstNameInput = Selector('#firstName');
+        this.firstNameInput = Selector('#givenName');
         this.secondNameInput = Selector('#secondName');
         this.dateOfBirthInput  = Selector('#dp-input-dateOfBirth');
         this.radioButton = Selector('#gender');
@@ -11,9 +11,9 @@ class AddVisaResidentWithoutPHN {
         this.groupNumberInput = Selector('#groupNumber');
         this.immigrationCodeSelect  = Selector('#immigrationCode');
         this.groupMemberNumberInput = Selector('#groupMemberNumber');
-        this.visaIssueDateInput = Selector('#dp-input-visaIssueDate');
+        this.visaIssueDateInput = Selector('#dp-input-permitIssueDate');
         this.departmentNumberInput = Selector('#departmentNumber');
-        this.visaExpiryDateInput = Selector('#dp-input-visaExpiryDate');
+        this.visaExpiryDateInput = Selector('#dp-input-permitExpiryDate');
         this.residenceDateInput = Selector('#dp-input-residenceDate');  
         this.coverageEffectiveDateInput = Selector('#dp-input-coverageEffectiveDate');
         this.telephoneInput = Selector('#telephone');

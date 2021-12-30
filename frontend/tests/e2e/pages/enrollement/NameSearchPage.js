@@ -9,9 +9,10 @@ class NameSearch {
         this.radioButton = Selector('#gender');
 
         this.submitButton = Selector('button[type="submit"]');
-        this.addButton = Selector('button[type="add"]');
-        this.clearButton = Selector('button[type="button"]');        
+        this.addButton = Selector('button[type="button"]').withText('Add');
+        this.clearButton = Selector('button[type="button"]')        
         this.errorText = Selector('div').withAttribute('class','error-text');
+        this.numberOfMatchesText =  Selector('p').withText('Number of Matches: 5');
         
     }
 }
