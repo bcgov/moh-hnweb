@@ -28,7 +28,7 @@
       return {
         dev: import.meta.env.DEV,
       }
-    }
+    },
   }
 </script>
 
