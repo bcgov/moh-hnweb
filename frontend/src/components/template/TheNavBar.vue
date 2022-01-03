@@ -20,7 +20,7 @@
           <router-link @click="resetAlert" :to="{ name: 'CoverageMaintenance'}">Coverage Maintenance</router-link>
         </li>
         <li id="coverage-enrollment-link" :class="menuTabClass($route, '/coverage/enrollment')">
-          <div class="dropdown" :key="coverageEnrollmentDropDownKey" v-on:click="this.refreshEnrollment">
+          <div class="dropdown" :key="coverageEnrollmentDropDownKey" v-on:click="this.refreshCoverageEnrollment">
             <router-link @click="resetAlert" :to="{ name: 'CoverageEnrollment'}">Coverage Enrollment</router-link>
             <div class="dropdown-content">
               <router-link @click="resetAlert" :class="menuClass($route, 'AddVisaResidentWithoutPHN')" :to="{ name: 'AddVisaResidentWithoutPHN'}">Add Study Permit holder without PHN</router-link>

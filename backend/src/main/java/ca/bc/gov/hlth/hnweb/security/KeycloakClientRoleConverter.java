@@ -22,11 +22,9 @@ public class KeycloakClientRoleConverter implements Converter<Jwt, Collection<Gr
 	public Collection<GrantedAuthority> convert(final Jwt jwt) {
     	List<String> permissions = SecurityUtil.loadPermissions(jwt, securityProperties.getRolePermissions());
     	
-    	List<GrantedAuthority> authorities = permissions.stream()
+    	return permissions.stream()
     			.map(roleName -> ROLE_PREFIX + roleName) // prefix required to map to a Spring Security "role"
     			.map(SimpleGrantedAuthority::new)
     			.collect(Collectors.toList());
-         
-        return authorities;
     }
 }
