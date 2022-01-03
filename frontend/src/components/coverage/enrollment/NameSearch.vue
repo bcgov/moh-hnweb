@@ -23,7 +23,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col4">
-          <AppRadioButtonGroup :e-model="v$.gender" id="gender" label="Gender" :group="this.GENDER_RADIO_BUTTON_GROUP" v-model="gender" />
+          <GenderRadioButtonGroup :e-model="v$.gender" id="gender" label="Gender" v-model="gender" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -35,16 +35,16 @@
 </template>
 
 <script>
-import AppRadioButtonGroup from '../../ui/AppRadioButtonGroup.vue'
+import GenderRadioButtonGroup from './GenderRadioButtonGroup.vue'
 import useVuelidate from '@vuelidate/core'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT } from '../../../util/constants'
-import { required, helpers } from '@vuelidate/validators'
+import { required } from '@vuelidate/validators'
 
 export default {
-  name: 'ResidentNameSearch',
+  name: 'NameSearch',
   components: {
-    AppRadioButtonGroup,
+    GenderRadioButtonGroup,
   },
   setup() {
     return {
@@ -53,20 +53,13 @@ export default {
   },
   data() {
     return {
-      surname: 'dumpty',
-      firstName: 'humpty',
+      surname: 'NewUser',
+      firstName: 'Test',
       secondName: '',
-      dateOfBirth: null,
-      gender: null,
+      dateOfBirth: new Date(),
+      gender: 'M',
       searching: false,
     }
-  },
-  created() {
-    this.GENDER_RADIO_BUTTON_GROUP = [
-      { label: 'Male', value: 'M' },
-      { label: 'Female', value: 'F' },
-      { label: 'Unknown', value: 'U' },
-    ]
   },
   computed: {
     inputClass() {
@@ -114,17 +107,17 @@ export default {
   validations() {
     return {
       surname: {
-        // required,
+        required,
       },
       firstName: {
-        // required,
+        required,
       },
       secondName: {},
       dateOfBirth: {
-        // required,
+        required,
       },
       gender: {
-        // required,
+        required,
       },
     }
   },
