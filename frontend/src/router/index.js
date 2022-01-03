@@ -99,13 +99,9 @@ const routes = [
   },
 ]
 
-function hasPermission(permission) {
-  return store.getters['auth/hasPermission'](permission)
-}
-
 function handleAuth(to, next, permission) {
-  const permissions = store.getters['auth/getPermissions']
-  if (hasPermission(permission)) {
+  const hasPermission = store.getters['auth/hasPermission'](permission)
+  if (hasPermission) {
     next()
   } else {
     store.commit('alert/setErrorAlert', `You are not authorized to access ${to.path}`)

@@ -22,7 +22,6 @@
 </template>
 
 <script>
-  import UserService from './services/UserService.js'
   export default {
     name: 'App',
     data: function () {
