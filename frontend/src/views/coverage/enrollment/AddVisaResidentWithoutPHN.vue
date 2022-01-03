@@ -87,7 +87,7 @@ export default {
           console.log(`Zero results, need to register and enroll without a PHN`)
 
           this.registrationPerson = { ...searchCriteria }
-          this.$store.commit('alert/setInfoAlert', 'No results were returned. Please add a study permit holder without PHN OR please go back and perform a search again')
+          this.$store.commit('alert/setInfoAlert', 'No results were returned. Please ensure you have entered the correct information')
           this.pageAction = this.PAGE_ACTION.REGISTRATION
         } else if (this.nameSearchResult.candidates.length === 1) {
           //found 1 result so can auto select it for use in Register with PHN
