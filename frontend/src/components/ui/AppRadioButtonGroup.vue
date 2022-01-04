@@ -10,7 +10,7 @@
   </div>
 </template>
 <script>
-import AppRadioButton from '../AppRadioButton.vue'
+import AppRadioButton from './AppRadioButton.vue'
 export default {
   name: 'AppRadioButtonGroup',
   components: {
