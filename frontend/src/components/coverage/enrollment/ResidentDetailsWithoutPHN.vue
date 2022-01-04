@@ -150,7 +150,6 @@ import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT, IMMIGRATION_CODES, PROVINCES, PRIOR_RESIDENCES } from '../../../util/constants'
 import { formatPersonName } from '../../../util/utils'
-import AppRadioButtonGroup from '../../ui/AppRadioButtonGroup.vue'
 
 export default {
   name: 'ResidentDetailsWithoutPHN',
@@ -305,17 +304,17 @@ export default {
   validations() {
     return {
       surname: {
-        // required,
+        required,
       },
       givenName: {
-        // required,
+        required,
       },
       secondName: {},
       dateOfBirth: {
-        // required,
+        required,
       },
       gender: {
-        // required,
+        required,
       },
       groupNumber: {
         required,
