@@ -143,7 +143,7 @@
 </template>
 <script>
 import AppSelect from '../../ui/AppSelect.vue'
-import GenderRadioButtonGroup from './GenderRadioButtonGroup.vue'
+import GenderRadioButtonGroup from '../../ui/GenderRadioButtonGroup.vue'
 import useVuelidate from '@vuelidate/core'
 import { validateGroupNumber, validateGroupMemberNumber, validateDepartmentNumber, validateTelephone, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'

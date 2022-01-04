@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import GenderRadioButtonGroup from './GenderRadioButtonGroup.vue'
+import GenderRadioButtonGroup from '../../ui/GenderRadioButtonGroup.vue'
 import useVuelidate from '@vuelidate/core'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT } from '../../../util/constants'

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import AppRadioButtonGroup from '../../ui/AppRadioButtonGroup.vue'
+import AppRadioButtonGroup from './AppRadioButtonGroup.vue'
 
 export default {
   name: 'GenderRadioButtonGroup',
