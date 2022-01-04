@@ -53,11 +53,11 @@ export default {
   },
   data() {
     return {
-      surname: 'NewUser',
-      firstName: 'Test',
+      surname: '',
+      firstName: '',
       secondName: '',
-      dateOfBirth: new Date(),
-      gender: 'M',
+      dateOfBirth: null,
+      gender: '',
       searching: false,
     }
   },
