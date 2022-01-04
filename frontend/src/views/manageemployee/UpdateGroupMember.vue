@@ -13,16 +13,16 @@
       </AppRow>
        <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.groupMemberNumber" id="groupMemberNumber" label="Group Member Number" type="text" v-model.trim="groupMemberNumber" />
+          <AppInput :e-model="v$.groupMemberNumber" id="groupMemberNumber" label="Group Member Number"   type="text" v-model.trim="groupMemberNumber" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.departmentNumber"  id="departmentNumber" label="Department Number" type="text" v-model="departmentNumber"/>
+          <AppInput :e-model="v$.departmentNumber" vi  id="departmentNumber" label="Department Number"   type="text" v-model="departmentNumber"/>
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppButton :submitting="searching" mode="primary" type="submit">Submit</AppButton>
+        <AppButton :submitting="submitting" mode="primary" type="submit">Submit</AppButton>
         <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
       </AppRow>
     </form>
@@ -31,16 +31,16 @@
 </template>
 
 <script>
-//import UpdateEmployeeConfirmation from '../../components/manageemployee/UpdateEmployeeConfirmation.vue'
+import UpdateEmployeeConfirmation from '../../components/manageemployee/UpdateEmployeeConfirmation.vue'
 import ManageEmployeeService from '../../services/ManageEmployeeService'
 import useVuelidate from '@vuelidate/core'
 import { validateGroupNumber, validatePHN, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE } from '../../util/validators'
-import { required, helpers } from '@vuelidate/validators'
+import { required,requiredUnless, helpers } from '@vuelidate/validators'
 
 export default {
   name: 'UpdateGroupMember',
   components: {
-    //UpdateEmployeeConfirmation
+    UpdateEmployeeConfirmation
   },
   setup() {
     return {
@@ -59,6 +59,16 @@ export default {
       }
     }
   },
+
+   computed: {
+        isOptional: () => {
+          return (
+            this.groupMemberNumber !== '' ||
+            this.departmentNumber !== '' 
+            
+          )
+        }
+      },
   methods: {
     async submitForm() {
       this.result = null  
@@ -112,8 +122,20 @@ export default {
         VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber
       )
       },
-      groupMemberNumber: { required },
-      departmentNumber: { required },
+     groupMemberNumber: {
+      requiredIf: requiredUnless(function() {
+        return (
+          this.groupMemberNumber !== '' || this.departmentNumber !== ''
+        )
+      })
+    },
+    departmentNumber: {
+      requiredIf: requiredUnless(function() {
+        return (
+          this.departmentNumber !== '' || this.groupMemberNumber !== ''
+        )
+      })
+    },
     }
   }
 }

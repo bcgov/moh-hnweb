@@ -30,7 +30,7 @@
         </li>
         <li id="manage-employees-link" :class="tabClass($route, 'ManageEmployees')">
           <div class="dropdown" :key="manageEmployeeDropDownKey" v-on:click="this.refreshManageEmployee">
-            <router-link @click="resetAlert" :to="{ name: 'ManageEmployees'}">Manage Employees</router-link>
+            <router-link @click="resetAlert" :to="{ name: 'ManageEmployee'}">Manage GroupMember</router-link>
             <div class="dropdown-content">
               <router-link @click="resetAlert" :class="menuClass($route, 'UpdateGroupMember')" :to="{ name: 'UpdateGroupMember'}">Update Group Member's Number and/or Department</router-link>
             </div>

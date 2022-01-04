@@ -1,6 +1,5 @@
 <script setup>
 import TheSubNav from '../../components/template/TheSubNav.vue'
-import SubNavTab from '../../components/template/SubNavTab.vue'
 </script>
 
 <template>

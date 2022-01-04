@@ -1,19 +1,21 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
+import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
+import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
+import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
+import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
+import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
+import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
 import Employees from './../views/Employees.vue'
 import Help from './../views/Help.vue'
 import Home from './../views/Home.vue'
-import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
-import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
-import store from '../store'
+import ManageEmployeeHome from '../views/manageemployee/ManageEmployeeHome.vue'
 import NotFound from '../views/NotFound.vue'
-import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
-import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
-import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
-import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
-import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
 import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
 import PhnLookup from '../views/eligibility/PhnLookup.vue'
+import UpdateGroupMember from '../views/manageemployee/UpdateGroupMember.vue'
+import store from '../store'
 
 const routes = [
   {
@@ -83,9 +85,20 @@ const routes = [
     ],
   },
   {
-    path: '/manageEmployees',
-    name: 'ManageEmployees',
-    component: Employees,
+    path: '/manageemployee',
+    name: 'ManageEmployee',
+    component: ManageEmployeeHome,
+    redirect: {
+      name: 'UpdateGroupMember',
+    },
+    children: [
+      {
+        path: 'updateGroupMember',
+        name: 'UpdateGroupMember',
+        component: UpdateGroupMember,      
+      },
+     
+    ]
   },
   {
     path: '/help',
