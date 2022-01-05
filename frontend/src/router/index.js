@@ -66,6 +66,9 @@ const routes = [
         path: 'phnInquiry',
         name: 'PhnInquiry',
         component: PhnInquiry,
+        beforeEnter: (to, from, next) => {
+          handleAuth(to, next, 'R41')
+        }
       },
       {
         path: 'phnLookup',

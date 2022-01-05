@@ -39,6 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .mvcMatchers(HttpMethod.GET, "/docs/**").permitAll()
             .mvcMatchers(HttpMethod.POST,"/eligibility/check-msp-coverage-status").hasRole("E45")
             .mvcMatchers(HttpMethod.POST,"/eligibility/check-eligibility").hasRole("R15")
+            .mvcMatchers(HttpMethod.POST,"/eligibility/inquire-phn").hasRole("R41")
             .mvcMatchers(HttpMethod.POST,"/enrollment/**").fullyAuthenticated()
             .mvcMatchers(HttpMethod.GET,"/user/**").fullyAuthenticated()
             .mvcMatchers("/*").denyAll()
