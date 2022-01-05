@@ -35,6 +35,7 @@ public class RPBSPED0Converter extends BaseRapidConverter {
 		RPBSHeader header = rpbsped0.getRpbsHeader();
 		
 		handleStatus(header, response);
+		response.setPhn(rpbsped0.getEd0().getPhn());
 		
 		return response;
 	}

@@ -35,7 +35,7 @@ public class GroupMemberService {
 	private WebClient rapidWebClient;
 
 	/**
-	 * Update the group member's department number based on the R35/RPBSPPE0 request.
+	 * Update the group member's department number based on the R34/RPBSPPE0 request.
 	 * 
 	 * @param rpbsped0
 	 * @return The RPBSPED0 response.
@@ -61,7 +61,7 @@ public class GroupMemberService {
 	}
 	
 	/**
-	 * Update the group member's department number based on the R35/RPBSPPE0 request.
+	 * Update the group member's department number based on the R34/RPBSPPE0 request.
 	 * 
 	 * @param rpbspee0
 	 * @return The RPBSPED0 response.

@@ -36,6 +36,8 @@ public class RPBSPEE0Converter extends BaseRapidConverter {
 		
 		handleStatus(header, response);
 		
+		response.setPhn(rpbspee0.getEe0().getPhn());
+		
 		return response;
 	}
 
