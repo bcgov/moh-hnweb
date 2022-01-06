@@ -68,47 +68,22 @@ public class R50Converter extends BaseV2Converter {
 	public EnrollSubscriberResponse convertResponse(Message message) throws HL7Exception {
 		EnrollSubscriberResponse enrollSubscriberResponse = new EnrollSubscriberResponse();
     	
+		logger.debug("Response message : {}", message.toString());
     	// Uses a Terser to access the message info
-    	Terser terser = new Terser(message);
-    	logger.debug("Response message : {}", message.toString());
-    	/* 
-    	 * Retrieve required info by specifying the location
-    	 */ 
-    	String messageId = terser.get("/.MSH-10-1");
+    	Terser terser = new Terser(message);    
     	String triggerType = terser.get("/.MSH-9-2");
-    	String acknowledgementCode = terser.get("/.MSA-1-1");
-    	String acknowledgementMessage = terser.get("/.MSA-3-1");
     	
-    	if (acknowledgementCode.contentEquals("AA") && !StringUtils.isEmpty(triggerType)
+    	mapErrorValues(terser, enrollSubscriberResponse);
+    	
+    	if (StatusEnum.SUCCESS.equals(enrollSubscriberResponse.getStatus()) && !StringUtils.isEmpty(triggerType)
 				&& triggerType.equals(MESSAGE_TYPE_TRIGGER_TYPE)) {
 			String pid = terser.get("/.PID-2-1");
 			enrollSubscriberResponse.setPhn(pid);
 		}
-    	
-    	logger.debug("ACK message response code [{}] and message [{}]", acknowledgementCode, acknowledgementMessage);
-    	
-    	enrollSubscriberResponse.setMessageId(messageId);
-    	enrollSubscriberResponse.setAcknowledgementCode(acknowledgementCode);
-    	enrollSubscriberResponse.setAcknowledgementMessage(acknowledgementMessage);
-    	
-    	handleStatus(enrollSubscriberResponse);
+    	  	
+    	logger.debug("ACK message response status [{}] and message [{}]", enrollSubscriberResponse.getStatus(), enrollSubscriberResponse.getMessage());
     	
     	return enrollSubscriberResponse;
-	}
-	
-	private void handleStatus(EnrollSubscriberResponse enrollSubscriberResponse ) {		
-		String ackCode = enrollSubscriberResponse.getAcknowledgementCode();
-		
-		//Check the AcknowledgementCode and set the status 
-		if(StringUtils.equals(ackCode, AcknowledgementCode.AE.name()) 
-				|| StringUtils.equals(ackCode, AcknowledgementCode.AR.name())) {
-			enrollSubscriberResponse.setStatus(StatusEnum.ERROR);
-			enrollSubscriberResponse.setMessage(enrollSubscriberResponse.getAcknowledgementMessage());
-		} else if (StringUtils.equals(ackCode, AcknowledgementCode.AA.name())) {
-			enrollSubscriberResponse.setStatus(StatusEnum.SUCCESS);
-			enrollSubscriberResponse.setMessage("");
-		}
-
 	}
 	
 	private void populateZIA(ZIA zia, LocalDate bcResidencyDate, String surname, String firstGivenName, String secondGivenName, String telephone, String immigrationOrVisaCode, String priorResidenceCode) throws HL7Exception {

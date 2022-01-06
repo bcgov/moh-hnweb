@@ -42,7 +42,7 @@ public class EnrollmentControllerTest {
 
 	private static final String Z06_ERROR = "MSH|^~\\&|RAIPRSN-NM-SRCH|BC00002041|HNWeb|moh_hnclient_dev|20211013124847.746-0700||ACK|71902|D|2.4\r\n" + 
 			"MSA|AE|20191108082211|NHR529E^SEVERE SYSTEM ERROR\r\n" + 
-			"ERR|^^^NHR529E";
+			"ERR|^^^NHR529E&SYSTEM ERROR";
 	
 	private static final String Z06_SUCCESS = "MSH|^~\\&|RAIPRSN-NM-SRCH|BC00002041|HNWeb|BC01000161|20210916104824||ACK|71902|D|2.4\r\n" + 
 			"MSA|AA|20210506160152|HJMB001ISUCCESSFULLY COMPLETED\r\n" + 
@@ -50,7 +50,9 @@ public class EnrollmentControllerTest {
 	
 	private static final String ZO5_SUCCESS = "MSH|^~\\&|RAIENROL-EMP|BC00001013|HNWeb|HN-WEB|20211220180303|test|R50^Y00|20211220160240|D|2.4\r\n" + 
 			"MSA|AA|20210506160152|HJMB001ITRANSACTION SUCCESSFUL\r\n" + 
-			"PID||9873808694^^^BC^PH^MOH";
+			"PID||9873808694^^^BC^PH^MOH\r\n" +
+			"ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED";
+			;
 	
 	private static final String Z05_ERROR = "MSH|^~\\&|RAIENROL-EMP|BC00001013|HNWeb|HN-WEB|20211220180303|test|R50^Y00|20211220160240|D|2.4\r\n"+
 			"MSA|AE|20211220160240|HRPB187ECOVERAGE MUST BE MORE THAN 2 MONTHS AFTER VISA ISSUE/RESIDENCE DATE\r\n" +
@@ -93,7 +95,7 @@ public class EnrollmentControllerTest {
 
 		//Check the response
 		assertEquals(StatusEnum.ERROR, enrollSubscriber.getBody().getStatus());
-		assertEquals("NHR529E", enrollSubscriber.getBody().getMessage());
+		assertEquals("SYSTEM ERROR", enrollSubscriber.getBody().getMessage());
 		
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -114,7 +116,7 @@ public class EnrollmentControllerTest {
 
 		//Check the response
 		assertEquals(StatusEnum.ERROR, enrollSubscriber.getBody().getStatus());
-		assertEquals("HRPB187ECOVERAGE MUST BE MORE THAN 2 MONTHS AFTER VISA ISSUE/RESIDENCE DATE", enrollSubscriber.getBody().getMessage());
+		assertEquals("COVERAGE MUST BE MORE THAN 2 MONTHS AFTER VISA ISSUE/RESIDENCE DATE", enrollSubscriber.getBody().getMessage());
 		
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -136,8 +138,8 @@ public class EnrollmentControllerTest {
 
 		//Check the response
 		assertEquals(StatusEnum.SUCCESS, enrollSubscriber.getBody().getStatus());
-		assertEquals("AA", enrollSubscriber.getBody().getAcknowledgementCode());
-		assertEquals("HJMB001ISUCCESSFULLY COMPLETED", enrollSubscriber.getBody().getAcknowledgementMessage());
+		
+		assertEquals("SUCCESSFULLY COMPLETED", enrollSubscriber.getBody().getMessage());
 		
 		
 		//Check the client request is sent as expected
@@ -159,8 +161,7 @@ public class EnrollmentControllerTest {
 
 		//Check the response
 		assertEquals(StatusEnum.SUCCESS, enrollSubscriber.getBody().getStatus());
-		assertEquals("AA", enrollSubscriber.getBody().getAcknowledgementCode());
-		assertEquals("HJMB001ITRANSACTION SUCCESSFUL", enrollSubscriber.getBody().getAcknowledgementMessage());
+		assertEquals("SUCCESSFULLY COMPLETED", enrollSubscriber.getBody().getMessage());
 		assertEquals("9873808694", enrollSubscriber.getBody().getPhn());
 		
 		

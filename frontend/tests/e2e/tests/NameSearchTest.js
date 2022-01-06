@@ -5,11 +5,9 @@ import { SITE_UNDER_TEST } from '../configuration';
 import { regularAccUser } from '../roles/roles';
 
 const ERROR_MESSAGE = 'Please correct errors before submitting';
-const SEARCH_RESULT= 'Search Result';
-const ALERT_MSG= "No results were returned. Please add a study permit holder without PHN OR please go back and perform a search again";
 const SURNAME_REQUIRED_MESSAGE = 'Surname is required'
 const FIRSTNAME_REQUIRED_MESSAGE = 'First Name is required'
-const DOB_REQUIRED_MESSAGE = 'Date Of Birth is required';
+const DOB_REQUIRED_MESSAGE = 'Date of Birth is required';
 const GENDER_REQUIRED_MESSAGE = 'Gender is required';
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addVisaResidentWithoutPHN'
@@ -53,8 +51,6 @@ test('Check properly filled form passes validation', async t => {
 test('Check Add Visa Resident is loaded when no matching records found', async t => {
 	await t
         // Given I have a form filled out with data
-        .click(NameSearchPage.clearButton)
-        
         .typeText(NameSearchPage.surnameInput, 'Test')
         .typeText(NameSearchPage.firstNameInput, 'Test')
         .typeText(NameSearchPage.dateOfBirthInput, '20211108')
@@ -69,9 +65,7 @@ test('Check Add Visa Resident is loaded when no matching records found', async t
 
 test('Check Search Result page loads when matching records found', async t => {
 	await t
-        // Given I have a form filled out with data
-        .click(NameSearchPage.clearButton)
-        
+        // Given I have a form filled out with data 
         .typeText(NameSearchPage.surnameInput, 'dumpty')
         .typeText(NameSearchPage.firstNameInput, 'humpty')
         .typeText(NameSearchPage.dateOfBirthInput, '20211108')
@@ -86,10 +80,9 @@ test('Check Search Result page loads when matching records found', async t => {
         .expect(NameSearchPage.addButton.count).eql(5);
 });
 
-test('Check Add button navigates t0 Add Visa Resident page', async t => {
+test('Check Add button navigates t0 Add Visa Resident page for selected record', async t => {
 	await t
         // Given I have a form filled out with data
-        .click(NameSearchPage.clearButton)
         .typeText(NameSearchPage.surnameInput, 'dumpty')
         .typeText(NameSearchPage.firstNameInput, 'humpty')
         .typeText(NameSearchPage.dateOfBirthInput, '20211108')
@@ -99,8 +92,30 @@ test('Check Add button navigates t0 Add Visa Resident page', async t => {
 		.click(NameSearchPage.submitButton)
         // I expect the search result page to be loaded
         .click(NameSearchPage.addButton)
+        //I expect the Add Visa Resident page to be loaded   
+        .expect(AddVisaResidentWithoutPHNPage.groupNumberInput.exists).ok()
+        //I expect below fields not not be present for selected record
+        .expect(NameSearchPage.surnameInput.exists).notOk()
+        .expect(NameSearchPage.firstNameInput.exists).notOk()
+        .expect(NameSearchPage.radioButton.exists).notOk()
+        .expect(NameSearchPage.dateOfBirthInput.exists).notOk();
+});
+
+test('Check prepopulated fields for new record', async t => {
+	await t
+        // Given I have a form filled out with data
+        .typeText(NameSearchPage.surnameInput, 'TestSN')
+        .typeText(NameSearchPage.firstNameInput, 'TestFN')
+        .typeText(NameSearchPage.dateOfBirthInput, '20211108')
+        .click(NameSearchPage.radioButton)
+        .wait(1000)
+        // When I click the submit button
+		.click(NameSearchPage.submitButton)
         //I expect the Add Visa Resident page to be loaded
-        .expect(AddVisaResidentWithoutPHNPage.groupNumberInput.exists).ok();
+        .expect(AddVisaResidentWithoutPHNPage.firstNameInput.value).eql('TestFN')
+        .expect(AddVisaResidentWithoutPHNPage.surnameInput.value).eql('TestSN')
+        .expect(AddVisaResidentWithoutPHNPage.radioButton.exists).ok()
+        .expect(AddVisaResidentWithoutPHNPage.dateOfBirthInput.value).eql('20211108')
 });
 
 test('Check clear button clears the form', async t => {
@@ -111,10 +126,10 @@ test('Check clear button clears the form', async t => {
          .typeText(NameSearchPage.dateOfBirthInput, '20211108')
          .typeText(NameSearchPage.secondNameInput, 'Test Second Name')
         // When I click the clear button
-		.click(NameSearchPage.clearButton)
+		 .click(NameSearchPage.clearButton)
         // I expect the form to be cleared
-        .expect(NameSearchPage.surnameInput.value).eql('')
-        .expect(NameSearchPage.firstNameInput.value).eql('')
-        .expect(NameSearchPage.secondNameInput.value).eql('')
-        .expect(NameSearchPage.dateOfBirthInput.value).eql('')
+         .expect(NameSearchPage.surnameInput.value).eql('')
+         .expect(NameSearchPage.firstNameInput.value).eql('')
+         .expect(NameSearchPage.secondNameInput.value).eql('')
+         .expect(NameSearchPage.dateOfBirthInput.value).eql('')
 });
