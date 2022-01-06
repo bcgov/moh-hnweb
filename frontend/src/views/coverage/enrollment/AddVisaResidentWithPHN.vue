@@ -10,8 +10,6 @@ import { formatPersonName } from '../../../util/utils'
 import ResidentPHN from '../../../components/coverage/enrollment/ResidentPHN.vue'
 import ResidentDetails from '../../../components/coverage/enrollment/ResidentDetails.vue'
 import RegistrationConfirmation from '../../../components/coverage/enrollment/RegistrationConfirmation.vue'
-import dayjs from 'dayjs'
-import { API_DATE_FORMAT } from '../../../util/constants'
 
 export default {
   name: 'AddVisaResidentWithPHN',
@@ -109,6 +107,7 @@ export default {
         if (this.registrationResult?.status === 'warning') {
           this.$store.commit('alert/setWarningAlert', this.registrationResult?.message)
         }
+        this.getPersonDetailsResult.person = { ...personDetails }
         this.pageAction = this.PAGE_ACTION.CONFIRMATION
         this.$store.commit('alert/setSuccessAlert', 'Transaction Successful')
       } catch (err) {
