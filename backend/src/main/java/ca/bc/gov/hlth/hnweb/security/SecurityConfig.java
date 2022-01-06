@@ -20,6 +20,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+
     @Value("${config.allowed-origins}")
     private String allowedOrigins;
 
@@ -28,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         final JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakClientRoleConverter());
-        //System.out.println("allowed origin Value: "+allowedOrigins);
+        logger.info("*********** Allowed origin value {}", allowedOrigins);
         http
         	.cors(Customizer.withDefaults())
             .authorizeRequests()
