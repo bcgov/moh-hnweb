@@ -22,7 +22,7 @@ on:
   #       default: main
         
   push:
-    branches: [ main ]
+    branches: [ main, 4969-setup-hnweb ]
     paths: 
       - "backend/**"
 
