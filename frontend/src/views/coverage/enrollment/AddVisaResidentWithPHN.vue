@@ -99,17 +99,7 @@ export default {
     },
     async registerResident(personDetails) {
       try {
-        this.registrationResult = (
-          await EnrollmentService.registerResident({
-            phn: this.getPersonDetailsResult?.person.phn,
-            dateOfBirth: dayjs(this.getPersonDetailsResult?.person.dateOfBirth).format(API_DATE_FORMAT),
-            givenName: this.getPersonDetailsResult?.person.givenName,
-            secondName: this.getPersonDetailsResult?.person.secondName,
-            surname: this.getPersonDetailsResult?.person.surname,
-            gender: this.getPersonDetailsResult?.person.gender,
-            ...personDetails,
-          })
-        ).data
+        this.registrationResult = (await EnrollmentService.registerResident(personDetails)).data
 
         if (this.registrationResult?.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.registrationResult?.message)

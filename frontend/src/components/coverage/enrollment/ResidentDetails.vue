@@ -230,6 +230,12 @@ export default {
           return
         }
         this.$emit('register-resident', {
+          phn: this.resident?.phn,
+          dateOfBirth: dayjs(this.resident?.dateOfBirth).format(API_DATE_FORMAT),
+          givenName: this.resident?.givenName,
+          secondName: this.resident?.secondName,
+          surname: this.resident?.surname,
+          gender: this.resident?.gender,
           groupNumber: this.groupNumber,
           immigrationCode: this.immigrationCode,
           groupMemberNumber: this.groupMemberNumber,

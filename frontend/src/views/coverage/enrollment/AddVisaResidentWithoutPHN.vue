@@ -104,7 +104,7 @@ export default {
     },
     async registerResident(personDetails) {
       try {
-        this.registrationResult = (await EnrollmentService.registerResident({ ...personDetails })).data
+        this.registrationResult = (await EnrollmentService.registerResident(personDetails)).data
 
         if (this.registrationResult?.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.registrationResult?.message)
