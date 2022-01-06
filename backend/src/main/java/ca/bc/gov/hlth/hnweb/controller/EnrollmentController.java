@@ -67,7 +67,7 @@ public class EnrollmentController {
 			EnrollSubscriberResponse enrollSubscriberResponse = converter.convertResponse(r50Message);
 			ResponseEntity<EnrollSubscriberResponse> responseEntity = ResponseEntity.ok(enrollSubscriberResponse);
 
-			logger.info("Subscriber enroll Response: {} ", enrollSubscriberResponse.getAcknowledgementMessage());
+			logger.info("Subscriber enroll Response: {} ", enrollSubscriberResponse.getMessage());
 
 			return responseEntity;
 		} catch (HNWebException hwe) {
