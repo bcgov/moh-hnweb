@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         final JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakClientRoleConverter());
-
+        System.out.println("allowed origin Value: "+allowedOrigins);
         http
         	.cors(Customizer.withDefaults())
             .authorizeRequests()
