@@ -20,7 +20,7 @@ on:
 #        required: true
 #        default: main
   push:
-    branches: [ main ]
+    branches: [ main, 4969-setup-hnweb ]
     paths: 
     - "frontend/**"
 
@@ -34,8 +34,7 @@ jobs:
     - name: Check out code
       id: checkout
       uses: actions/checkout@v2
-      with:
-        ref: main      
+    
 
     # Determine the tags
     - name: Determine image tags
