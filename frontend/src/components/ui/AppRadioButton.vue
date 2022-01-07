@@ -28,9 +28,10 @@ export default {
   display: block;
   position: relative;
   padding-left: 30px;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
   cursor: pointer;
   font-size: 18px;
+  font-weight: 400;
   font-family: ‘BCSans’, ‘Noto Sans’, Verdana, Arial, sans-serif;
   -webkit-user-select: none;
   -moz-user-select: none;
