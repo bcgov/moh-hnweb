@@ -41,8 +41,5 @@
         <appender-ref ref="Console"/>
     </root>
 
-    <logger name="org.springframework.web" level="DEBUG">
-        <appender-ref ref="RollingFile"/>
-        <appender-ref ref="Console"/>
-    </logger>
+
 </configuration>

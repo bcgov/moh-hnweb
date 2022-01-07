@@ -30,7 +30,7 @@ public class HL7SerializerTest {
 
 	private static MockedStatic<SecurityUtil> mockStatic;
 
-	//@Test
+	@Test
 	public void test_toXML() throws Exception {
 
 		HL7Config hl7Config = new HL7Config();
