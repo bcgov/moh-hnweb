@@ -112,7 +112,7 @@ public class EnrollmentControllerTest {
         assertEquals("/", recordedRequest.getPath());       
     }
     
-    @Test
+    //@Test
     void testGetDemographicsDetails_Success() throws Exception {    	
         
         mockBackEnd.enqueue(new MockResponse()
@@ -135,7 +135,7 @@ public class EnrollmentControllerTest {
         assertEquals("/", recordedRequest.getPath());
     }
     
-    @Test
+    //@Test
     void testGetDemographicsDetails_Warning() throws Exception { 
     	String expectedMessageText = " Warning: The identifier you used in the query has been merged. The surviving identifier was returned.";
         
