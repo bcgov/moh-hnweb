@@ -1,14 +1,18 @@
 package ca.bc.gov.hlth.hnweb.config;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 
 import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +43,10 @@ public class WebClientConfig {
 
 	private static final String KEY_MANAGER_FACTORY_TYPE_SUN_X509 = "SunX509";
 
+	private static final String CERTIFICATE_TYPE_X509 = "X.509";
+
+	private static final String HCIM_CA_CERT = "hcimCaCert"; //Alias for HCIM trusted certificate
+
 	@Value("${hcim.url}")
 	private String hcimUrl;
 	
@@ -48,6 +56,9 @@ public class WebClientConfig {
 	@Value("${hcim.cert.password}")
 	private String hcimCertPassword;
 	
+	@Value("classpath:${hcim.trust.file}")
+	private Resource hcimTrustFile;
+
 	@Value("${rapid.url}")
 	private String rapidUrl;
 	 
@@ -75,7 +86,7 @@ public class WebClientConfig {
 	@Bean("hcimWebClient")
     public WebClient hcimWebClient() throws HNWebException {
 
-		SslContext sslContext = getSSLContext(hcimUrl, hcimCertFile, hcimCertPassword);
+		SslContext sslContext = getSSLContext(hcimUrl, hcimCertFile, hcimCertPassword, hcimTrustFile);
 		
 	    HttpClient httpClient= HttpClient.create().secure(t -> t.sslContext(sslContext));
 		ClientHttpConnector connector= new ReactorClientHttpConnector(httpClient);
@@ -126,20 +137,55 @@ public class WebClientConfig {
 
 	private SslContext getSSLContext(String url, Resource certFile, String certPassword) throws HNWebException {
 
-		try {
-			KeyStore keyStore = KeyStore.getInstance(KEY_STORE_TYPE_PKCS12);
-			keyStore.load(new FileInputStream(certFile.getFile()), certPassword.toCharArray());
+		return getSSLContext(url, certFile, certPassword, null);
+	}
+	
+	private SslContext getSSLContext(String url, Resource certFile, String certPassword, Resource trustFile) throws HNWebException {
 
-			KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KEY_MANAGER_FACTORY_TYPE_SUN_X509);
-			keyManagerFactory.init(keyStore, certPassword.toCharArray());
+		try {
+			KeyManagerFactory keyManagerFactory = createKeyManagerFactory(certFile, certPassword);			
 			
+			TrustManagerFactory trustManagerFactory = null;
+			if (trustFile != null) {
+				trustManagerFactory = createTrustManagerFactory(trustFile);				
+			}
+            
 			return SslContextBuilder.forClient()
+					.trustManager(trustManagerFactory) //if trustManagerFactory is null it's the same as not setting as the system defaults are used
 			        .keyManager(keyManagerFactory)
 			        .build();
 		} catch (IOException | CertificateException | UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException e) {
 	        logger.error("Error creating SSL Context for {} due to {}.", url, e.getMessage());
 	        throw new HNWebException(ExceptionType.SSL_FAILURE, e);
 		}
+	}
+
+	private KeyManagerFactory createKeyManagerFactory(Resource certFile, String certPassword)
+			throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException {
+		
+		KeyStore keyStore = KeyStore.getInstance(KEY_STORE_TYPE_PKCS12);
+		keyStore.load(new FileInputStream(certFile.getFile()), certPassword.toCharArray());
+
+		KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KEY_MANAGER_FACTORY_TYPE_SUN_X509);
+		keyManagerFactory.init(keyStore, certPassword.toCharArray());
+		
+		return keyManagerFactory;
+	}
+
+	private TrustManagerFactory createTrustManagerFactory(Resource trustedCertFile) throws CertificateException,
+			FileNotFoundException, IOException, KeyStoreException, NoSuchAlgorithmException {
+		
+		CertificateFactory certificateFactory = CertificateFactory.getInstance(CERTIFICATE_TYPE_X509);
+		X509Certificate hcimCert = (X509Certificate)certificateFactory.generateCertificate(new FileInputStream(trustedCertFile.getFile()));
+		
+		KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+		keyStore.load(null); // The KeyStore instance does not need to come from a file.
+		keyStore.setCertificateEntry(HCIM_CA_CERT, hcimCert);
+		
+		TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+		trustManagerFactory.init(keyStore);
+		
+		return trustManagerFactory;
 	}
 	
     /*
