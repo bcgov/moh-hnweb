@@ -1,0 +1,98 @@
+name: backend-BuildImageAndPush-Dev
+# Build the image and deploy in OpenShift environment
+env:
+  # Registries such as GHCR, Quay.io, and Docker Hub are supported.
+  IMAGE_REGISTRY: image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools
+  IMAGE_REGISTRY_USER: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_USER }}
+  IMAGE_REGISTRY_PASSWORD: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
+  IMAGE_NAME: hnweb-backend
+  IMAGE_TAGS: 
+
+on:
+  # Run the workflow manually, instead of on a push.
+  # The user specifies the name of the build config to use, which should be an
+  #   API build config.
+  # --------------------------------------------------------------------------
+  
+  # workflow_dispatch:
+  #   inputs:
+  #     branch:
+  #       description: 'Enter branch name:'
+  #       required: true
+  #       default: main
+        
+  push:
+    branches: [ main, 4969-setup-hnweb ]
+    paths: 
+      - "backend/**"
+
+jobs:
+  
+  buildAndPush:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # Check out the code
+    - name: Check out code
+      id: checkout
+      uses: actions/checkout@v2
+      #with:
+      #  ref: main      
+
+    # Determine the tags
+    - name: Determine image tags
+      if: env.IMAGE_TAGS == ''
+      run: |
+        echo "IMAGE_TAGS=latest ${GITHUB_SHA::12} hnweb-dev" | tee -a $GITHUB_ENV
+
+
+    # Build from docker file
+    - name: Build from Dockerfile
+      id: build-docker
+      uses: redhat-actions/buildah-build@v2
+      with:
+        image: hnweb-backend
+        tags: ${{ env.IMAGE_TAGS }}
+        context: ./backend
+        dockerfiles: |
+          ./backend/Dockerfile
+
+    - name: Push to registry
+      id: push-image
+      uses: redhat-actions/push-to-registry@v2
+      with:
+        image: ${{ steps.build-docker.outputs.image }}
+        tags: ${{ steps.build-docker.outputs.tags }}
+        registry: ${{ env.IMAGE_REGISTRY }}
+        username: ${{ env.IMAGE_REGISTRY_USER }}
+        password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
+
+    # Update the image ID in the manifest repository used by Argo CD.
+    # We need to use the SSH deploy key to check out the manifest repo, set up
+    # Kustomize in the runner, update the image ID, commit the change, and
+    # push the changes back to the manifest repository.
+    # ------------------------------------------------------------------------
+    - name: Prepare deploy key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.GITOPS_C5839F_PRIVATE_KEY }}
+
+    - name: Check out manifest repo
+      uses: actions/checkout@v2
+      with:
+        ssh-key: ${{ secrets.GITOPS_C5839F_PRIVATE_KEY }}
+        repository: ${{ secrets.GITOPS_C5839F_REPO }}
+        ref: main
+
+    - name: Set up Kustomize
+      uses: imranismail/setup-kustomize@v1
+
+    - name: Update image ID and commit change
+      if: ${{ success() }}
+      run: |
+        cd hnweb-devops/overlays/dev
+        kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/c5839f-tools/hnweb-backend@${{ steps.push-image.outputs.digest }}"
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git commit -am "Update Backend API image ID for Dev"
+        git push origin

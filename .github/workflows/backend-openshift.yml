@@ -62,7 +62,7 @@ on:
      branch:
        description: 'Enter branch name:'
        required: true
-       default: 4969-setup-hnweb
+       default: main
   # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
 
   # push:
@@ -70,7 +70,6 @@ on:
   #   branches: [ main, 4969-setup-hnweb ]
   #   paths: 
   #   - "backend/**"
-
 
 jobs:
   openshift-ci-cd:

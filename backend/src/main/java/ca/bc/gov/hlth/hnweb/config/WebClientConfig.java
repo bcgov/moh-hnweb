@@ -48,7 +48,7 @@ public class WebClientConfig {
 	@Value("${R50.user.password}")
 	private String userPassword;
 
-	@Value("classpath:${R50.cert.file}")
+	@Value("${R50.cert.file}")
 	private Resource certFile;
 	
 	@Value("${R50.cert.password}")
@@ -57,7 +57,7 @@ public class WebClientConfig {
 	@Value("${hcim.url}")
 	private String hcimUrl;
 	
-	@Value("classpath:${hcim.cert.file}")
+	@Value("${hcim.cert.file}")
 	private Resource hcimCertFile;
 
 	@Value("${hcim.cert.password}")
@@ -72,7 +72,7 @@ public class WebClientConfig {
 	@Value("${rapid.user.password}")
 	private String rapidUserPassword;
 
-	@Value("classpath:${rapid.cert.file}")
+	@Value("${rapid.cert.file}")
 	private Resource rapidCertFile;
 
 	@Value("${rapid.cert.password}")
@@ -81,7 +81,7 @@ public class WebClientConfig {
 	@Value("${hibc.url}")
 	private String hibcUrl;
 
-	@Value("classpath:${hibc.cert.file}")
+	@Value("${hibc.cert.file}")
 	private Resource hibcCertFile;
 
 	@Value("${hibc.cert.password}")
