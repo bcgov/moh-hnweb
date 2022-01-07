@@ -3,7 +3,7 @@
     <div class="text_label">
       <label>{{ label }}</label>
     </div>
-    <div :class="buttonClass">
+    <div :class="groupClass">
       <AppRadioButton v-for="item in this.group" :id="item.value" :label="item.label" :value="item.value" v-model="modelValue" />
     </div>
     <div class="error-text" v-for="error in eModel.$errors">{{ error.$message.replace('Value', label) }}</div>
@@ -17,9 +17,10 @@ export default {
     AppRadioButton,
   },
   computed: {
-    buttonClass() {
+    groupClass() {
       return {
         'error-input': this.eModel.$error,
+        'button-group': true
       }
     },
   },
@@ -41,6 +42,10 @@ export default {
 </script>
 
 <style scoped>
+
+.button-group {
+  padding: 5px 0px 0px 5px;
+}
 .text_label {
   display: flex;
 }
@@ -48,6 +53,7 @@ export default {
 .error-input {
   border: 2px solid #606060;
   border-color: #d8292f !important;
+  border-radius: 4px;
 }
 
 .error-text {
