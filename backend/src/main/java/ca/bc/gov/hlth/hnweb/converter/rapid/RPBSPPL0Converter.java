@@ -11,10 +11,10 @@ import ca.bc.gov.hlth.hnweb.model.rapid.PL0Beneficary;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPL0;
 
-public class R42Converter extends BaseRapidConverter {
+public class RPBSPPL0Converter extends BaseRapidConverter {
 	private static final String TRAN_CODE = "RPBSPPL0";
 
-	public R42Converter() {
+	public RPBSPPL0Converter() {
 		super();
 	}
 	
