@@ -188,8 +188,8 @@ public class WebClientConfig {
 		return trustManagerFactory;
 	}
 	
-    /*
-     * Log request details for the downstream web service calls
+    /**
+     * Log request details for the downstream web service calls.
      */
     private ExchangeFilterFunction logRequest() {
         return ExchangeFilterFunction.ofRequestProcessor(c -> {
