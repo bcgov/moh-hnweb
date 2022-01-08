@@ -1,4 +1,4 @@
-name: backend-BuildImageAndPush-Dev
+name: TestEnv-backend-BuildImageAndPush
 # Build the image and deploy in OpenShift environment
 env:
   # Registries such as GHCR, Quay.io, and Docker Hub are supported.
@@ -14,17 +14,17 @@ on:
   #   API build config.
   # --------------------------------------------------------------------------
   
-   workflow_dispatch:
-     inputs:
-       branch:
-         description: 'Enter branch name:'
-         required: true
-         default: main
+  # workflow_dispatch:
+  #   inputs:
+  #     branch:
+  #       description: 'Enter branch name:'
+  #       required: true
+  #       default: main
         
-  #push:
-  #  branches: [ main, 4969-setup-hnweb ]
-  #  paths: 
-  #    - "backend/**"
+  push:
+    branches: [ main]
+    paths: 
+      - "backend/**"
 
 jobs:
   
@@ -37,13 +37,13 @@ jobs:
       id: checkout
       uses: actions/checkout@v2
       with:
-        ref: ${{ github.event.inputs.branch }}  
+        ref: main     
 
     # Determine the tags
     - name: Determine image tags
       if: env.IMAGE_TAGS == ''
       run: |
-        echo "IMAGE_TAGS=latest ${GITHUB_SHA::12} hnweb-dev" | tee -a $GITHUB_ENV
+        echo "IMAGE_TAGS=latest ${GITHUB_SHA::12} hnweb-test" | tee -a $GITHUB_ENV
 
 
     # Build from docker file
@@ -90,9 +90,9 @@ jobs:
     - name: Update image ID and commit change
       if: ${{ success() }}
       run: |
-        cd hnweb-devops/overlays/dev
+        cd hnweb-devops/overlays/test
         kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/c5839f-tools/hnweb-backend@${{ steps.push-image.outputs.digest }}"
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git commit -am "Update Backend API image ID for Dev"
+        git commit -am "Update Backend API image ID for test"
         git push origin
