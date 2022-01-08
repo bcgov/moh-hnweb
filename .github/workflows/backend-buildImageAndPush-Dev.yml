@@ -14,17 +14,17 @@ on:
   #   API build config.
   # --------------------------------------------------------------------------
   
-  # workflow_dispatch:
-  #   inputs:
-  #     branch:
-  #       description: 'Enter branch name:'
-  #       required: true
-  #       default: main
+   workflow_dispatch:
+     inputs:
+       branch:
+         description: 'Enter branch name:'
+         required: true
+         default: main
         
-  push:
-    branches: [ main, 4969-setup-hnweb ]
-    paths: 
-      - "backend/**"
+  #push:
+  #  branches: [ main, 4969-setup-hnweb ]
+  #  paths: 
+  #    - "backend/**"
 
 jobs:
   
@@ -36,8 +36,8 @@ jobs:
     - name: Check out code
       id: checkout
       uses: actions/checkout@v2
-      #with:
-      #  ref: main      
+      with:
+        ref: ${{ github.event.inputs.branch }}  
 
     # Determine the tags
     - name: Determine image tags

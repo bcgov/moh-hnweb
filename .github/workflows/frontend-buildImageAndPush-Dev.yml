@@ -13,16 +13,16 @@ on:
   # The user specifies the name of the build config to use, which should be an
   #   API build config.
   # --------------------------------------------------------------------------
-#  workflow_dispatch:
-#    inputs:
-#      branch:
-#        description: 'Enter branch name:'
-#        required: true
-#        default: main
-  push:
-    branches: [ main, 4969-setup-hnweb ]
-    paths: 
-    - "frontend/**"
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Enter branch name:'
+        required: true
+        default: main
+#  push:
+#    branches: [ main, 4969-setup-hnweb ]
+#    paths: 
+#    - "frontend/**"
 
 jobs:
   
@@ -34,6 +34,8 @@ jobs:
     - name: Check out code
       id: checkout
       uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.inputs.branch }}        
     
 
     # Determine the tags
