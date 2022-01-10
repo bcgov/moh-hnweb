@@ -10,7 +10,7 @@ env:
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, 5408-Refactor-frontendcode ]
     paths: 
       - "frontend/**"
 
@@ -24,8 +24,8 @@ jobs:
     - name: Check out code
       id: checkout
       uses: actions/checkout@v2
-      with:
-        ref: main
+      #with:
+      #  ref: main
 
     # Determine the tags
     - name: Determine image tags
