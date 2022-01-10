@@ -19,10 +19,7 @@ on:
         description: 'Enter branch name:'
         required: true
         default: main
-#  push:
-#    branches: [ main, 4969-setup-hnweb ]
-#    paths: 
-#    - "frontend/**"
+
 
 jobs:
   
