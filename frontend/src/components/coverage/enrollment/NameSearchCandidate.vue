@@ -19,11 +19,10 @@
 export default {
   name: 'NameSearchCandidate',
   props: {
-    candidate: Object,
-  },
-  created() {
-    this.CURRENT_RECORD = 'CURRENT RECORD'
-    this.PREVIOUS_RECORD = 'PREVIOUS RECORD'
+    candidate: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -33,63 +32,57 @@ export default {
   computed: {
     formatDetailsLine1() {
       let details = ''
-      if (this.candidate) {
-        details = this.fullName + ' (' + this.resolveNameStatus + ')'
-      }
+      details = this.fullName + ' (' + this.resolveNameStatus + ')'
       return details
     },
     resolveNameStatus() {
       switch (this.candidate.nameTypeCode) {
         case 'L':
-          return this.CURRENT_RECORD
+          return 'CURRENT RECORD'
         case 'C':
-          return this.PREVIOUS_RECORD
+          return 'PREVIOUS RECORD'
         default:
           return ''
       }
     },
     formatDetailsLine2() {
       let details = ''
-      if (this.candidate) {
-        if (this.candidate.gender) {
-          details = details + this.candidate.gender
-        }
-        if (this.candidate.dateOfBirth) {
-          details = details + ' ' + this.candidate.dateOfBirth
-        }
-        if (this.candidate.phn) {
-          details = details + ' ' + this.candidate.phn
-        }
-        if (this.candidate.assigningAuthority) {
-          details = details + ' ' + this.candidate.assigningAuthority
-        }
-        if (this.candidate.identifierTypeCode) {
-          details = details + ' ' + this.candidate.identifierTypeCode
-        }
+      if (this.candidate.gender) {
+        details = details + this.candidate.gender
+      }
+      if (this.candidate.dateOfBirth) {
+        details = details + ' ' + this.candidate.dateOfBirth
+      }
+      if (this.candidate.phn) {
+        details = details + ' ' + this.candidate.phn
+      }
+      if (this.candidate.assigningAuthority) {
+        details = details + ' ' + this.candidate.assigningAuthority
+      }
+      if (this.candidate.identifierTypeCode) {
+        details = details + ' ' + this.candidate.identifierTypeCode
       }
       return details
     },
     formatDetailsLine3() {
       let address = ''
-      if (this.candidate) {
-        if (this.candidate.address1) {
-          address = address + this.candidate.address1
-        }
-        if (this.candidate.address2) {
-          address = address + ' ' + this.candidate.address2
-        }
-        if (this.candidate.address3) {
-          address = address + ' ' + this.candidate.address3
-        }
-        if (this.candidate.city) {
-          address = address + ' ' + this.candidate.city
-        }
-        if (this.candidate.province) {
-          address = address + ' ' + this.candidate.province
-        }
-        if (this.candidate.postalCode) {
-          address = address + ' ' + this.candidate.postalCode
-        }
+      if (this.candidate.address1) {
+        address = address + this.candidate.address1
+      }
+      if (this.candidate.address2) {
+        address = address + ' ' + this.candidate.address2
+      }
+      if (this.candidate.address3) {
+        address = address + ' ' + this.candidate.address3
+      }
+      if (this.candidate.city) {
+        address = address + ' ' + this.candidate.city
+      }
+      if (this.candidate.province) {
+        address = address + ' ' + this.candidate.province
+      }
+      if (this.candidate.postalCode) {
+        address = address + ' ' + this.candidate.postalCode
       }
       return address
     },
