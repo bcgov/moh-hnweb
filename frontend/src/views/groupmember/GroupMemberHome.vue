@@ -1,5 +1,6 @@
 <script setup>
 import TheSubNav from '../../components/template/TheSubNav.vue'
+import SubNavTab from '../../components/template/SubNavTab.vue'
 </script>
 
 <template>
@@ -11,6 +12,8 @@ import TheSubNav from '../../components/template/TheSubNav.vue'
 
 <script>
 export default {
-  name: 'ManageEmployeeHome',
+  name: 'GroupMemberHome',
 }
 </script>
+
+

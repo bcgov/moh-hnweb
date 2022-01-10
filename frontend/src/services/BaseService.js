@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 import keycloak from '../keycloak';
 
 export const resources = {
@@ -12,6 +11,10 @@ export const resources = {
     checkMspCoverageStatus: '/eligibility/check-msp-coverage-status',
     inquirePhn: '/eligibility/inquire-phn',
     lookupPhn: '/eligibility/lookup-phn',
+  },
+  groupMember: {
+    updateGroupMember: '/group-member/update-group-member'
+
   },
   user: {
     permissions: '/user/permissions'

@@ -8,13 +8,13 @@ import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaint
 import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
 import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
 import Employees from './../views/Employees.vue'
+import GroupMemberHome from '../views/groupmember/GroupMemberHome.vue'
 import Help from './../views/Help.vue'
 import Home from './../views/Home.vue'
-import ManageEmployeeHome from '../views/manageemployee/ManageEmployeeHome.vue'
 import NotFound from '../views/NotFound.vue'
 import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
 import PhnLookup from '../views/eligibility/PhnLookup.vue'
-import UpdateGroupMember from '../views/manageemployee/UpdateGroupMember.vue'
+import UpdateGroupMember from '../views/groupmember/UpdateGroupMember.vue'
 import store from '../store'
 
 const routes = [
@@ -85,9 +85,9 @@ const routes = [
     ],
   },
   {
-    path: '/manageemployee',
-    name: 'ManageEmployee',
-    component: ManageEmployeeHome,
+    path: '/groupmember',
+    name: 'GroupMember',
+    component: GroupMemberHome,
     redirect: {
       name: 'UpdateGroupMember',
     },

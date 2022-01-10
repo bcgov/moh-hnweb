@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div id = 'updateGroupMember' v-if= "showForm">
     <form @submit.prevent="submitForm">
       <AppRow>
-        <AppCol class="col3">
+        <AppCol class="col3">{{showForm}}
           <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" type="text" v-model.trim="groupNumber" />
         </AppCol>
       </AppRow>
@@ -27,12 +27,19 @@
       </AppRow>
     </form>
   </div>
+  
+  <div id = "confirmation" v-if="updateOk">
+    <AppRow>
+      <AppCol class="col3">
+        <AppOutput label="PHN" :value="result?.phn" />
+      </AppCol>
+    </AppRow> 
+  </div>
   <br />
 </template>
 
 <script>
-import UpdateEmployeeConfirmation from '../../components/manageemployee/UpdateEmployeeConfirmation.vue'
-import ManageEmployeeService from '../../services/ManageEmployeeService'
+import GroupMemberService from '../../services/GroupMemberService'
 import useVuelidate from '@vuelidate/core'
 import { validateGroupNumber, validatePHN, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE } from '../../util/validators'
 import { required,requiredUnless, helpers } from '@vuelidate/validators'
@@ -40,7 +47,7 @@ import { required,requiredUnless, helpers } from '@vuelidate/validators'
 export default {
   name: 'UpdateGroupMember',
   components: {
-    UpdateEmployeeConfirmation
+    //UpdateGroupMemberConfirmation
   },
   setup() {
     return {
@@ -51,27 +58,22 @@ export default {
       groupNumber:'',
       phn: '',
       groupMemberNumber: '',
-      departmentNumber: '',   
+      departmentNumber: '',
+      updateOk: false, 
+      showForm :true,
       result: {
         phn: '', 
         status: '',
-        message: ''
+        message: '',
       }
     }
   },
-
-   computed: {
-        isOptional: () => {
-          return (
-            this.groupMemberNumber !== '' ||
-            this.departmentNumber !== '' 
-            
-          )
-        }
-      },
+  
   methods: {
     async submitForm() {
-      this.result = null  
+      this.result = null 
+      this.updateOk = false
+      this.showForm = true
       this.$store.commit("alert/dismissAlert")
       try {
         const isValid = await this.v$.$validate()
@@ -79,16 +81,26 @@ export default {
           this.showError()
           return
         } 
-        this.result = (await ManageEmployeeService.updateEmployee({
+        this.result = (await GroupMemberService.updateGroupMember({
           phn: this.phn,
           groupNumber: this.groupNumber,
           departmentNumber: this.departmentNumber,
           groupMemberNumber: this.groupMemberNumber,         
         })).data
         
+        
+        if (this.result.status === 'error') {
+          console.log('error message')
+          this.$store.commit('alert/setErrorAlert', this.result.message)
+          return
+        }
+
         if (this.result?.status === 'success') {
-          console.log('success message')
-          this.$store.commit('alert/setErrorAlert', this.result?.message)
+          this.showForm = 'false'
+          console.log('Success message')
+          console.log(this.showForm)
+          this.updateOk = 'true'
+          this.$store.commit('alert/setSuccessAlert', 'Transaction Successful')
           return
         }
       } catch (err) {
@@ -105,6 +117,8 @@ export default {
       this.groupNumber = ''
       this.departmentNumber = ''
       this.result = null
+      this.updateOk ='false'
+      this.showForm = 'true'
       this.v$.$reset()
       this.$store.commit("alert/dismissAlert") 
     }
