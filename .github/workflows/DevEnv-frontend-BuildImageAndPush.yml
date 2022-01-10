@@ -53,7 +53,7 @@ jobs:
         image: hnweb-frontend
         tags: ${{ env.IMAGE_TAGS }}
         context: ./frontend
-        build-args: env=test
+        build-args: env=development
         dockerfiles: |
           ./frontend/Dockerfile
 
