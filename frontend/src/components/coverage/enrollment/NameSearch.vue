@@ -17,12 +17,12 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col4">
+        <AppCol class="col3">
           <AppDateInput :e-model="v$.dateOfBirth" id="dateOfBirth" label="Date of Birth" v-model="dateOfBirth" />
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col4">
+        <AppCol class="col3">
           <GenderRadioButtonGroup :e-model="v$.gender" id="gender" label="Gender" v-model="gender" />
         </AppCol>
       </AppRow>
@@ -61,16 +61,10 @@ export default {
       searching: false,
     }
   },
-  computed: {
-    inputClass() {
-      return {
-        'error-input': this.v$.gender.$error,
-      }
-    },
-  },
   methods: {
     async submitForm() {
       this.searching = true
+      this.$store.commit('alert/dismissAlert')
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
