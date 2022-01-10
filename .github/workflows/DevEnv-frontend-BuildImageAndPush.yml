@@ -19,10 +19,7 @@ on:
         description: 'Enter branch name:'
         required: true
         default: main
-#  push:
-#    branches: [ main, 4969-setup-hnweb ]
-#    paths: 
-#    - "frontend/**"
+
 
 jobs:
   
@@ -53,7 +50,7 @@ jobs:
         image: hnweb-frontend
         tags: ${{ env.IMAGE_TAGS }}
         context: ./frontend
-        build-args: env=test
+        build-args: env=dev
         dockerfiles: |
           ./frontend/Dockerfile
 
