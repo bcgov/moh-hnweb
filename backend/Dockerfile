@@ -13,5 +13,4 @@ RUN mkdir -p keystore
 
 COPY --from=build-stage /home/app/target/*.jar /tmp/app.jar
 ENTRYPOINT ["java","-jar","/tmp/app.jar"]
-
 EXPOSE 9090
