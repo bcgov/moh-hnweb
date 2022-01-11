@@ -1,13 +1,7 @@
 package ca.bc.gov.hlth.hnweb.config;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
@@ -50,13 +44,13 @@ public class WebClientConfig {
 	@Value("${hcim.url}")
 	private String hcimUrl;
 	
-	@Value("classpath:${hcim.cert.file}")
+	@Value("${hcim.cert.file}")
 	private Resource hcimCertFile;
 
 	@Value("${hcim.cert.password}")
 	private String hcimCertPassword;
 	
-	@Value("classpath:${hcim.trust.file}")
+	@Value("${hcim.trust.file}")
 	private Resource hcimTrustFile;
 
 	@Value("${rapid.url}")
@@ -147,21 +141,20 @@ public class WebClientConfig {
 			
 			TrustManagerFactory trustManagerFactory = null;
 			if (trustFile != null) {
-				trustManagerFactory = createTrustManagerFactory(trustFile);				
+				trustManagerFactory = createTrustManagerFactory(trustFile, HCIM_CA_CERT);				
 			}
             
 			return SslContextBuilder.forClient()
 					.trustManager(trustManagerFactory) //if trustManagerFactory is null it's the same as not setting as the system defaults are used
 			        .keyManager(keyManagerFactory)
 			        .build();
-		} catch (IOException | CertificateException | UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException e) {
+		} catch (Exception e) {
 	        logger.error("Error creating SSL Context for {} due to {}.", url, e.getMessage());
 	        throw new HNWebException(ExceptionType.SSL_FAILURE, e);
 		}
 	}
 
-	private KeyManagerFactory createKeyManagerFactory(Resource certFile, String certPassword)
-			throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException {
+	private KeyManagerFactory createKeyManagerFactory(Resource certFile, String certPassword) throws Exception {
 		
 		KeyStore keyStore = KeyStore.getInstance(KEY_STORE_TYPE_PKCS12);
 		keyStore.load(new FileInputStream(certFile.getFile()), certPassword.toCharArray());
@@ -172,15 +165,14 @@ public class WebClientConfig {
 		return keyManagerFactory;
 	}
 
-	private TrustManagerFactory createTrustManagerFactory(Resource trustedCertFile) throws CertificateException,
-			FileNotFoundException, IOException, KeyStoreException, NoSuchAlgorithmException {
+	private TrustManagerFactory createTrustManagerFactory(Resource trustedCertFile, String trustedCertAlias) throws Exception {
 		
 		CertificateFactory certificateFactory = CertificateFactory.getInstance(CERTIFICATE_TYPE_X509);
-		X509Certificate hcimCert = (X509Certificate)certificateFactory.generateCertificate(new FileInputStream(trustedCertFile.getFile()));
+		X509Certificate x509Certificate = (X509Certificate)certificateFactory.generateCertificate(new FileInputStream(trustedCertFile.getFile()));
 		
 		KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
 		keyStore.load(null); // The KeyStore instance does not need to come from a file.
-		keyStore.setCertificateEntry(HCIM_CA_CERT, hcimCert);
+		keyStore.setCertificateEntry(trustedCertAlias, x509Certificate);
 		
 		TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
 		trustManagerFactory.init(keyStore);
