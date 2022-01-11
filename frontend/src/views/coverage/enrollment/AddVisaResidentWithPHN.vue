@@ -46,7 +46,6 @@ export default {
       REGISTRATION: 'REGISTRATION',
       CONFIRMATION: 'CONFIRMATION',
     }
-    console.log(`route pageAction ${this.$route.query.pageAction}`)
     this.pageAction = this.$route.query.pageAction ? this.$route.query.pageAction : this.PAGE_ACTION.PHN_SEARCH
   },
   computed: {
