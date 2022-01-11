@@ -45,6 +45,7 @@ public class GroupMemberControllerTest {
 	private static final String RPBSPWC0_ERROR_CANCEL_DAY_INVALID = "        RPBSPWC000000010                                ERRORMSGRPBS1016COVERAGE CANCEL DAY INVALID                                             934798407463371092022-01-01 ";	
 	private static final String RPBSPWC0_ERROR_INVALID_CANCEL_REASON = "        RPBSPWC000000010                                ERRORMSGRPBS0063INVALID CANCEL REASON FOR THIS TRANSACTION                              934798407463371092022-01-31A";	
 	private static final String RPBSPWC0_ERROR_PHN_DOES_NOT_HAVE_COVERAGE = "        RPBSPWC000000010                                ERRORMSGRPBS0081PHN DOES NOT HAVE COVERAGE UNDER YOUR ORGANIZATION                      934798407463371092022-01-31K";
+	private static final String RPBSPWC0_ERROR_FUTURE_CANCEL_DATE = "        RPBSPWC000000010                                ERRORMSGRPBS0048SUBSCRIBER HAS A FUTURE CANCEL DATE.PLS FORWARD DOCS TO MSP             987389592763371092022-12-31K";
 	private static final String RPBSPWC0_SUCCESS = "        RPBSPWC000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  987389592763371092022-12-31K";
 	
 	private static MockWebServer mockBackEnd;
@@ -220,8 +221,7 @@ public class GroupMemberControllerTest {
     	cancelGroupMemberRequest.setPhn("9347984074");
     	cancelGroupMemberRequest.setGroupNumber("6337109");
     	cancelGroupMemberRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
-    	// The reason must be K or R
-    	cancelGroupMemberRequest.setCancelReason("A");
+    	cancelGroupMemberRequest.setCancelReason("K");
     	
 		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
 		
@@ -229,6 +229,31 @@ public class GroupMemberControllerTest {
 		assertEquals(StatusEnum.ERROR, cancelGroupMemberResponse.getStatus());
         assertEquals("RPBS0081 PHN DOES NOT HAVE COVERAGE UNDER YOUR ORGANIZATION", cancelGroupMemberResponse.getMessage());
         assertEquals("9347984074", cancelGroupMemberResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+    }
+    
+    @Test
+    public void testCancelGroupMember_futureCancelDate() throws InterruptedException {
+    	mockBackEnd.enqueue(new MockResponse()
+        		.setBody(RPBSPWC0_ERROR_FUTURE_CANCEL_DATE)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+    	
+    	CancelGroupMemberRequest cancelGroupMemberRequest = new CancelGroupMemberRequest();
+    	cancelGroupMemberRequest.setPhn("9873895927");
+    	cancelGroupMemberRequest.setGroupNumber("6337109");
+    	cancelGroupMemberRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
+    	// The reason must be K or R
+    	cancelGroupMemberRequest.setCancelReason("K");
+    	
+		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
+		
+		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, cancelGroupMemberResponse.getStatus());
+        assertEquals("RPBS0048 SUBSCRIBER HAS A FUTURE CANCEL DATE.PLS FORWARD DOCS TO MSP", cancelGroupMemberResponse.getMessage());
+        assertEquals("9873895927", cancelGroupMemberResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -245,15 +270,14 @@ public class GroupMemberControllerTest {
     	cancelGroupMemberRequest.setPhn("9873895927");
     	cancelGroupMemberRequest.setGroupNumber("6337109");
     	cancelGroupMemberRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
-    	// The reason must be K or R
-    	cancelGroupMemberRequest.setCancelReason("A");
+    	cancelGroupMemberRequest.setCancelReason("K");
     	
 		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
 		
 		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, cancelGroupMemberResponse.getStatus());
         assertEquals("TRANSACTION SUCCESSFUL", cancelGroupMemberResponse.getMessage());
-        assertEquals("9347984074", cancelGroupMemberResponse.getPhn());
+        assertEquals("9873895927", cancelGroupMemberResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
