@@ -1,5 +1,8 @@
 package ca.bc.gov.hlth.hnweb.converter.rapid;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +53,13 @@ public abstract class BaseRapidConverter {
 	protected String convertBirthDate(String birthDate) {
 		// Convert the response Date from yyyy-MM-dd to yyyyMMdd
 		return StringUtils.remove(birthDate, "-");
+	}
+	
+	protected String formatDate(LocalDate date) {
+		if (date == null) {
+			return null;
+		}
+		return date.format(DateTimeFormatter.ofPattern(RAPID_DATE_FORMAT));
 	}
 
 	public abstract String getTranCode();

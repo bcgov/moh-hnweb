@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,6 +25,8 @@ import org.springframework.web.server.ResponseStatusException;
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberResponse;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
 import okhttp3.mockwebserver.MockResponse;
@@ -37,7 +40,13 @@ public class GroupMemberControllerTest {
 	private static final String RPBSPEE0_ERROR_PHN_HAS_NO_COVERAGE_IN_GROUP = "        RPBSPEE000000010                                ERRORMSGRPBS9179PHN HAS NO COVERAGE IN GROUP                                            93479840746337109111111   ";
 	private static final String RPBSPED0_SUCCESS = "        RPBSPED000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  98738959276337109111111";
 	private static final String RPBSPEE0_SUCCESS = "        RPBSPEE000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  98738959276337109000000001";
-
+	
+	private static final String RPBSPWC0_ERROR_CANCEL_DATE_MISSING = "        RPBSPWC000000010                                ERRORMSGRPBS0026COVERAGE CANCEL DATE MUST BE ENTERED                                    93479840746337109           ";
+	private static final String RPBSPWC0_ERROR_CANCEL_DAY_INVALID = "        RPBSPWC000000010                                ERRORMSGRPBS1016COVERAGE CANCEL DAY INVALID                                             934798407463371092022-01-01 ";	
+	private static final String RPBSPWC0_ERROR_INVALID_CANCEL_REASON = "        RPBSPWC000000010                                ERRORMSGRPBS0063INVALID CANCEL REASON FOR THIS TRANSACTION                              934798407463371092022-01-31A";	
+	private static final String RPBSPWC0_ERROR_PHN_DOES_NOT_HAVE_COVERAGE = "        RPBSPWC000000010                                ERRORMSGRPBS0081PHN DOES NOT HAVE COVERAGE UNDER YOUR ORGANIZATION                      934798407463371092022-01-31K";
+	private static final String RPBSPWC0_SUCCESS = "        RPBSPWC000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  987389592763371092022-12-31K";
+	
 	private static MockWebServer mockBackEnd;
 
 	private static MockedStatic<SecurityUtil> mockStatic;
@@ -126,7 +135,131 @@ public class GroupMemberControllerTest {
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
     }
+    
+    @Test
+    public void testCancelGroupMember_cancelDateMissing() throws InterruptedException {
+    	mockBackEnd.enqueue(new MockResponse()
+        		.setBody(RPBSPWC0_ERROR_CANCEL_DATE_MISSING)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+    	
+    	CancelGroupMemberRequest cancelGroupMemberRequest = new CancelGroupMemberRequest();
+    	cancelGroupMemberRequest.setPhn("9347984074");
+    	cancelGroupMemberRequest.setGroupNumber("6337109");
+    	cancelGroupMemberRequest.setCoverageCancelDate(null);
+    	cancelGroupMemberRequest.setCancelReason(null);
+    	
+		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
+		
+		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, cancelGroupMemberResponse.getStatus());
+        assertEquals("RPBS0026 COVERAGE CANCEL DATE MUST BE ENTERED", cancelGroupMemberResponse.getMessage());
+        assertEquals("9347984074", cancelGroupMemberResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+    }
+    
+    @Test
+    public void testCancelGroupMember_cancelDayInvalid() throws InterruptedException {
+    	mockBackEnd.enqueue(new MockResponse()
+        		.setBody(RPBSPWC0_ERROR_CANCEL_DAY_INVALID)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+    	
+    	CancelGroupMemberRequest cancelGroupMemberRequest = new CancelGroupMemberRequest();
+    	cancelGroupMemberRequest.setPhn("9347984074");
+    	cancelGroupMemberRequest.setGroupNumber("6337109");
+    	// The day must be the end of the month
+    	cancelGroupMemberRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 01));
+    	cancelGroupMemberRequest.setCancelReason(null);
+    	
+		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
+		
+		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, cancelGroupMemberResponse.getStatus());
+        assertEquals("RPBS1016 COVERAGE CANCEL DAY INVALID", cancelGroupMemberResponse.getMessage());
+        assertEquals("9347984074", cancelGroupMemberResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+    }
+    
+    @Test
+    public void testCancelGroupMember_cancelReasonInvalid() throws InterruptedException {
+    	mockBackEnd.enqueue(new MockResponse()
+        		.setBody(RPBSPWC0_ERROR_INVALID_CANCEL_REASON)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+    	
+    	CancelGroupMemberRequest cancelGroupMemberRequest = new CancelGroupMemberRequest();
+    	cancelGroupMemberRequest.setPhn("9347984074");
+    	cancelGroupMemberRequest.setGroupNumber("6337109");
+    	cancelGroupMemberRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
+    	// The reason must be K or R
+    	cancelGroupMemberRequest.setCancelReason("A");
+    	
+		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
+		
+		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, cancelGroupMemberResponse.getStatus());
+        assertEquals("RPBS0063 INVALID CANCEL REASON FOR THIS TRANSACTION", cancelGroupMemberResponse.getMessage());
+        assertEquals("9347984074", cancelGroupMemberResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+    }
 
+    @Test
+    public void testCancelGroupMember_phnDoesNotHaveCoverage() throws InterruptedException {
+    	mockBackEnd.enqueue(new MockResponse()
+        		.setBody(RPBSPWC0_ERROR_PHN_DOES_NOT_HAVE_COVERAGE)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+    	
+    	CancelGroupMemberRequest cancelGroupMemberRequest = new CancelGroupMemberRequest();
+    	cancelGroupMemberRequest.setPhn("9347984074");
+    	cancelGroupMemberRequest.setGroupNumber("6337109");
+    	cancelGroupMemberRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
+    	// The reason must be K or R
+    	cancelGroupMemberRequest.setCancelReason("A");
+    	
+		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
+		
+		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, cancelGroupMemberResponse.getStatus());
+        assertEquals("RPBS0081 PHN DOES NOT HAVE COVERAGE UNDER YOUR ORGANIZATION", cancelGroupMemberResponse.getMessage());
+        assertEquals("9347984074", cancelGroupMemberResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+    }
+    
+    @Test
+    public void testCancelGroupMember_success() throws InterruptedException {
+    	mockBackEnd.enqueue(new MockResponse()
+        		.setBody(RPBSPWC0_SUCCESS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+    	
+    	CancelGroupMemberRequest cancelGroupMemberRequest = new CancelGroupMemberRequest();
+    	cancelGroupMemberRequest.setPhn("9873895927");
+    	cancelGroupMemberRequest.setGroupNumber("6337109");
+    	cancelGroupMemberRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
+    	// The reason must be K or R
+    	cancelGroupMemberRequest.setCancelReason("A");
+    	
+		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
+		
+		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
+		assertEquals(StatusEnum.SUCCESS, cancelGroupMemberResponse.getStatus());
+        assertEquals("TRANSACTION SUCCESSFUL", cancelGroupMemberResponse.getMessage());
+        assertEquals("9347984074", cancelGroupMemberResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+    }
+    
     /**
      * The URL property used by the mocked endpoint needs to be set after the MockWebServer starts as the port it uses is 
      * created dynamically on start up to ensure it uses an available port so it is not known before then. 
