@@ -20,7 +20,7 @@ export default {
     groupClass() {
       return {
         'error-input': this.eModel.$error,
-        'button-group': true
+        'button-group': true,
       }
     },
   },
@@ -42,7 +42,6 @@ export default {
 </script>
 
 <style scoped>
-
 .button-group {
   padding: 5px 0px 0px 5px;
 }
