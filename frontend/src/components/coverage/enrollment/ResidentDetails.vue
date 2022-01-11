@@ -143,7 +143,7 @@ import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT, IMMIGRATION_CODES, PROVINCES, PRIOR_RESIDENCES } from '../../../util/constants'
 import { formatPersonName } from '../../../util/utils'
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'ResidentDetails',
@@ -194,26 +194,16 @@ export default {
     this.priorResidenceOptions = PRIOR_RESIDENCES
 
     //populate data on component load
-    this.telephone = this.resident.telephone
-    this.address1 = this.resident.address1
     this.address1 = this.resident?.address1
     this.address2 = this.resident?.address2
     this.address3 = this.resident.address3
     this.city = this.resident?.city
     this.province = this.resident.province
     this.postalCode = this.resident.postalCode
-    this.mailingAddress1 = this.resident.mailingAddress1
-    this.mailingAddress2 = this.resident.mailingAddress2
-    this.mailingAddress3 = this.resident.mailingAddress3
-    this.mailingAddressCity = this.resident.mailingAddressCity
-    this.mailingAddressProvince = this.resident.mailingAddressProvince
-    this.mailingAddressPostalCode = this.resident.mailingAddressPostalCode
-    this.priorResidenceCode = this.resident.priorResidenceCode
-    this.otherProvinceHealthcareNumber = this.resident.otherProvinceHealthcareNumber
   },
   computed: {
-    ...mapState('studyPermitHolder', {
-      resident: (state) => state.resident,
+    ...mapGetters('studyPermitHolder', {
+      resident: 'getResident',
     }),
     fullName() {
       return formatPersonName(this.resident)

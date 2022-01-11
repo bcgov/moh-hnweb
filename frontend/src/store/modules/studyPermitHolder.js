@@ -26,9 +26,7 @@ const state = {
 
 const mutations = {
   setResident(state, resident) {
-    console.log(`resident: [${resident.phn}] [${resident.surname}]  [${resident.address1}]`)
     state.resident = resident
-    console.log(`state.resident: [${state.resident.phn}] [${state.resident.surname}]  [${state.resident.address1}]`)
   },
   resetResident(state) {
     state.resident = {
@@ -42,8 +40,15 @@ const mutations = {
   },
 }
 
+const getters = {
+  getResident: (state) => {
+    return state.resident
+  },
+}
+
 export default {
   namespaced: true,
   state,
   mutations,
+  getters,
 }
