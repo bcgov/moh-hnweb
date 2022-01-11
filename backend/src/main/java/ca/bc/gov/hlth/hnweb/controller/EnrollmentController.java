@@ -2,6 +2,7 @@ package ca.bc.gov.hlth.hnweb.controller;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,9 @@ import ca.uhn.hl7v2.model.Message;
 public class EnrollmentController {
 
 	private static final Logger logger = LoggerFactory.getLogger(EnrollmentController.class);
+	private  String messageType;
+	private static final String MESSAGE_TYPE_Z05  = "R50^Z05";
+	private static final String MESSAGE_TYPE_Z06  = "R50^Z06";
 
 	@Autowired
 	private EnrollmentService enrollmentService;
@@ -61,7 +65,8 @@ public class EnrollmentController {
 
 		logger.info("Subscriber enroll request: {} ", enrollSubscriberRequest.getPhn());
 		try {
-			R50Converter converter = new R50Converter(mshDefaults);
+			messageType = StringUtils.isEmpty(enrollSubscriberRequest.getPhn()) ? MESSAGE_TYPE_Z05 : MESSAGE_TYPE_Z06;
+			R50Converter converter = new R50Converter(mshDefaults, messageType);
 			R50 r50 = converter.convertRequest(enrollSubscriberRequest);
 			Message r50Message = enrollmentService.enrollSubscriber(r50);
 			EnrollSubscriberResponse enrollSubscriberResponse = converter.convertResponse(r50Message);
@@ -108,7 +113,7 @@ public class EnrollmentController {
 		}
 	}
 
-	@PostMapping("/get-name-search")
+	@PostMapping("/name-search")
 	public ResponseEntity<GetNameSearchResponse> getNameSearch(
 			@Valid @RequestBody GetNameSearchRequest getNameSearchRequest) {
 		logger.info("Name Search request: {} ", getNameSearchRequest.getGivenName());
@@ -116,9 +121,7 @@ public class EnrollmentController {
 		try {
 			FindCandidatesConverter converter = new FindCandidatesConverter();
 
-			FindCandidatesRequest findCandidatesRequest = converter.convertRequest(getNameSearchRequest.getSurname(),
-					getNameSearchRequest.getGivenName(), getNameSearchRequest.getSecondName(),
-					getNameSearchRequest.getDateOfBirth(), getNameSearchRequest.getGender());
+			FindCandidatesRequest findCandidatesRequest = converter.convertRequest(getNameSearchRequest);
 			
 			FindCandidatesResponse findCandidatesResponse = enrollmentService.findCandidates(findCandidatesRequest);
 			GetNameSearchResponse getNameSearchResponse = converter.convertResponse(findCandidatesResponse);
@@ -130,10 +133,10 @@ public class EnrollmentController {
 			case DOWNSTREAM_FAILURE:
 				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
 			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /person-details request", hwe);
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /name-search request", hwe);
 			}
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /person-details request", e);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /name-search request", e);
 		}
 	}
 

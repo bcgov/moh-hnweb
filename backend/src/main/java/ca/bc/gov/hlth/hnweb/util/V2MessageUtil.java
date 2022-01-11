@@ -141,9 +141,9 @@ public class V2MessageUtil {
     		pid.getPid2_PatientID().getCx1_ID().parse(patientId);
     		pid.getPid2_PatientID().getCx4_AssigningAuthority().parse(patientIdAssigningAuthority);
     		pid.getPid2_PatientID().getCx5_IdentifierTypeCode().parse(patientIdIdentifierTypeCode);
-//    		Pid3_PatientIdentifierList Not Supported     
+    	  //Pid3_PatientIdentifierList Not Supported     
     		pid.getPid4_AlternatePatientIDPID(0).parse(alternatePatientIdPid);
-//    		Pid5 PatientName Not Supported 
+    	  //Pid5 PatientName Not Supported 
     	}
         pid.getPid7_DateTimeOfBirth().parse(dateTimeOfBirth);
         pid.getPid8_AdministrativeSex().parse(administrativeSex);

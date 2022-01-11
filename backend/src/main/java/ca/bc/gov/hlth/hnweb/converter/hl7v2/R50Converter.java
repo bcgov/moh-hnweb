@@ -26,27 +26,24 @@ import ca.uhn.hl7v2.util.Terser;
 public class R50Converter extends BaseV2Converter {
 
 	private static final Logger logger = LoggerFactory.getLogger(R50Converter.class);
-
-	private static String MESSAGE_TYPE;
 	private static final String MESSAGE_TYPE_TRIGGER_TYPE = "Y00";
-	private static final String MESSAGE_TYPE_Z05  = "R50^Z05";
-	private static final String MESSAGE_TYPE_Z06  = "R50^Z06";
 	private static final String RECEIVING_APPLICATION = "RAIENROL-EMP";
 	private static final String ZIH_COVERAGE_CAN_REASON = "D";
 	private String phn;
+	private String messageType;
 	
 	public enum AcknowledgementCode {
 		AA, AE, AR;
 	}
 		
-	public R50Converter(MSHDefaults mshDefaults) {
+	public R50Converter(MSHDefaults mshDefaults, String messageType) {		
 		super(mshDefaults);
+		this.messageType = messageType;
 	}
 	
 	public R50 convertRequest(EnrollSubscriberRequest request) throws HL7Exception {
 		phn = request.getPhn();
-		setMessageType();	
-		
+			
     	//Create a default R50 message with MSH-9 set to R50 Z05/Z06 
     	R50 r50 = new R50(); 
     	ZIA zia = r50.getZIA();
@@ -75,7 +72,8 @@ public class R50Converter extends BaseV2Converter {
     	
     	mapErrorValues(terser, enrollSubscriberResponse);
     	//Set PHN from PID segment for message type Z05
-    	if (StatusEnum.SUCCESS.equals(enrollSubscriberResponse.getStatus()) && !StringUtils.isEmpty(triggerType)
+    
+    	if (StatusEnum.SUCCESS == enrollSubscriberResponse.getStatus() && !StringUtils.isEmpty(triggerType)
 				&& triggerType.equals(MESSAGE_TYPE_TRIGGER_TYPE)) {
 			String pid = terser.get("/.PID-2-1");
 			enrollSubscriberResponse.setPhn(pid);
@@ -112,14 +110,10 @@ public class R50Converter extends BaseV2Converter {
 	protected String getReceivingApplication() {
 		return RECEIVING_APPLICATION;
 	}
-	
-	protected String getMessageType() {
-		return MESSAGE_TYPE;
-	}
 
-	protected void setMessageType() {		
-		MESSAGE_TYPE = StringUtils.isEmpty(phn) ? MESSAGE_TYPE_Z05 : MESSAGE_TYPE_Z06;
-	}
-		
+	@Override
+	protected String getMessageType() {
+		return messageType;
+	}	
 
 }

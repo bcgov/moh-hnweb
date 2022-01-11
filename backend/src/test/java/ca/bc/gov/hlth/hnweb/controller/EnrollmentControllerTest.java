@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.AfterAll;
@@ -223,7 +224,7 @@ public class EnrollmentControllerTest {
     void testGetNameSearch_MultiRecords() throws Exception {    	
         
         mockBackEnd.enqueue(new MockResponse()
-        		.setBody(TestUtil.convertXMLFileToString("src\\test\\resources\\FindCandidatesResponse_Multiples.xml"))
+        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/FindCandidatesResponse_Multiples.xml"))
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
         
         GetNameSearchRequest getNameSearchRequest = new GetNameSearchRequest();
@@ -235,9 +236,9 @@ public class EnrollmentControllerTest {
         ResponseEntity<GetNameSearchResponse> response = enrollmentController.getNameSearch(getNameSearchRequest);
         GetNameSearchResponse getNameSearchResponse = response.getBody();
         assertEquals(3, getNameSearchResponse.getCandidates().size());
-        assertEquals(31.0, getNameSearchResponse.getCandidates().get(0).getScore());
-        assertEquals(-53.0, getNameSearchResponse.getCandidates().get(1).getScore());
-        assertEquals(-56.0, getNameSearchResponse.getCandidates().get(2).getScore());
+        assertEquals(new BigDecimal(31), getNameSearchResponse.getCandidates().get(0).getScore());
+        assertEquals(new BigDecimal(-53), getNameSearchResponse.getCandidates().get(1).getScore());
+        assertEquals(new BigDecimal(-56), getNameSearchResponse.getCandidates().get(2).getScore());
     			
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -251,7 +252,7 @@ public class EnrollmentControllerTest {
     void testGetNameSearch_NoRecords() throws Exception {    	
         
         mockBackEnd.enqueue(new MockResponse()
-        		.setBody(TestUtil.convertXMLFileToString("src\\test\\resources\\FindCandidatesResponse_NoMatches.xml"))
+        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/FindCandidatesResponse_NoMatches.xml"))
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
         
         GetNameSearchRequest getNameSearchRequest = new GetNameSearchRequest();

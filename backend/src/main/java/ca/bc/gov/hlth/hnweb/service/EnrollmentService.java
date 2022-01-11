@@ -42,10 +42,7 @@ public class EnrollmentService {
 	private static final String SOURCE_SYSTEM_OVERRIDE = "MOH_CRS";
 	private static final String ORGANIZATION = "MOH_CRS";
 	public static final String TRANSACTION_ID = "TransactionID";
-	
-	protected HL7Serializer hl7Serializer;
-	protected MessageMetaData mmd;
-	
+
 	@Value("${hibc.r50.path}")
 	private String r50Path;
 
@@ -107,9 +104,9 @@ public class EnrollmentService {
 	      throws HNWebException {
 		String transactionId = UUID.randomUUID().toString();
 		
-		hl7Serializer = new HL7Serializer(new HL7Config());
+		HL7Serializer hl7Serializer = new HL7Serializer(new HL7Config());
 		UserInfo userInfo = SecurityUtil.loadUserInfo();
-		mmd = new MessageMetaData(userInfo.getUsername(), SOURCE_SYSTEM_OVERRIDE, ORGANIZATION, transactionId);
+		MessageMetaData mmd = new MessageMetaData(userInfo.getUsername(), SOURCE_SYSTEM_OVERRIDE, ORGANIZATION, transactionId);
 		
 		//Serialize request object
 		Object formattedRequest = hl7Serializer.toXml(demographicsRequest, mmd);
@@ -144,9 +141,9 @@ public class EnrollmentService {
 	      throws HNWebException {
 		String transactionId = UUID.randomUUID().toString();
 		
-		hl7Serializer = new HL7Serializer(new HL7Config());
+		HL7Serializer hl7Serializer = new HL7Serializer(new HL7Config());
 		UserInfo userInfo = SecurityUtil.loadUserInfo();
-		mmd = new MessageMetaData(userInfo.getUsername(), SOURCE_SYSTEM_OVERRIDE, ORGANIZATION, transactionId);
+		MessageMetaData mmd = new MessageMetaData(userInfo.getUsername(), SOURCE_SYSTEM_OVERRIDE, ORGANIZATION, transactionId);
 		
 		//Serialize request object
 		Object formattedRequest = hl7Serializer.toXml(findCandidatesRequest, mmd);
