@@ -1,5 +1,7 @@
 package ca.bc.gov.hlth.hnweb.model;
 
+import java.math.BigDecimal;
+
 public class NameSearchResult {
 
 	private String phn;
@@ -46,7 +48,7 @@ public class NameSearchResult {
 
 	private String mailingAddressPostalCode;
 	
-	private double score;
+	private BigDecimal score;
 
 	public String getPhn() {
 		return phn;
@@ -211,7 +213,7 @@ public class NameSearchResult {
 		this.mailingAddressPostalCode = mailingAddressPostalCode;
 	}
 
-	public double getScore() {
+	public BigDecimal getScore() {
 		return score;
 	}
 
@@ -231,7 +233,7 @@ public class NameSearchResult {
 		this.identifierTypeCode = identifierTypeCode;
 	}
 
-	public void setScore(double score) {
+	public void setScore(BigDecimal score) {
 		this.score = score;
 	}
 

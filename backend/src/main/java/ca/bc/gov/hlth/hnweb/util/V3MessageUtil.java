@@ -17,7 +17,7 @@ public class V3MessageUtil {
 	
 	public static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 	
-	public static DateTimeFormatter dateOnlyFormatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_FORMAT_DATE_ONLY);
+	public static final DateTimeFormatter dateOnlyFormatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_FORMAT_DATE_ONLY);
 	
 	/**
 	 * Omits XML header and wraps the request in a standard soap envelope

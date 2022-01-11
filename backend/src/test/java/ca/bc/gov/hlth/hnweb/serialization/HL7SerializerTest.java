@@ -22,7 +22,7 @@ import ca.bc.gov.hlth.hnweb.utils.TestUtil;
 public class HL7SerializerTest {
 
 	private static final String path = "src\\test\\resources\\GetDemographicsResponse.xml";
-	private static final String path1 = "src\\test\\resources\\FindCandidatesResponse_Multiples.xml";
+	private static final String path1 = "src/test/resources/FindCandidatesResponse_Multiples.xml";
 	
 	@BeforeAll
     static void setUp() throws IOException {
@@ -73,7 +73,7 @@ public class HL7SerializerTest {
 
 
 		Object request = hl7.toXml(getDemoQuery, mmd);
-		//assertNotNull(request);
+		assertNotNull(request);
 				
 		FindCandidatesResponse demographicsResponse = hl7.fromXml(TestUtil.convertXMLFileToString(path1), FindCandidatesResponse.class);
 		assertEquals("9999999999", demographicsResponse.getResults().get(0).getPerson().getPhn());

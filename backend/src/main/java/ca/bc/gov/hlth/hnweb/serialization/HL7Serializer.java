@@ -159,7 +159,7 @@ public class HL7Serializer {
    * @return String - XSLT document
    */
   private String getXslt(Class clazz) {
-    InputStream is = clazz.getClassLoader().getResourceAsStream(clazz.getSimpleName() + ".xslt");
+    InputStream is = clazz.getClassLoader().getResourceAsStream("xslt/"+ clazz.getSimpleName() + ".xslt");
     return readStream(is);
   }
 

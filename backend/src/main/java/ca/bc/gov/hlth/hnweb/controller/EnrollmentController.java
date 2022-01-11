@@ -108,7 +108,7 @@ public class EnrollmentController {
 		}
 	}
 
-	@PostMapping("/get-name-search")
+	@PostMapping("/name-search")
 	public ResponseEntity<GetNameSearchResponse> getNameSearch(
 			@Valid @RequestBody GetNameSearchRequest getNameSearchRequest) {
 		logger.info("Name Search request: {} ", getNameSearchRequest.getGivenName());
@@ -116,9 +116,7 @@ public class EnrollmentController {
 		try {
 			FindCandidatesConverter converter = new FindCandidatesConverter();
 
-			FindCandidatesRequest findCandidatesRequest = converter.convertRequest(getNameSearchRequest.getSurname(),
-					getNameSearchRequest.getGivenName(), getNameSearchRequest.getSecondName(),
-					getNameSearchRequest.getDateOfBirth(), getNameSearchRequest.getGender());
+			FindCandidatesRequest findCandidatesRequest = converter.convertRequest(getNameSearchRequest);
 			
 			FindCandidatesResponse findCandidatesResponse = enrollmentService.findCandidates(findCandidatesRequest);
 			GetNameSearchResponse getNameSearchResponse = converter.convertResponse(findCandidatesResponse);
@@ -130,10 +128,10 @@ public class EnrollmentController {
 			case DOWNSTREAM_FAILURE:
 				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
 			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /person-details request", hwe);
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /name-search request", hwe);
 			}
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /person-details request", e);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /name-search request", e);
 		}
 	}
 
