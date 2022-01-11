@@ -28,8 +28,10 @@ v2:
 # Configuration for GetDemographics (R03) endpoint
 hcim:
   url:  
+  trust:
+    file: classpath:truststore/testtrustedcert.crt
   cert:
-    file: keystore/testcert.pfx 
+    file: classpath:keystore/testcert.pfx 
     password: abc123
     
 # Configuration for HIBC (E45, R15, R50) endpoints
