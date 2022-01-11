@@ -13,6 +13,7 @@ import Home from './../views/Home.vue'
 import NotFound from '../views/NotFound.vue'
 import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
 import PhnLookup from '../views/eligibility/PhnLookup.vue'
+import store from '../store'
 
 const routes = [
   {
@@ -42,8 +43,11 @@ const routes = [
         path: 'addVisaResidentWithPHN',
         name: 'AddVisaResidentWithPHN',
         component: AddVisaResidentWithPHN,
+        beforeEnter: (to, _, next) => {
+          checkPageAction(to, next)
+        },
       },
-    ]
+    ],
   },
   {
     path: '/eligibility',
@@ -85,12 +89,21 @@ const routes = [
     name: 'Help',
     component: Help,
   },
-  { 
+  {
     path: '/:notFound(.*)',
     name: 'NotFound',
     component: NotFound,
   },
 ]
+
+function checkPageAction(to, next) {
+  const pageAction = to.query.pageAction
+
+  if (pageAction !== 'REGISTRATION') {
+    store.commit('studyPermitHolder/resetResident')
+  }
+  next()
+}
 
 const router = createRouter({
   history: createWebHistory(),

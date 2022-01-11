@@ -1,5 +1,5 @@
 <template>
-  <router-link @click="resetStore" :to="{ name: this.routeName }">{{ title }}</router-link>
+  <router-link @click="resetAlert" :to="{ name: this.routeName }">{{ title }}</router-link>
 </template>
 
 <script>
@@ -10,9 +10,8 @@ export default {
     title: String,
   },
   methods: {
-    resetStore() {
+    resetAlert() {
       this.$store.commit('alert/dismissAlert')
-      this.$store.commit('studyPermitHolder/resetResident')
     },
   },
 }

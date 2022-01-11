@@ -50,7 +50,6 @@ export default {
   },
   methods: {
     resetCoverageEnrollment: function () {
-      console.log('resetting Coverage Enrollment')
       this.$store.commit('alert/dismissAlert')
       this.$store.commit('studyPermitHolder/resetResident')
     },
