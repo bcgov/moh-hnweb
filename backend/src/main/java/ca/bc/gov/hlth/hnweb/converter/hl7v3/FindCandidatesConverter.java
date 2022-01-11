@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
-import ca.bc.gov.hlth.hnweb.model.GetNameSearchRequest;
-import ca.bc.gov.hlth.hnweb.model.GetNameSearchResponse;
+import ca.bc.gov.hlth.hnweb.model.NameSearchRequest;
+import ca.bc.gov.hlth.hnweb.model.NameSearchResponse;
 import ca.bc.gov.hlth.hnweb.model.NameSearchResult;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.v3.Address;
@@ -26,31 +26,31 @@ public class FindCandidatesConverter {
 	private static final String ASSIGNING_AUTHORITY = "BC";
 	private static final Logger logger = LoggerFactory.getLogger(FindCandidatesConverter.class);
 
-	public FindCandidatesRequest convertRequest(GetNameSearchRequest getNameSearchRequest) {
+	public FindCandidatesRequest convertRequest(NameSearchRequest nameSearchRequest) {
 		logger.debug("Find Candidates for Name: [{}] DOB: [{}]",
-				getNameSearchRequest.getSurname() + getNameSearchRequest.getGivenName(),
-				getNameSearchRequest.getDateOfBirth());
+				nameSearchRequest.getSurname() + nameSearchRequest.getGivenName(),
+				nameSearchRequest.getDateOfBirth());
 
 		FindCandidatesRequest findCandidatesRequest = new FindCandidatesRequest();
 
 		Name name = new Name();
-		name.setSurname(getNameSearchRequest.getSurname());
-		name.setFirstGivenName(getNameSearchRequest.getGivenName());
-		name.setSecondGivenName(getNameSearchRequest.getSecondName());
+		name.setSurname(nameSearchRequest.getSurname());
+		name.setFirstGivenName(nameSearchRequest.getGivenName());
+		name.setSecondGivenName(nameSearchRequest.getSecondName());
 
 		findCandidatesRequest.setName(name);
 		findCandidatesRequest
-				.setBirthDate(V3MessageUtil.dateOnlyFormatter.format(getNameSearchRequest.getDateOfBirth()));
-		findCandidatesRequest.setGender(getNameSearchRequest.getGender());
+				.setBirthDate(V3MessageUtil.dateOnlyFormatter.format(nameSearchRequest.getDateOfBirth()));
+		findCandidatesRequest.setGender(nameSearchRequest.getGender());
 
 		return findCandidatesRequest;
 
 	}
 
-	public GetNameSearchResponse convertResponse(FindCandidatesResponse findCandidatesResponse) throws IOException {
+	public NameSearchResponse convertResponse(FindCandidatesResponse findCandidatesResponse) throws IOException {
 		logger.debug("Find Candidates response : {} ", findCandidatesResponse.toString());
 
-		GetNameSearchResponse getNameSearchResponse = new GetNameSearchResponse();
+		NameSearchResponse nameSearchResponse = new NameSearchResponse();
 		
 		String messageDetails = findCandidatesResponse.getMessage().getDetails();
 		String messageText[] = messageDetails.split("\\|");
@@ -58,28 +58,28 @@ public class FindCandidatesConverter {
 		if (messageText.length > 1) {
 			message = messageText[1];
 		}
-		getNameSearchResponse.setMessage(message);
-		getNameSearchResponse.setStatus(StatusEnum.SUCCESS);
+		nameSearchResponse.setMessage(message);
+		nameSearchResponse.setStatus(StatusEnum.SUCCESS);
 
 		if (findCandidatesResponse.getResultCount() > 0) {
 
-			List<NameSearchResult> results = buildNameSearch(findCandidatesResponse, getNameSearchResponse);
-			getNameSearchResponse.setCandidates(results);
-			logger.debug("Converted Name Search Response : {} ", getNameSearchResponse);
+			List<NameSearchResult> results = buildNameSearch(findCandidatesResponse);
+			nameSearchResponse.setCandidates(results);
+			logger.debug("Converted Name Search Response : {} ", nameSearchResponse);
 		}
 				
-		return getNameSearchResponse;
+		return nameSearchResponse;
 
 	}
 
-	private List<NameSearchResult> buildNameSearch(FindCandidatesResponse findCandidatesResponse,
-			GetNameSearchResponse getNameSearchResponse) {
+	private List<NameSearchResult> buildNameSearch(FindCandidatesResponse findCandidatesResponse)
+	{
 		List<NameSearchResult> nameSearchList = new ArrayList<NameSearchResult>();
 
 		List<FindCandidatesResult> candidatesResult = findCandidatesResponse.getResults();
 
 		if (CollectionUtils.isEmpty(candidatesResult)) {
-			return null;
+			return nameSearchList;
 		}
 
 		candidatesResult.forEach(ns -> {

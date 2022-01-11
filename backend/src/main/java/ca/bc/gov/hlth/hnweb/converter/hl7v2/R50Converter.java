@@ -75,7 +75,7 @@ public class R50Converter extends BaseV2Converter {
     	mapErrorValues(terser, enrollSubscriberResponse);
     	//Set PHN from PID segment for message type Z05
     
-    	if (StatusEnum.SUCCESS == enrollSubscriberResponse.getStatus() && !StringUtils.isEmpty(triggerType)
+    	if (StatusEnum.SUCCESS == enrollSubscriberResponse.getStatus() && StringUtils.isNotEmpty(triggerType)
 				&& triggerType.equals(MESSAGE_TYPE_TRIGGER_TYPE)) {
 			String pid = terser.get("/.PID-2-1");
 			enrollSubscriberResponse.setPhn(pid);

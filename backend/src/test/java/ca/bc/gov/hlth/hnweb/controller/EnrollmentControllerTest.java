@@ -22,8 +22,8 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
-import ca.bc.gov.hlth.hnweb.model.GetNameSearchRequest;
-import ca.bc.gov.hlth.hnweb.model.GetNameSearchResponse;
+import ca.bc.gov.hlth.hnweb.model.NameSearchRequest;
+import ca.bc.gov.hlth.hnweb.model.NameSearchResponse;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
@@ -227,18 +227,18 @@ public class EnrollmentControllerTest {
         		.setBody(TestUtil.convertXMLFileToString("src/test/resources/FindCandidatesResponse_Multiples.xml"))
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
         
-        GetNameSearchRequest getNameSearchRequest = new GetNameSearchRequest();
-        getNameSearchRequest.setGivenName("TestGiven");
-        getNameSearchRequest.setSurname("TestSurname");
-        getNameSearchRequest.setGender("M");
-        getNameSearchRequest.setDateOfBirth(LocalDate.of(1973, 8, 11));
+        NameSearchRequest nameSearchRequest = new NameSearchRequest();
+        nameSearchRequest.setGivenName("TestGiven");
+        nameSearchRequest.setSurname("TestSurname");
+        nameSearchRequest.setGender("M");
+        nameSearchRequest.setDateOfBirth(LocalDate.of(1973, 8, 11));
         	       
-        ResponseEntity<GetNameSearchResponse> response = enrollmentController.getNameSearch(getNameSearchRequest);
-        GetNameSearchResponse getNameSearchResponse = response.getBody();
-        assertEquals(3, getNameSearchResponse.getCandidates().size());
-        assertEquals(new BigDecimal(31), getNameSearchResponse.getCandidates().get(0).getScore());
-        assertEquals(new BigDecimal(-53), getNameSearchResponse.getCandidates().get(1).getScore());
-        assertEquals(new BigDecimal(-56), getNameSearchResponse.getCandidates().get(2).getScore());
+        ResponseEntity<NameSearchResponse> response = enrollmentController.getNameSearch(nameSearchRequest);
+        NameSearchResponse nameSearchResponse = response.getBody();
+        assertEquals(3, nameSearchResponse.getCandidates().size());
+        assertEquals(new BigDecimal(31), nameSearchResponse.getCandidates().get(0).getScore());
+        assertEquals(new BigDecimal(-53), nameSearchResponse.getCandidates().get(1).getScore());
+        assertEquals(new BigDecimal(-56), nameSearchResponse.getCandidates().get(2).getScore());
     			
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -255,15 +255,15 @@ public class EnrollmentControllerTest {
         		.setBody(TestUtil.convertXMLFileToString("src/test/resources/FindCandidatesResponse_NoMatches.xml"))
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
         
-        GetNameSearchRequest getNameSearchRequest = new GetNameSearchRequest();
-        getNameSearchRequest.setGivenName("TestGiven");
-        getNameSearchRequest.setSurname("TestSurname");
-        getNameSearchRequest.setGender("M");
-        getNameSearchRequest.setDateOfBirth(LocalDate.of(1973, 8, 11));
+        NameSearchRequest nameSearchRequest = new NameSearchRequest();
+        nameSearchRequest.setGivenName("TestGiven");
+        nameSearchRequest.setSurname("TestSurname");
+        nameSearchRequest.setGender("M");
+        nameSearchRequest.setDateOfBirth(LocalDate.of(1973, 8, 11));
         	       
-        ResponseEntity<GetNameSearchResponse> response = enrollmentController.getNameSearch(getNameSearchRequest);
-        GetNameSearchResponse getNameSearchResponse = response.getBody();
-        assertEquals(NO_RECORD_MESSAGE, getNameSearchResponse.getMessage());
+        ResponseEntity<NameSearchResponse> response = enrollmentController.getNameSearch(nameSearchRequest);
+        NameSearchResponse nameSearchResponse = response.getBody();
+        assertEquals(NO_RECORD_MESSAGE, nameSearchResponse.getMessage());
     			
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        

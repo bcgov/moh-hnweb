@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class GetNameSearchRequest extends BaseResponse {
+public class NameSearchRequest extends BaseResponse {
 
 	private String givenName;
 

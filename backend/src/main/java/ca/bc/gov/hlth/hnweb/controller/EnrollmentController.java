@@ -20,8 +20,8 @@ import ca.bc.gov.hlth.hnweb.converter.hl7v3.GetDemographicsConverter;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
-import ca.bc.gov.hlth.hnweb.model.GetNameSearchRequest;
-import ca.bc.gov.hlth.hnweb.model.GetNameSearchResponse;
+import ca.bc.gov.hlth.hnweb.model.NameSearchRequest;
+import ca.bc.gov.hlth.hnweb.model.NameSearchResponse;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
@@ -109,18 +109,18 @@ public class EnrollmentController {
 	}
 
 	@PostMapping("/name-search")
-	public ResponseEntity<GetNameSearchResponse> getNameSearch(
-			@Valid @RequestBody GetNameSearchRequest getNameSearchRequest) {
-		logger.info("Name Search request: {} ", getNameSearchRequest.getGivenName());
+	public ResponseEntity<NameSearchResponse> getNameSearch(
+			@Valid @RequestBody NameSearchRequest nameSearchRequest) {
+		logger.info("Name Search request: {} ", nameSearchRequest.getGivenName());
 
 		try {
 			FindCandidatesConverter converter = new FindCandidatesConverter();
 
-			FindCandidatesRequest findCandidatesRequest = converter.convertRequest(getNameSearchRequest);
+			FindCandidatesRequest findCandidatesRequest = converter.convertRequest(nameSearchRequest);
 			
 			FindCandidatesResponse findCandidatesResponse = enrollmentService.findCandidates(findCandidatesRequest);
-			GetNameSearchResponse getNameSearchResponse = converter.convertResponse(findCandidatesResponse);
-			ResponseEntity<GetNameSearchResponse> responseEntity = ResponseEntity.ok(getNameSearchResponse);
+			NameSearchResponse nameSearchResponse = converter.convertResponse(findCandidatesResponse);
+			ResponseEntity<NameSearchResponse> responseEntity = ResponseEntity.ok(nameSearchResponse);
 
 			return responseEntity;
 		} catch (HNWebException hwe) {

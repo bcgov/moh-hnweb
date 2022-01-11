@@ -2,7 +2,7 @@ package ca.bc.gov.hlth.hnweb.model;
 
 import java.util.List;
 
-public class GetNameSearchResponse extends BaseResponse {
+public class NameSearchResponse extends BaseResponse {
 
 	private List<NameSearchResult> candidates;
 
