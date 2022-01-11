@@ -27,6 +27,8 @@ public class R50Converter extends BaseV2Converter {
 
 	private static final Logger logger = LoggerFactory.getLogger(R50Converter.class);
 	private static final String MESSAGE_TYPE_TRIGGER_TYPE = "Y00";
+	private static final String MESSAGE_TYPE_Z05  = "R50^Z05";
+	private static final String MESSAGE_TYPE_Z06  = "R50^Z06";
 	private static final String RECEIVING_APPLICATION = "RAIENROL-EMP";
 	private static final String ZIH_COVERAGE_CAN_REASON = "D";
 	private String phn;
@@ -36,13 +38,13 @@ public class R50Converter extends BaseV2Converter {
 		AA, AE, AR;
 	}
 		
-	public R50Converter(MSHDefaults mshDefaults, String messageType) {		
+	public R50Converter(MSHDefaults mshDefaults) {		
 		super(mshDefaults);
-		this.messageType = messageType;
 	}
 	
 	public R50 convertRequest(EnrollSubscriberRequest request) throws HL7Exception {
 		phn = request.getPhn();
+		messageType = StringUtils.isEmpty(phn) ? MESSAGE_TYPE_Z05 : MESSAGE_TYPE_Z06;
 			
     	//Create a default R50 message with MSH-9 set to R50 Z05/Z06 
     	R50 r50 = new R50(); 

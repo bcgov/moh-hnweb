@@ -2,7 +2,6 @@ package ca.bc.gov.hlth.hnweb.controller;
 
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +48,6 @@ import ca.uhn.hl7v2.model.Message;
 public class EnrollmentController {
 
 	private static final Logger logger = LoggerFactory.getLogger(EnrollmentController.class);
-	private  String messageType;
-	private static final String MESSAGE_TYPE_Z05  = "R50^Z05";
-	private static final String MESSAGE_TYPE_Z06  = "R50^Z06";
 
 	@Autowired
 	private EnrollmentService enrollmentService;
@@ -65,8 +61,7 @@ public class EnrollmentController {
 
 		logger.info("Subscriber enroll request: {} ", enrollSubscriberRequest.getPhn());
 		try {
-			messageType = StringUtils.isEmpty(enrollSubscriberRequest.getPhn()) ? MESSAGE_TYPE_Z05 : MESSAGE_TYPE_Z06;
-			R50Converter converter = new R50Converter(mshDefaults, messageType);
+			R50Converter converter = new R50Converter(mshDefaults);
 			R50 r50 = converter.convertRequest(enrollSubscriberRequest);
 			Message r50Message = enrollmentService.enrollSubscriber(r50);
 			EnrollSubscriberResponse enrollSubscriberResponse = converter.convertResponse(r50Message);
