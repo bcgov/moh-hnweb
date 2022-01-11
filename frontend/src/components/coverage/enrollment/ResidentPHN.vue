@@ -44,7 +44,6 @@ export default {
         }
         this.$emit('update-resident', this.phn)
       } catch (err) {
-        console.log(`Error ${err}`)
         this.$store.commit('alert/setErrorAlert', `${err}`)
       } finally {
         this.searching = false

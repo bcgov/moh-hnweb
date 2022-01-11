@@ -68,10 +68,8 @@ export default {
   },
   methods: {
     async searchForCandidates(searchCriteria) {
-      console.log(`perform name search [${searchCriteria.surname}] [${searchCriteria.givenName}]`)
       try {
         this.nameSearchResult = (await EnrollmentService.performNameSearch(searchCriteria)).data
-        console.log(`Results: Status: [${this.nameSearchResult.status}], Message [${this.nameSearchResult.message}], Size [${this.nameSearchResult.candidates?.length}]`)
 
         if (this.nameSearchResult?.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.nameSearchResult?.message)
@@ -84,18 +82,15 @@ export default {
 
         if (!this.nameSearchResult.candidates || this.nameSearchResult.candidates.length == 0) {
           //found no result so need to register and enroll without a PHN
-          console.log(`Zero results, need to register and enroll without a PHN`)
 
           this.registrationPerson = { ...searchCriteria }
           this.$store.commit('alert/setInfoAlert', 'No results were returned. Please ensure you have entered the correct information.')
           this.pageAction = this.PAGE_ACTION.REGISTRATION
         } else if (this.nameSearchResult.candidates.length === 1) {
           //found 1 result so can auto select it for use in Register with PHN
-          console.log('One result, load registration')
           this.$store.commit('studyPermitHolder/setResident', this.nameSearchResult.candidates[0])
           this.$router.push({ name: 'AddVisaResidentWithPHN', query: { pageAction: 'REGISTRATION' } })
         } else {
-          console.log('Multiple result, load search results')
           this.pageAction = this.PAGE_ACTION.NAME_SEARCH_RESULTS
         }
       } catch (err) {

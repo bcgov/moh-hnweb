@@ -28,7 +28,7 @@ const INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE = 'Group Member Number is invali
 const INVALID_DEPARTMENT_NUMBER_VALIDATION_MESSAGE = 'Department Number is invalid';
 const PHONE_NUMBER_VALIDATION_MESSAGE = 'Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.';
 
-const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addVisaResidentWithoutPHN'
+const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addStudyPermitHolderWithoutPHN'
 
 fixture(`AddVisaResidentWithoutPHNPage Page`)
 .disablePageCaching `Test AddVisaResidentWithoutPHNPage`

@@ -72,7 +72,6 @@ export default {
           this.searching = false
           return
         }
-        console.log(`Person [${this.firstName}]`)
         this.$emit('search-for-candidates', {
           surname: this.surname,
           givenName: this.firstName,
@@ -81,7 +80,6 @@ export default {
           gender: this.gender,
         })
       } catch (err) {
-        console.log(`Error ${err}`)
         this.$store.commit('alert/setErrorAlert', `${err}`)
       } finally {
         this.searching = false

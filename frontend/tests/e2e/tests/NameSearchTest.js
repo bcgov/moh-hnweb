@@ -10,7 +10,7 @@ const FIRSTNAME_REQUIRED_MESSAGE = 'First Name is required'
 const DOB_REQUIRED_MESSAGE = 'Date of Birth is required';
 const GENDER_REQUIRED_MESSAGE = 'Gender is required';
 
-const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addVisaResidentWithoutPHN'
+const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addStudyPermitHolderWithoutPHN'
 
 fixture(`NameSearch Page`)
 .disablePageCaching `Test Name Search for AddVisaResident`

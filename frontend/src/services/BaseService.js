@@ -3,7 +3,7 @@ import keycloak from '../keycloak'
 
 export const resources = {
   enrollment: {
-    performNameSearch: 'enrollment/get-name-search',
+    nameSearch: 'enrollment/name-search',
     getPersonDetails: 'enrollment/get-person-details',
     enrollSubscriber: '/enrollment/enroll-subscriber',
   },

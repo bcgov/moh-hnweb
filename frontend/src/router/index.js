@@ -35,12 +35,12 @@ const routes = [
     },
     children: [
       {
-        path: 'addVisaResidentWithoutPHN',
+        path: 'addStudyPermitHolderWithoutPHN',
         name: 'AddVisaResidentWithoutPHN',
         component: AddVisaResidentWithoutPHN,
       },
       {
-        path: 'addVisaResidentWithPHN',
+        path: 'addStudyPermitHolderWithPHN',
         name: 'AddVisaResidentWithPHN',
         component: AddVisaResidentWithPHN,
         beforeEnter: (to, _, next) => {

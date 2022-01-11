@@ -9,7 +9,7 @@ const PHN_REQUIRED_MESSAGE = 'PHN is required'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid';
 
 
-const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addVisaResidentWithPHN'
+const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addStudyPermitHolderWithPHN'
 
 fixture(`PersonDetails Page`)
 .disablePageCaching `Test PersonDetails for AddVisaResident`
