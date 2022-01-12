@@ -22,7 +22,12 @@ v2:
     receivingFacility: BC00001013
     processingID: D
 
-# RAPID fixed width message construction
-rapid:
-  header: 
-    organization: "00000010"
+# Mapping of roles (SPGs) to specific permissions
+security:
+  rolePermissions:
+    E45:
+      - E45
+    Eligibility:
+      - E45
+      - R15
+      - R41

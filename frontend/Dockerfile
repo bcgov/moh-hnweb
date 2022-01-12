@@ -17,11 +17,9 @@ FROM nginxinc/nginx-unprivileged:1.20 as production-stage
 USER root
 COPY ./.nginx/nginx.conf /etc/nginx/nginx.conf
 
-
 WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 COPY --from=build-stage /app/dist .
-
 
 EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]

@@ -17,7 +17,7 @@ rapid:
     name: 
     password: 
   cert:
-    file: keystore/testcert.pfx 
+    file: classpath:keystore/testcert.pfx 
     password: abc123
 
 # V2 message construction
@@ -50,5 +50,5 @@ hibc:
     username: 
     password: 
   cert:
-    file: keystore/testcert.pfx
+    file: classpath:keystore/testcert.pfx
     password: abc123

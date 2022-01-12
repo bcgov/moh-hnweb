@@ -21,8 +21,8 @@ import ca.bc.gov.hlth.hnweb.utils.TestUtil;
 
 public class HL7SerializerTest {
 
-	private static final String path = "src\\test\\resources\\GetDemographicsResponse.xml";
 	private static final String path1 = "src/test/resources/FindCandidatesResponse_Multiples.xml";
+	private static final String path = "src/test/resources/GetDemographicsResponse.xml";
 	
 	@BeforeAll
     static void setUp() throws IOException {

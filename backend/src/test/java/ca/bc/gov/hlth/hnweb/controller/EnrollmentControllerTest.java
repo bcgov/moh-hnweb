@@ -178,7 +178,7 @@ public class EnrollmentControllerTest {
     void testGetDemographicsDetails_Success() throws Exception {    	
         
         mockBackEnd.enqueue(new MockResponse()
-        		.setBody(TestUtil.convertXMLFileToString("src\\test\\resources\\GetDemographicsResponse.xml"))
+        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse.xml"))
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
         GetPersonDetailsRequest getPersonQuery = new GetPersonDetailsRequest();
@@ -202,7 +202,7 @@ public class EnrollmentControllerTest {
     	String expectedMessageText = " Warning: The identifier you used in the query has been merged. The surviving identifier was returned.";
         
         mockBackEnd.enqueue(new MockResponse()
-        		.setBody(TestUtil.convertXMLFileToString("src\\test\\resources\\GetDemographicsResponse_NonSurvivor.xml"))
+        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_NonSurvivor.xml"))
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
         GetPersonDetailsRequest getPersonQuery = new GetPersonDetailsRequest();

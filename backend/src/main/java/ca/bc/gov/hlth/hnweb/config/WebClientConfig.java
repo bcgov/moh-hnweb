@@ -62,7 +62,7 @@ public class WebClientConfig {
 	@Value("${rapid.user.password}")
 	private String rapidUserPassword;
 
-	@Value("classpath:${rapid.cert.file}")
+	@Value("${rapid.cert.file}")
 	private Resource rapidCertFile;
 
 	@Value("${rapid.cert.password}")
@@ -71,7 +71,7 @@ public class WebClientConfig {
 	@Value("${hibc.url}")
 	private String hibcUrl;
 
-	@Value("classpath:${hibc.cert.file}")
+	@Value("${hibc.cert.file}")
 	private Resource hibcCertFile;
 
 	@Value("${hibc.cert.password}")

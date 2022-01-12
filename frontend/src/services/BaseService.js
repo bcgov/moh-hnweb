@@ -13,6 +13,9 @@ export const resources = {
     inquirePhn: '/eligibility/inquire-phn',
     lookupPhn: '/eligibility/lookup-phn',
   },
+  user: {
+    permissions: '/user/permissions'
+  },
 }
 
 export function apiRequest() {

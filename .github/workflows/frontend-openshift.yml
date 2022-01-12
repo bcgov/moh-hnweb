@@ -53,11 +53,17 @@ env:
   IMAGE_TAGS: "openshift-workflow"
 
 on:
-  push:
+  workflow_dispatch:
+   inputs:
+     branch:
+       description: 'Enter branch name:'
+       required: true
+       default: main
+  #push:
     # Edit to the branch(es) you want to build and deploy on each push.
-    branches: [ main ]
-    paths: 
-    - "frontend/**"
+  #  branches: [ main ]
+  #  paths: 
+  #  - "frontend/**"
 
 jobs:
   test-cafe:
