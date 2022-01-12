@@ -134,18 +134,19 @@ public class V2MessageUtil {
      * @param administrativeSex
      * @throws HL7Exception
      */
-    public static void setPidValues(PID pid, String patientIdId, String patientIdAssigningAuthority, String patientIdIdentifierTypeCode, 
+    public static void setPidValues(PID pid, String patientId, String patientIdAssigningAuthority, String patientIdIdentifierTypeCode, 
     		String alternatePatientIdPid, String dateTimeOfBirth, String administrativeSex) throws HL7Exception {
     	//e.g. PID||9999999999^^^BC^PH|||||19700303|M^M
-    	
-    	pid.getPid2_PatientID().getCx1_ID().parse(patientIdId);
-    	pid.getPid2_PatientID().getCx4_AssigningAuthority().parse(patientIdAssigningAuthority);
-    	pid.getPid2_PatientID().getCx5_IdentifierTypeCode().parse(patientIdIdentifierTypeCode);
-//    	Pid3_PatientIdentifierList Not Supported     
-    	pid.getPid4_AlternatePatientIDPID(0).parse(alternatePatientIdPid);
-//    	Pid5 PatientName Not Supported 
+    	if(!StringUtils.isEmpty(patientId)) {
+    		pid.getPid2_PatientID().getCx1_ID().parse(patientId);
+    		pid.getPid2_PatientID().getCx4_AssigningAuthority().parse(patientIdAssigningAuthority);
+    		pid.getPid2_PatientID().getCx5_IdentifierTypeCode().parse(patientIdIdentifierTypeCode);
+    	  //Pid3_PatientIdentifierList Not Supported     
+    		pid.getPid4_AlternatePatientIDPID(0).parse(alternatePatientIdPid);
+    	  //Pid5 PatientName Not Supported 
+    	}
         pid.getPid7_DateTimeOfBirth().parse(dateTimeOfBirth);
-    	pid.getPid8_AdministrativeSex().parse(administrativeSex);
+        pid.getPid8_AdministrativeSex().parse(administrativeSex);
     }
     
     /**

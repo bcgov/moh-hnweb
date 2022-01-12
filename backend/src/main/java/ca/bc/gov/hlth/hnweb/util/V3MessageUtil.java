@@ -1,5 +1,9 @@
 package ca.bc.gov.hlth.hnweb.util;
 
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 /**
  *Utility class for V3 messages
  *
@@ -13,6 +17,8 @@ public class V3MessageUtil {
 	
 	public static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 	
+	public static final DateTimeFormatter dateOnlyFormatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_FORMAT_DATE_ONLY);
+	
 	/**
 	 * Omits XML header and wraps the request in a standard soap envelope
 	 * @param xmlRequest
@@ -21,6 +27,10 @@ public class V3MessageUtil {
 	public static String wrap(String xmlRequest) {
 		String formattedRequest = xmlRequest.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();
 		return SOAP_ENVELOPE_START + formattedRequest + SOAP_ENVELOPE_END;
+	}
+	
+	public static String convertDateToString(Date date) {
+		return new SimpleDateFormat(V2MessageUtil.DATE_FORMAT_DATE_ONLY).format(date);
 	}
 	
 }

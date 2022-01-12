@@ -26,33 +26,35 @@ import ca.uhn.hl7v2.util.Terser;
 public class R50Converter extends BaseV2Converter {
 
 	private static final Logger logger = LoggerFactory.getLogger(R50Converter.class);
-
-	private static final String MESSAGE_TYPE = "R50^Z06";
+	private static final String MESSAGE_TYPE_TRIGGER_TYPE = "Y00";
+	private static final String MESSAGE_TYPE_Z05  = "R50^Z05";
+	private static final String MESSAGE_TYPE_Z06  = "R50^Z06";
 	private static final String RECEIVING_APPLICATION = "RAIENROL-EMP";
 	private static final String ZIH_COVERAGE_CAN_REASON = "D";
-	
 	private String phn;
+	private String messageType;
 	
 	public enum AcknowledgementCode {
 		AA, AE, AR;
 	}
 		
-	public R50Converter(MSHDefaults mshDefaults) {
+	public R50Converter(MSHDefaults mshDefaults) {		
 		super(mshDefaults);
 	}
 	
 	public R50 convertRequest(EnrollSubscriberRequest request) throws HL7Exception {
 		phn = request.getPhn();
-								
-    	//Create a default R50 message with MSH-9 set to R50 Z06 
+		messageType = StringUtils.isEmpty(phn) ? MESSAGE_TYPE_Z05 : MESSAGE_TYPE_Z06;
+			
+    	//Create a default R50 message with MSH-9 set to R50 Z05/Z06 
     	R50 r50 = new R50(); 
     	ZIA zia = r50.getZIA();
-
-    	populateMSH(r50.getMSH());
+   	   	
+     	populateMSH(r50.getMSH());
     	populateZHD(r50.getZHD());
     	populatePID(r50.getPID(), phn, request.getDateOfBirth(), request.getGender());    	    	
     	populateIN1(r50.getIN1(), request.getCoverageEffectiveDate(), request.getCoverageCancellationDate(), request.getGroupNumber(), request.getGroupMemberNumber(),request.getDepartmentNumber());
-    	populateZIA(zia, LocalDate.now(), request.getSurname(), request.getGivenName(), request.getSecondName(), request.getTelephone(), request.getImmigrationCode(), request.getPriorResidenceCode());
+    	populateZIA(zia, request.getResidenceDate(), request.getSurname(), request.getGivenName(), request.getSecondName(), request.getTelephone(), request.getImmigrationCode(), request.getPriorResidenceCode());
     	populateZIAExtendedAddress1(zia, request.getAddress1(), request.getAddress2(),request.getAddress3(), request.getCity(), request.getProvince(), request.getPostalCode());
     	populateZIAExtendedAddress2(zia, request.getMailingAddress1(), request.getMailingAddress2(), request.getMailingAddress3(), request.getMailingAddressCity(), request.getMailingAddressProvince(), request.getMailingAddressPostalCode());
     	populateZIH(r50.getZIH()); 
@@ -65,40 +67,23 @@ public class R50Converter extends BaseV2Converter {
 	public EnrollSubscriberResponse convertResponse(Message message) throws HL7Exception {
 		EnrollSubscriberResponse enrollSubscriberResponse = new EnrollSubscriberResponse();
     	
+		logger.debug("Response message : {}", message.toString());
     	// Uses a Terser to access the message info
-    	Terser terser = new Terser(message);
+    	Terser terser = new Terser(message);    
+    	String triggerType = terser.get("/.MSH-9-2");
     	
-    	/* 
-    	 * Retrieve required info by specifying the location
-    	 */ 
-    	String messageId = terser.get("/.MSH-10-1");
-    	String acknowledgementCode = terser.get("/.MSA-1-1");
-    	String acknowledgementMessage = terser.get("/.MSA-3-1");
-    	
-    	logger.debug("ACK message response code [{}] and message [{}]", acknowledgementCode, acknowledgementMessage);
-    	
-    	enrollSubscriberResponse.setMessageId(messageId);
-    	enrollSubscriberResponse.setAcknowledgementCode(acknowledgementCode);
-    	enrollSubscriberResponse.setAcknowledgementMessage(acknowledgementMessage);
-    	
-    	handleStatus(enrollSubscriberResponse);
+    	mapErrorValues(terser, enrollSubscriberResponse);
+    	//Set PHN from PID segment for message type Z05
+    
+    	if (StatusEnum.SUCCESS == enrollSubscriberResponse.getStatus() && StringUtils.isNotEmpty(triggerType)
+				&& triggerType.equals(MESSAGE_TYPE_TRIGGER_TYPE)) {
+			String pid = terser.get("/.PID-2-1");
+			enrollSubscriberResponse.setPhn(pid);
+		}
+    	  	
+    	logger.debug("ACK message response status [{}] and message [{}]", enrollSubscriberResponse.getStatus(), enrollSubscriberResponse.getMessage());
     	
     	return enrollSubscriberResponse;
-	}
-	
-	private void handleStatus(EnrollSubscriberResponse enrollSubscriberResponse ) {		
-		String ackCode = enrollSubscriberResponse.getAcknowledgementCode();
-		
-		//Check the AcknowledgementCode and set the status 
-		if(StringUtils.equals(ackCode, AcknowledgementCode.AE.name()) 
-				|| StringUtils.equals(ackCode, AcknowledgementCode.AR.name())) {
-			enrollSubscriberResponse.setStatus(StatusEnum.ERROR);
-			enrollSubscriberResponse.setMessage(enrollSubscriberResponse.getAcknowledgementMessage());
-		} else if (StringUtils.equals(ackCode, AcknowledgementCode.AA.name())) {
-			enrollSubscriberResponse.setStatus(StatusEnum.SUCCESS);
-			enrollSubscriberResponse.setMessage("");
-		}
-
 	}
 	
 	private void populateZIA(ZIA zia, LocalDate bcResidencyDate, String surname, String firstGivenName, String secondGivenName, String telephone, String immigrationOrVisaCode, String priorResidenceCode) throws HL7Exception {
@@ -124,15 +109,13 @@ public class R50Converter extends BaseV2Converter {
 		V2MessageUtil.setZikValues(zik, dateOnlyFormatter.format(documentArgumentValue1), dateOnlyFormatter.format(documentArgumentValue2));
 	}
 	
-
-	
 	protected String getReceivingApplication() {
 		return RECEIVING_APPLICATION;
 	}
-	
+
+	@Override
 	protected String getMessageType() {
-		return MESSAGE_TYPE;
-	}
-		
+		return messageType;
+	}	
 
 }

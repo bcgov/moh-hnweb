@@ -1,21 +1,6 @@
 <template>
   <div>
-    <AppRow>
-      <AppCol class="col3">
-        <AppOutput label="PHN" :value="resident?.phn" />
-      </AppCol>
-    </AppRow>
-    <AppRow>
-      <AppCol class="col3">
-        <AppOutput label="Name" :value="fullName" />
-      </AppCol>
-    </AppRow>
-    <AppRow>
-      <AppCol class="col3">
-        <AppOutput label="Date of Birth" :value="resident?.dateOfBirth" />
-      </AppCol>
-    </AppRow>
-    <form @submit.prevent="registerVisaResident">
+    <form @submit.prevent="registerResident">
       <AppRow>
         <AppCol class="col4">
           <AppInput :e-model="v$.groupNumber" id="groupNumber" size="200" label="Group Number" type="text" v-model.trim="groupNumber" />
@@ -29,7 +14,7 @@
           <AppInput :e-model="v$.groupMemberNumber" id="groupMemberNumber" label="Group Member Number (Optional)" type="text" v-model.trim="groupMemberNumber" />
         </AppCol>
         <AppCol class="col4">
-          <AppDateInput :e-model="v$.visaIssueDate" id="visaIssueDate" label="Permit Issue Date" v-model="visaIssueDate" />
+          <AppDateInput :e-model="v$.permitIssueDate" id="permitIssueDate" label="Permit Issue Date" v-model="permitIssueDate" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -37,15 +22,36 @@
           <AppInput :e-model="v$.departmentNumber" id="departmentNumber" label="Department Number (Optional)" type="text" v-model.trim="departmentNumber" />
         </AppCol>
         <AppCol class="col4">
-          <AppDateInput :e-model="v$.visaExpiryDate" id="visaExpiryDate" label="Permit Expiry Date" v-model="visaExpiryDate" />
+          <AppDateInput :e-model="v$.permitExpiryDate" id="permitExpiryDate" label="Permit Expiry Date" v-model="permitExpiryDate" />
         </AppCol>
       </AppRow>
-      <AppRow class="row-center">
+      <AppRow>
+        <AppCol class="col4">
+          <AppInput :e-model="v$.surname" id="surname" label="Surname" type="text" v-model.trim="surname" />
+        </AppCol>
         <AppCol class="col4">
           <AppDateInput :e-model="v$.residenceDate" id="residenceDate" label="Residence Date" v-model="residenceDate" />
         </AppCol>
       </AppRow>
-      <AppRow class="row-center">
+      <AppRow>
+        <AppCol class="col4">
+          <AppInput :e-model="v$.givenName" id="givenName" label="First Name" type="text" v-model.trim="givenName" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col4">
+          <AppInput :e-model="v$.secondName" id="secondName" label="Second Name" type="text" v-model.trim="secondName" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col4">
+          <GenderRadioButtonGroup :e-model="v$.gender" id="gender" label="Gender" v-model="gender" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col4">
+          <AppDateInput :e-model="v$.dateOfBirth" id="dateOfBirth" label="Date Of Birth" v-model="dateOfBirth" />
+        </AppCol>
         <AppCol class="col4">
           <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" v-model="coverageEffectiveDate" />
         </AppCol>
@@ -137,34 +143,57 @@
 </template>
 <script>
 import AppSelect from '../../ui/AppSelect.vue'
+import GenderRadioButtonGroup from '../../ui/GenderRadioButtonGroup.vue'
 import useVuelidate from '@vuelidate/core'
 import { validateGroupNumber, validateGroupMemberNumber, validateDepartmentNumber, validateTelephone, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT, IMMIGRATION_CODES, PROVINCES, PRIOR_RESIDENCES } from '../../../util/constants'
 import { formatPersonName } from '../../../util/utils'
-import { mapGetters } from 'vuex'
 
 export default {
-  name: 'ResidentDetails',
+  name: 'ResidentDetailsWithoutPHN',
+  props: {
+    resident: {
+      givenName: '',
+      secondName: '',
+      surname: '',
+      dateOfBirth: '',
+      gender: '',
+    },
+  },
   components: {
     AppSelect,
+    GenderRadioButtonGroup,
   },
   setup() {
     return {
       v$: useVuelidate(),
     }
   },
+  created() {
+    // Immigration Code drop down options
+    this.immigrationCodeOptions = IMMIGRATION_CODES
+    // Province drop down options
+    this.provinceOptions = PROVINCES
+    // Prior Residence drop down options
+    this.priorResidenceOptions = PRIOR_RESIDENCES
+  },
   data() {
     return {
       submitting: false,
-      //Add Visa Resident Fields
+      //Add  Resident Fields
+      givenName: this.resident.givenName,
+      secondName: this.resident.secondName,
+      surname: this.resident.surname,
+      dateOfBirth: dayjs(this.resident.dateOfBirth).toDate(),
+      gender: this.resident.gender,
       groupNumber: '',
       immigrationCode: '',
       groupMemberNumber: '',
-      visaIssueDate: null,
+      permitIssueDate: null,
       departmentNumber: '',
-      visaExpiryDate: null,
+      permitExpiryDate: null,
       residenceDate: null,
       coverageEffectiveDate: dayjs().startOf('month').toDate(),
       telephone: '',
@@ -185,32 +214,13 @@ export default {
       otherProvinceHealthcareNumber: '',
     }
   },
-  created() {
-    // Immigration Code drop down options
-    this.immigrationCodeOptions = IMMIGRATION_CODES
-    // Province drop down options
-    this.provinceOptions = PROVINCES
-    // Prior Residence drop down options
-    this.priorResidenceOptions = PRIOR_RESIDENCES
-
-    //populate data on component load
-    this.address1 = this.resident?.address1
-    this.address2 = this.resident?.address2
-    this.address3 = this.resident.address3
-    this.city = this.resident?.city
-    this.province = this.resident.province
-    this.postalCode = this.resident.postalCode
-  },
   computed: {
-    ...mapGetters('studyPermitHolder', {
-      resident: 'getResident',
-    }),
     fullName() {
       return formatPersonName(this.resident)
     },
   },
   methods: {
-    async registerVisaResident() {
+    async registerResident() {
       this.submitting = true
       try {
         const isValid = await this.v$.$validate()
@@ -220,18 +230,17 @@ export default {
           return
         }
         this.$emit('register-resident', {
-          phn: this.resident?.phn,
-          dateOfBirth: dayjs(this.resident?.dateOfBirth).format(API_DATE_FORMAT),
-          givenName: this.resident?.givenName,
-          secondName: this.resident?.secondName,
-          surname: this.resident?.surname,
-          gender: this.resident?.gender,
+          givenName: this.givenName,
+          secondName: this.secondName,
+          surname: this.surname,
+          dateOfBirth: dayjs(this.dateOfBirth).format(API_DATE_FORMAT),
+          gender: this.gender,
           groupNumber: this.groupNumber,
           immigrationCode: this.immigrationCode,
           groupMemberNumber: this.groupMemberNumber,
-          visaIssueDate: dayjs(this.visaIssueDate).format(API_DATE_FORMAT),
+          visaIssueDate: dayjs(this.permitIssueDate).format(API_DATE_FORMAT),
           departmentNumber: this.departmentNumber,
-          visaExpiryDate: dayjs(this.visaExpiryDate).format(API_DATE_FORMAT),
+          visaExpiryDate: dayjs(this.permitExpiryDate).format(API_DATE_FORMAT),
           residenceDate: dayjs(this.residenceDate).format(API_DATE_FORMAT),
           coverageEffectiveDate: dayjs(this.coverageEffectiveDate).format(API_DATE_FORMAT),
           telephone: this.telephone,
@@ -258,12 +267,17 @@ export default {
       }
     },
     resetForm() {
+      this.givenName = ''
+      this.secondName = ''
+      this.surname = ''
+      this.dateOfBirth = ''
+      this.gender = ''
       this.groupNumber = ''
       this.immigrationCode = ''
       this.groupMemberNumber = ''
-      this.visaIssueDate = null
+      this.permitIssueDate = null
       this.departmentNumber = ''
-      this.visaExpiryDate = null
+      this.permitExpiryDate = null
       this.residenceDate = null
       this.coverageEffectiveDate = dayjs().startOf('month').toDate()
       this.telephone = ''
@@ -289,6 +303,19 @@ export default {
   },
   validations() {
     return {
+      surname: {
+        required,
+      },
+      givenName: {
+        required,
+      },
+      secondName: {},
+      dateOfBirth: {
+        required,
+      },
+      gender: {
+        required,
+      },
       groupNumber: {
         required,
         validateGroupNumber: helpers.withMessage(VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber),
@@ -297,11 +324,11 @@ export default {
       groupMemberNumber: {
         validateGroupMemberNumber: helpers.withMessage(VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, validateGroupMemberNumber),
       },
-      visaIssueDate: { required },
+      permitIssueDate: { required },
       departmentNumber: {
         validateDepartmentNumber: helpers.withMessage(VALIDATE_DEPARTMENT_NUMBER_MESSAGE, validateDepartmentNumber),
       },
-      visaExpiryDate: { required },
+      permitExpiryDate: { required },
       residenceDate: { required },
       coverageEffectiveDate: { required },
       telephone: {

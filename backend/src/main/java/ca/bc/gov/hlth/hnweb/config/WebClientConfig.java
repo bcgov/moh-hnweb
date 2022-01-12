@@ -1,14 +1,12 @@
 package ca.bc.gov.hlth.hnweb.config;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 
 import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,20 +37,9 @@ public class WebClientConfig {
 
 	private static final String KEY_MANAGER_FACTORY_TYPE_SUN_X509 = "SunX509";
 
-	@Value("${R50.url}")
-	private String r50Url;
-		 
-	@Value("${R50.user.name}")
-	private String userName;
+	private static final String CERTIFICATE_TYPE_X509 = "X.509";
 
-	@Value("${R50.user.password}")
-	private String userPassword;
-
-	@Value("${R50.cert.file}")
-	private Resource certFile;
-	
-	@Value("${R50.cert.password}")
-	private String certPassword;
+	private static final String HCIM_CA_CERT = "hcimCaCert"; //Alias for HCIM trusted certificate
 
 	@Value("${hcim.url}")
 	private String hcimUrl;
@@ -63,6 +50,9 @@ public class WebClientConfig {
 	@Value("${hcim.cert.password}")
 	private String hcimCertPassword;
 	
+	@Value("${hcim.trust.file}")
+	private Resource hcimTrustFile;
+
 	@Value("${rapid.url}")
 	private String rapidUrl;
 	 
@@ -87,28 +77,10 @@ public class WebClientConfig {
 	@Value("${hibc.cert.password}")
 	private String hibcCertPassword;
 
-	@Bean("enrollmentWebClient")
-    public WebClient enrollmentWebClient() throws HNWebException {
-
-		SslContext sslContext = getSSLContext(r50Url, certFile, certPassword);
-		
-	    HttpClient httpClient= HttpClient.create().secure(t -> t.sslContext(sslContext));
-		ClientHttpConnector connector= new ReactorClientHttpConnector(httpClient);
-	    
-		return WebClient.builder()
-	    		.clientConnector(connector)
-                .baseUrl(r50Url)
-                .filter(logRequest())
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE) 
-                .defaultHeader(HttpHeaders.ACCEPT, MediaType.ALL_VALUE) 
-                .defaultHeaders(header -> header.setBasicAuth(userName, userPassword))
-                .build();
-    }
-	
 	@Bean("hcimWebClient")
     public WebClient hcimWebClient() throws HNWebException {
 
-		SslContext sslContext = getSSLContext(hcimUrl, hcimCertFile, hcimCertPassword);
+		SslContext sslContext = getSSLContext(hcimUrl, hcimCertFile, hcimCertPassword, hcimTrustFile, HCIM_CA_CERT);
 		
 	    HttpClient httpClient= HttpClient.create().secure(t -> t.sslContext(sslContext));
 		ClientHttpConnector connector= new ReactorClientHttpConnector(httpClient);
@@ -159,24 +131,57 @@ public class WebClientConfig {
 
 	private SslContext getSSLContext(String url, Resource certFile, String certPassword) throws HNWebException {
 
-		try {
-			KeyStore keyStore = KeyStore.getInstance(KEY_STORE_TYPE_PKCS12);
-			keyStore.load(new FileInputStream(certFile.getFile()), certPassword.toCharArray());
+		return getSSLContext(url, certFile, certPassword, null, null);
+	}
+	
+	private SslContext getSSLContext(String url, Resource certFile, String certPassword, Resource trustFile, String trustedCertAlias) throws HNWebException {
 
-			KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KEY_MANAGER_FACTORY_TYPE_SUN_X509);
-			keyManagerFactory.init(keyStore, certPassword.toCharArray());
+		try {
+			KeyManagerFactory keyManagerFactory = createKeyManagerFactory(certFile, certPassword);			
 			
+			TrustManagerFactory trustManagerFactory = null;
+			if (trustFile != null) {
+				trustManagerFactory = createTrustManagerFactory(trustFile, trustedCertAlias);				
+			}
+            
 			return SslContextBuilder.forClient()
+					.trustManager(trustManagerFactory) //if trustManagerFactory is null it's the same as not setting as the system defaults are used
 			        .keyManager(keyManagerFactory)
 			        .build();
-		} catch (IOException | CertificateException | UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException e) {
+		} catch (Exception e) {
 	        logger.error("Error creating SSL Context for {} due to {}.", url, e.getMessage());
 	        throw new HNWebException(ExceptionType.SSL_FAILURE, e);
 		}
 	}
+
+	private KeyManagerFactory createKeyManagerFactory(Resource certFile, String certPassword) throws Exception {
+		
+		KeyStore keyStore = KeyStore.getInstance(KEY_STORE_TYPE_PKCS12);
+		keyStore.load(new FileInputStream(certFile.getFile()), certPassword.toCharArray());
+
+		KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KEY_MANAGER_FACTORY_TYPE_SUN_X509);
+		keyManagerFactory.init(keyStore, certPassword.toCharArray());
+		
+		return keyManagerFactory;
+	}
+
+	private TrustManagerFactory createTrustManagerFactory(Resource trustedCertFile, String trustedCertAlias) throws Exception {
+		
+		CertificateFactory certificateFactory = CertificateFactory.getInstance(CERTIFICATE_TYPE_X509);
+		X509Certificate x509Certificate = (X509Certificate)certificateFactory.generateCertificate(new FileInputStream(trustedCertFile.getFile()));
+		
+		KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+		keyStore.load(null); // The KeyStore instance does not need to come from a file.
+		keyStore.setCertificateEntry(trustedCertAlias, x509Certificate);
+		
+		TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+		trustManagerFactory.init(keyStore);
+		
+		return trustManagerFactory;
+	}
 	
-    /*
-     * Log request details for the downstream web service calls
+    /**
+     * Log request details for the downstream web service calls.
      */
     private ExchangeFilterFunction logRequest() {
         return ExchangeFilterFunction.ofRequestProcessor(c -> {

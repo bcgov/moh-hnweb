@@ -15,13 +15,18 @@ import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.converter.hl7v2.MSHDefaults;
 import ca.bc.gov.hlth.hnweb.converter.hl7v2.R50Converter;
+import ca.bc.gov.hlth.hnweb.converter.hl7v3.FindCandidatesConverter;
 import ca.bc.gov.hlth.hnweb.converter.hl7v3.GetDemographicsConverter;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
+import ca.bc.gov.hlth.hnweb.model.NameSearchRequest;
+import ca.bc.gov.hlth.hnweb.model.NameSearchResponse;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
+import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesRequest;
+import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.service.EnrollmentService;
@@ -57,12 +62,12 @@ public class EnrollmentController {
 		logger.info("Subscriber enroll request: {} ", enrollSubscriberRequest.getPhn());
 		try {
 			R50Converter converter = new R50Converter(mshDefaults);
-			R50 r50 = converter.convertRequest(enrollSubscriberRequest);			
+			R50 r50 = converter.convertRequest(enrollSubscriberRequest);
 			Message r50Message = enrollmentService.enrollSubscriber(r50);
 			EnrollSubscriberResponse enrollSubscriberResponse = converter.convertResponse(r50Message);
 			ResponseEntity<EnrollSubscriberResponse> responseEntity = ResponseEntity.ok(enrollSubscriberResponse);
 
-			logger.info("Subscriber enroll Response: {} ", enrollSubscriberResponse.getAcknowledgementMessage());
+			logger.info("Subscriber enroll Response: {} ", enrollSubscriberResponse.getMessage());
 
 			return responseEntity;
 		} catch (HNWebException hwe) {
@@ -100,6 +105,33 @@ public class EnrollmentController {
 			}
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /person-details request", e);
+		}
+	}
+
+	@PostMapping("/name-search")
+	public ResponseEntity<NameSearchResponse> getNameSearch(
+			@Valid @RequestBody NameSearchRequest nameSearchRequest) {
+		logger.info("Name Search request: {} ", nameSearchRequest.getGivenName());
+
+		try {
+			FindCandidatesConverter converter = new FindCandidatesConverter();
+
+			FindCandidatesRequest findCandidatesRequest = converter.convertRequest(nameSearchRequest);
+			
+			FindCandidatesResponse findCandidatesResponse = enrollmentService.findCandidates(findCandidatesRequest);
+			NameSearchResponse nameSearchResponse = converter.convertResponse(findCandidatesResponse);
+			ResponseEntity<NameSearchResponse> responseEntity = ResponseEntity.ok(nameSearchResponse);
+
+			return responseEntity;
+		} catch (HNWebException hwe) {
+			switch (hwe.getType()) {
+			case DOWNSTREAM_FAILURE:
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
+			default:
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /name-search request", hwe);
+			}
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /name-search request", e);
 		}
 	}
 

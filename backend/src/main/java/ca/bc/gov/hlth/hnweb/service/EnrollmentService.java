@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import ca.bc.gov.hlth.hnweb.exception.ExceptionType;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
+import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesRequest;
+import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.MessageMetaData;
@@ -39,15 +42,21 @@ public class EnrollmentService {
 	private static final String SOURCE_SYSTEM_OVERRIDE = "MOH_CRS";
 	private static final String ORGANIZATION = "MOH_CRS";
 	public static final String TRANSACTION_ID = "TransactionID";
+
+	@Value("${hibc.r50.path}")
+	private String r50Path;
+
+	@Value("${hibc.r50.username}")
+	private String r50Username;
 	
-	protected HL7Serializer hl7Serializer;
-	protected MessageMetaData mmd;
+	@Value("${hibc.r50.password}")
+	private String r50Password;
 
 	@Autowired
 	private Parser parser;
-    
+    	
 	@Autowired
-	private WebClient enrollmentWebClient;
+	private WebClient hibcWebClient;
 	
 	@Autowired
 	private WebClient hcimWebClient;
@@ -70,7 +79,7 @@ public class EnrollmentService {
 		String r50v2RequiredFormat = formatMessage(r50);
 		logger.debug("Updated V2 message:\n{}", r50v2RequiredFormat);
 		
-		ResponseEntity<String> response = postEnrollmentRequest(r50v2RequiredFormat, transactionId);
+		ResponseEntity<String> response = postHibcRequest(r50Path, r50Username, r50Password, r50v2RequiredFormat);
 		
 		if (response.getStatusCode() != HttpStatus.OK) {
 			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
@@ -95,9 +104,9 @@ public class EnrollmentService {
 	      throws HNWebException {
 		String transactionId = UUID.randomUUID().toString();
 		
-		hl7Serializer = new HL7Serializer(new HL7Config());
+		HL7Serializer hl7Serializer = new HL7Serializer(new HL7Config());
 		UserInfo userInfo = SecurityUtil.loadUserInfo();
-		mmd = new MessageMetaData(userInfo.getUsername(), SOURCE_SYSTEM_OVERRIDE, ORGANIZATION, transactionId);
+		MessageMetaData mmd = new MessageMetaData(userInfo.getUsername(), SOURCE_SYSTEM_OVERRIDE, ORGANIZATION, transactionId);
 		
 		//Serialize request object
 		Object formattedRequest = hl7Serializer.toXml(demographicsRequest, mmd);
@@ -105,7 +114,7 @@ public class EnrollmentService {
 		String xmlString = V3MessageUtil.wrap(formattedRequest.toString());
 		logger.debug("Get Demographics wrapped xml request[{}]", xmlString);
 		  
-	    ResponseEntity<String> response = postDemographicRequest(xmlString, transactionId); 
+	    ResponseEntity<String> response = postHcimRequest(xmlString, transactionId); 
 	    logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 	    
 		if (response.getStatusCode() != HttpStatus.OK) {
@@ -119,8 +128,45 @@ public class EnrollmentService {
 	
 	 
 	 }
+	
+	 /**
+	 * Finds the candidates details by sending a V3 message to external endpoint.
+	 * Calls HL7Serializer api to serialize and deserialize request/response
+	 * @param findCandidatesRequest
+	 * @param transactionId
+	 * @return
+	 * @throws HNWebException
+	 */
+	public FindCandidatesResponse findCandidates(FindCandidatesRequest findCandidatesRequest)
+	      throws HNWebException {
+		String transactionId = UUID.randomUUID().toString();
+		
+		HL7Serializer hl7Serializer = new HL7Serializer(new HL7Config());
+		UserInfo userInfo = SecurityUtil.loadUserInfo();
+		MessageMetaData mmd = new MessageMetaData(userInfo.getUsername(), SOURCE_SYSTEM_OVERRIDE, ORGANIZATION, transactionId);
+		
+		//Serialize request object
+		Object formattedRequest = hl7Serializer.toXml(findCandidatesRequest, mmd);
+		//Create soap wrapper
+		String xmlString = V3MessageUtil.wrap(formattedRequest.toString());
+		logger.debug("Get Name Search wrapped xml request[{}]", xmlString);
+		  
+	    ResponseEntity<String> response = postHcimRequest(xmlString, transactionId); 
+	    logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
+	    
+		if (response.getStatusCode() != HttpStatus.OK) {
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
+		}
+		//De-Serialize findCandidate response
+		FindCandidatesResponse findCandidatesResponse = hl7Serializer.fromXml(response.getBody(), FindCandidatesResponse.class);
+	    
+	    return findCandidatesResponse;
+	
+	 
+	 }
 	  
-	private ResponseEntity<String> postDemographicRequest(String data, String transactionId) {
+	private ResponseEntity<String> postHcimRequest(String data, String transactionId) {
 		return hcimWebClient
 	             .post()
 	             .contentType(MediaType.TEXT_XML)
@@ -132,26 +178,20 @@ public class EnrollmentService {
 	    	
 	}
 	
-	private ResponseEntity<String> postEnrollmentRequest(String data, String transactionId) {
-        return enrollmentWebClient
+	private ResponseEntity<String> postHibcRequest(String path, String username, String password, String data) {
+        return hibcWebClient
                 .post()
+                .uri(path)
                 .contentType(MediaType.TEXT_PLAIN)
-                .header(TRANSACTION_ID, transactionId)
+                .header(TRANSACTION_ID, UUID.randomUUID().toString())
+                .headers(header -> header.setBasicAuth(username, password))
                 .bodyValue(data)
                 .retrieve()
                 .toEntity(String.class)
                 .block();
-    }	
-	 	
-    private String encodeR50ToV2(R50 r50) throws HL7Exception {
-    	
-    	// Encode the message using the default HAPI parser and return it as a String
-    	String encodedMessage = parser.encode(r50);
-    	logger.debug("R50 Encoded Message:\n{}", encodedMessage);
-    	
-    	return encodedMessage;
     }
-
+	 	
+   
     private Message parseR50v2ToAck(String v2) throws HL7Exception {
 
     	// Parse the V2 String and build a message from it that gets returned  
