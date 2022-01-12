@@ -22,8 +22,8 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateGroupMemberRequest;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateGroupMemberResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
 import okhttp3.mockwebserver.MockResponse;
@@ -63,11 +63,11 @@ public class GroupMemberControllerTest {
     @Test
     public void testUpdateGroupMember_invalidRequest() throws InterruptedException {
     	
-    	UpdateGroupMemberRequest updateGroupMemberRequest = new UpdateGroupMemberRequest();
-    	updateGroupMemberRequest.setPhn("9347984074");
-    	updateGroupMemberRequest.setGroupNumber("6337109");
+    	UpdateNumberAndDeptRequest updateNumberAndDeptRequest = new UpdateNumberAndDeptRequest();
+    	updateNumberAndDeptRequest.setPhn("9347984074");
+    	updateNumberAndDeptRequest.setGroupNumber("6337109");
     	ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-    		groupMemberController.updateGroupMember(updateGroupMemberRequest);
+    		groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest);
         });
     	assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
     	assertEquals("Department Number or Group Number is required", exception.getReason());
@@ -82,18 +82,18 @@ public class GroupMemberControllerTest {
         		.setBody(RPBSPEE0_ERROR_PHN_HAS_NO_COVERAGE_IN_GROUP)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
     	
-    	UpdateGroupMemberRequest updateGroupMemberRequest = new UpdateGroupMemberRequest();
-    	updateGroupMemberRequest.setPhn("9347984074");
-    	updateGroupMemberRequest.setGroupNumber("6337109");
-    	updateGroupMemberRequest.setDepartmentNumber("000001");
-    	updateGroupMemberRequest.setGroupMemberNumber("000000001");
+    	UpdateNumberAndDeptRequest updateNumberAndDeptRequest = new UpdateNumberAndDeptRequest();
+    	updateNumberAndDeptRequest.setPhn("9347984074");
+    	updateNumberAndDeptRequest.setGroupNumber("6337109");
+    	updateNumberAndDeptRequest.setDepartmentNumber("000001");
+    	updateNumberAndDeptRequest.setGroupMemberNumber("000000001");
     	
-		ResponseEntity<UpdateGroupMemberResponse> response = groupMemberController.updateGroupMember(updateGroupMemberRequest);
+		ResponseEntity<UpdateNumberAndDeptResponse> response = groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest);
 		
-		UpdateGroupMemberResponse updateGroupMemberResponse = response.getBody();
-		assertEquals(StatusEnum.ERROR, updateGroupMemberResponse.getStatus());
-        assertEquals("RPBS9179 PHN HAS NO COVERAGE IN GROUP", updateGroupMemberResponse.getMessage());
-        assertEquals("9347984074", updateGroupMemberResponse.getPhn());
+		UpdateNumberAndDeptResponse updateNumberAndDeptResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, updateNumberAndDeptResponse.getStatus());
+        assertEquals("RPBS9179 PHN HAS NO COVERAGE IN GROUP", updateNumberAndDeptResponse.getMessage());
+        assertEquals("9347984074", updateNumberAndDeptResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -109,18 +109,18 @@ public class GroupMemberControllerTest {
         		.setBody(RPBSPEE0_SUCCESS)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
     	
-    	UpdateGroupMemberRequest updateGroupMemberRequest = new UpdateGroupMemberRequest();
-    	updateGroupMemberRequest.setPhn("9873895927");
-    	updateGroupMemberRequest.setGroupNumber("6337109");
-    	updateGroupMemberRequest.setDepartmentNumber("000001");
-    	updateGroupMemberRequest.setGroupMemberNumber("000000001");
+    	UpdateNumberAndDeptRequest updateNumberAndDeptRequest = new UpdateNumberAndDeptRequest();
+    	updateNumberAndDeptRequest.setPhn("9873895927");
+    	updateNumberAndDeptRequest.setGroupNumber("6337109");
+    	updateNumberAndDeptRequest.setDepartmentNumber("000001");
+    	updateNumberAndDeptRequest.setGroupMemberNumber("000000001");
     	
-		ResponseEntity<UpdateGroupMemberResponse> response = groupMemberController.updateGroupMember(updateGroupMemberRequest);
+		ResponseEntity<UpdateNumberAndDeptResponse> response = groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest);
 		
-		UpdateGroupMemberResponse updateGroupMemberResponse = response.getBody();
-		assertEquals(StatusEnum.SUCCESS, updateGroupMemberResponse.getStatus());
-        assertEquals("TRANSACTION SUCCESSFUL", updateGroupMemberResponse.getMessage());
-        assertEquals("9873895927", updateGroupMemberResponse.getPhn());
+		UpdateNumberAndDeptResponse updateNumberAndDeptResponse = response.getBody();
+		assertEquals(StatusEnum.SUCCESS, updateNumberAndDeptResponse.getStatus());
+        assertEquals("TRANSACTION SUCCESSFUL", updateNumberAndDeptResponse.getMessage());
+        assertEquals("9873895927", updateNumberAndDeptResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        

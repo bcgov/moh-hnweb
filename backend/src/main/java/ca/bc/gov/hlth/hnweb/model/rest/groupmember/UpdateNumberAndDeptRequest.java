@@ -1,6 +1,6 @@
 package ca.bc.gov.hlth.hnweb.model.rest.groupmember;
 
-public class UpdateGroupMemberRequest {
+public class UpdateNumberAndDeptRequest {
 	private String phn;
 	private String groupNumber;
 	private String groupMemberNumber;
@@ -40,7 +40,7 @@ public class UpdateGroupMemberRequest {
 
 	@Override
 	public String toString() {
-		return "UpdateGroupMemberRequest [phn=" + phn + ", groupNumber=" + groupNumber + ", groupMemberNumber=" + groupMemberNumber
+		return "UpdateNumberAndDeptRequest [phn=" + phn + ", groupNumber=" + groupNumber + ", groupMemberNumber=" + groupMemberNumber
 				+ ", departmentNumber=" + departmentNumber + "]";
 	}
 

@@ -24,8 +24,8 @@ import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPED0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPEE0;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateGroupMemberRequest;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateGroupMemberResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
 import ca.bc.gov.hlth.hnweb.service.GroupMemberService;
 
 /**
@@ -45,41 +45,41 @@ public class GroupMemberController {
 	 * Updates a group member's number and/or department.
 	 * Maps to the legacy R34.
 	 *  
-	 * @param inquirePhnRequest
-	 * @return The result of the query
+	 * @param updateNumberAndDeptRequest
+	 * @return The result of the update.
 	 */
-	@PostMapping("/update-group-member")
-	public ResponseEntity<UpdateGroupMemberResponse> updateGroupMember(@Valid @RequestBody UpdateGroupMemberRequest updateGroupMemberRequest) {
+	@PostMapping("/update-number-and-dept")
+	public ResponseEntity<UpdateNumberAndDeptResponse> updateNumberAndDept(@Valid @RequestBody UpdateNumberAndDeptRequest updateNumberAndDeptRequest) {
 		// Do basic validation since there's no point in calling the downstream systems if the data isn't valid
-		if (StringUtils.isBlank(updateGroupMemberRequest.getDepartmentNumber()) && StringUtils.isBlank(updateGroupMemberRequest.getGroupMemberNumber())) {
+		if (StringUtils.isBlank(updateNumberAndDeptRequest.getDepartmentNumber()) && StringUtils.isBlank(updateNumberAndDeptRequest.getGroupMemberNumber())) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Department Number or Group Number is required");	
 		}
 
 		try {	
 			// Handle the department number
-			UpdateGroupMemberResponse deptNumberResponse = new UpdateGroupMemberResponse();
-			if (StringUtils.isNotBlank(updateGroupMemberRequest.getDepartmentNumber())) {
+			UpdateNumberAndDeptResponse deptNumberResponse = new UpdateNumberAndDeptResponse();
+			if (StringUtils.isNotBlank(updateNumberAndDeptRequest.getDepartmentNumber())) {
 				RPBSPED0Converter rpbsped0Converter = new RPBSPED0Converter();
-				RPBSPED0 ped0Request = rpbsped0Converter.convertRequest(updateGroupMemberRequest);
+				RPBSPED0 ped0Request = rpbsped0Converter.convertRequest(updateNumberAndDeptRequest);
 				RPBSPED0 ped0Response = groupMemberService.updateGroupMemberDepartmentNumber(ped0Request);
 				deptNumberResponse = rpbsped0Converter.convertResponse(ped0Response);
 			}
 
 			// Handle the group member/employee number
-			UpdateGroupMemberResponse empNumberResponse = new UpdateGroupMemberResponse();
-			if (StringUtils.isNotBlank(updateGroupMemberRequest.getGroupMemberNumber())) {
+			UpdateNumberAndDeptResponse empNumberResponse = new UpdateNumberAndDeptResponse();
+			if (StringUtils.isNotBlank(updateNumberAndDeptRequest.getGroupMemberNumber())) {
 				RPBSPEE0Converter rpbspee0Converter = new RPBSPEE0Converter();
-				RPBSPEE0 pee0Request = rpbspee0Converter.convertRequest(updateGroupMemberRequest);
+				RPBSPEE0 pee0Request = rpbspee0Converter.convertRequest(updateNumberAndDeptRequest);
 				RPBSPEE0 pee0Response = groupMemberService.updateGroupMemberEmployeeNumber(pee0Request);
 				empNumberResponse = rpbspee0Converter.convertResponse(pee0Response);
 			}
 				
 			// Combine the results
-			UpdateGroupMemberResponse updateGroupMemberResponse = handleUpdateGroupMemberResponse(deptNumberResponse, empNumberResponse);
+			UpdateNumberAndDeptResponse updateNumberAndDeptResponse = handleUpdateGroupMemberResponse(deptNumberResponse, empNumberResponse);
 					
-			ResponseEntity<UpdateGroupMemberResponse> response = ResponseEntity.ok(updateGroupMemberResponse);
+			ResponseEntity<UpdateNumberAndDeptResponse> response = ResponseEntity.ok(updateNumberAndDeptResponse);
 
-			logger.info("updateGroupMember response: {} ", updateGroupMemberResponse);
+			logger.info("updateNumberAndDept response: {} ", updateNumberAndDeptResponse);
 			return response;	
 		} catch (HNWebException hwe) {
 			switch (hwe.getType()) {
@@ -96,8 +96,8 @@ public class GroupMemberController {
 		
 	}
 	
-	private UpdateGroupMemberResponse handleUpdateGroupMemberResponse(UpdateGroupMemberResponse deptNumberResponse, UpdateGroupMemberResponse empNumberResponse) {
-		UpdateGroupMemberResponse response = new UpdateGroupMemberResponse();
+	private UpdateNumberAndDeptResponse handleUpdateGroupMemberResponse(UpdateNumberAndDeptResponse deptNumberResponse, UpdateNumberAndDeptResponse empNumberResponse) {
+		UpdateNumberAndDeptResponse response = new UpdateNumberAndDeptResponse();
 		// Errors are highest priority, followed by warning, followed by Success
 		if (deptNumberResponse.getStatus() == StatusEnum.ERROR || empNumberResponse.getStatus() == StatusEnum.ERROR) {
 			response.setMessage(generateErrorWarningMessage(deptNumberResponse, empNumberResponse));
@@ -114,7 +114,7 @@ public class GroupMemberController {
 		return response;		
 	}
 	
-	private String generateErrorWarningMessage(UpdateGroupMemberResponse deptNumberResponse, UpdateGroupMemberResponse empNumberResponse) {
+	private String generateErrorWarningMessage(UpdateNumberAndDeptResponse deptNumberResponse, UpdateNumberAndDeptResponse empNumberResponse) {
 		Set<String> messages = new HashSet<>();
 		
 		// Include all Error and Warning messages but			

@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import keycloak from '../keycloak';
 
 export const resources = {
@@ -13,8 +14,7 @@ export const resources = {
     lookupPhn: '/eligibility/lookup-phn',
   },
   groupMember: {
-    updateGroupMember: '/group-member/update-group-member'
-
+    updateNumberAndDept: '/group-member/update-number-and-dept'
   },
   user: {
     permissions: '/user/permissions'

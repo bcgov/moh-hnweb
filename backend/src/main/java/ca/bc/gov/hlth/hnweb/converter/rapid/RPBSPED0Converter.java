@@ -3,8 +3,8 @@ package ca.bc.gov.hlth.hnweb.converter.rapid;
 import ca.bc.gov.hlth.hnweb.model.rapid.ED0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPED0;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateGroupMemberRequest;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateGroupMemberResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
 
 public class RPBSPED0Converter extends BaseRapidConverter {
 	private static final String TRAN_CODE = "RPBSPED0";
@@ -13,7 +13,7 @@ public class RPBSPED0Converter extends BaseRapidConverter {
 		super();
 	}
 	
-	public RPBSPED0 convertRequest(UpdateGroupMemberRequest request) {
+	public RPBSPED0 convertRequest(UpdateNumberAndDeptRequest request) {
 		RPBSHeader rpbsHeader = new RPBSHeader();
 		rpbsHeader.setOrganization(userInfo.getOrganization());
 		rpbsHeader.setTranCode(getTranCode());
@@ -30,8 +30,8 @@ public class RPBSPED0Converter extends BaseRapidConverter {
 		return rpbsped0;
 	}
 	
-	public UpdateGroupMemberResponse convertResponse(RPBSPED0 rpbsped0) {
-		UpdateGroupMemberResponse response = new UpdateGroupMemberResponse();
+	public UpdateNumberAndDeptResponse convertResponse(RPBSPED0 rpbsped0) {
+		UpdateNumberAndDeptResponse response = new UpdateNumberAndDeptResponse();
 		RPBSHeader header = rpbsped0.getRpbsHeader();
 		
 		handleStatus(header, response);
