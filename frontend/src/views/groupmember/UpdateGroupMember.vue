@@ -2,7 +2,7 @@
   <div id = 'updateGroupMember' v-if= "showForm">
     <form @submit.prevent="submitForm">
       <AppRow>
-        <AppCol class="col3">{{showForm}}
+        <AppCol class="col3">
           <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" type="text" v-model.trim="groupNumber" />
         </AppCol>
       </AppRow>
@@ -27,15 +27,10 @@
       </AppRow>
     </form>
   </div>
-  
-  <div id = "confirmation" v-if="updateOk">
-    <AppRow>
-      <AppCol class="col3">
-        <AppOutput label="PHN" :value="result?.phn" />
-      </AppCol>
-    </AppRow> 
-  </div>
   <br />
+  <div id = "confirmation" v-if="updateOk">
+    <p>PHN: {{ result?.phn }}</p>  
+  </div>
 </template>
 
 <script>
@@ -46,9 +41,6 @@ import { required,requiredUnless, helpers } from '@vuelidate/validators'
 
 export default {
   name: 'UpdateGroupMember',
-  components: {
-    //UpdateGroupMemberConfirmation
-  },
   setup() {
     return {
       v$: useVuelidate()}
@@ -60,7 +52,8 @@ export default {
       groupMemberNumber: '',
       departmentNumber: '',
       updateOk: false, 
-      showForm :true,
+      showForm : true,
+      submitting: false,
       result: {
         phn: '', 
         status: '',
@@ -86,23 +79,20 @@ export default {
           groupNumber: this.groupNumber,
           departmentNumber: this.departmentNumber,
           groupMemberNumber: this.groupMemberNumber,         
-        })).data
-        
+        })).data  
         
         if (this.result.status === 'error') {
-          console.log('error message')
           this.$store.commit('alert/setErrorAlert', this.result.message)
           return
         }
 
         if (this.result?.status === 'success') {
-          this.showForm = 'false'
-          console.log('Success message')
-          console.log(this.showForm)
-          this.updateOk = 'true'
-          this.$store.commit('alert/setSuccessAlert', 'Transaction Successful')
+          this.showForm = false
+          this.updateOk = true
+          this.$store.commit('alert/setSuccessAlert', this.result.message)
           return
         }
+      
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       }
@@ -117,8 +107,8 @@ export default {
       this.groupNumber = ''
       this.departmentNumber = ''
       this.result = null
-      this.updateOk ='false'
-      this.showForm = 'true'
+      this.updateOk = false
+      this.showForm = true
       this.v$.$reset()
       this.$store.commit("alert/dismissAlert") 
     }
