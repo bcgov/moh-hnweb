@@ -80,7 +80,7 @@ public class WebClientConfig {
 	@Bean("hcimWebClient")
     public WebClient hcimWebClient() throws HNWebException {
 
-		SslContext sslContext = getSSLContext(hcimUrl, hcimCertFile, hcimCertPassword, hcimTrustFile);
+		SslContext sslContext = getSSLContext(hcimUrl, hcimCertFile, hcimCertPassword, hcimTrustFile, HCIM_CA_CERT);
 		
 	    HttpClient httpClient= HttpClient.create().secure(t -> t.sslContext(sslContext));
 		ClientHttpConnector connector= new ReactorClientHttpConnector(httpClient);
@@ -131,17 +131,17 @@ public class WebClientConfig {
 
 	private SslContext getSSLContext(String url, Resource certFile, String certPassword) throws HNWebException {
 
-		return getSSLContext(url, certFile, certPassword, null);
+		return getSSLContext(url, certFile, certPassword, null, null);
 	}
 	
-	private SslContext getSSLContext(String url, Resource certFile, String certPassword, Resource trustFile) throws HNWebException {
+	private SslContext getSSLContext(String url, Resource certFile, String certPassword, Resource trustFile, String trustedCertAlias) throws HNWebException {
 
 		try {
 			KeyManagerFactory keyManagerFactory = createKeyManagerFactory(certFile, certPassword);			
 			
 			TrustManagerFactory trustManagerFactory = null;
 			if (trustFile != null) {
-				trustManagerFactory = createTrustManagerFactory(trustFile, HCIM_CA_CERT);				
+				trustManagerFactory = createTrustManagerFactory(trustFile, trustedCertAlias);				
 			}
             
 			return SslContextBuilder.forClient()
