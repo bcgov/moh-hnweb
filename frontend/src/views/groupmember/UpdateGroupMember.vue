@@ -36,8 +36,16 @@
 <script>
 import GroupMemberService from '../../services/GroupMemberService'
 import useVuelidate from '@vuelidate/core'
-import { validateGroupNumber, validatePHN, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE } from '../../util/validators'
-import { required,requiredUnless, helpers } from '@vuelidate/validators'
+import { validateGroupNumber, validatePHN, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_OPTIONAL } from '../../util/validators'
+import { required, helpers } from '@vuelidate/validators'
+
+function validateOptional() {
+  if (this.departmentNumber !== '' || this.groupMemberNumber !== '') {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 export default {
   name: 'UpdateGroupMember',
@@ -124,22 +132,19 @@ export default {
       groupNumber: { required,
       validateGroupNumber: helpers.withMessage(
         VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber
-      )
+       )
       },
-     groupMemberNumber: {
-      requiredIf: requiredUnless(function() {
-        return (
-          this.groupMemberNumber !== '' || this.departmentNumber !== ''
-        )
-      })
-    },
-    departmentNumber: {
-      requiredIf: requiredUnless(function() {
-        return (
-          this.departmentNumber !== '' || this.groupMemberNumber !== ''
-        )
-      })
-    },
+      groupMemberNumber: {
+      validateOptional: helpers.withMessage(
+        VALIDATE_OPTIONAL, validateOptional
+       )
+      },
+      departmentNumber: {
+      validateOptional: helpers.withMessage(
+        VALIDATE_OPTIONAL, validateOptional
+       )
+      },
+   
     }
   }
 }
