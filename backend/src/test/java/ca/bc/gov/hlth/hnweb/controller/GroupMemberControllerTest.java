@@ -196,7 +196,7 @@ public class GroupMemberControllerTest {
     	cancelGroupMemberRequest.setPhn("9347984074");
     	cancelGroupMemberRequest.setGroupNumber("6337109");
     	cancelGroupMemberRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
-    	// The reason must be K or R
+    	// The reason must be K or E
     	cancelGroupMemberRequest.setCancelReason("A");
     	
 		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);

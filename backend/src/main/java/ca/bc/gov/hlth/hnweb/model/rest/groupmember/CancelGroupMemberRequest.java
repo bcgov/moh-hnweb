@@ -6,6 +6,7 @@ public class CancelGroupMemberRequest {
 	private String phn;
 	private String groupNumber;
 	private LocalDate coverageCancelDate;
+	// Valid values are K, E
 	private String cancelReason;
 
 	public String getPhn() {
