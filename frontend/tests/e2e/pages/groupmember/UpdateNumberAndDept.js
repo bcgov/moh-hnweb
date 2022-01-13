@@ -1,6 +1,6 @@
 import { Selector } from 'testcafe';
 
-class UpdateGroupMember {
+class UpdateNumberAndDept {
     constructor () {
         this.phnInput = Selector('#phn'); 
         this.groupMemberInput = Selector('#groupNumber');
@@ -13,4 +13,4 @@ class UpdateGroupMember {
     }
 }
 
-export default new UpdateGroupMember();
+export default new UpdateNumberAndDept();

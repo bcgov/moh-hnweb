@@ -1,5 +1,5 @@
 <template>
-  <div id = 'updateGroupMember' v-if= "showForm">
+  <div id="updateNumberAndDept" v-if="searchMode">
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
@@ -8,17 +8,17 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.phn"  id="phn" label="Group Member's PHN" type="text" v-model="phn"/>
+          <AppInput :e-model="v$.phn" id="phn" label="Group Member's PHN" type="text" v-model="phn"/>
         </AppCol>
       </AppRow>
        <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.groupMemberNumber" id="groupMemberNumber" label="Group Member Number"   type="text" v-model.trim="groupMemberNumber" />
+          <AppInput :e-model="v$.groupMemberNumber" id="groupMemberNumber" label="Group Member Number" type="text" v-model.trim="groupMemberNumber" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.departmentNumber" vi  id="departmentNumber" label="Department Number"   type="text" v-model="departmentNumber"/>
+          <AppInput :e-model="v$.departmentNumber" id="departmentNumber" label="Department Number" type="text" v-model="departmentNumber"/>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -28,7 +28,7 @@
     </form>
   </div>
   <br />
-  <div id = "confirmation" v-if="updateOk">
+  <div id="confirmation" v-if="updateOk">
     <p>PHN: {{ result?.phn }}</p>  
   </div>
 </template>
@@ -48,7 +48,7 @@ function validateOptional() {
 }
 
 export default {
-  name: 'UpdateGroupMember',
+  name: 'updateNumberAndDept',
   setup() {
     return {
       v$: useVuelidate()}
@@ -60,7 +60,7 @@ export default {
       groupMemberNumber: '',
       departmentNumber: '',
       updateOk: false, 
-      showForm : true,
+      searchMode : true,
       submitting: false,
       result: {
         phn: '', 
@@ -74,7 +74,7 @@ export default {
     async submitForm() {
       this.result = null 
       this.updateOk = false
-      this.showForm = true
+      this.searchMode = true
       this.$store.commit("alert/dismissAlert")
       try {
         const isValid = await this.v$.$validate()
@@ -82,7 +82,8 @@ export default {
           this.showError()
           return
         } 
-        this.result = (await GroupMemberService.updateGroupMember({
+       
+        this.result = (await GroupMemberService.updateNumberAndDept({
           phn: this.phn,
           groupNumber: this.groupNumber,
           departmentNumber: this.departmentNumber,
@@ -95,7 +96,7 @@ export default {
         }
 
         if (this.result?.status === 'success') {
-          this.showForm = false
+          this.searchMode = false
           this.updateOk = true
           this.$store.commit('alert/setSuccessAlert', this.result.message)
           return
@@ -116,7 +117,7 @@ export default {
       this.departmentNumber = ''
       this.result = null
       this.updateOk = false
-      this.showForm = true
+      this.searchMode = true
       this.v$.$reset()
       this.$store.commit("alert/dismissAlert") 
     }
@@ -125,24 +126,17 @@ export default {
     return {
       phn: {
         required,
-        validatePHN: helpers.withMessage(
-          VALIDATE_PHN_MESSAGE, validatePHN
-        )
+        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN)
       },
-      groupNumber: { required,
-      validateGroupNumber: helpers.withMessage(
-        VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber
-       )
+      groupNumber: { 
+        required,
+        validateGroupNumber: helpers.withMessage(VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber)
       },
       groupMemberNumber: {
-      validateOptional: helpers.withMessage(
-        VALIDATE_OPTIONAL, validateOptional
-       )
+        validateOptional: helpers.withMessage(VALIDATE_OPTIONAL, validateOptional)
       },
       departmentNumber: {
-      validateOptional: helpers.withMessage(
-        VALIDATE_OPTIONAL, validateOptional
-       )
+        validateOptional: helpers.withMessage(VALIDATE_OPTIONAL, validateOptional)
       },
    
     }

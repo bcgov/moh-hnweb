@@ -7,14 +7,13 @@ import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollm
 import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
 import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
 import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
-import Employees from './../views/Employees.vue'
 import GroupMemberHome from '../views/groupmember/GroupMemberHome.vue'
 import Help from './../views/Help.vue'
 import Home from './../views/Home.vue'
 import NotFound from '../views/NotFound.vue'
 import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
 import PhnLookup from '../views/eligibility/PhnLookup.vue'
-import UpdateGroupMember from '../views/groupmember/UpdateGroupMember.vue'
+import UpdateNumberAndDept from '../views/groupmember/UpdateNumberAndDept.vue'
 import store from '../store'
 
 const routes = [
@@ -85,17 +84,17 @@ const routes = [
     ],
   },
   {
-    path: '/groupmember',
+    path: '/groupMember',
     name: 'GroupMember',
     component: GroupMemberHome,
     redirect: {
-      name: 'UpdateGroupMember',
+      name: 'UpdateNumberAndDept',
     },
     children: [
       {
-        path: 'updateGroupMember',
-        name: 'UpdateGroupMember',
-        component: UpdateGroupMember,      
+        path: 'updateNumberAndDept',
+        name: 'UpdateNumberAndDept',
+        component: UpdateNumberAndDept,      
       },
      
     ]

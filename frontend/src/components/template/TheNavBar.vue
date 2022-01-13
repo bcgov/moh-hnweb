@@ -28,11 +28,11 @@
             </div>
           </div>
         </li>
-        <li id="manage-employees-link" :class="tabClass($route, 'ManageEmployees')">
-          <div class="dropdown" :key="manageEmployeeDropDownKey" v-on:click="this.refreshManageEmployee">
-            <router-link @click="resetAlert" :to="{ name: 'GroupMember'}">Manage GroupMember</router-link>
+        <li id="group-member-link" :class="menuTabClass($route, 'GroupMember')">
+          <div class="dropdown" :key="groupMemberDropDownKey" v-on:click="this.refreshGroupMember">
+            <router-link @click="resetAlert" :to="{ name: 'GroupMember'}">Manage Group Member</router-link>
             <div class="dropdown-content">
-              <router-link @click="resetAlert" :class="menuClass($route, 'UpdateGroupMember')" :to="{ name: 'UpdateGroupMember'}">Update Group Member's Number and/or Department</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'UpdateNumberAndDept')" :to="{ name: 'UpdateNumberAndDept'}">Update Group Member's Number and/or Department</router-link>
             </div>
           </div>
         </li>
@@ -51,7 +51,7 @@ export default {
     return {
       eligibilityDropdownKey: 0,
       coverageEnrollmentDropDownKey: 0,
-      manageEmployeeDropDownKey: 0,
+      groupMemberDropDownKey: 0,
     }
   },
   methods: {
@@ -64,8 +64,8 @@ export default {
     refreshCoverageEnrollment() {
       this.coverageEnrollmentDropDownKey += 1
     },
-    refreshManageEmployee() {
-      this.manageEmployeeDropDownKey += 1
+    refreshGroupMember() {
+      this.groupMemberDropDownKey += 1
     },
     menuClass(route, routeName) {
       return this.tabClass(route, routeName)
