@@ -31,6 +31,8 @@ public class WC0 {
 		StringBuilder sb = new StringBuilder();
 		sb.append(StringUtils.rightPad(phn, 10));
 		sb.append(StringUtils.rightPad(groupNumber, 7));
+		sb.append(StringUtils.rightPad(coverageCancelDate, 10));
+		sb.append(StringUtils.rightPad(payerCancelReason, 1));
 
 		return sb.toString();
 	}
