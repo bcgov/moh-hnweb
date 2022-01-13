@@ -10,7 +10,7 @@
 
 <template>
   <TheHeader/>
-  <TheNavBar v-if="isHNWebPage"/>
+  <TheNavBar v-if="isAuthorized"/>
   <main>
     <section class="content">
       <TheAlert/>
@@ -18,7 +18,7 @@
     </section>
     <KeycloakDevTools v-if="dev"/>
   </main>
-  <TheFooter v-if="isHNWebPage"/>
+  <TheFooter v-if="isAuthorized"/>
 </template>
 
 <script>
@@ -30,7 +30,7 @@
       }
     },
     computed: {
-      isHNWebPage() {
+      isAuthorized() {
         return this.$route.name !== 'Unauthorized'
       }
     }

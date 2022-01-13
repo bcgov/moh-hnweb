@@ -144,15 +144,11 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const hasAnyPermission = store.getters['auth/hasAnyPermission']
-  if (hasAnyPermission || isUnauthorizedComponent(to)) {
+  if (hasAnyPermission || to.name === 'Unauthorized') {
     next()
   } else {
     next({ name: 'Unauthorized' })
   }
 })
-
-function isUnauthorizedComponent(to) {
-  return to.name === 'Unauthorized'
-}
 
 export default router
