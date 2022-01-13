@@ -28,7 +28,7 @@
             </div>
           </div>
         </li>
-        <li id="group-member-link" :class="menuTabClass($route, 'GroupMember')">
+        <li id="group-member-link" :class="menuTabClass($route, '/groupMember')">
           <div class="dropdown" :key="groupMemberDropDownKey" v-on:click="this.refreshGroupMember">
             <router-link @click="resetAlert" :to="{ name: 'GroupMember'}">Manage Group Member</router-link>
             <div class="dropdown-content">
