@@ -13,6 +13,9 @@ export const resources = {
     inquirePhn: '/eligibility/inquire-phn',
     lookupPhn: '/eligibility/lookup-phn',
   },
+  groupMember: {
+    updateNumberAndDept: '/group-member/update-number-and-dept'
+  },
   user: {
     permissions: '/user/permissions'
   },

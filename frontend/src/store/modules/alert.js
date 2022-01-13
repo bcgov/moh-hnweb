@@ -1,3 +1,5 @@
+import { DEFAULT_ERROR_MESSAGE } from '../../util/constants.js'
+
 const state = {
   message: '',
   type: 'success',
@@ -11,7 +13,13 @@ const mutations = {
     state.active = true
   },
   setErrorAlert(state, message) {
-    state.message = message || 'Please correct errors before submitting'
+    state.message = message || DEFAULT_ERROR_MESSAGE
+    state.type = 'error'
+    state.active = true
+  },
+  setErrorAlerts(state, messages) {
+    const message = messages.join('\n')
+    state.message = message
     state.type = 'error'
     state.active = true
   },
@@ -31,7 +39,7 @@ const mutations = {
     state.active = true
   },
   dismissAlert(state) {
-      state.active = false
+    state.active = false
   }
 }
 
