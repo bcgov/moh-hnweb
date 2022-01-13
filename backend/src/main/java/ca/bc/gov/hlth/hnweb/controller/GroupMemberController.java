@@ -60,18 +60,18 @@ public class GroupMemberController {
 			UpdateNumberAndDeptResponse deptNumberResponse = new UpdateNumberAndDeptResponse();
 			if (StringUtils.isNotBlank(updateNumberAndDeptRequest.getDepartmentNumber())) {
 				RPBSPED0Converter rpbsped0Converter = new RPBSPED0Converter();
-				RPBSPED0 ped0Request = rpbsped0Converter.convertRequest(updateNumberAndDeptRequest);
-				RPBSPED0 ped0Response = groupMemberService.updateGroupMemberDepartmentNumber(ped0Request);
-				deptNumberResponse = rpbsped0Converter.convertResponse(ped0Response);
+				RPBSPED0 rpbsped0Request = rpbsped0Converter.convertRequest(updateNumberAndDeptRequest);
+				RPBSPED0 rpbsped0Response = groupMemberService.updateGroupMemberDepartmentNumber(rpbsped0Request);
+				deptNumberResponse = rpbsped0Converter.convertResponse(rpbsped0Response);
 			}
 
 			// Handle the group member/employee number
 			UpdateNumberAndDeptResponse empNumberResponse = new UpdateNumberAndDeptResponse();
 			if (StringUtils.isNotBlank(updateNumberAndDeptRequest.getGroupMemberNumber())) {
 				RPBSPEE0Converter rpbspee0Converter = new RPBSPEE0Converter();
-				RPBSPEE0 pee0Request = rpbspee0Converter.convertRequest(updateNumberAndDeptRequest);
-				RPBSPEE0 pee0Response = groupMemberService.updateGroupMemberEmployeeNumber(pee0Request);
-				empNumberResponse = rpbspee0Converter.convertResponse(pee0Response);
+				RPBSPEE0 rpbspee0Request = rpbspee0Converter.convertRequest(updateNumberAndDeptRequest);
+				RPBSPEE0 rpbspee0Response = groupMemberService.updateGroupMemberEmployeeNumber(rpbspee0Request);
+				empNumberResponse = rpbspee0Converter.convertResponse(rpbspee0Response);
 			}
 				
 			// Combine the results
@@ -117,7 +117,7 @@ public class GroupMemberController {
 	private String generateErrorWarningMessage(UpdateNumberAndDeptResponse deptNumberResponse, UpdateNumberAndDeptResponse empNumberResponse) {
 		Set<String> messages = new HashSet<>();
 		
-		// Include all Error and Warning messages but			
+		// Include all Error and Warning messages but skip Success messages		
 		if (deptNumberResponse.getStatus() == StatusEnum.ERROR || deptNumberResponse.getStatus() == StatusEnum.WARNING) {
 			messages.add(deptNumberResponse.getMessage());
 		}
