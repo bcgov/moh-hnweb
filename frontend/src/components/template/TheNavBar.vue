@@ -35,6 +35,7 @@
               <router-link @click="resetAlert" :class="menuClass($route, 'UpdateNumberAndDept')" :to="{ name: 'UpdateNumberAndDept'}">Update Group Member's Number and/or Department</router-link>
             </div>
           </div>
+        </li>
         <li id="help-link" :class="tabClass($route, 'Help')">
           <router-link @click="resetAlert" :to="{ name: 'Help' }">Help</router-link>
         </li>
