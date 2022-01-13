@@ -61,7 +61,7 @@ public class GroupMemberControllerTest {
     }
 
     @Test
-    public void testUpdateGroupMember_invalidRequest() throws InterruptedException {
+    public void testUpdateGroupMember_invalidRequest() {
     	
     	UpdateNumberAndDeptRequest updateNumberAndDeptRequest = new UpdateNumberAndDeptRequest();
     	updateNumberAndDeptRequest.setPhn("9347984074");
