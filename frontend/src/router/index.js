@@ -13,6 +13,8 @@ import Home from './../views/Home.vue'
 import NotFound from '../views/NotFound.vue'
 import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
 import PhnLookup from '../views/eligibility/PhnLookup.vue'
+import Unauthorized from '../views/Unauthorized.vue'
+import keycloak from '../keycloak'
 import store from '../store'
 
 const routes = [
@@ -103,6 +105,11 @@ const routes = [
     name: 'NotFound',
     component: NotFound,
   },
+  {
+    path: '/unauthorized',
+    name: 'Unauthorized',
+    component: Unauthorized,
+  },
 ]
 
 function checkPageAction(to, next) {
@@ -134,5 +141,18 @@ const router = createRouter({
     return { left: 0, top: 0 }
   },
 })
+
+router.beforeEach((to, from, next) => {
+  const hasAnyPermission = store.getters['auth/hasAnyPermission']
+  if (hasAnyPermission || isUnauthorizedComponent(to)) {
+    next()
+  } else {
+    next({ name: 'Unauthorized' })
+  }
+})
+
+function isUnauthorizedComponent(to) {
+  return to.name === 'Unauthorized'
+}
 
 export default router

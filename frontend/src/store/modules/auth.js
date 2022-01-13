@@ -14,13 +14,16 @@ const getters = {
   },
   hasPermission: (state) => (permission) => {
     return state.permissions.includes(permission)
-  }
+  },
+  hasAnyPermission: (state) => {
+    return state.permissions.length > 0
+  },
 }
 
 const actions = {
   setPermissions(context, permissions) {
     context.commit('setPermissions', permissions)
-  }
+  },
 }
 
 export default {
@@ -28,5 +31,5 @@ export default {
   state,
   getters,
   mutations,
-  actions
+  actions,
 }

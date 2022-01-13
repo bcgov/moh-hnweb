@@ -10,7 +10,7 @@
 
 <template>
   <TheHeader/>
-  <TheNavBar/>
+  <TheNavBar v-if="isHNWebPage"/>
   <main>
     <section class="content">
       <TheAlert/>
@@ -18,7 +18,7 @@
     </section>
     <KeycloakDevTools v-if="dev"/>
   </main>
-  <TheFooter/>
+  <TheFooter v-if="isHNWebPage"/>
 </template>
 
 <script>
@@ -29,6 +29,11 @@
         dev: import.meta.env.DEV,
       }
     },
+    computed: {
+      isHNWebPage() {
+        return this.$route.name !== 'Unauthorized'
+      }
+    }
   }
 </script>
 
