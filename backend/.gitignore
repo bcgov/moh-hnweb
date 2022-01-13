@@ -6,6 +6,7 @@ target/
 
 ### Cert Files ###
 src/main/resources/keystore/
+src/main/resources/truststore/
 
 ### Secure properties ###
 src/main/resources/application-*.yaml

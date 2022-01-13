@@ -1,7 +1,6 @@
 package ca.bc.gov.hlth.hnweb.converter.hl7v3;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,7 @@ import ca.bc.gov.hlth.hnweb.model.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.Name;
-import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
+import ca.bc.gov.hlth.hnweb.util.V3MessageUtil;
 
 /**
  * Converter class for V3 messages Contains methods to facilitate converter a
@@ -101,7 +100,7 @@ public class GetDemographicsConverter {
 		personDetailsResponse.setSecondName(nameObj.getSecondGivenName());
 		personDetailsResponse.setSurname(nameObj.getSurname());
 
-		String birthDate = new SimpleDateFormat(V2MessageUtil.DATE_FORMAT_DATE_ONLY).format(demographicsResponse.getPerson().getBirthDate());
+		String birthDate = V3MessageUtil.convertDateToString(demographicsResponse.getPerson().getBirthDate());
 		personDetailsResponse.setDateOfBirth(birthDate);
 		personDetailsResponse.setGender(demographicsResponse.getPerson().getGender());
 	}

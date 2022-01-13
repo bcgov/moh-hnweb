@@ -26,7 +26,7 @@ public class EnrollSubscriberRequest {
 
 	private String groupMemberNumber;
 
-	@JsonFormat(pattern = "yyyyMMdd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dateOfBirth;
 
 	@JsonFormat(pattern = "yyyy-MM-dd")

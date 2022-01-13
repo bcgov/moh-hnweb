@@ -7,17 +7,7 @@ config:
 
 server:
   port: 9090
-
-# Configuration for Enroll Subscriber (R50) endpoint
-R50:
-  url: 
-  user: 
-    name: 
-    password: 
-  cert:
-    file: keystore/testcert.pfx
-    password: abc123
-    
+   
 # Configuration for RAPID (R32, R40, R41, R42) endpoint
 rapid:
   url:
@@ -28,7 +18,7 @@ rapid:
     name: 
     password: 
   cert:
-    file: keystore/testcert.pfx 
+    file: classpath:keystore/testcert.pfx 
     password: abc123
 
 # V2 message construction
@@ -39,8 +29,10 @@ v2:
 # Configuration for GetDemographics (R03) endpoint
 hcim:
   url:  
+  trust:
+    file: classpath:truststore/testtrustedcert.crt
   cert:
-    file: keystore/testcert.pfx 
+    file: classpath:keystore/testcert.pfx 
     password: abc123
     
 # Configuration for HIBC (E45, R15, R50) endpoints
@@ -53,7 +45,11 @@ hibc:
   r15:
     path: 
     username: 
+    password:
+  r50:
+    path: 
+    username: 
     password: 
   cert:
-    file: keystore/testcert.pfx
+    file: classpath:keystore/testcert.pfx
     password: abc123

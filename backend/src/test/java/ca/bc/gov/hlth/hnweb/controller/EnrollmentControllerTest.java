@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.AfterAll;
@@ -21,6 +22,8 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
+import ca.bc.gov.hlth.hnweb.model.NameSearchRequest;
+import ca.bc.gov.hlth.hnweb.model.NameSearchResponse;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.StatusEnum;
@@ -38,13 +41,25 @@ import okhttp3.mockwebserver.RecordedRequest;
 @SpringBootTest
 public class EnrollmentControllerTest {
 
-	private static final String ACK_ERROR = "MSH|^~\\&|RAIPRSN-NM-SRCH|BC00002041|HNWeb|moh_hnclient_dev|20211013124847.746-0700||ACK|71902|D|2.4\r\n" + 
+	private static final String Z06_ERROR = "MSH|^~\\&|RAIPRSN-NM-SRCH|BC00002041|HNWeb|moh_hnclient_dev|20211013124847.746-0700||ACK|71902|D|2.4\r\n" + 
 			"MSA|AE|20191108082211|NHR529E^SEVERE SYSTEM ERROR\r\n" + 
-			"ERR|^^^NHR529E";
+			"ERR|^^^NHR529E&SYSTEM ERROR";
 	
-	private static final String ACK_SUCCESS = "MSH|^~\\&|RAIPRSN-NM-SRCH|BC00002041|HNWeb|BC01000161|20210916104824||ACK|71902|D|2.4\r\n" + 
+	private static final String Z06_SUCCESS = "MSH|^~\\&|RAIPRSN-NM-SRCH|BC00002041|HNWeb|BC01000161|20210916104824||ACK|71902|D|2.4\r\n" + 
 			"MSA|AA|20210506160152|HJMB001ISUCCESSFULLY COMPLETED\r\n" + 
 			"ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED";
+	
+	private static final String ZO5_SUCCESS = "MSH|^~\\&|RAIENROL-EMP|BC00001013|HNWeb|HN-WEB|20211220180303|test|R50^Y00|20211220160240|D|2.4\r\n" + 
+			"MSA|AA|20210506160152|HJMB001ITRANSACTION SUCCESSFUL\r\n" + 
+			"PID||9873808694^^^BC^PH^MOH\r\n" +
+			"ERR|^^^HJMB001I&SUCCESSFULLY COMPLETED";
+			;
+	
+	private static final String Z05_ERROR = "MSH|^~\\&|RAIENROL-EMP|BC00001013|HNWeb|HN-WEB|20211220180303|test|R50^Y00|20211220160240|D|2.4\r\n"+
+			"MSA|AE|20211220160240|HRPB187ECOVERAGE MUST BE MORE THAN 2 MONTHS AFTER VISA ISSUE/RESIDENCE DATE\r\n" +
+			"ERR|^^^HRPB187E&COVERAGE MUST BE MORE THAN 2 MONTHS AFTER VISA ISSUE/RESIDENCE DATE";
+	
+	private static final String NO_RECORD_MESSAGE = " No results were returned. Please refine your search criteria, and try again.";
 	
 	public static MockWebServer mockBackEnd;
 	private static MockedStatic<SecurityUtil> mockStatic;
@@ -69,18 +84,19 @@ public class EnrollmentControllerTest {
     }
     
     @Test
-    void testEnrollSubscriber_Error() throws Exception {    	
+    void testEnrollSubscriber_Z06_Error() throws Exception {    	
         
         mockBackEnd.enqueue(new MockResponse()
-        		.setBody(ACK_ERROR)
+        		.setBody(Z06_ERROR)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
 
 		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();
+		enrollSubscriberRequest.setPhn("123456789");
 		ResponseEntity<EnrollSubscriberResponse> enrollSubscriber = enrollmentController.enrollSubscriber(enrollSubscriberRequest);
 
 		//Check the response
 		assertEquals(StatusEnum.ERROR, enrollSubscriber.getBody().getStatus());
-		assertEquals("NHR529E", enrollSubscriber.getBody().getMessage());
+		assertEquals("SYSTEM ERROR", enrollSubscriber.getBody().getMessage());
 		
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -90,10 +106,55 @@ public class EnrollmentControllerTest {
     }
     
     @Test
-    void testEnrollSubscriber_Success() throws Exception {    	
+    void testEnrollSubscriber_Z05_Error() throws Exception {    	
         
         mockBackEnd.enqueue(new MockResponse()
-        		.setBody(ACK_SUCCESS)
+        		.setBody(Z05_ERROR)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+
+		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();		
+		ResponseEntity<EnrollSubscriberResponse> enrollSubscriber = enrollmentController.enrollSubscriber(enrollSubscriberRequest);
+
+		//Check the response
+		assertEquals(StatusEnum.ERROR, enrollSubscriber.getBody().getStatus());
+		assertEquals("COVERAGE MUST BE MORE THAN 2 MONTHS AFTER VISA ISSUE/RESIDENCE DATE", enrollSubscriber.getBody().getMessage());
+		
+		//Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());       
+    }
+    
+    @Test
+    void testEnrollSubscriber_Z06_Success() throws Exception {    	
+        
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(Z06_SUCCESS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+
+		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();
+		enrollSubscriberRequest.setPhn("123456789");
+		ResponseEntity<EnrollSubscriberResponse> enrollSubscriber = enrollmentController.enrollSubscriber(enrollSubscriberRequest);
+
+		//Check the response
+		assertEquals(StatusEnum.SUCCESS, enrollSubscriber.getBody().getStatus());
+		
+		assertEquals("SUCCESSFULLY COMPLETED", enrollSubscriber.getBody().getMessage());
+		
+		
+		//Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());       
+    }
+    
+    @Test
+    void testEnrollSubscriber_Z05_Success() throws Exception {    	
+        
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(ZO5_SUCCESS)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
 
 		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();
@@ -101,8 +162,8 @@ public class EnrollmentControllerTest {
 
 		//Check the response
 		assertEquals(StatusEnum.SUCCESS, enrollSubscriber.getBody().getStatus());
-		assertEquals("AA", enrollSubscriber.getBody().getAcknowledgementCode());
-		assertEquals("HJMB001ISUCCESSFULLY COMPLETED", enrollSubscriber.getBody().getAcknowledgementMessage());
+		assertEquals("SUCCESSFULLY COMPLETED", enrollSubscriber.getBody().getMessage());
+		assertEquals("9873808694", enrollSubscriber.getBody().getPhn());
 		
 		
 		//Check the client request is sent as expected
@@ -112,11 +173,12 @@ public class EnrollmentControllerTest {
         assertEquals("/", recordedRequest.getPath());       
     }
     
+    
     @Test
     void testGetDemographicsDetails_Success() throws Exception {    	
         
         mockBackEnd.enqueue(new MockResponse()
-        		.setBody(TestUtil.convertXMLFileToString("src\\test\\resources\\GetDemographicsResponse.xml"))
+        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse.xml"))
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
         GetPersonDetailsRequest getPersonQuery = new GetPersonDetailsRequest();
@@ -140,7 +202,7 @@ public class EnrollmentControllerTest {
     	String expectedMessageText = " Warning: The identifier you used in the query has been merged. The surviving identifier was returned.";
         
         mockBackEnd.enqueue(new MockResponse()
-        		.setBody(TestUtil.convertXMLFileToString("src\\test\\resources\\GetDemographicsResponse_NonSurvivor.xml"))
+        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_NonSurvivor.xml"))
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
         GetPersonDetailsRequest getPersonQuery = new GetPersonDetailsRequest();
@@ -158,6 +220,58 @@ public class EnrollmentControllerTest {
         assertEquals("/", recordedRequest.getPath());
     }
     
+    @Test
+    void testGetNameSearch_MultiRecords() throws Exception {    	
+        
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/FindCandidatesResponse_Multiples.xml"))
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+        
+        NameSearchRequest nameSearchRequest = new NameSearchRequest();
+        nameSearchRequest.setGivenName("TestGiven");
+        nameSearchRequest.setSurname("TestSurname");
+        nameSearchRequest.setGender("M");
+        nameSearchRequest.setDateOfBirth(LocalDate.of(1973, 8, 11));
+        	       
+        ResponseEntity<NameSearchResponse> response = enrollmentController.getNameSearch(nameSearchRequest);
+        NameSearchResponse nameSearchResponse = response.getBody();
+        assertEquals(3, nameSearchResponse.getCandidates().size());
+        assertEquals(new BigDecimal(31), nameSearchResponse.getCandidates().get(0).getScore());
+        assertEquals(new BigDecimal(-53), nameSearchResponse.getCandidates().get(1).getScore());
+        assertEquals(new BigDecimal(-56), nameSearchResponse.getCandidates().get(2).getScore());
+    			
+		//Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());
+    }
+    
+    
+    @Test
+    void testGetNameSearch_NoRecords() throws Exception {    	
+        
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/FindCandidatesResponse_NoMatches.xml"))
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+        
+        NameSearchRequest nameSearchRequest = new NameSearchRequest();
+        nameSearchRequest.setGivenName("TestGiven");
+        nameSearchRequest.setSurname("TestSurname");
+        nameSearchRequest.setGender("M");
+        nameSearchRequest.setDateOfBirth(LocalDate.of(1973, 8, 11));
+        	       
+        ResponseEntity<NameSearchResponse> response = enrollmentController.getNameSearch(nameSearchRequest);
+        NameSearchResponse nameSearchResponse = response.getBody();
+        assertEquals(NO_RECORD_MESSAGE, nameSearchResponse.getMessage());
+    			
+		//Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());
+    }
+    
     /**
      * The URL property used by the mocked endpoint needs to be set after the MockWebServer starts as the port it uses is 
      * created dynamically on start up to ensure it uses an available port so it is not known before then. 
@@ -166,12 +280,11 @@ public class EnrollmentControllerTest {
     @DynamicPropertySource
     static void registerMockUrlProperty(DynamicPropertyRegistry registry) {
         registry.add("hcim.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
-        registry.add("R50.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
+        registry.add("hibc.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
     }
     
     private EnrollSubscriberRequest createEnrollSubscriberRequest() {
 		EnrollSubscriberRequest enrollSubscriberRequest = new EnrollSubscriberRequest();
-		enrollSubscriberRequest.setPhn("123456789");
 		enrollSubscriberRequest.setGivenName("FirstName");
 		enrollSubscriberRequest.setSecondName("SecondName");
 		enrollSubscriberRequest.setSurname("FamilyName");

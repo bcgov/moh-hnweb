@@ -21,7 +21,7 @@
           <AppInput :e-model="v$.groupNumber" id="groupNumber" size="200" label="Group Number" type="text" v-model.trim="groupNumber" />
         </AppCol>
         <AppCol class="col4">
-          <AppSelect :e-model="v$.immigrationCode" id="immigrationCode" label="Immigration Code" v-model="immigrationCode" :options="getImmigrationCodeOptions" />
+          <AppSelect :e-model="v$.immigrationCode" id="immigrationCode" label="Immigration Code" v-model="immigrationCode" :options="immigrationCodeOptions" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -79,7 +79,7 @@
           <AppInput :e-model="v$.city" id="city" label="City" type="text" v-model.trim="city" />
         </AppCol>
         <AppCol class="col4">
-          <AppSelect :e-model="v$.province" id="province" label="Province" v-model="province" :options="getProvinceOptions" />
+          <AppSelect :e-model="v$.province" id="province" label="Province" v-model="province" :options="provinceOptions" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -108,7 +108,7 @@
           <AppInput :e-model="v$.mailingAddressCity" id="mailingAddressCity" label="City" type="text" v-model.trim="mailingAddressCity" />
         </AppCol>
         <AppCol class="col4">
-          <AppSelect :e-model="v$.mailingAddressProvince" id="mailingAddressProvince" label="Province" v-model="mailingAddressProvince" :options="getProvinceOptions" />
+          <AppSelect :e-model="v$.mailingAddressProvince" id="mailingAddressProvince" label="Province" v-model="mailingAddressProvince" :options="provinceOptions" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -119,7 +119,7 @@
 
       <AppRow>
         <AppCol class="col4">
-          <AppSelect :e-model="v$.priorResidenceCode" id="priorResidenceCode" label="Prior Residence Code" v-model="priorResidenceCode" :options="getPriorResidenceOptions" />
+          <AppSelect :e-model="v$.priorResidenceCode" id="priorResidenceCode" label="Prior Residence Code" v-model="priorResidenceCode" :options="priorResidenceOptions" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -141,20 +141,12 @@ import useVuelidate from '@vuelidate/core'
 import { validateGroupNumber, validateGroupMemberNumber, validateDepartmentNumber, validateTelephone, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
-import { API_DATE_FORMAT } from '../../../util/constants'
+import { API_DATE_FORMAT, IMMIGRATION_CODES, PROVINCES, PRIOR_RESIDENCES } from '../../../util/constants'
 import { formatPersonName } from '../../../util/utils'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'ResidentDetails',
-  props: {
-    resident: {
-      phn: '',
-      givenName: '',
-      secondName: '',
-      surname: '',
-      dateOfBirth: '',
-    },
-  },
   components: {
     AppSelect,
   },
@@ -174,7 +166,7 @@ export default {
       departmentNumber: '',
       visaExpiryDate: null,
       residenceDate: null,
-      coverageEffectiveDate: null,
+      coverageEffectiveDate: dayjs().startOf('month').toDate(),
       telephone: '',
       coverageCancellationDate: null,
       address1: '',
@@ -193,54 +185,26 @@ export default {
       otherProvinceHealthcareNumber: '',
     }
   },
-  computed: {
+  created() {
     // Immigration Code drop down options
-    getImmigrationCodeOptions() {
-      return [
-        { text: 'Select', value: '' },
-        { text: 'Student Authorization', value: 'S' },
-      ]
-    },
+    this.immigrationCodeOptions = IMMIGRATION_CODES
     // Province drop down options
-    getProvinceOptions() {
-      return [
-        { text: 'Select', value: '' },
-        { text: 'Alberta', value: 'AB' },
-        { text: 'British Columbia', value: 'BC' },
-        { text: 'Manitoba', value: 'MB' },
-        { text: 'New Brunswick', value: 'NB' },
-        { text: 'Newfoundland', value: 'NL' },
-        { text: 'Nova Scotia', value: 'NS' },
-        { text: 'Northwest Territories', value: 'NT' },
-        { text: 'Nunavut', value: 'NU' },
-        { text: 'Ontario', value: 'ON' },
-        { text: 'P.E.I', value: 'PE' },
-        { text: 'Quebec', value: 'QC' },
-        { text: 'Saskatchewan', value: 'SK' },
-        { text: 'Yukon', value: 'YT' },
-      ]
-    },
+    this.provinceOptions = PROVINCES
     // Prior Residence drop down options
-    getPriorResidenceOptions() {
-      return [
-        { text: 'Select', value: '' },
-        { text: 'Alberta', value: 'AB' },
-        { text: 'Manitoba', value: 'MB' },
-        { text: 'New Brunswick', value: 'NB' },
-        { text: 'Newfoundland', value: 'NL' },
-        { text: 'Nova Scotia', value: 'NS' },
-        { text: 'Northwest Territories', value: 'NT' },
-        { text: 'Nunavut', value: 'NU' },
-        { text: 'Other Country', value: 'OC' },
-        { text: 'Ontario', value: 'ON' },
-        { text: 'P.E.I', value: 'PE' },
-        { text: 'Quebec', value: 'QC' },
-        { text: 'Saskatchewan', value: 'SK' },
-        { text: 'U.S.A', value: 'US' },
-        { text: 'Yukon', value: 'YT' },
-        { text: 'British Columbia', value: 'BC' },
-      ]
-    },
+    this.priorResidenceOptions = PRIOR_RESIDENCES
+
+    //populate data on component load
+    this.address1 = this.resident?.address1
+    this.address2 = this.resident?.address2
+    this.address3 = this.resident.address3
+    this.city = this.resident?.city
+    this.province = this.resident.province
+    this.postalCode = this.resident.postalCode
+  },
+  computed: {
+    ...mapGetters('studyPermitHolder', {
+      resident: 'getResident',
+    }),
     fullName() {
       return formatPersonName(this.resident)
     },
@@ -256,6 +220,12 @@ export default {
           return
         }
         this.$emit('register-resident', {
+          phn: this.resident?.phn,
+          dateOfBirth: dayjs(this.resident?.dateOfBirth).format(API_DATE_FORMAT),
+          givenName: this.resident?.givenName,
+          secondName: this.resident?.secondName,
+          surname: this.resident?.surname,
+          gender: this.resident?.gender,
           groupNumber: this.groupNumber,
           immigrationCode: this.immigrationCode,
           groupMemberNumber: this.groupMemberNumber,
@@ -295,7 +265,7 @@ export default {
       this.departmentNumber = ''
       this.visaExpiryDate = null
       this.residenceDate = null
-      this.coverageEffectiveDate = null
+      this.coverageEffectiveDate = dayjs().startOf('month').toDate()
       this.telephone = ''
       this.coverageCancellationDate = null
       this.address1 = ''

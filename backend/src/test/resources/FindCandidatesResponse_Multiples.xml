@@ -1,0 +1,170 @@
+<HCIM_IN_FindCandidatesResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:v3">
+	<!-- ========================
+BC Client Registry   Find Candidates response sample message.
+September 20, 2011
+
+Comments:
+
+1. contains known datatype and markup validation errors. 
+
+Release: BC.CR.R1.7
+=======================   -->
+	<id root="2.16.840.1.113883.3.51.1.1.1" extension="e770dd20-7fe9-406f-a57c-52ed466f7a3b"/>
+	<creationTime value="20110913161143"/>
+	<versionCode code="V3PR1"/>
+	<interactionId root="2.16.840.1.113883.3.51.1.1.2" extension="HCIM_IN_FindCandidatesResponse"/>
+	<processingCode code="P"/>
+	<processingModeCode code="T"/>
+	<acceptAckCode code="NE"/>
+	<receiver typeCode="RCV">
+		<device classCode="DEV" determinerCode="INSTANCE">
+			<id root="2.16.840.1.113883.3.51.1.1.5" extension="VCHA_COMM"/>
+			<asAgent classCode="AGNT">
+				<representedOrganization classCode="ORG" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.51.1.1.3" extension="VCHA"/>
+				</representedOrganization>
+			</asAgent>
+		</device>
+	</receiver>
+	<sender typeCode="SND">
+		<device classCode="DEV" determinerCode="INSTANCE">
+			<id root="2.16.840.1.113883.3.51.1.1.4" extension="192.168.0.1"/>
+			<asAgent classCode="AGNT">
+				<representedOrganization classCode="ORG" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.51.1.1.3" extension="HCIM"/>
+				</representedOrganization>
+			</asAgent>
+		</device>
+	</sender>
+	<controlActProcess classCode="ACCM" moodCode="EVN">
+		<subject typeCode="SUBJ">
+			<target classCode="IDENT">
+				<addr use="PHYS">
+					<postalCode>V8W 3P9</postalCode>
+					<streetAddressLine>666 YELLOW BRICK RD</streetAddressLine>
+					<city>PRINCE GEORGE</city>
+					<state>BC</state>
+					<country>CA</country>
+				</addr>
+				<telecom value="tel:2505554848" use="H"/>
+				<identifiedPerson classCode="PERSON" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9999999999" assigningAuthorityName="MOH_CRS"/>
+					<name use="L">
+						<given>PURPLE</given>
+						<family>BARNEY</family>
+					</name>
+					<administrativeGenderCode code="M"/>
+					<birthTime value="19400606"/>
+				</identifiedPerson>
+				<subjectOf>
+					<observationEvent>
+						<code code="SCORE"/>
+						<value value="31"/>
+					</observationEvent>
+				</subjectOf>
+			</target>
+		</subject>
+		<subject typeCode="SUBJ">
+			<target classCode="IDENT">
+				<addr use="PHYS">
+					<postalCode>V6N2W2</postalCode>
+					<streetAddressLine>123 FRONT ST</streetAddressLine>
+					<city>VICTORIA</city>
+					<state>BC</state>
+					<country>CA</country>
+				</addr>
+				<addr use="PST">
+					<postalCode>V6N2W2</postalCode>
+					<streetAddressLine>123 Front St</streetAddressLine>
+					<city>Victoria</city>
+					<state>BC</state>
+					<country>CA</country>
+				</addr>
+				<telecom value="tel:2505557841" use="H"/>
+				<identifiedPerson classCode="PERSON" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9999999999" assigningAuthorityName="MOH_CRS"/>
+					<name use="L">
+						<given>SARAH</given>
+						<given>LYNN</given>
+						<family>PURPLE</family>
+					</name>
+					<administrativeGenderCode code="F"/>
+					<birthTime value="19730518"/>
+				</identifiedPerson>
+				<subjectOf>
+					<observationEvent>
+						<code code="SCORE"/>
+						<value value="-53"/>
+					</observationEvent>
+				</subjectOf>
+			</target>
+		</subject>
+		<subject typeCode="SUBJ">
+			<target classCode="IDENT">
+				<addr use="PST">
+					<postalCode>V0B 1G0</postalCode>
+					<streetAddressLine>PO BOX 5</streetAddressLine>
+					<city>CRESTON</city>
+					<state>BC</state>
+					<country>CA</country>
+				</addr>
+				<telecom value="tel:2504283447" use="H"/>
+				<identifiedPerson classCode="PERSON" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9999999999" assigningAuthorityName="MOH_CRS"/>
+					<name use="L">
+						<given>BAILEY</given>
+						<family>PURPLE</family>
+					</name>
+					<administrativeGenderCode code="F"/>
+					<birthTime value="19851214"/>
+				</identifiedPerson>
+				<subjectOf>
+					<observationEvent>
+						<code code="SCORE"/>
+						<value value="-56"/>
+					</observationEvent>
+				</subjectOf>
+			</target>
+		</subject>
+		<queryAck>
+			<!-- BC CR 20-sep-2011.  Compound value in code field fails datatype validation. -->
+			<queryResponseCode code="BCHCIM.FC.0.0012 | The search completed successfully."/>
+			<resultTotalQuantity value="3"/>
+		</queryAck>
+		<queryByParameterPayload>
+			<person.addr>
+				<value use="PHYS PST">
+					<postalCode>V1V1V1</postalCode>
+					<streetAddressLine>123 Any St</streetAddressLine>
+					<streetAddressLine>line 2</streetAddressLine>
+					<streetAddressLine>line 3</streetAddressLine>
+					<streetAddressLine>line 4</streetAddressLine>
+					<city>Victoria</city>
+					<state>BC</state>
+					<country>CA</country>
+				</value>
+			</person.addr>
+			<person.administrativeGender>
+				<value code="M"/>
+			</person.administrativeGender>
+			<person.birthTime>
+				<value value="19591230"/>
+			</person.birthTime>
+			<person.deceasedTime>
+				<value value="20050505"/>
+			</person.deceasedTime>
+			<person.id>
+				<value root="2.16.840.1.113883.3.51.1.1.6.2" extension="12345892" assigningAuthorityName="ABPHN"/>
+			</person.id>
+			<person.name>
+				<value use="L">
+					<given>Barney</given>
+					<family>Purple</family>
+				</value>
+			</person.name>
+			<person.telecom>
+				<value value="tel:1234567890" use="H WP MC"/>
+			</person.telecom>
+		</queryByParameterPayload>
+	</controlActProcess>
+</HCIM_IN_FindCandidatesResponse>

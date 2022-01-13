@@ -9,7 +9,7 @@ const provinceOption = AddVisaResidentWithPHNPage.provinceSelect.find('option');
 const priorResidenceCodeOption = AddVisaResidentWithPHNPage.priorResidenceCodeInput.find('option');
 
 const ERROR_MESSAGE = 'Please correct errors before submitting';
-const SUCCESS_MESSAGE = 'HRPB242EINVALID SUBSCRIBER DATA FOUND. PLS CONTACT MSP.';
+const SUCCESS_MESSAGE = 'HRPB246ETHIS PHN IS ALREADY ENROLLED IN MSP"';
 const GROUPNUMBER_REQUIRED_MESSAGE = 'Group Number is required';
 const IMMIGRATION_CODE_REQUIRED_MESSAGE = 'Immigration Code is required';
 const PERMIT_ISSUE_DATE_REQUIRED_MESSAGE = 'Permit Issue Date is required';
@@ -27,7 +27,7 @@ const INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE = 'Group Member Number is invali
 const INVALID_DEPARTMENT_NUMBER_VALIDATION_MESSAGE = 'Department Number is invalid';
 const PHONE_NUMBER_VALIDATION_MESSAGE = 'Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.';
 
-const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addVisaResidentWithPHN'
+const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addStudyPermitHolderWithPHN'
 
 fixture(`AddVisaResidentWithPHN Page`)
 .disablePageCaching `Test AddVisaResidentWithPHN`
@@ -67,8 +67,7 @@ test('Check properly filled form passes validation', async t => {
     await t
         .typeText(PersonDetails.phnInput, '9882807277')
         .click(PersonDetails.submitButton)
-        .wait(1000)
-        .setTestSpeed(.02)
+        .wait(5000)
         // Given the page is filled out correctly
         .typeText(AddVisaResidentWithPHNPage.groupNumberInput, '6337109')
         .click(AddVisaResidentWithPHNPage.immigrationCodeSelect)
@@ -77,7 +76,7 @@ test('Check properly filled form passes validation', async t => {
         .typeText(AddVisaResidentWithPHNPage.visaIssueDateInput, '20210101')
         .typeText(AddVisaResidentWithPHNPage.visaExpiryDateInput, '20221231')
         .typeText(AddVisaResidentWithPHNPage.residenceDateInput, '20191108')
-        .typeText(AddVisaResidentWithPHNPage.coverageEffectiveDateInput, '20210301')
+        .typeText(AddVisaResidentWithPHNPage.coverageEffectiveDateInput, '20210401')
         .typeText(AddVisaResidentWithPHNPage.coverageCancellationDateInput, '20211231')
         .typeText(AddVisaResidentWithPHNPage.telephoneInput, '7802024022')
         .typeText(AddVisaResidentWithPHNPage.address1Input, 'Test 111 ST')
