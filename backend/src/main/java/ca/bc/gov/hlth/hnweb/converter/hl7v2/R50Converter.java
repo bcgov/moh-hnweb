@@ -6,9 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberRequest;
-import ca.bc.gov.hlth.hnweb.model.EnrollSubscriberResponse;
-import ca.bc.gov.hlth.hnweb.model.StatusEnum;
+import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
+import ca.bc.gov.hlth.hnweb.model.rest.enrollment.EnrollSubscriberRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.enrollment.EnrollSubscriberResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIA;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIH;

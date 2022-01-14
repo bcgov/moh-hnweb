@@ -7,14 +7,14 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import ca.bc.gov.hlth.hnweb.model.StatusEnum;
-import ca.bc.gov.hlth.hnweb.model.eligibility.InquirePhnBeneficiary;
-import ca.bc.gov.hlth.hnweb.model.eligibility.InquirePhnRequest;
-import ca.bc.gov.hlth.hnweb.model.eligibility.InquirePhnResponse;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0Beneficiary;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0Data;
+import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
+import ca.bc.gov.hlth.hnweb.model.rest.eligibility.InquirePhnBeneficiary;
+import ca.bc.gov.hlth.hnweb.model.rest.eligibility.InquirePhnRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.eligibility.InquirePhnResponse;
 
 public class RPBSPPE0Converter extends BaseRapidConverter {
 	private static final String TRAN_CODE = "RPBSPPE0";

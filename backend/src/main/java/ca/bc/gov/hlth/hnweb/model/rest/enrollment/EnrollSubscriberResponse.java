@@ -1,4 +1,6 @@
-package ca.bc.gov.hlth.hnweb.model;
+package ca.bc.gov.hlth.hnweb.model.rest.enrollment;
+
+import ca.bc.gov.hlth.hnweb.model.rest.BaseResponse;
 
 public class EnrollSubscriberResponse extends BaseResponse {
 
