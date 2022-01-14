@@ -13,12 +13,12 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.cancelDate" id="cancelDate" label="Coverage Cancel Date"
+          <AppDateInput :e-model="v$.cancelDate" id="cancelDate" label="Coverage Cancel Date" tooltip tooltipText="Date always defaults to last day of the month"
                         monthPicker inputDateFormat="yyyy-MM" placeholder="YYYY-MM" v-model="cancelDate"/>
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col4">
+        <AppCol class="col3">
           <AppSelect :e-model="v$.cancelReason" id="priorResidenceCode" label="Cancel Reason" v-model="cancelReason" :options="cancelReasons" />
         </AppCol>
       </AppRow>

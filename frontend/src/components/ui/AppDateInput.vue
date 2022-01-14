@@ -1,6 +1,13 @@
+<script setup>
+import AppTooltip from './AppTooltip.vue';
+</script>
+
 <template>
   <div class="text_label">
     <label>{{label}}</label>
+    <AppTooltip v-if="tooltip" :tooltipText="tooltipText" >
+      <font-awesome-icon class="tooltip-icon" icon="question-circle"/>
+    </AppTooltip>
   </div>
   <div v-bind="$attrs">
     <Datepicker
@@ -27,7 +34,7 @@ import { INPUT_DATE_FORMAT, OUTPUT_DATE_FORMAT } from '../../util/constants.js'
 
   export default {
     name: 'AppDateInput',
-    components: {AppInputError, Datepicker},
+    components: {AppTooltip, AppInputError, Datepicker},
     props: {
       eModel: Object,
       label: String,
@@ -40,6 +47,8 @@ import { INPUT_DATE_FORMAT, OUTPUT_DATE_FORMAT } from '../../util/constants.js'
         default: OUTPUT_DATE_FORMAT,
         type: String,
       },
+      tooltip: Boolean,
+      tooltipText: String,
     },
     computed: {
       value: {
@@ -102,6 +111,10 @@ input.dp__input {
 
 .error-input input  {
   border-color: #D8292F !important;
+}
+
+.tooltip-icon {
+  margin-left: 5px
 }
 
 </style>
