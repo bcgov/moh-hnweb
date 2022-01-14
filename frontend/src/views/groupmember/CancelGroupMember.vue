@@ -98,7 +98,6 @@ export default {
           this.showForm = 'false'
           this.updateOk = 'true'
           this.$store.commit('alert/setSuccessAlert', 'Transaction Successful')
-          return
         }
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
