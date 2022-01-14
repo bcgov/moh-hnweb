@@ -1,5 +1,5 @@
 <template>
-  <div id = 'cancelGroupMember'>
+  <div id="cancelGroupMember" v-if="inputFormActive">
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
@@ -28,6 +28,11 @@
       </AppRow>
     </form>
   </div>
+  <div id="confirmation" v-if="!inputFormActive">
+    <br />
+    <p>PHN: {{ result?.phn }}</p>
+    <AppButton @click="resetForm" mode="primary" type="button">Cancel Another Group Member</AppButton>
+  </div>
 </template>
 
 <script>
@@ -45,13 +50,12 @@ export default {
   },
   data() {
     return {
+      inputFormActive: true,
       submitting: false,
       groupNumber:'',
       phn: '',
       cancelDate: null,
       cancelReason: '',
-      updateOk: false,
-      // showForm :true,
       result: {
         phn: '',
         status: '',
@@ -95,8 +99,7 @@ export default {
         }
 
         if (this.result?.status === 'success') {
-          this.showForm = 'false'
-          this.updateOk = 'true'
+          this.inputFormActive = false
           this.$store.commit('alert/setSuccessAlert', 'Transaction Successful')
         }
       } catch (err) {
@@ -116,6 +119,7 @@ export default {
       this.cancelDate = null
       this.cancelReason = ''
       this.result = null
+      this.inputFormActive = true
       this.v$.$reset()
       this.$store.commit("alert/dismissAlert")
     }

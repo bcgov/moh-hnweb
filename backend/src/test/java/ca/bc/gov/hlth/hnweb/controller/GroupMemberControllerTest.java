@@ -27,6 +27,7 @@ import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberResponse;
+
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
 import okhttp3.mockwebserver.MockResponse;

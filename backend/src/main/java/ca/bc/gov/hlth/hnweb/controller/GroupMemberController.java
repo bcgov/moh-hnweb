@@ -31,6 +31,7 @@ import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPWC0;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberResponse;
+
 import ca.bc.gov.hlth.hnweb.service.GroupMemberService;
 
 /**
@@ -106,7 +107,7 @@ public class GroupMemberController {
 	 * Cancels a group member's coverage.
 	 * Maps to the legacy R35.
 	 *  
-	 * @param inquirePhnRequest
+	 * @param cancelGroupMemberRequest
 	 * @return The result of the operation.
 	 */
 	@PostMapping("/cancel-group-member")
@@ -136,9 +137,9 @@ public class GroupMemberController {
 		}
 		
 	}
-	
-	private UpdateGroupMemberResponse handleUpdateGroupMemberResponse(UpdateGroupMemberResponse deptNumberResponse, UpdateGroupMemberResponse empNumberResponse) {
-		UpdateGroupMemberResponse response = new UpdateGroupMemberResponse();
+
+	private UpdateNumberAndDeptResponse handleUpdateGroupMemberResponse(UpdateNumberAndDeptResponse deptNumberResponse, UpdateNumberAndDeptResponse empNumberResponse) {
+		UpdateNumberAndDeptResponse response = new UpdateNumberAndDeptResponse();
 		// Errors are highest priority, followed by warning, followed by Success
 		if (deptNumberResponse.getStatus() == StatusEnum.ERROR || empNumberResponse.getStatus() == StatusEnum.ERROR) {
 			response.setMessage(generateErrorWarningMessage(deptNumberResponse, empNumberResponse));
@@ -152,7 +153,7 @@ public class GroupMemberController {
 			response.setStatus(StatusEnum.SUCCESS);
 		}
 		response.setPhn(StringUtils.isNotBlank(deptNumberResponse.getPhn()) ? deptNumberResponse.getPhn() : empNumberResponse.getPhn());
-		return response;		
+		return response;
 	}
 	
 	private String generateErrorWarningMessage(UpdateNumberAndDeptResponse deptNumberResponse, UpdateNumberAndDeptResponse empNumberResponse) {

@@ -93,8 +93,8 @@ public class GroupMemberService {
 	/**
 	 * Cancels the group member's coverage.
 	 * 
-	 * @param rpbspee0
-	 * @return The RPBSPED0 response.
+	 * @param rpbspwc0
+	 * @return The RPBSPWC0 response.
 	 * @throws HNWebException
 	 */
 	public RPBSPWC0 cancelGroupMemberEmployeeNumber(RPBSPWC0 rpbspwc0) throws HNWebException {
