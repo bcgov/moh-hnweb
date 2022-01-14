@@ -13,7 +13,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.cancelDate" id="cancelDate" label="Coverage Cancel Date" tooltip tooltipText="Date always defaults to last day of the month"
+          <AppDateInput :e-model="v$.cancelDate" id="dp-input-cancelDate" label="Coverage Cancel Date" tooltip tooltipText="Date always defaults to last day of the month"
                         monthPicker inputDateFormat="yyyy-MM" placeholder="YYYY-MM" v-model="cancelDate"/>
         </AppCol>
       </AppRow>
@@ -48,10 +48,7 @@ export default {
       submitting: false,
       groupNumber:'',
       phn: '',
-      cancelDate: {
-        month: new Date().getMonth(),
-        year: new Date().getFullYear()
-      },
+      cancelDate: null,
       cancelReason: '',
       updateOk: false,
       // showForm :true,
@@ -78,13 +75,13 @@ export default {
       this.submitting = true
       this.$store.commit("alert/dismissAlert")
 
-      const isValid = await this.v$.$validate()
-      if (!isValid) {
-        this.showError()
-        return
-      }
-
       try {
+        const isValid = await this.v$.$validate()
+        if (!isValid) {
+          this.showError()
+          return
+        }
+
         this.result = (await GroupMemberService.cancelGroupMember({
           phn: this.phn,
           groupNumber: this.groupNumber,
@@ -117,10 +114,7 @@ export default {
     resetForm() {
       this.phn = ''
       this.groupNumber = ''
-      this.cancelDate = {
-        month: new Date().getMonth(),
-        year: new Date().getFullYear()
-      }
+      this.cancelDate = null
       this.cancelReason = ''
       this.result = null
       this.v$.$reset()
