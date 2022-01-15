@@ -1,11 +1,12 @@
-package ca.bc.gov.hlth.hnweb.model;
+package ca.bc.gov.hlth.hnweb.model.rest.enrollment;
 
-/**
- *Wrapper class for GetPersonDetailsResponse
- */
-public class GetPersonDetailsResponse extends BaseResponse {
+import java.time.LocalDate;
 
-	private String phn;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import ca.bc.gov.hlth.hnweb.model.rest.BaseResponse;
+
+public class NameSearchRequest extends BaseResponse {
 
 	private String givenName;
 
@@ -13,18 +14,12 @@ public class GetPersonDetailsResponse extends BaseResponse {
 
 	private String surname;
 
-	private String dateOfBirth;
+	@JsonFormat(pattern="yyyy-MM-dd")
+	private LocalDate dateOfBirth;
 	
 	private String gender;
 
-	public String getPhn() {
-		return phn;
-	}
-
-	public void setPhn(String phn) {
-		this.phn = phn;
-	}
-
+	
 	public String getGivenName() {
 		return givenName;
 	}
@@ -49,11 +44,11 @@ public class GetPersonDetailsResponse extends BaseResponse {
 		this.surname = surname;
 	}
 
-	public String getDateOfBirth() {
+	public LocalDate getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-	public void setDateOfBirth(String dateOfBirth) {
+	public void setDateOfBirth(LocalDate dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 
@@ -67,7 +62,7 @@ public class GetPersonDetailsResponse extends BaseResponse {
 
 	@Override
 	public String toString() {
-		return "PersonDetailsResponse [phn=" + phn + ", givenName=" + givenName + ", secondName=" + secondName
+		return "NameSearch Response: [givenName=" + givenName + ", secondName=" + secondName
 				+ ", surname=" + surname + ", dateOfBirth=" + dateOfBirth + ", gender=" + gender + "]";
 	}
 	

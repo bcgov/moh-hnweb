@@ -1,6 +1,6 @@
 package ca.bc.gov.hlth.hnweb.model.rest.groupmember;
 
-import ca.bc.gov.hlth.hnweb.model.BaseResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.BaseResponse;
 
 public class UpdateNumberAndDeptResponse extends BaseResponse {
 	private String phn;

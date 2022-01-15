@@ -9,10 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
-import ca.bc.gov.hlth.hnweb.model.NameSearchRequest;
-import ca.bc.gov.hlth.hnweb.model.NameSearchResponse;
-import ca.bc.gov.hlth.hnweb.model.NameSearchResult;
-import ca.bc.gov.hlth.hnweb.model.StatusEnum;
+import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
+import ca.bc.gov.hlth.hnweb.model.rest.enrollment.NameSearchRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.enrollment.NameSearchResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.enrollment.NameSearchResult;
 import ca.bc.gov.hlth.hnweb.model.v3.Address;
 import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesResponse;
