@@ -91,13 +91,13 @@ public class GroupMemberService {
 	}
 	
 	/**
-	 * Cancels the group member's coverage.
+	 * Cancels the group member's coverage based on the R35/RPBSPWC0.
 	 * 
 	 * @param rpbspwc0
 	 * @return The RPBSPWC0 response.
 	 * @throws HNWebException
 	 */
-	public RPBSPWC0 cancelGroupMemberEmployeeNumber(RPBSPWC0 rpbspwc0) throws HNWebException {
+	public RPBSPWC0 cancelGroupMember(RPBSPWC0 rpbspwc0) throws HNWebException {
 		String rpbspwc0Str = rpbspwc0.serialize();
 
 		logger.info("Request {}", rpbspwc0Str);

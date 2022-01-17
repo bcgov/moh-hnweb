@@ -116,7 +116,7 @@ public class GroupMemberController {
 		try {
 			RPBSPWC0Converter converter = new RPBSPWC0Converter();
 			RPBSPWC0 rpbspwc0 = converter.convertRequest(cancelGroupMemberRequest);
-			RPBSPWC0 rpbspwc0Response = groupMemberService.cancelGroupMemberEmployeeNumber(rpbspwc0);
+			RPBSPWC0 rpbspwc0Response = groupMemberService.cancelGroupMember(rpbspwc0);
 			CancelGroupMemberResponse cancelGroupMemberResponse = converter.convertResponse(rpbspwc0Response);
 					
 			ResponseEntity<CancelGroupMemberResponse> response = ResponseEntity.ok(cancelGroupMemberResponse);
