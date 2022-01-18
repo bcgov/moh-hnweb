@@ -1,4 +1,5 @@
 <template>
+  <div id="updateNumberAndDept" v-if="addMode">
     <form @submit.prevent="submitForm">
     <AppRow>
         <AppCol class="col3">
@@ -115,13 +116,13 @@
           </AppCol> 
         </AppRow>      
       </div> 
-      <div v-for="(input, index) in dependents" :key="`AppInput-${index}`" :id="index">
+      <div v-for="(dependent, index) in dependents" :key="`dependent_${index}`" :id="index">
         <AppRow>
           <AppCol class="col4">
             <span  v-show="index==0"><b> Dependent </b></span>
           </AppCol>
           <AppCol class="col4">
-            <AppInput :e-model="v$.dependent" type="text" v-model.trim="input.dependent"  v-bind:id="'dependent_'+index"/>
+            <AppInput :e-model="v$.dependent" type="text" v-model.trim="dependent.dependent"  v-bind:id="'dependent_'+index"/>
           </AppCol>
           <span v-show = "dependents.length > 1 && index != 0">
             <font-awesome-icon icon="minus" @click="removeDependent(index, dependents)"/><b>Remove</b>
@@ -132,25 +133,29 @@
         <AppCol class="col4">
         </AppCol>
         <AppCol class="col4">
-          <font-awesome-icon icon="plus" @click="addDependent(dependents)"/><b>Add</b>
+          <span><font-awesome-icon icon="plus" @click="addDependent(dependents)"/><b>Add</b></span>
         </AppCol>        
       </AppRow>             
       <AppRow>
         <AppButton :submitting="submitting" mode="primary" type="submit">Submit</AppButton>
-        <AppButton @click="resetForm(input,dependents)" mode="secondary" type="button">Clear</AppButton>
+        <AppButton @click="resetForm()" mode="secondary" type="button">Clear</AppButton>
       </AppRow>
     </form>
+  <br />
+  </div>
+  <div id="confirmation" v-if="addOk">
+    <p>PHN: {{ result?.phn }}</p>  
+    <AppButton @click="resetForm" mode="primary" type="button">Add another Group Memeber</AppButton>
+  </div>
 </template>
 <script>
 import AppSelect from '../../components/ui/AppSelect.vue'
 import DependentAppInput from '../../components/ui/DependentAppInput.vue'
 import useVuelidate from '@vuelidate/core'
-import { validateGroupNumber, validateTelephone, validatePHN, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../util/validators'
+import { validateGroupNumber, validateTelephone, validatePHN, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import GroupMemberService from '../../services/GroupMemberService'
-import { API_DATE_FORMAT } from '../../util/constants'
-  
 
 export default {
   name: 'AddGroupMember',
@@ -166,19 +171,21 @@ export default {
   data() {
     return {
       submitting: false,
+      addOk: false, 
+      addMode : true,
       //Add Group Member Fields
-      phn: '',
-      groupNumber: '', 
+      phn: '9873895927',
+      groupNumber: '6337109', 
       groupMemberNumber: '',     
       departmentNumber: '',   
-      coverageEffectiveDate: null,
+      coverageEffectiveDate: dayjs().startOf('month').toDate(),
       telephone: '',
-      address1: '',
+      address1: '101 ave',
       address2: '',
       address3: '',
-      city: '',
-      province: '',
-      postalCode: '',
+      city: 'Edmonton',
+      province: 'Alberta',
+      postalCode: 't6t6t6',
       mailingAddress1: '',
       mailingAddress2: '',
       mailingAddress3: '',
@@ -217,7 +224,9 @@ export default {
   },
   methods: {
     async submitForm() {
-      this.submitting = true
+      this.submitting = true,
+      this.addOk= false, 
+      this.addMode= true
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
@@ -249,6 +258,18 @@ export default {
           spouse: this.spouse,
           dependents: this.dependents,        
         })).data
+
+        if (this.result.status === 'error') {
+          this.$store.commit('alert/setErrorAlert', this.result.message)
+          return
+        }
+
+        if (this.result?.status === 'success') {
+          this.addMode = false
+          this.addOk = true
+          this.$store.commit('alert/setSuccessAlert', this.result.message)
+          return
+        }
         
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
@@ -256,8 +277,7 @@ export default {
         this.submitting = false
       }
     },
-    addDependent(fieldType) { 
-    
+    addDependent(fieldType) {     
       fieldType.push({});
     },
     removeDependent(index, fieldType) {
@@ -267,7 +287,7 @@ export default {
       this.groupNumber = ''     
       this.groupMemberNumber = ''      
       this.departmentNumber = ''      
-      this.coverageEffectiveDate = null
+      this.coverageEffectiveDate = dayjs().startOf('month').toDate(),
       this.telephone = ''
       this.address1 = ''
       this.address2 = ''
@@ -282,10 +302,12 @@ export default {
       this.mailingAddressProvince = ''
       this.mailingAddressPostalCode = ''
       this.spouse = ''
-      this.dependents=''
+      this.dependents = [{dependent: ""}]
       this.v$.$reset()
       this.$store.commit('alert/dismissAlert')
-      this.submitting = false
+      this.submitting = false,
+      this.addOk = false, 
+      this.addMode = true
     },
   },
  
