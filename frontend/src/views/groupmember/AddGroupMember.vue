@@ -89,10 +89,50 @@
         <AppCol class="col4">
           <AppInput :e-model="v$.mailingAddressPostalCode" id="mailingAddressPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddressPostalCode" />
         </AppCol>
-      </AppRow> 
+      </AppRow>
+      <div>
+       <b>Dependent(s)(Optional)</b>
+        <AppRow>
+          <AppCol class="col4"><b>Relationship</b>
+          </AppCol>
+          <AppCol class="col4"><b>PHN</b>
+          </AppCol> 
+        </AppRow> 
+        <AppRow>
+          <AppCol class="col4"><b> Spouse </b>
+          </AppCol>
+          <AppCol class="col4">
+            <AppInput :e-model="v$.spouse" id="spouse" type="text" v-model.trim="spouse" />
+          </AppCol> 
+        </AppRow>
+        <AppRow>
+          <AppCol class="col4"><b> Dependent </b>
+          </AppCol>
+        <AppCol class="col4">
+           <AppInput :e-model="v$.dependent1" id="dependent1" type="text" v-model.trim="dependent1" />
+        </AppCol> 
+        </AppRow>      
+      </div> 
+      <div v-for="(input, index) in dependents" :key="`dependentInput-${index}`">
+        <AppRow>
+          <AppCol class="col4">
+          </AppCol>
+          <AppCol class="col4">
+            <AppInput :e-model="v$.dependent" type="text" v-model.trim="input.dependent" />
+          </AppCol>
+          <font-awesome-icon icon="minus" @click="removeDependent(index, dependents)"/><b>Remove</b>
+        </AppRow>    
+      </div>
+      <AppRow>
+        <AppCol class="col4">
+        </AppCol>
+        <AppCol class="col4">
+          <font-awesome-icon icon="plus" @click="addDependent(input,dependents)"/><b>Add</b>
+        </AppCol>        
+      </AppRow>             
       <AppRow>
         <AppButton :submitting="submitting" mode="primary" type="submit">Submit</AppButton>
-        <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
+        <AppButton @click="resetForm(input,dependents)" mode="secondary" type="button">Clear</AppButton>
       </AppRow>
     </form>
 </template>
@@ -105,7 +145,7 @@ import dayjs from 'dayjs'
 import { API_DATE_FORMAT } from '../../util/constants'
 
 export default {
-  name: 'addGroupMember',
+  name: 'AddGroupMember',
   components: {
     AppSelect,
   },
@@ -136,6 +176,9 @@ export default {
       mailingAddressCity: '',
       mailingAddressProvince: '',
       mailingAddressPostalCode: '',
+      spouse: '',
+      dependent1: '',
+      dependents: [{dependent: ""}],
     }
   },
   computed: {
@@ -176,7 +219,13 @@ export default {
         this.submitting = false
       }
     },
-    resetForm() {
+    addDependent(value, fieldType) { 
+      fieldType.push({ value: ""});
+    },
+    removeDependent(index, fieldType) {
+      fieldType.splice(index, 1);
+    },
+    resetForm() {     
       this.groupNumber = ''     
       this.groupMemberNumber = ''      
       this.departmentNumber = ''      
@@ -194,11 +243,13 @@ export default {
       this.mailingAddressCity = ''
       this.mailingAddressProvince = ''
       this.mailingAddressPostalCode = ''
-       this.v$.$reset()
+      this.dependent = ''
+      this.v$.$reset()
       this.$store.commit('alert/dismissAlert')
       this.submitting = false
     },
   },
+ 
   validations() {
     return {
       phn: {
@@ -227,6 +278,10 @@ export default {
       mailingAddressCity: {},
       mailingAddressProvince: {},
       mailingAddressPostalCode: {},
+      spouse: {},
+      dependent: {},
+      dependent1:{},
+      dependent2:{},
     }
   },
 }
