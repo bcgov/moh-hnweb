@@ -41,7 +41,7 @@ public class RPBSHeader {
 		StringBuilder sb = new StringBuilder();
 		sb.append(StringUtils.rightPad(systemCode, 8));
 		sb.append(StringUtils.rightPad(tranCode, 8));
-		sb.append(StringUtils.rightPad(organization, 8));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(organization), 8));
 		sb.append(StringUtils.rightPad(userID, 32));
 		sb.append(StringUtils.rightPad(identifier, 8));
 		sb.append(StringUtils.rightPad(statusCode, 8));
