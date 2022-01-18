@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="addGroupMember">
+    <form @submit.prevent="submitForm">
     <AppRow>
         <AppCol class="col3">
           <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" type="text" v-model.trim="groupNumber" />
@@ -17,12 +17,12 @@
       </AppRow>
        <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.groupMemberNumber" id="groupMemberNumber" label="Group Member Number" type="text" v-model.trim="groupMemberNumber" />
+          <AppInput :e-model="v$.groupMemberNumber" id="groupMemberNumber" label="Group Member Number (Optional)" type="text" v-model.trim="groupMemberNumber" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.departmentNumber" id="departmentNumber" label="Department Number" type="text" v-model="departmentNumber"/>
+          <AppInput :e-model="v$.departmentNumber" id="departmentNumber" label="Department Number (Optional)" type="text" v-model="departmentNumber"/>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -91,7 +91,12 @@
         </AppCol>
       </AppRow>
       <div>
-       <b>Dependent(s)(Optional)</b>
+        <AppRow>
+          <AppCol class="col4"><b>Dependent(s) (Optional)</b>
+          </AppCol>
+          <AppCol class="col4">
+          </AppCol> 
+        </AppRow>       
         <AppRow>
           <AppCol class="col4"><b>Relationship</b>
           </AppCol>
@@ -106,28 +111,28 @@
           </AppCol> 
         </AppRow>
         <AppRow>
-          <AppCol class="col4"><b> Dependent </b>
-          </AppCol>
-        <AppCol class="col4">
-           <AppInput :e-model="v$.dependent1" id="dependent1" type="text" v-model.trim="dependent1" />
-        </AppCol> 
+          <AppCol class="col4">
+          </AppCol> 
         </AppRow>      
       </div> 
-      <div v-for="(input, index) in dependents" :key="`dependentInput-${index}`">
+      <div v-for="(input, index) in dependents" :key="`AppInput-${index}`" :id="index">
         <AppRow>
           <AppCol class="col4">
+            <span  v-show="index==0"><b> Dependent </b></span>
           </AppCol>
           <AppCol class="col4">
-            <AppInput :e-model="v$.dependent" type="text" v-model.trim="input.dependent" />
+            <AppInput :e-model="v$.dependent" type="text" v-model.trim="input.dependent"  v-bind:id="'dependent_'+index"/>
           </AppCol>
-          <font-awesome-icon icon="minus" @click="removeDependent(index, dependents)"/><b>Remove</b>
+          <span v-show = "dependents.length > 1 && index != 0">
+            <font-awesome-icon icon="minus" @click="removeDependent(index, dependents)"/><b>Remove</b>
+          </span>
         </AppRow>    
-      </div>
-      <AppRow>
+      </div>      
+      <AppRow v-show = "dependents.length < 7">
         <AppCol class="col4">
         </AppCol>
         <AppCol class="col4">
-          <font-awesome-icon icon="plus" @click="addDependent(input,dependents)"/><b>Add</b>
+          <font-awesome-icon icon="plus" @click="addDependent(dependents)"/><b>Add</b>
         </AppCol>        
       </AppRow>             
       <AppRow>
@@ -138,16 +143,20 @@
 </template>
 <script>
 import AppSelect from '../../components/ui/AppSelect.vue'
+import DependentAppInput from '../../components/ui/DependentAppInput.vue'
 import useVuelidate from '@vuelidate/core'
 import { validateGroupNumber, validateTelephone, validatePHN, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
+import GroupMemberService from '../../services/GroupMemberService'
 import { API_DATE_FORMAT } from '../../util/constants'
+  
 
 export default {
   name: 'AddGroupMember',
   components: {
     AppSelect,
+    DependentAppInput,
   },
   setup() {
     return {
@@ -177,8 +186,12 @@ export default {
       mailingAddressProvince: '',
       mailingAddressPostalCode: '',
       spouse: '',
-      dependent1: '',
       dependents: [{dependent: ""}],
+      result: {
+        phn: '', 
+        status: '',
+        message: '',
+      } 
     }
   },
   computed: {
@@ -203,7 +216,7 @@ export default {
     },
   },
   methods: {
-    async addGroupMember() {
+    async submitForm() {
       this.submitting = true
       try {
         const isValid = await this.v$.$validate()
@@ -212,6 +225,30 @@ export default {
           this.submitting = false
           return
         }
+        this.result = (await GroupMemberService.updateNumberAndDept({
+          phn: this.phn,
+          groupNumber: this.groupNumber,
+          phn: this.phn,
+          groupNumber: this.groupNumber, 
+          groupMemberNumber: this.groupMemberNumber,     
+          departmentNumber: this.departmentNumber,   
+          coverageEffectiveDate: this.coverageEffectiveDate,
+          telephone: this.telephone,
+          address1: this.address1,
+          address2: this.address2,
+          address3: this.address3,
+          city: this.city,
+          province: this.province,
+          postalCode: this.postalCode,
+          mailingAddress1: this.mailingAddress1,
+          mailingAddress2: this.mailingAddress2,
+          mailingAddress3: this.mailingAddress3,
+          mailingAddressCity: this.mailingAddress3,
+          mailingAddressProvince: this.mailingAddressProvince,
+          mailingAddressPostalCode: this.mailingAddressPostalCode,
+          spouse: this.spouse,
+          dependents: this.dependents,        
+        })).data
         
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
@@ -219,8 +256,9 @@ export default {
         this.submitting = false
       }
     },
-    addDependent(value, fieldType) { 
-      fieldType.push({ value: ""});
+    addDependent(fieldType) { 
+    
+      fieldType.push({});
     },
     removeDependent(index, fieldType) {
       fieldType.splice(index, 1);
@@ -243,7 +281,8 @@ export default {
       this.mailingAddressCity = ''
       this.mailingAddressProvince = ''
       this.mailingAddressPostalCode = ''
-      this.dependent = ''
+      this.spouse = ''
+      this.dependents=''
       this.v$.$reset()
       this.$store.commit('alert/dismissAlert')
       this.submitting = false
@@ -278,10 +317,8 @@ export default {
       mailingAddressCity: {},
       mailingAddressProvince: {},
       mailingAddressPostalCode: {},
-      spouse: {},
-      dependent: {},
-      dependent1:{},
-      dependent2:{},
+      spouse: {validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),},
+      dependent: {validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),},     
     }
   },
 }
