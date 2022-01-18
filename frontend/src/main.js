@@ -14,7 +14,6 @@ import AppDateInput from './components/ui/AppDateInput.vue'
 import AppInput from './components/ui/AppInput.vue'
 import AppOutput from './components/ui/AppOutput.vue'
 import AppSelect from './components/ui/AppSelect.vue'
-import AppTooltip from "./components/ui/AppTooltip.vue";
 import keycloak from './keycloak'
 import router from './router'
 import UserService from './services/UserService'
@@ -44,7 +43,6 @@ function initApp() {
   app.component('AppInput', AppInput)
   app.component('AppOutput', AppOutput)
   app.component('AppSelect', AppSelect)
-  app.component('AppTooltip', AppTooltip)
 
   app.use(router)
   app.use(store)

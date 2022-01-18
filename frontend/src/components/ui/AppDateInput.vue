@@ -1,7 +1,3 @@
-<script setup>
-import AppTooltip from './AppTooltip.vue';
-</script>
-
 <template>
   <div class="text_label">
     <label>{{label}}</label>
@@ -29,12 +25,13 @@ import AppTooltip from './AppTooltip.vue';
 <script>
 import Datepicker from 'vue3-date-time-picker';
 import AppInputError from './AppInputError.vue'
+import AppTooltip from "./AppTooltip.vue";
 import 'vue3-date-time-picker/dist/main.css'
 import { INPUT_DATE_FORMAT, OUTPUT_DATE_FORMAT } from '../../util/constants.js'
 
   export default {
     name: 'AppDateInput',
-    components: {AppTooltip, AppInputError, Datepicker},
+    components: { AppTooltip, AppInputError, Datepicker },
     props: {
       eModel: Object,
       label: String,

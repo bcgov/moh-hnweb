@@ -18,8 +18,8 @@ export default {
 
   .tooltip .tooltiptext {
     visibility: hidden;
-    background-color: #000000;
-    opacity: 0.80;
+    background-color: #38598A;
+    opacity: 0.90;
     color: #fff;
     text-align: center;
     border-radius: 6px;

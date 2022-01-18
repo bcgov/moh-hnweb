@@ -19,7 +19,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppSelect :e-model="v$.cancelReason" id="priorResidenceCode" label="Cancel Reason" v-model="cancelReason" :options="cancelReasons" />
+          <AppSelect :e-model="v$.cancelReason" id="cancelReason" label="Cancel Reason" v-model="cancelReason" :options="cancelReasons" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -36,10 +36,10 @@
 </template>
 
 <script>
-import useVuelidate from "@vuelidate/core";
-import { helpers, required } from "@vuelidate/validators";
-import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumber, validatePHN } from "../../util/validators";
-import GroupMemberService from "../../services/GroupMemberService";
+import useVuelidate from "@vuelidate/core"
+import { helpers, required } from "@vuelidate/validators"
+import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumber, validatePHN } from "../../util/validators"
+import GroupMemberService from "../../services/GroupMemberService"
 
 export default {
   name: 'CancelGroupMember',
@@ -62,8 +62,8 @@ export default {
         message: '',
       },
       cancelReasons: [
-            { text: 'Employer\'s Request', value: 'K' },
-            { text: 'Out of province move', value: 'E' },
+        { text: 'Employer\'s Request', value: 'K' },
+        { text: 'Out of province move', value: 'E' },
       ],
     }
   },
