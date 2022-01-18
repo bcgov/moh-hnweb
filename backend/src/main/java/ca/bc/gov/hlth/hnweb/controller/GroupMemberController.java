@@ -20,12 +20,18 @@ import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPED0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPEE0Converter;
+import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPWC0Converter;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPED0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPEE0;
+
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPWC0;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberResponse;
+
 import ca.bc.gov.hlth.hnweb.service.GroupMemberService;
 
 /**
@@ -96,6 +102,42 @@ public class GroupMemberController {
 		
 	}
 	
+
+	/**
+	 * Cancels a group member's coverage.
+	 * Maps to the legacy R35.
+	 *  
+	 * @param cancelGroupMemberRequest
+	 * @return The result of the operation.
+	 */
+	@PostMapping("/cancel-group-member")
+	public ResponseEntity<CancelGroupMemberResponse> cancelGroupMember(@Valid @RequestBody CancelGroupMemberRequest cancelGroupMemberRequest) {
+
+		try {
+			RPBSPWC0Converter converter = new RPBSPWC0Converter();
+			RPBSPWC0 rpbspwc0 = converter.convertRequest(cancelGroupMemberRequest);
+			RPBSPWC0 rpbspwc0Response = groupMemberService.cancelGroupMember(rpbspwc0);
+			CancelGroupMemberResponse cancelGroupMemberResponse = converter.convertResponse(rpbspwc0Response);
+					
+			ResponseEntity<CancelGroupMemberResponse> response = ResponseEntity.ok(cancelGroupMemberResponse);
+
+			logger.info("cancelGroupMemberResponse response: {} ", cancelGroupMemberResponse);
+			return response;	
+		} catch (HNWebException hwe) {
+			switch (hwe.getType()) {
+			case DOWNSTREAM_FAILURE:
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
+			default:
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /cancel-group-member request", hwe);				
+			}
+		} catch (WebClientException wce) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /cancel-group-member request", e);
+		}
+		
+	}
+
 	private UpdateNumberAndDeptResponse handleUpdateGroupMemberResponse(UpdateNumberAndDeptResponse deptNumberResponse, UpdateNumberAndDeptResponse empNumberResponse) {
 		UpdateNumberAndDeptResponse response = new UpdateNumberAndDeptResponse();
 		// Errors are highest priority, followed by warning, followed by Success
@@ -111,7 +153,7 @@ public class GroupMemberController {
 			response.setStatus(StatusEnum.SUCCESS);
 		}
 		response.setPhn(StringUtils.isNotBlank(deptNumberResponse.getPhn()) ? deptNumberResponse.getPhn() : empNumberResponse.getPhn());
-		return response;		
+		return response;
 	}
 	
 	private String generateErrorWarningMessage(UpdateNumberAndDeptResponse deptNumberResponse, UpdateNumberAndDeptResponse empNumberResponse) {

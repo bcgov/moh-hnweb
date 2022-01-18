@@ -33,6 +33,7 @@
             <router-link @click="resetAlert" :to="{ name: 'GroupMember'}">Manage Group Member</router-link>
             <div class="dropdown-content">
               <router-link @click="resetAlert" :class="menuClass($route, 'UpdateNumberAndDept')" :to="{ name: 'UpdateNumberAndDept'}">Update Group Member's Number and/or Department</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'CancelGroupMember')" :to="{ name: 'CancelGroupMember'}">Cancel Group Member</router-link>
             </div>
           </div>
         </li>

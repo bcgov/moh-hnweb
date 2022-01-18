@@ -1,6 +1,9 @@
 <template>
   <div class="text_label">
     <label>{{label}}</label>
+    <AppTooltip v-if="tooltip" :tooltipText="tooltipText" >
+      <font-awesome-icon class="tooltip-icon" icon="question-circle"/>
+    </AppTooltip>
   </div>
   <div v-bind="$attrs">
     <Datepicker
@@ -8,8 +11,9 @@
       :class="inputClass"
       :enableTimePicker="false"
       :format="inputDateFormat"
-      placeholder="YYYYMMDD"
+      :placeholder="placeholder"
       :text-input="true"
+      :monthPicker=$attrs.monthPicker
       :uid="$attrs.id"
       v-model="value" 
     />
@@ -21,19 +25,27 @@
 <script>
 import Datepicker from 'vue3-date-time-picker';
 import AppInputError from './AppInputError.vue'
+import AppTooltip from "./AppTooltip.vue";
 import 'vue3-date-time-picker/dist/main.css'
-import { INPUT_DATE_FORMAT } from '../../util/constants.js'
+import { INPUT_DATE_FORMAT, OUTPUT_DATE_FORMAT } from '../../util/constants.js'
 
   export default {
     name: 'AppDateInput',
-    components: {AppInputError, Datepicker},
-    created() {
-      this.inputDateFormat = INPUT_DATE_FORMAT
-    },
+    components: { AppTooltip, AppInputError, Datepicker },
     props: {
       eModel: Object,
       label: String,
-      modelValue: Date,
+      modelValue: Object,
+      inputDateFormat: {
+        default: INPUT_DATE_FORMAT,
+        type: String,
+      },
+      placeholder: {
+        default: OUTPUT_DATE_FORMAT,
+        type: String,
+      },
+      tooltip: Boolean,
+      tooltipText: String,
     },
     computed: {
       value: {
@@ -81,7 +93,12 @@ input.dp__input {
   font-family: 'BCSans';
   font-size: 18px;
   height: 34px;
+  margin-top: 5px;
   margin-bottom: 15px;
+}
+
+.text_label {
+  display: flex;
 }
   
 .dp__input:focus {
@@ -91,6 +108,10 @@ input.dp__input {
 
 .error-input input  {
   border-color: #D8292F !important;
+}
+
+.tooltip-icon {
+  margin-left: 5px
 }
 
 </style>

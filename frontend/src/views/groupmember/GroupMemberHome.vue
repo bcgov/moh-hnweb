@@ -5,7 +5,8 @@ import SubNavTab from '../../components/template/SubNavTab.vue'
 
 <template>
   <TheSubNav>
-    <SubNavTab routeName="UpdateNumberAndDept" title="Update Group Member's Number and/or Department" />    
+    <SubNavTab routeName="UpdateNumberAndDept" title="Update Group Member's Number and/or Department" />
+    <SubNavTab routeName="CancelGroupMember" title="Cancel Group Member" />
   </TheSubNav>
   <router-view />
 </template>
