@@ -31,3 +31,5 @@ security:
       - E45
       - R15
       - R41
+    Dummy:
+      - Dummy
