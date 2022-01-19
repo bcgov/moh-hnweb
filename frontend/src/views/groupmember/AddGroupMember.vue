@@ -1,5 +1,5 @@
 <template>
-  <div id="updateNumberAndDept" v-if="addMode">
+  <div id="addGroupMember" v-if="addMode">
     <form @submit.prevent="submitForm">
     <AppRow>
         <AppCol class="col3">
@@ -150,7 +150,6 @@
 </template>
 <script>
 import AppSelect from '../../components/ui/AppSelect.vue'
-import DependentAppInput from '../../components/ui/DependentAppInput.vue'
 import useVuelidate from '@vuelidate/core'
 import { validateGroupNumber, validateTelephone, validatePHN, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
@@ -161,7 +160,6 @@ export default {
   name: 'AddGroupMember',
   components: {
     AppSelect,
-    DependentAppInput,
   },
   setup() {
     return {
