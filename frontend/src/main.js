@@ -1,6 +1,6 @@
 import '@bcgov/bc-sans/css/BCSans.css'
 
-import { faCheckCircle, faChevronDown, faExclamationCircle, faExclamationTriangle, faInfoCircle, faMinus, faPlus, faSpinner, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faCheckCircle, faChevronDown, faExclamationCircle, faExclamationTriangle, faInfoCircle, faSpinner, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 
 import App from './App.vue'
 import AppButton from './components/ui/AppButton.vue'
@@ -52,8 +52,7 @@ function initApp() {
   library.add(faInfoCircle)
   library.add(faSpinner)
   library.add(faTimes)
-  library.add(faPlus)
-  library.add(faMinus)
+  library.add(faTrashAlt)
 
   app.component('font-awesome-icon', FontAwesomeIcon)
 

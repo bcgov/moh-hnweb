@@ -51,7 +51,7 @@
           <AppInput :e-model="v$.city" id="city" label="City" type="text" v-model.trim="city" />
         </AppCol>
         <AppCol class="col4">
-          <AppSelect :e-model="v$.province" id="province" label="Province" v-model="province" :options="getProvinceOptions" />
+          <AppSelect :e-model="v$.province" id="province" label="Province" v-model="province" :options="provinceOptions" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -81,7 +81,7 @@
           <AppInput :e-model="v$.mailingAddressCity" id="mailingAddressCity" label="City" type="text" v-model.trim="mailingAddressCity" />
         </AppCol>
         <AppCol class="col4">
-          <AppSelect :e-model="v$.mailingAddressProvince" id="mailingAddressProvince" label="Province" v-model="mailingAddressProvince" :options="getProvinceOptions" />
+          <AppSelect :e-model="v$.mailingAddressProvince" id="mailingAddressProvince" label="Province" v-model="mailingAddressProvince" :options="provinceOptions" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -116,26 +116,35 @@
           </AppCol> 
         </AppRow>      
       </div> 
-      <div v-for="(dependent, index) in dependents" :key="`dependent_${index}`" :id="index">
+      <div id="addPHN"> 
+        <AppRow v-if = "isValidDependentPHN">
+        <AppCol class="col4">
+          </AppCol>
+          <AppCol class="col4">
+            <p class="error-text">Invalid or blank PHN</p>                              
+          </AppCol> 
+          </AppRow>      
+        <AppRow>
+          <AppCol class="col4"><b> Dependent </b>
+          </AppCol>
+          <AppCol class="col4">          
+            <AppInput :e-model="v$.dependentPHN" id="dependentPHN" type="dependentPHN" v-model.trim="dependentPHN" />          
+          </AppCol>           
+            <AppButton @click="addDependent()" mode="secondary" type="button" v-show="dependents.length < 7">Add</AppButton>            
+        </AppRow>
+        
         <AppRow>
           <AppCol class="col4">
-            <span  v-show="index==0"><b> Dependent </b></span>
           </AppCol>
           <AppCol class="col4">
-            <AppInput :e-model="v$.dependent" type="text" v-model.trim="dependent.dependent"  v-bind:id="'dependent_'+index"/>
-          </AppCol>
-          <span v-show = "dependents.length > 1 && index != 0">
-            <font-awesome-icon icon="minus" @click="removeDependent(index, dependents)"/><b>Remove</b>
-          </span>
-        </AppRow>    
-      </div>      
-      <AppRow v-show = "dependents.length < 7">
-        <AppCol class="col4">
-        </AppCol>
-        <AppCol class="col4">
-          <span><font-awesome-icon icon="plus" @click="addDependent(dependents)"/><b>Add</b></span>
-        </AppCol>        
-      </AppRow>             
+            <ul>
+              <li v-for="(dependent, index) in dependents" >
+                {{ dependent.dependentPHN }} <span v-show = "dependents.length > 0"><font-awesome-icon icon="trash-alt" @click="removeDependent(index)"/></span>
+              </li>
+            </ul>
+          </AppCol>        
+        </AppRow>       
+    </div>
       <AppRow>
         <AppButton :submitting="submitting" mode="primary" type="submit">Submit</AppButton>
         <AppButton @click="resetForm()" mode="secondary" type="button">Clear</AppButton>
@@ -151,9 +160,10 @@
 <script>
 import AppSelect from '../../components/ui/AppSelect.vue'
 import useVuelidate from '@vuelidate/core'
-import { validateGroupNumber, validateTelephone, validatePHN, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../util/validators'
+import { validateGroupNumber, validateTelephone, validatePHN, validatePHNFormat, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
+import { PROVINCES } from '../../util/constants'
 import GroupMemberService from '../../services/GroupMemberService'
 
 export default {
@@ -171,6 +181,7 @@ export default {
       submitting: false,
       addOk: false, 
       addMode : true,
+      isValidDependentPHN : false,
       //Add Group Member Fields
       phn: '9873895927',
       groupNumber: '6337109', 
@@ -191,7 +202,8 @@ export default {
       mailingAddressProvince: '',
       mailingAddressPostalCode: '',
       spouse: '',
-      dependents: [{dependent: ""}],
+      dependents: [],
+		  dependentPHN: '',
       result: {
         phn: '', 
         status: '',
@@ -199,31 +211,15 @@ export default {
       } 
     }
   },
-  computed: {
+  created() {
     // Province drop down options
-    getProvinceOptions() {
-      return [
-        { text: 'Select', value: '' },
-        { text: 'Alberta', value: 'AB' },
-        { text: 'British Columbia', value: 'BC' },
-        { text: 'Manitoba', value: 'MB' },
-        { text: 'New Brunswick', value: 'NB' },
-        { text: 'Newfoundland', value: 'NL' },
-        { text: 'Nova Scotia', value: 'NS' },
-        { text: 'Northwest Territories', value: 'NT' },
-        { text: 'Nunavut', value: 'NU' },
-        { text: 'Ontario', value: 'ON' },
-        { text: 'P.E.I', value: 'PE' },
-        { text: 'Quebec', value: 'QC' },
-        { text: 'Saskatchewan', value: 'SK' },
-        { text: 'Yukon', value: 'YT' },
-      ]
-    },
+    this.provinceOptions = PROVINCES
   },
   methods: {
     async submitForm() {
       this.submitting = true,
-      this.addOk= false, 
+      this.addOk = false, 
+      this.isValidDependentPHN = false,
       this.addMode= true
       try {
         const isValid = await this.v$.$validate()
@@ -254,7 +250,7 @@ export default {
           mailingAddressProvince: this.mailingAddressProvince,
           mailingAddressPostalCode: this.mailingAddressPostalCode,
           spouse: this.spouse,
-          dependents: this.dependents,        
+          dependents: this.dependents,      
         })).data
 
         if (this.result.status === 'error') {
@@ -275,12 +271,22 @@ export default {
         this.submitting = false
       }
     },
-    addDependent(fieldType) {     
-      fieldType.push({});
+    
+    addDependent(){     
+    	let dependent = {dependentPHN: this.dependentPHN};
+      const validate = validatePHNFormat(this.dependentPHN);      
+       if(!validate){
+        // this.isValidDependentPHN = true;
+        //return helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN)
+         return       
+      }
+      this.dependents.push(dependent);
+			this.dependentPHN = ''; // clear dependent
     },
-    removeDependent(index, fieldType) {
-      fieldType.splice(index, 1);
+    removeDependent(index){
+      this.dependents.splice(index, 1)
     },
+
     resetForm() {     
       this.groupNumber = ''     
       this.groupMemberNumber = ''      
@@ -300,7 +306,7 @@ export default {
       this.mailingAddressProvince = ''
       this.mailingAddressPostalCode = ''
       this.spouse = ''
-      this.dependents = [{dependent: ""}]
+      this.dependents = []
       this.v$.$reset()
       this.$store.commit('alert/dismissAlert')
       this.submitting = false,
@@ -338,7 +344,8 @@ export default {
       mailingAddressProvince: {},
       mailingAddressPostalCode: {},
       spouse: {validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),},
-      dependent: {validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),},     
+      dependentPHN: {}, 
+         
     }
   },
 }
