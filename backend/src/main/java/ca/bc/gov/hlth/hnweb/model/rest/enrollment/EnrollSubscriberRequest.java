@@ -1,4 +1,4 @@
-package ca.bc.gov.hlth.hnweb.model;
+package ca.bc.gov.hlth.hnweb.model.rest.enrollment;
 
 import java.time.LocalDate;
 

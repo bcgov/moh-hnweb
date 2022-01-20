@@ -1,6 +1,8 @@
-package ca.bc.gov.hlth.hnweb.model;
+package ca.bc.gov.hlth.hnweb.model.rest.enrollment;
 
 import java.util.List;
+
+import ca.bc.gov.hlth.hnweb.model.rest.BaseResponse;
 
 public class NameSearchResponse extends BaseResponse {
 

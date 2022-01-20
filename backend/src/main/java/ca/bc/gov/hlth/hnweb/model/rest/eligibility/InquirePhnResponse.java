@@ -1,9 +1,9 @@
-package ca.bc.gov.hlth.hnweb.model.eligibility;
+package ca.bc.gov.hlth.hnweb.model.rest.eligibility;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.bc.gov.hlth.hnweb.model.BaseResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.BaseResponse;
 
 public class InquirePhnResponse extends BaseResponse {
 	private List<InquirePhnBeneficiary> beneficiaries = new ArrayList<>();
