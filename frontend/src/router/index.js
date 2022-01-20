@@ -14,6 +14,10 @@ import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaint
 import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
 import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
 import PhnLookup from '../views/eligibility/PhnLookup.vue'
+import AddGroupMember from '../views/groupmember/AddGroupMember.vue'
+import CancelGroupMember from '../views/groupmember/CancelGroupMember.vue'
+import GroupMemberHome from '../views/groupmember/GroupMemberHome.vue'
+import UpdateNumberAndDept from '../views/groupmember/UpdateNumberAndDept.vue'
 
 const routes = [
   {

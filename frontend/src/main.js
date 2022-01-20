@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import App from './App.vue'
 import AppCol from './components/grid/AppCol.vue'
+import AppRow from './components/grid/AppRow.vue'
 import AppButton from './components/ui/AppButton.vue'
 import AppDateInput from './components/ui/AppDateInput.vue'
 import AppInput from './components/ui/AppInput.vue'
