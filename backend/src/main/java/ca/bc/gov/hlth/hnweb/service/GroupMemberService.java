@@ -17,6 +17,7 @@ import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPED0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPEE0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPWC0;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPXP0;
 
 /**
  * Service for:
@@ -28,6 +29,9 @@ public class GroupMemberService {
 	private static final Logger logger = LoggerFactory.getLogger(GroupMemberService.class);
 
 	public static final String TRANSACTION_ID = "TransactionID";
+
+	@Value("${rapid.r30Path}")
+	private String r30Path;
 	
 	@Value("${rapid.r34Path}")
 	private String r34Path;
@@ -88,6 +92,32 @@ public class GroupMemberService {
 		RPBSPEE0 rpbspee0Response = new RPBSPEE0(response.getBody());
 
 		return rpbspee0Response;
+	}
+	
+	/**
+	 * Adds the group member and spouse/dependents based on the R30/RPBSPXP0.
+	 * 
+	 * @param rpbspxp0
+	 * @return The RPBSPXP0 response.
+	 * @throws HNWebException
+	 */
+	public RPBSPXP0 addGroupMember(RPBSPXP0 rpbspxp0) throws HNWebException {
+		String rpbspxp0Str = rpbspxp0.serialize();
+
+		logger.info("Request {}", rpbspxp0Str);
+		
+		ResponseEntity<String> response = postRapidRequest(r35Path, rpbspxp0Str);
+		
+		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
+		
+		if (response.getStatusCode() != HttpStatus.OK) {
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
+		}
+		
+		RPBSPXP0 rpbspxp0Response = new RPBSPXP0(response.getBody());
+
+		return rpbspxp0Response;
 	}
 	
 	/**
