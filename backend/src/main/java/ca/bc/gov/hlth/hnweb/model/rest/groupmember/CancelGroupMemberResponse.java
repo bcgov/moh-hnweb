@@ -2,7 +2,7 @@ package ca.bc.gov.hlth.hnweb.model.rest.groupmember;
 
 import ca.bc.gov.hlth.hnweb.model.rest.BaseResponse;
 
-public class UpdateNumberAndDeptResponse extends BaseResponse {
+public class CancelGroupMemberResponse extends BaseResponse {
 	private String phn;
 
 	public String getPhn() {
@@ -15,7 +15,7 @@ public class UpdateNumberAndDeptResponse extends BaseResponse {
 
 	@Override
 	public String toString() {
-		return "UpdateNumberAndDeptResponse [phn=" + phn + ", status=" + status + ", message=" + message + "]";
+		return "CancelGroupMemberResponse [phn=" + phn + ", status=" + status + ", message=" + message + "]";
 	}
 
 }

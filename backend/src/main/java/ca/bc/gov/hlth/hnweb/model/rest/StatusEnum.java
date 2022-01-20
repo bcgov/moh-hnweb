@@ -1,4 +1,4 @@
-package ca.bc.gov.hlth.hnweb.model;
+package ca.bc.gov.hlth.hnweb.model.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

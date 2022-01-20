@@ -2,14 +2,14 @@ package ca.bc.gov.hlth.hnweb.converter.rapid;
 
 import org.apache.commons.lang3.StringUtils;
 
-import ca.bc.gov.hlth.hnweb.model.StatusEnum;
-import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnBeneficiary;
-import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnRequest;
-import ca.bc.gov.hlth.hnweb.model.eligibility.LookupPhnResponse;
 import ca.bc.gov.hlth.hnweb.model.rapid.PL0;
 import ca.bc.gov.hlth.hnweb.model.rapid.PL0Beneficary;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPL0;
+import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
+import ca.bc.gov.hlth.hnweb.model.rest.eligibility.LookupPhnBeneficiary;
+import ca.bc.gov.hlth.hnweb.model.rest.eligibility.LookupPhnRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.eligibility.LookupPhnResponse;
 
 public class RPBSPPL0Converter extends BaseRapidConverter {
 	private static final String TRAN_CODE = "RPBSPPL0";
