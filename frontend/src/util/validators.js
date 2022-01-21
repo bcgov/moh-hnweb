@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-
 import { helpers } from '@vuelidate/validators'
 
 /**
@@ -25,7 +24,7 @@ export function validatePHN(phn) {
   return validatePHNFormat(phn)
 }
 
-function validatePHNFormat(phn) {
+export function validatePHNFormat(phn) {
   const phnSigDigits = [2, 4, 8, 5, 10, 9, 7, 3]
   let checksum = 0
   let digit = 0
