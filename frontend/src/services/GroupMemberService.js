@@ -9,7 +9,7 @@ export default {
     return apiRequest().then(axiosInstance => axiosInstance.post(resources.groupMember.cancelGroupMember, request))
   },
   addGroupMember(request) {  
-    return apiRequest().then(axiosInstance => axiosInstance.post(resources.groupMember.addGroupMemeber, request )) 
+    return apiRequest().then(axiosInstance => axiosInstance.post(resources.groupMember.addGroupMember, request)) 
    },
 
 }
