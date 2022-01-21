@@ -3,6 +3,8 @@ package ca.bc.gov.hlth.hnweb.model.rapid;
 import org.apache.commons.lang3.StringUtils;
 
 public class XP0 {
+	
+	public static final int SEGMENT_LENGTH = 414;
 
 	/** 1	GroupNumber	String	No	0...7	.. */
 	private String groupNumber;
@@ -53,44 +55,44 @@ public class XP0 {
 		employeeNumber = StringUtils.substring(message, 7, 16);
 		departmentNumber = StringUtils.substring(message, 16, 22);
 		effectiveDate = StringUtils.substring(message, 22, 32);
-		homeAddress = new RPBSAddress(StringUtils.substring(message, 22, 128));
-		mailAddress = new RPBSAddress(StringUtils.substring(message, 128, 134));
-		phone0 = new RPBSPhone(StringUtils.substring(message, 134, 164));
-		phone1 = new RPBSPhone(StringUtils.substring(message, 164, 194));
-		phn = StringUtils.substring(message, 194, 204);
-		spousePhn = StringUtils.substring(message, 194, 204);
-		dependentPhn0 = StringUtils.substring(message, 194, 204);
-		dependentPhn1 = StringUtils.substring(message, 204, 214);
-		dependentPhn2 = StringUtils.substring(message, 214, 224);
-		dependentPhn3 = StringUtils.substring(message, 224, 234);
-		dependentPhn4 = StringUtils.substring(message, 234, 244);
-		dependentPhn5 = StringUtils.substring(message, 244, 254);
-		dependentPhn6 = StringUtils.substring(message, 254, 264);
-		dependentPhn7 = StringUtils.substring(message, 264, 274);
-		phnInError = StringUtils.substring(message, 274, 284);
+		homeAddress = new RPBSAddress(StringUtils.substring(message, 32, 138));
+		mailAddress = new RPBSAddress(StringUtils.substring(message, 138, 234));
+		phone0 = new RPBSPhone(StringUtils.substring(message, 244, 274));
+		phone1 = new RPBSPhone(StringUtils.substring(message, 274, 304));
+		phn = StringUtils.substring(message, 304, 314);
+		spousePhn = StringUtils.substring(message, 314, 324);
+		dependentPhn0 = StringUtils.substring(message, 324, 334);
+		dependentPhn1 = StringUtils.substring(message, 334, 344);
+		dependentPhn2 = StringUtils.substring(message, 344, 354);
+		dependentPhn3 = StringUtils.substring(message, 354, 364);
+		dependentPhn4 = StringUtils.substring(message, 364, 374);
+		dependentPhn5 = StringUtils.substring(message, 374, 384);
+		dependentPhn6 = StringUtils.substring(message, 384, 394);
+		dependentPhn7 = StringUtils.substring(message, 494, 404);
+		phnInError = StringUtils.substring(message, 404, SEGMENT_LENGTH);
 	}
 
 	public String serialize() {
 		// Serialize is only used in when creating the request
 		StringBuilder sb = new StringBuilder();
-		sb.append(StringUtils.rightPad(groupNumber, 7));
-		sb.append(StringUtils.rightPad(employeeNumber, 9));
-		sb.append(StringUtils.rightPad(departmentNumber, 6));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(groupNumber), 7));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(employeeNumber), 9));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(departmentNumber), 6));
 		sb.append(StringUtils.rightPad(effectiveDate, 10));
 		sb.append(homeAddress.serialize());
 		sb.append(mailAddress.serialize());
 		sb.append(phone0.serialize());
 		sb.append(phone1.serialize());
 		sb.append(StringUtils.rightPad(phn, 10));
-		sb.append(StringUtils.rightPad(spousePhn, 10));
-		sb.append(StringUtils.rightPad(dependentPhn0, 10));
-		sb.append(StringUtils.rightPad(dependentPhn1, 10));
-		sb.append(StringUtils.rightPad(dependentPhn2, 10));
-		sb.append(StringUtils.rightPad(dependentPhn3, 10));
-		sb.append(StringUtils.rightPad(dependentPhn4, 10));
-		sb.append(StringUtils.rightPad(dependentPhn5, 10));
-		sb.append(StringUtils.rightPad(dependentPhn6, 10));
-		sb.append(StringUtils.rightPad(dependentPhn7, 10));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(spousePhn), 10));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(dependentPhn0), 10));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(dependentPhn1), 10));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(dependentPhn2), 10));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(dependentPhn3), 10));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(dependentPhn4), 10));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(dependentPhn5), 10));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(dependentPhn6), 10));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(dependentPhn7), 10));
 		return sb.toString();
 	}
 

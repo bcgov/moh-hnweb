@@ -31,11 +31,11 @@ public class RPBSAddress {
 	public String serialize() {
 		// Serialize is only used in when creating the request
 		StringBuilder sb = new StringBuilder();
-		sb.append(StringUtils.rightPad(addressLine1, 25));
-		sb.append(StringUtils.rightPad(addressLine2, 25));
-		sb.append(StringUtils.rightPad(addressLine3, 25));
-		sb.append(StringUtils.rightPad(addressLine4, 25));
-		sb.append(StringUtils.rightPad(postalCode, 6));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(addressLine1), 25));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(addressLine2), 25));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(addressLine3), 25));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(addressLine4), 25));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(postalCode), 6));
 		return sb.toString();
 	}
 

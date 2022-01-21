@@ -25,6 +25,8 @@ import org.springframework.web.server.ResponseStatusException;
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberResponse;
 
@@ -48,6 +50,8 @@ public class GroupMemberControllerTest {
 	private static final String RPBSPWC0_ERROR_PHN_DOES_NOT_HAVE_COVERAGE = "        RPBSPWC000000010                                ERRORMSGRPBS0081PHN DOES NOT HAVE COVERAGE UNDER YOUR ORGANIZATION                      934798407463371092022-01-31K";
 	private static final String RPBSPWC0_ERROR_FUTURE_CANCEL_DATE = "        RPBSPWC000000010                                ERRORMSGRPBS0048SUBSCRIBER HAS A FUTURE CANCEL DATE.PLS FORWARD DOCS TO MSP             987389592763371092022-12-31K";
 	private static final String RPBSPWC0_SUCCESS = "        RPBSPWC000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  987389592763371092022-12-31K";
+	
+	private static final String RPBSPXP0_ERROR_COVERAGE_ALREADY_EXISTS = "        RPBSPXP000000010                                ERRORMSGRPBS0065COVERAGE ALREADY EXISTS FOR THE PHN/GROUP NUMBER SPECIFIED              63371091111     222   2022-01-01                                                                                                                                                                                                                                        6045551234                              9873895927                                                                                          9873895927";
 	
 	private static MockWebServer mockBackEnd;
 
@@ -278,6 +282,32 @@ public class GroupMemberControllerTest {
 		assertEquals(StatusEnum.SUCCESS, cancelGroupMemberResponse.getStatus());
         assertEquals("TRANSACTION SUCCESSFUL", cancelGroupMemberResponse.getMessage());
         assertEquals("9873895927", cancelGroupMemberResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+    }
+    
+    @Test
+    public void testAddGroupMember_coverageAlreadyExists() throws InterruptedException {
+    	mockBackEnd.enqueue(new MockResponse()
+        		.setBody(RPBSPXP0_ERROR_COVERAGE_ALREADY_EXISTS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+    	
+    	AddGroupMemberRequest addGroupMemberRequest = new AddGroupMemberRequest();
+    	addGroupMemberRequest.setGroupNumber("6337109");
+    	addGroupMemberRequest.setEffectiveDate(LocalDate.of(2022, 01, 31));
+    	addGroupMemberRequest.setPhn("9873895927");
+    	addGroupMemberRequest.setGroupMemberNumber("2222");
+    	addGroupMemberRequest.setDepartmentNumber("111");
+    	addGroupMemberRequest.setPhone("6045551234");
+    	
+		ResponseEntity<AddGroupMemberResponse> response = groupMemberController.addGroupMember(addGroupMemberRequest);
+		
+		AddGroupMemberResponse addGroupMemberResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, addGroupMemberResponse.getStatus());
+        assertEquals("RPBS0065 9873895927 COVERAGE ALREADY EXISTS FOR THE PHN/GROUP NUMBER SPECIFIED", addGroupMemberResponse.getMessage());
+        assertEquals("9873895927", addGroupMemberResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        

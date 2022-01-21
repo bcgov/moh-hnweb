@@ -28,10 +28,10 @@ public class RPBSPhone {
 	public String serialize() {
 		// Serialize is only used in when creating the request
 		StringBuilder sb = new StringBuilder();
-		sb.append(StringUtils.rightPad(phoneType, 10));
-		sb.append(StringUtils.rightPad(phonePurpose, 10));
-		sb.append(StringUtils.rightPad(phoneAreaCode, 3));
-		sb.append(StringUtils.rightPad(phoneNumber, 7));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(phoneType), 10));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(phonePurpose), 10));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(phoneAreaCode), 3));
+		sb.append(StringUtils.rightPad(StringUtils.trimToEmpty(phoneNumber), 7));
 		return sb.toString();
 	}
 

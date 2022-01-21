@@ -7,7 +7,6 @@ import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPXP0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPhone;
 import ca.bc.gov.hlth.hnweb.model.rapid.XP0;
-import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.MemberAddress;
@@ -64,21 +63,21 @@ public class RPBSPXP0Converter extends BaseRapidConverter {
 	public AddGroupMemberResponse convertResponse(RPBSPXP0 rpbspxp0) {
 		AddGroupMemberResponse response = new AddGroupMemberResponse();
 		RPBSHeader header = rpbspxp0.getRpbsHeader();
-		
-		handleStatus(header, response);
-		response.setPhn(rpbspxp0.getXp0().getPhn());
 
-		// If the PHN in error is set, prepend to the existing message		
-		if (StatusEnum.ERROR == response.getStatus() && StringUtils.isNotBlank(rpbspxp0.getXp0().getPhnInError())) {
-			String message = response.getMessage();
-			response.setMessage(rpbspxp0.getXp0().getPhnInError() + " " + message);
-		}
+		// If the result is an error and the phnInError is set, prepend to the existing message
+		// This is existing legacy behaviour
+		handleStatus(header, response, rpbspxp0.getXp0().getPhnInError());
+		response.setPhn(rpbspxp0.getXp0().getPhn());
 		
 		return response;
 	}
 	
 	private RPBSAddress convertAddress(MemberAddress memberAddress) {
 		RPBSAddress rpbsAddress = new RPBSAddress();
+		
+		if (memberAddress == null) {
+			return rpbsAddress;
+		}
 		rpbsAddress.setAddressLine1(memberAddress.getAddressLine1());
 		rpbsAddress.setAddressLine2(memberAddress.getAddressLine2());
 		rpbsAddress.setAddressLine3(memberAddress.getAddressLine3());
