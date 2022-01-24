@@ -46,14 +46,12 @@
           <AppInput :e-model="v$.homeAddress.addressLine3" id="addressLine3" label="Line 3 (Optional)" type="text" v-model="homeAddress.addressLine3" />
         </AppCol>
       </AppRow>
-      <AppRow>
-        <AppCol class="col4">
-          <AppInput :e-model="v$.homeAddress.city" id="city" label="City" type="text" v-model.trim="homeAddress.city" />
-        </AppCol>
-        <AppCol class="col4">
-          <AppSelect :e-model="v$.homeAddress.province" id="province" label="Province" v-model="homeAddress.province" :options="provinceOptions" />
+       <AppRow>
+        <AppCol class="col7">
+          <AppInput :e-model="v$.homeAddress.addressLine4" id="addressLine4" label="Line 4 (Optional)" type="text" v-model="homeAddress.addressLine4" />
         </AppCol>
       </AppRow>
+      <AppRow>
       <AppRow>
         <AppCol class="col4">
         </AppCol>
@@ -77,11 +75,8 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col4">
-          <AppInput :e-model="v$.mailingAddress.city" id="mailingAddressCity" label="City" type="text" v-model.trim="mailingAddress.city" />
-        </AppCol>
-        <AppCol class="col4">
-          <AppSelect :e-model="v$.mailingAddress.province" id="mailingAddressProvince" label="Province" v-model="mailingAddress.province" :options="provinceOptions" />
+        <AppCol class="col7">
+          <AppInput :e-model="v$.mailingAddress.addressLine4" id="mailingAddress4" label="Line 4 (Optional)" v-model="mailingAddress.addressLine4" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -108,7 +103,7 @@
           <AppCol class="col4"><b> Spouse </b>
           </AppCol>
           <AppCol class="col4">
-            <AppInput :e-model="v$.spousePhn" id="spouse" type="text" v-model.trim="spousePhn" />
+            <AppInput :e-model="v$.spousePhn" id="spousePhn" type="text" v-model.trim="spousePhn" />
           </AppCol> 
         </AppRow>
         <AppRow>
@@ -155,7 +150,6 @@ import useVuelidate from '@vuelidate/core'
 import { validateGroupNumber, validateTelephone, validatePHN, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
-import { PROVINCES } from '../../util/constants'
 import GroupMemberService from '../../services/GroupMemberService'
 
 export default {
@@ -184,16 +178,14 @@ export default {
         addressLine1: '',
         addressLine2: '',
         addressLine3: '',
-        city: '',
-        province: '',
+        addressLine4: '',
         postalCode: '',
       },
       mailingAddress: {
         addressLine1: '',
         addressLine2: '',
         addressLine3: '',
-        city: '',
-        province: '',
+        addressLine4: '',
         postalCode: '',
       },      
       spousePhn: '',
@@ -206,10 +198,7 @@ export default {
       } 
     }
   },
-  created() {
-    // Province drop down options
-    this.provinceOptions = PROVINCES
-  },
+
   methods: {
     async submitForm() {
       this.submitting = true,
@@ -236,16 +225,14 @@ export default {
             addressLine1: this.homeAddress.addressLine1,
             addressLine2: this.homeAddress.addressLine2,
             addressLine3: this.homeAddress.addressLine3,
-            city: this.homeAddress.city,
-            province: this.homeAddress.province, 
+            addressLine4: this.homeAddress.addressLine4,
             postalCode: this.homeAddress.postalCode,
           },               
           mailingAddress: {
             addressLine1: this.mailingAddress.addressLine1,
             addressLine2: this.mailingAddress.addressLine2,
             addressLine3: this.mailingAddress.addressLine3, 
-            city: this.mailingAddress.city,
-            province: this.mailingAddress.province,
+            addressLine3: this.mailingAddress.addressLine4,
             postalCode: this.mailingAddress.postalCode,
           },
           spousePhn: this.spousePhn,
@@ -309,14 +296,12 @@ export default {
       this.homeAddress.addressLine1 = ''
       this.homeAddress.addressLine2 = ''
       this.homeAddress.addressLine3 = ''
-      this.homeAddress.city = ''
-      this.homeAddress.province = ''
+      this.homeAddress.addressLine4 = ''
       this.homeAddress.postalCode = ''
       this.mailingAddress.addressLine1 = ''
       this.mailingAddress.addressLine2 = ''
       this.mailingAddress.addressLine3 = ''
-      this.mailingAddress.city = ''
-      this.mailingAddress.province = ''
+      this.mailingAddress.addressLine4 = ''
       this.mailingAddress.postalCode = ''
       this.spousePhn = ''
       this.dependents = []
@@ -348,16 +333,14 @@ export default {
         addressLine1: { required },
         addressLine2: {},
         addressLine3: {},
-        city: { required },
-        province: { required },
+        addressLine4: {},
         postalCode: { required },
       },           
       mailingAddress: {
         addressLine1: {},
         addressLine2: {},
         addressLine3: {},
-        city: {},
-        province: {},
+        addressLine4: {},
         postalCode: {},
       },        
       spousePhn: {validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),},
