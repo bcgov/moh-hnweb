@@ -52,7 +52,6 @@
         </AppCol>
       </AppRow>
       <AppRow>
-      <AppRow>
         <AppCol class="col4">
         </AppCol>
         <AppCol class="col4">
@@ -83,7 +82,7 @@
         <AppCol class="col4">
         </AppCol>
         <AppCol class="col4">
-          <AppInput :e-model="v$.mailingAddress.postalCode" id="mailingAddressPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddress.postalCode" />
+          <AppInput :e-model="v$.mailingAddress.postalCode" id="mailingPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddress.postalCode" />
         </AppCol>
       </AppRow>
       <div>
@@ -124,9 +123,9 @@
           <AppCol class="col4">
           </AppCol>
           <AppCol class="col4">
-            <ul>
+            <ul id="phnList">
               <li v-for="(dependent, index) in dependents" >
-                {{dependent}} <span v-show="dependents.length > 0"><font-awesome-icon icon="trash-alt" @click="removeDependent(index)"/></span>
+                {{dependent}} <span v-show="dependents.length > 0"><font-awesome-icon id="removeIcon" icon="trash-alt" @click="removeDependent(index)"/></span>
               </li>
             </ul>
           </AppCol>        
@@ -232,7 +231,7 @@ export default {
             addressLine1: this.mailingAddress.addressLine1,
             addressLine2: this.mailingAddress.addressLine2,
             addressLine3: this.mailingAddress.addressLine3, 
-            addressLine3: this.mailingAddress.addressLine4,
+            addressLine4: this.mailingAddress.addressLine4,
             postalCode: this.mailingAddress.postalCode,
           },
           spousePhn: this.spousePhn,
@@ -269,7 +268,6 @@ export default {
        dependentPHN: {validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),},
     }   
     const v$ = useVuelidate(rules, dependentPHN)
-    console.log(v$.dependentPHN.$validate);
     return {
       v$
     }    
@@ -288,7 +286,8 @@ export default {
     },
 
     resetForm() {     
-      this.groupNumber = ''     
+      this.groupNumber = ''
+      this.phn = ''     
       this.groupMemberNumber = ''      
       this.departmentNumber = ''      
       this.coverageEffectiveDate = dayjs().startOf('month').toDate(),
@@ -305,6 +304,7 @@ export default {
       this.mailingAddress.postalCode = ''
       this.spousePhn = ''
       this.dependents = []
+      this.dependentPHN = ''
       this.v$.$reset()
       this.$store.commit('alert/dismissAlert')
       this.submitting = false,
