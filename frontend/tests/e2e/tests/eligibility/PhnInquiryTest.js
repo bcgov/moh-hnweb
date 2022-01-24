@@ -1,7 +1,7 @@
-import { SITE_UNDER_TEST } from '../configuration'
-import AlertPage from '../pages/AlertPage'
-import PhnInquiryPage from '../pages/eligibility/PhnInquiryPage'
-import { regularAccUser } from '../roles/roles'
+import { SITE_UNDER_TEST } from '../../configuration'
+import AlertPage from '../../pages/AlertPage'
+import PhnInquiryPage from '../../pages/eligibility/PhnInquiryPage'
+import { regularAccUser } from '../../roles/roles'
 
 const ERROR_MESSAGE = 'Please correct errors before submitting'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'

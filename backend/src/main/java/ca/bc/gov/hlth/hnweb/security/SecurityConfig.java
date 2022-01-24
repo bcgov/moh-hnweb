@@ -3,6 +3,8 @@ package ca.bc.gov.hlth.hnweb.security;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,10 +14,15 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.oauth2.core.*;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.util.Assert;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import static org.springframework.security.oauth2.jwt.JwtClaimNames.AUD;
 
 
 @EnableWebSecurity
@@ -24,9 +31,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${config.allowed-origins}")
     private String allowedOrigins;
+
+    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+    private String issuerUri;
     
     @Autowired
     private KeycloakClientRoleConverter keycloakClientRoleConverter;
+
+    @Autowired
+    private AudienceValidator audienceValidator;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -46,6 +59,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .oauth2ResourceServer().jwt()
             .jwtAuthenticationConverter(jwtAuthenticationConverter);
+    }
+
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        NimbusJwtDecoder jwtDecoder = JwtDecoders.fromIssuerLocation(issuerUri);
+
+        OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(issuerUri);
+        OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withIssuer, audienceValidator);
+
+        jwtDecoder.setJwtValidator(withAudience);
+
+        return jwtDecoder;
     }
 
     @Bean
