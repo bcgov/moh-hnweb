@@ -125,7 +125,7 @@
           <AppCol class="col4">
             <ul id="phnList">
               <li v-for="(dependent, index) in dependents" >
-                {{dependent}} <span v-show="dependents.length > 0"><font-awesome-icon id="removeIcon" icon="trash-alt" @click="removeDependent(index)"/></span>
+                {{dependent}}<span v-show="dependents.length > 0"><font-awesome-icon id="removeIcon" icon="trash-alt" @click="removeDependent(index)"/></span>
               </li>
             </ul>
           </AppCol>        

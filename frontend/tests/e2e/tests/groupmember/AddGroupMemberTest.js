@@ -10,7 +10,7 @@ const GROUP_NUMBER_REQUIRED_MESSAGE = 'Group Number is required'
 const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
 const HOME_ADDRESS_REQUIRED_MESSAGE = 'Home Address Line 1 is required'
 const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
-const SUCCESS_MESSAGE = 'Transaction Successful'
+const SUCCESS_MESSAGE = 'RPBS0073 7277       PHN INVALID'
 const PHONE_NUMBER_VALIDATION_MESSAGE = 'Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.';
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/groupmember/AddGroupMember'
@@ -23,7 +23,7 @@ fixture(`AddGroupMember Page`)
     })
     .page(PAGE_TO_TEST)
 
-test.skip('Check required fields validation', async t => {
+test('Check required fields validation', async t => {
     await t    
         // When I click the submit button
         .click(AddGroupMember.submitButton)
@@ -37,12 +37,11 @@ test.skip('Check required fields validation', async t => {
        
 });
 
-test.skip('Check properly filled form passes validation', async t => {
+test('Check properly filled form passes validation', async t => {
     await t
         // Given the page is filled out correctly
         .typeText(AddGroupMember.groupNumberInput, '6337109')      
-        .typeText(AddGroupMember.phnInput, '9882807277')
-        .typeText(AddGroupMember.coverageEffectiveDateInput, '20210401')        
+        .typeText(AddGroupMember.phnInput, '9882807277')        
         .typeText(AddGroupMember.address1Input, 'Test 111 ST')
         .typeText(AddGroupMember.postalCodeInput, 'V8V8V8')
 
@@ -52,7 +51,7 @@ test.skip('Check properly filled form passes validation', async t => {
         .expect(AlertPage.alertBannerText.textContent).contains(SUCCESS_MESSAGE)
 });
 
-test.skip('Check invalid field validation', async t => {
+test('Check invalid field validation', async t => {
     await t
         // Given a Group Number entered with an invalid format
         .typeText(AddGroupMember.groupNumberInput, '9000444000')
@@ -89,7 +88,7 @@ test('Check click Remove icon removes selected dependent', async t => {
         .expect(AddGroupMember.dependentList.length).eql(0);
 });
 
-test.skip('Check clear button clears the form', async t => {	  
+test('Check clear button clears the form', async t => {	  
     await t
         // Given the page is filled out correctly
         .typeText(AddGroupMember.groupNumberInput, '6337109')
