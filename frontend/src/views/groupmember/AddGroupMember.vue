@@ -87,7 +87,7 @@
       </AppRow>
       <div>
         <AppRow>
-          <AppCol class="col4"><b>Dependent(s) (Optional)</b>
+          <AppCol class="col4"><h2>Dependent(s) (Optional)</h2>
           </AppCol>
           <AppCol class="col4">
           </AppCol> 
@@ -110,27 +110,7 @@
           </AppCol> 
         </AppRow>      
       </div> 
-      <div id="addPHN">     
-        <AppRow>
-          <AppCol class="col4"><b> Dependent </b>
-          </AppCol>
-          <AppCol class="col4">          
-            <AppInput :e-model="v$.dependentPHN" id="dependentPHN" type="dependentPHN" v-model.trim="dependentPHN" />          
-          </AppCol>           
-            <AppButton @click="addDependent()" mode="secondary" type="button" v-show="dependents.length < 7">Add</AppButton>            
-        </AppRow>        
-        <AppRow>
-          <AppCol class="col4">
-          </AppCol>
-          <AppCol class="col4">
-            <ul id="phnList">
-              <li v-for="(dependent, index) in dependents" >
-                {{dependent}}<span v-show="dependents.length > 0"><font-awesome-icon id="removeIcon" icon="trash-alt" @click="removeDependent(index)"/></span>
-              </li>
-            </ul>
-          </AppCol>        
-        </AppRow>       
-    </div>
+      <AddListDependent :dependents="dependents" @add-dependent="addDependent" @remove-dependent="removeDependent"/>
       <AppRow>
         <AppButton :submitting="submitting" mode="primary" type="submit">Submit</AppButton>
         <AppButton @click="resetForm()" mode="secondary" type="button">Clear</AppButton>
@@ -144,17 +124,23 @@
   </div>
 </template>
 <script>
-import AppSelect from '../../components/ui/AppSelect.vue'
-import useVuelidate from '@vuelidate/core'
-import { validateGroupNumber, validateTelephone, validatePHN, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../util/validators'
-import { required, helpers } from '@vuelidate/validators'
+
 import dayjs from 'dayjs'
+
+import useVuelidate from '@vuelidate/core'
+import { required, requiredIf, helpers } from '@vuelidate/validators'
+
+import AddListDependent from '../../components/groupmember/AddListDependent.vue'
+
+import { PROVINCES } from '../../util/constants'
+import { validateGroupNumber, validateTelephone, validatePHN, validatePHNFormat, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../util/validators'
+
 import GroupMemberService from '../../services/GroupMemberService'
 
 export default {
   name: 'AddGroupMember',
   components: {
-    AppSelect,
+    AddListDependent,
   },
   setup() {
     return {
@@ -189,7 +175,6 @@ export default {
       },      
       spousePhn: '',
       dependents: [],
-		  dependentPHN: '',
       result: {
         phn: '', 
         status: '',
@@ -262,29 +247,12 @@ export default {
         this.submitting = false
       }
     },
-
-  validateDependent(){  
-    const rules = {
-       dependentPHN: {validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),},
-    }   
-    const v$ = useVuelidate(rules, dependentPHN)
-    return {
-      v$
-    }    
-  },
-   addDependent(){
-     const isValid = this.validateDependent() 
-     console.log(isValid)
-      if (!isValid || this.dependentPHN === '') {
-        return
-      }
-      this.dependents.push(this.dependentPHN);
-			this.dependentPHN = ''; // clear dependent
+    addDependent(dependentPHN) {    
+      this.dependents.push(dependentPHN);
     },
-    removeDependent(index){
+    removeDependent(index) {
       this.dependents.splice(index, 1)
     },
-
     resetForm() {     
       this.groupNumber = ''
       this.phn = ''     
@@ -304,7 +272,6 @@ export default {
       this.mailingAddress.postalCode = ''
       this.spousePhn = ''
       this.dependents = []
-      this.dependentPHN = ''
       this.v$.$reset()
       this.$store.commit('alert/dismissAlert')
       this.submitting = false,
@@ -343,9 +310,9 @@ export default {
         addressLine4: {},
         postalCode: {},
       },        
-      spousePhn: {validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),},
-      dependentPHN: {validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),}, 
-         
+      spousePhn: {
+        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
+      },    
     }
   },
 }

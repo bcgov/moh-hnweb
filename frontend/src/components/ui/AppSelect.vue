@@ -23,7 +23,10 @@ import AppInputError from './AppInputError.vue'
 export default {
   name: 'AppSelect',
   props: {
-    eModel: Object,
+    eModel: {
+      required: false,
+      type: Object,
+    },
     label: String,
     modelValue: String,
     options: Object,
@@ -32,7 +35,7 @@ export default {
     dropdownClass() {
       return {
         'bc-gov-dropdown': true,
-        'error-input': this.eModel.$error,
+        'error-input': this.eModel?.$error,
       }
     },
   },

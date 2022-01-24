@@ -33,7 +33,10 @@ import { INPUT_DATE_FORMAT, OUTPUT_DATE_FORMAT } from '../../util/constants.js'
     name: 'AppDateInput',
     components: { AppTooltip, AppInputError, Datepicker },
     props: {
-      eModel: Object,
+      eModel: {
+        required: false,
+        type: Object,
+      },
       label: String,
       modelValue: Object,
       inputDateFormat: {
@@ -59,7 +62,7 @@ import { INPUT_DATE_FORMAT, OUTPUT_DATE_FORMAT } from '../../util/constants.js'
       inputClass() {
         return {
           'text_input': true,
-          'error-input' : this.eModel.$error,
+          'error-input' : this.eModel?.$error,
         }
       },
     },

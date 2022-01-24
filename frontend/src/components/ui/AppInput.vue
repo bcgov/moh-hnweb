@@ -18,7 +18,10 @@ import AppInputError from './AppInputError.vue'
 export default {
   name: 'AppInput',
   props: {
-    eModel: Object,
+    eModel: {
+      type: Object,
+      required: false,
+    },
     label: String,
     modelValue: String,
   },
@@ -26,7 +29,7 @@ export default {
     inputClass() {
       return {
         'text_input': true,
-        'error-input' : this.eModel.$error,
+        'error-input' : this.eModel?.$error,
       }
     }
   }
