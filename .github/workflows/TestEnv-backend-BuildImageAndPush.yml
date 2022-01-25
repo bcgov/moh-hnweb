@@ -5,7 +5,7 @@ env:
   IMAGE_REGISTRY: image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools
   IMAGE_REGISTRY_USER: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_USER }}
   IMAGE_REGISTRY_PASSWORD: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
-  IMAGE_NAME: hnweb-backend
+  IMAGE_NAME: mspdirect-backend
   IMAGE_TAGS: 
 
 on:
@@ -43,7 +43,7 @@ jobs:
     - name: Determine image tags
       if: env.IMAGE_TAGS == ''
       run: |
-        echo "IMAGE_TAGS=latest ${GITHUB_SHA::12} hnweb-test" | tee -a $GITHUB_ENV
+        echo "IMAGE_TAGS=latest ${GITHUB_SHA::12} mspdirect-test" | tee -a $GITHUB_ENV
 
 
     # Build from docker file
@@ -51,7 +51,7 @@ jobs:
       id: build-docker
       uses: redhat-actions/buildah-build@v2
       with:
-        image: hnweb-backend
+        image: ${{ env.IMAGE_NAME }}
         tags: ${{ env.IMAGE_TAGS }}
         context: ./backend
         dockerfiles: |
@@ -90,8 +90,8 @@ jobs:
     - name: Update image ID and commit change
       if: ${{ success() }}
       run: |
-        cd hnweb-devops/overlays/test
-        kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/c5839f-tools/hnweb-backend@${{ steps.push-image.outputs.digest }}"
+        cd mspdirect-devops/overlays/test
+        kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/c5839f-tools/${{ env.IMAGE_NAME }}@${{ steps.push-image.outputs.digest }}"
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git commit -am "Update Backend API image ID for test"
