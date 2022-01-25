@@ -1,7 +1,7 @@
-import { SITE_UNDER_TEST } from '../configuration'
-import AlertPage from '../pages/AlertPage'
-import PhnLookupPage from '../pages/eligibility/PhnLookupPage'
-import { regularAccUser } from '../roles/roles'
+import { SITE_UNDER_TEST } from '../../configuration'
+import AlertPage from '../../pages/AlertPage'
+import PhnLookupPage from '../../pages/eligibility/PhnLookupPage'
+import { regularAccUser } from '../../roles/roles'
 
 const ERROR_MESSAGE = 'Please correct errors before submitting'
 const CONTRACT_NUMBER_INVALID_MESSAGE = 'MSP Contract Number is invalid'

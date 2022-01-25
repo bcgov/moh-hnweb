@@ -13,7 +13,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.cancelDate" id="dp-input-cancelDate" label="Coverage Cancel Date" tooltip tooltipText="Date always defaults to last day of the month"
+          <AppDateInput :e-model="v$.cancelDate" id="cancelDate" label="Coverage Cancel Date" tooltip tooltipText="Date always defaults to last day of the month"
                         monthPicker inputDateFormat="yyyy-MM" placeholder="YYYY-MM" v-model="cancelDate"/>
         </AppCol>
       </AppRow>

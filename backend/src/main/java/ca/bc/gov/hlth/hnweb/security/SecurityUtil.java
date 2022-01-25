@@ -26,8 +26,7 @@ public class SecurityUtil {
 	
 	private static final String ORGANIZATION_ID = "id";
 	
-	// TODO (weskubo-cgi) Update this to use a Service specific client
-	private static final String KEYCLOAK_CLIENT = "HN-WEB";
+	private static final String KEYCLOAK_CLIENT = "MSPDIRECT-SERVICE";
 	
 	private static final String USER_ROLES = "roles";
 
@@ -60,8 +59,7 @@ public class SecurityUtil {
 	@SuppressWarnings("unchecked")
 	private static List<String> loadRoles(Jwt jwt) {
 		List<String> permissions = new ArrayList<>();
-		
-		// TODO (weskubo-cgi) Validate the audience matches the client before retrieving the roles		
+
         Map<String, Object> resourceAccesses = (Map<String, Object>) jwt.getClaims().get(CLAIM_RESOURCE_ACCESS);
 
         if (resourceAccesses == null) {

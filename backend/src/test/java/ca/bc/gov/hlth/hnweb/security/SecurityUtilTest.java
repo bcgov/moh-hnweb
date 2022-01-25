@@ -51,7 +51,7 @@ public class SecurityUtilTest {
 		claims.put("resource_access", resourceAccesses);
 
         Map<String, Object> resource = new HashMap<>();
-        resourceAccesses.put("HN-WEB", resource);
+        resourceAccesses.put("MSPDIRECT-SERVICE", resource);
         
         List<String> userRoles = new ArrayList<>();
         userRoles.addAll(Arrays.asList(roles));
