@@ -128,13 +128,9 @@
 import dayjs from 'dayjs'
 
 import useVuelidate from '@vuelidate/core'
-import { required, requiredIf, helpers } from '@vuelidate/validators'
-
+import { required, helpers } from '@vuelidate/validators'
 import AddListDependent from '../../components/groupmember/AddListDependent.vue'
-
-import { PROVINCES } from '../../util/constants'
-import { validateGroupNumber, validateTelephone, validatePHN, validatePHNFormat, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../util/validators'
-
+import { validateGroupNumber, validateTelephone, validatePHN, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../util/validators'
 import GroupMemberService from '../../services/GroupMemberService'
 
 export default {
@@ -203,7 +199,7 @@ export default {
           groupNumber: this.groupNumber, 
           groupMemberNumber: this.groupMemberNumber,     
           departmentNumber: this.departmentNumber,   
-          coverageEffectiveDate: this.coverageEffectiveDate,
+          effectiveDate: this.coverageEffectiveDate,
           telephone: this.telephone,
           homeAddress: {
             addressLine1: this.homeAddress.addressLine1,

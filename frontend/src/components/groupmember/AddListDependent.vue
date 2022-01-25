@@ -5,7 +5,7 @@
         <AppLabel>Dependent</AppLabel>
       </AppCol>
       <AppCol class="col4">
-        <AppInput :e-model="v$.phn" id="phn" label="PHN" v-model.trim="phn" />
+        <AppInput :e-model="v$.phn" id="dependentPHN" label="PHN" v-model.trim="phn" />
       </AppCol>
       <AppCol class="col2" style="align-content: flex-end; align-items: flex-end; align-self: center;">
         <AppButton @click="addDependent()" class="add-button" mode="secondary" type="button" v-if="isAddVisible" >Add</AppButton>
@@ -15,9 +15,9 @@
     <AppRow>
       <AppCol class="col4"></AppCol>
       <AppCol class="col4">
-        <ul class="dependent-list">
+        <ul id="phnList" class="dependent-list">
           <li v-for="(dependent, index) in dependents">
-            {{ dependent }} <font-awesome-icon icon="trash-alt" @click="removeDependent(index)" class="trash" />
+            {{ dependent }} <font-awesome-icon id="removeIcon" icon="trash-alt" @click="removeDependent(index)" class="trash" />
           </li>
         </ul>
       </AppCol>
