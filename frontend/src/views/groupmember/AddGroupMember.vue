@@ -120,13 +120,12 @@
   </div>
   <div id="confirmation" v-if="addOk">
     <p>PHN: {{ result?.phn }}</p>  
-    <AppButton @click="resetForm" mode="primary" type="button">Add another Group Memeber</AppButton>
+    <AppButton @click="resetForm" mode="primary" type="button">Add Another Group Member</AppButton>
   </div>
 </template>
 <script>
 
 import dayjs from 'dayjs'
-
 import useVuelidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 import AddListDependent from '../../components/groupmember/AddListDependent.vue'
