@@ -1,27 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import store from '../store'
-
+import AddDependent from '../views/groupmember/AddDependent.vue'
+import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
+import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
+import CancelGroupMember from '../views/groupmember/CancelGroupMember.vue'
+import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
+import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
+import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
+import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
+import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
+import GroupMemberHome from '../views/groupmember/GroupMemberHome.vue'
 import Help from './../views/Help.vue'
 import Home from './../views/Home.vue'
 import NotFound from '../views/NotFound.vue'
-import Unauthorized from '../views/Unauthorized.vue'
-
-import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
-import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
-import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
 import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
 import PhnLookup from '../views/eligibility/PhnLookup.vue'
-
-import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
-import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
-import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
-
-import GroupMemberHome from '../views/groupmember/GroupMemberHome.vue'
-import CancelGroupMember from '../views/groupmember/CancelGroupMember.vue'
+import Unauthorized from '../views/Unauthorized.vue'
 import UpdateNumberAndDept from '../views/groupmember/UpdateNumberAndDept.vue'
-
-import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
+import store from '../store'
 
 const routes = [
   {
@@ -105,17 +101,21 @@ const routes = [
     },
     children: [
       {
+        path: 'addDependent',
+        name: 'AddDependent',
+        component: AddDependent,
+      },
+      {
         path: 'updateNumberAndDept',
         name: 'UpdateNumberAndDept',
-        component: UpdateNumberAndDept,      
+        component: UpdateNumberAndDept,
       },
       {
         path: 'cancelGroupMember',
         name: 'CancelGroupMember',
         component: CancelGroupMember,
       },
-     
-    ]
+    ],
   },
   {
     path: '/help',
