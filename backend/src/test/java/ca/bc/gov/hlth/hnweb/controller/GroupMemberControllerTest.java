@@ -29,7 +29,7 @@ import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberResponse;
-
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.MemberAddress;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
 import okhttp3.mockwebserver.MockResponse;
@@ -52,6 +52,7 @@ public class GroupMemberControllerTest {
 	private static final String RPBSPWC0_SUCCESS = "        RPBSPWC000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  987389592763371092022-12-31K";
 	
 	private static final String RPBSPXP0_ERROR_COVERAGE_ALREADY_EXISTS = "        RPBSPXP000000010                                ERRORMSGRPBS0065COVERAGE ALREADY EXISTS FOR THE PHN/GROUP NUMBER SPECIFIED              63371091111     222   2022-01-01                                                                                                                                                                                                                                        6045551234                              9873895927                                                                                          9873895927";
+	private static final String RPBSPXP0_SUCCESS = "        RPBSPXP000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  62431091111     222   2022-01-01123 main st                                                                                         V1V1V1                                                                                                                              6045551234                              9873895902                                                                                                    ";
 	
 	private static MockWebServer mockBackEnd;
 
@@ -302,12 +303,48 @@ public class GroupMemberControllerTest {
     	addGroupMemberRequest.setDepartmentNumber("111");
     	addGroupMemberRequest.setPhone("6045551234");
     	
+    	MemberAddress homeAddress = new MemberAddress();
+    	homeAddress.setAddressLine1("123 Main St");
+    	homeAddress.setPostalCode("V1V1V1");
+    	addGroupMemberRequest.setHomeAddress(homeAddress);
+    	
 		ResponseEntity<AddGroupMemberResponse> response = groupMemberController.addGroupMember(addGroupMemberRequest);
 		
 		AddGroupMemberResponse addGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, addGroupMemberResponse.getStatus());
         assertEquals("RPBS0065 9873895927 COVERAGE ALREADY EXISTS FOR THE PHN/GROUP NUMBER SPECIFIED", addGroupMemberResponse.getMessage());
         assertEquals("9873895927", addGroupMemberResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+    }
+    
+    @Test
+    public void testAddGroupMember_success() throws InterruptedException {
+    	mockBackEnd.enqueue(new MockResponse()
+        		.setBody(RPBSPXP0_SUCCESS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+    	
+    	AddGroupMemberRequest addGroupMemberRequest = new AddGroupMemberRequest();
+    	addGroupMemberRequest.setGroupNumber("6243109");
+    	addGroupMemberRequest.setEffectiveDate(LocalDate.of(2022, 01, 31));
+    	addGroupMemberRequest.setPhn("9873895902");
+    	addGroupMemberRequest.setGroupMemberNumber("2222");
+    	addGroupMemberRequest.setDepartmentNumber("111");
+    	addGroupMemberRequest.setPhone("6045551234");
+    	
+    	MemberAddress homeAddress = new MemberAddress();
+    	homeAddress.setAddressLine1("123 Main St");
+    	homeAddress.setPostalCode("V1V1V1");
+    	addGroupMemberRequest.setHomeAddress(homeAddress);
+    	
+		ResponseEntity<AddGroupMemberResponse> response = groupMemberController.addGroupMember(addGroupMemberRequest);
+		
+		AddGroupMemberResponse addGroupMemberResponse = response.getBody();
+		assertEquals(StatusEnum.SUCCESS, addGroupMemberResponse.getStatus());
+        assertEquals("TRANSACTION SUCCESSFUL", addGroupMemberResponse.getMessage());
+        assertEquals("9873895902", addGroupMemberResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
