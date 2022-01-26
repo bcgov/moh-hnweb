@@ -1,14 +1,13 @@
 <template>
   <div id="addGroupMember" v-if="addMode">
     <form @submit.prevent="submitForm">
-    <AppRow>
+      <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" type="text" v-model.trim="groupNumber" />
+          <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" type="text" v-model.trim="groupNumber"/>
         </AppCol>
-      </AppRow>
-       <AppRow class="row-center">
-        <AppCol class="col4">
-          <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" v-model="coverageEffectiveDate" />
+          <AppCol class="col3">
+          <AppDateInput :e-model="v$.coverageEffectiveDate" id="dp-input-coverageEffectiveDate" label="Coverage Effective Date" tooltip tooltipText="Date always defaults to first day of the month"
+                        monthPicker inputDateFormat="yyyy-MM" placeholder="YYYY-MM" v-model="coverageEffectiveDate"/>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -23,7 +22,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.departmentNumber" id="departmentNumber" label="Department Number (Optional)" type="text" v-model="departmentNumber"/>
+          <AppInput :e-model="v$.departmentNumber" id="departmentNumber" label="Department Number (Optional)" type="text" v-model="departmentNumber" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -53,8 +52,6 @@
       </AppRow>
       <AppRow>
         <AppCol class="col4">
-        </AppCol>
-        <AppCol class="col4">
           <AppInput :e-model="v$.homeAddress.postalCode" id="postalCode" label="Postal Code" type="text" v-model.trim="homeAddress.postalCode" />
         </AppCol>
       </AppRow>
@@ -79,8 +76,6 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col4">
-        </AppCol>
         <AppCol class="col4">
           <AppInput :e-model="v$.mailingAddress.postalCode" id="mailingPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddress.postalCode" />
         </AppCol>
@@ -125,7 +120,6 @@
 </template>
 <script>
 
-import dayjs from 'dayjs'
 import useVuelidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 import AddListDependent from '../../components/groupmember/AddListDependent.vue'
@@ -152,7 +146,7 @@ export default {
       groupNumber: '', 
       groupMemberNumber: '',     
       departmentNumber: '',   
-      coverageEffectiveDate: dayjs().startOf('month').toDate(),
+      coverageEffectiveDate: null,
       telephone: '',
       homeAddress: {
         addressLine1: '',
@@ -177,7 +171,12 @@ export default {
       } 
     }
   },
-
+ computed: {
+    // Coverage Effective Date Date should be the first day of the month.
+    effectiveDateAdjusted() {
+      return new Date(this.coverageEffectiveDate.year, this.coverageEffectiveDate.month, 1)
+    },
+  },
   methods: {
     async submitForm() {
       this.submitting = true,
@@ -198,8 +197,8 @@ export default {
           groupNumber: this.groupNumber, 
           groupMemberNumber: this.groupMemberNumber,     
           departmentNumber: this.departmentNumber,   
-          effectiveDate: this.coverageEffectiveDate,
-          telephone: this.telephone,
+          effectiveDate: this.effectiveDateAdjusted,
+          phone: this.telephone,
           homeAddress: {
             addressLine1: this.homeAddress.addressLine1,
             addressLine2: this.homeAddress.addressLine2,
@@ -253,7 +252,7 @@ export default {
       this.phn = ''     
       this.groupMemberNumber = ''      
       this.departmentNumber = ''      
-      this.coverageEffectiveDate = dayjs().startOf('month').toDate(),
+      this.coverageEffectiveDate = null,
       this.telephone = ''
       this.homeAddress.addressLine1 = ''
       this.homeAddress.addressLine2 = ''

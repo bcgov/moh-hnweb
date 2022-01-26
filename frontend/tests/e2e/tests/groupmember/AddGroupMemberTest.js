@@ -7,6 +7,7 @@ const ERROR_MESSAGE = 'Please correct errors before submitting'
 const PHN_REQUIRED_MESSAGE = 'PHN is required'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'
 const GROUP_NUMBER_REQUIRED_MESSAGE = 'Group Number is required'
+const EFFECTIVE_DATE_REQUIRED_MESSAGE = 'Coverage Effective Date is required'
 const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
 const HOME_ADDRESS_REQUIRED_MESSAGE = 'Home Address Line 1 is required'
 const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
@@ -31,16 +32,20 @@ test('Check required fields validation', async t => {
         // I expect an error message stating the page had errors and individual error messages for each required field        
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
         .expect(AddGroupMember.errorText.nth(0).textContent).contains(GROUP_NUMBER_REQUIRED_MESSAGE)
-        .expect(AddGroupMember.errorText.nth(1).textContent).contains(PHN_REQUIRED_MESSAGE)
-        .expect(AddGroupMember.errorText.nth(2).textContent).contains(HOME_ADDRESS_REQUIRED_MESSAGE)
-        .expect(AddGroupMember.errorText.nth(3).textContent).contains(POSTAL_CODE_REQUIRED_MESSAGE)
+        .expect(AddGroupMember.errorText.nth(1).textContent).contains(EFFECTIVE_DATE_REQUIRED_MESSAGE)       
+        .expect(AddGroupMember.errorText.nth(2).textContent).contains(PHN_REQUIRED_MESSAGE)
+        .expect(AddGroupMember.errorText.nth(3).textContent).contains(HOME_ADDRESS_REQUIRED_MESSAGE)
+        .expect(AddGroupMember.errorText.nth(4).textContent).contains(POSTAL_CODE_REQUIRED_MESSAGE)
        
 });
 
 test('Check properly filled form passes validation', async t => {
     await t
         // Given the page is filled out correctly
-        .typeText(AddGroupMember.groupNumberInput, '6337109')      
+        .typeText(AddGroupMember.groupNumberInput, '6337109')
+        .typeText(AddGroupMember.coverageEffectiveDateInput, '2022-02') 
+        .pressKey('tab')
+        .click(AddGroupMember.phnInput)     
         .typeText(AddGroupMember.phnInput, '9882807277')        
         .typeText(AddGroupMember.address1Input, 'Test 111 ST')
         .typeText(AddGroupMember.postalCodeInput, 'V8V8V8')
@@ -55,8 +60,11 @@ test('Check invalid field validation', async t => {
     await t
         // Given a Group Number entered with an invalid format
         .typeText(AddGroupMember.groupNumberInput, '9000444000')
+        .typeText(AddGroupMember.coverageEffectiveDateInput, '2022-02') 
+        .pressKey('tab')
+        .click(AddGroupMember.phnInput)
         .typeText(AddGroupMember.phnInput, '9000444000')
-        .typeText(AddGroupMember.telephoneInput, '7807777')
+        .typeText(AddGroupMember.telephoneInput, '7807777')  
         // When I click the submit button
 		.click(AddGroupMember.submitButton)
         // I expect an error message stating the page had errors and an individual error message for invalid inputs
@@ -102,6 +110,8 @@ test('Check clear button clears the form', async t => {
     await t
         // Given the page is filled out correctly
         .typeText(AddGroupMember.groupNumberInput, '6337109')
+        .typeText(AddGroupMember.coverageEffectiveDateInput, '2022-12')
+        .pressKey('tab')
         .typeText(AddGroupMember.phnInput, '9882807277')
         .typeText(AddGroupMember.groupMemberNumberInput, '000001')
         .typeText(AddGroupMember.departmentNumberInput, '000002')
@@ -135,8 +145,8 @@ test('Check clear button clears the form', async t => {
         .expect(AddGroupMember.mailingAddress3Input.value).eql('')
         .expect(AddGroupMember.mailingAddress4Input.value).eql('')
         .expect(AddGroupMember.mailingPostalCodeInput.value).eql('')   
-        .expect(AddGroupMember.coverageEffectiveDateInput.value).notEql('')
-      
+        .expect(AddGroupMember.coverageEffectiveDateInput.value).eql(undefined)
+        
         .expect(AddGroupMember.dependentPhn.value).eql('')
         .expect(AddGroupMember.dependentList.length).eql(0);
         
