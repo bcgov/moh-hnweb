@@ -23,7 +23,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <GenderRadioButtonGroup :e-model="v$.gender" id="gender" label="Gender" v-model="gender" />
+          <GenderRadioButtonGroup :e-model="v$.gender" id="gender" v-model="gender" />
         </AppCol>
       </AppRow>
       <AppRow>
