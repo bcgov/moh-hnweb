@@ -20,6 +20,7 @@ import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResid
 import GroupMemberHome from '../views/groupmember/GroupMemberHome.vue'
 import CancelGroupMember from '../views/groupmember/CancelGroupMember.vue'
 import UpdateNumberAndDept from '../views/groupmember/UpdateNumberAndDept.vue'
+import CancelGroupMemberDependent from '../views/groupmember/CancelGroupMemberDependent.vue'
 
 import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
 
@@ -107,15 +108,19 @@ const routes = [
       {
         path: 'updateNumberAndDept',
         name: 'UpdateNumberAndDept',
-        component: UpdateNumberAndDept,      
+        component: UpdateNumberAndDept,
       },
       {
         path: 'cancelGroupMember',
         name: 'CancelGroupMember',
         component: CancelGroupMember,
       },
-     
-    ]
+      {
+        path: 'cancelGroupMemberDependent',
+        name: 'CancelGroupMemberDependent',
+        component: CancelGroupMemberDependent,
+      },
+    ],
   },
   {
     path: '/help',

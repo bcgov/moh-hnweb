@@ -9,10 +9,10 @@
           <div class="dropdown" :key="eligibilityDropdownKey" v-on:click="this.refreshEligibility()">
             <router-link @click="resetAlert" :to="{ name: 'Eligibility' }">Eligibility & PHN</router-link>
             <div class="dropdown-content">
-              <router-link @click="resetAlert" :class="menuClass($route, 'CheckEligibility')" :to="{ name: 'CheckEligibility'}" v-if="hasPermission('R15')">Check Eligibility</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'PhnInquiry')" :to="{ name: 'PhnInquiry'}" v-if="hasPermission('R41')">PHN Inquiry</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'PhnLookup')" :to="{ name: 'PhnLookup'}">PHN Lookup</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'CoverageStatusCheck')" :to="{ name: 'CoverageStatusCheck'}" v-if="hasPermission('E45')">MSP Coverage Status Check</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'CheckEligibility')" :to="{ name: 'CheckEligibility' }" v-if="hasPermission('R15')">Check Eligibility</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'PhnInquiry')" :to="{ name: 'PhnInquiry' }" v-if="hasPermission('R41')">PHN Inquiry</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'PhnLookup')" :to="{ name: 'PhnLookup' }">PHN Lookup</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'CoverageStatusCheck')" :to="{ name: 'CoverageStatusCheck' }" v-if="hasPermission('E45')">MSP Coverage Status Check</router-link>
             </div>
           </div>
         </li>
@@ -30,10 +30,11 @@
         </li>
         <li id="group-member-link" :class="menuTabClass($route, '/groupMember')">
           <div class="dropdown" :key="groupMemberDropDownKey" v-on:click="this.refreshGroupMember">
-            <router-link @click="resetAlert" :to="{ name: 'GroupMember'}">Manage Group Member</router-link>
+            <router-link @click="resetAlert" :to="{ name: 'GroupMember' }">Manage Group Member</router-link>
             <div class="dropdown-content">
-              <router-link @click="resetAlert" :class="menuClass($route, 'UpdateNumberAndDept')" :to="{ name: 'UpdateNumberAndDept'}">Update Group Member's Number and/or Department</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'CancelGroupMember')" :to="{ name: 'CancelGroupMember'}">Cancel Group Member</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'UpdateNumberAndDept')" :to="{ name: 'UpdateNumberAndDept' }">Update Group Member's Number and/or Department</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'CancelGroupMember')" :to="{ name: 'CancelGroupMember' }">Cancel Group Member</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'CancelGroupMemberDependent')" :to="{ name: 'CancelGroupMemberDependent' }">Cancel Group Member's Dependent</router-link>
             </div>
           </div>
         </li>
@@ -88,7 +89,7 @@ export default {
       const hasPermission = this.$store.getters['auth/hasPermission']
       return hasPermission('E45') || hasPermission('R15') || hasPermission('R41')
     },
-  }
+  },
 }
 </script>
 

@@ -7,6 +7,7 @@ import SubNavTab from '../../components/template/SubNavTab.vue'
   <TheSubNav>
     <SubNavTab routeName="UpdateNumberAndDept" title="Update Group Member's Number and/or Department" />
     <SubNavTab routeName="CancelGroupMember" title="Cancel Group Member" />
+    <SubNavTab routeName="CancelGroupMemberDependent" title="Cancel Group Member's Dependent" />
   </TheSubNav>
   <router-view />
 </template>
@@ -16,5 +17,3 @@ export default {
   name: 'GroupMemberHome',
 }
 </script>
-
-
