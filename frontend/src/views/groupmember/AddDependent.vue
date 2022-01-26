@@ -6,7 +6,7 @@
           <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" type="text" v-model.trim="groupNumber" />
         </AppCol>
         <AppCol class="col4">
-          <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" v-model="coverageEffectiveDate" />
+          <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" tooltip tooltipText="Day always defaults to 1st of month" monthPicker inputDateFormat="yyyy-MM" placeholder="YYYY-MM" v-model="coverageEffectiveDate" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -23,19 +23,23 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col4">
-          <p>Is this Dependent attending a Canadian Educational Institution?</p>
-          <p>(Click either Yes or No)</p>
-        </AppCol>
-        <AppCol>
-          <AppCheckbox :errorValue="v$.isAttendingCanadianEducationalInstitute" id="isAttendingCanadianEducationalInstitute" label="Yes" v-model="isAttendingCanadianEducationalInstitute" />
-          <AppCheckbox :errorValue="v$.isNotAttendingCanadianEducationalInstitute" id="isNotAttendingCanadianEducationalInstitute" label="No" v-model="isNotAttendingCanadianEducationalInstitute" />
+        <AppCol class="col6">
+          <YesNoRadioButtonGroup
+            :e-model="v$.isAttendingCanadianEducationalInstitute"
+            id="isAttendingCanadianEducationalInstitute"
+            label="Is this Dependent attending a Canadian Educational Institution?"
+            tooltip
+            tooltipText="Click either Yes or No"
+            v-model="isAttendingCanadianEducationalInstitute"
+          />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col4">
           <p>If Yes, enter the expected date studies in Canada will be completed</p>
         </AppCol>
+      </AppRow>
+      <AppRow>
         <AppCol class="col4">
           <AppDateInput :e-model="v$.studentEndDate" id="studentEndDate" label="Student End Date" v-model="studentEndDate" />
         </AppCol>
@@ -54,7 +58,7 @@
 </template>
 
 <script>
-import AppCheckbox from '../../components/ui/AppCheckbox.vue'
+import YesNoRadioButtonGroup from '../../components/ui/YesNoRadioButtonGroup.vue'
 import useVuelidate from '@vuelidate/core'
 import { helpers, required, requiredIf } from '@vuelidate/validators'
 import dayjs from 'dayjs'
@@ -64,7 +68,7 @@ import GroupMemberService from '../../services/GroupMemberService'
 
 export default {
   name: 'AddDependent',
-  components: { AppCheckbox },
+  components: { YesNoRadioButtonGroup },
   setup() {
     return {
       v$: useVuelidate(),
@@ -79,8 +83,7 @@ export default {
       phn: '',
       dependentPhn: '',
       relationship: '',
-      isAttendingCanadianEducationalInstitute: false,
-      isNotAttendingCanadianEducationalInstitute: false,
+      isAttendingCanadianEducationalInstitute: 'N',
       studentEndDate: null,
       result: {
         phn: '',
@@ -95,8 +98,8 @@ export default {
   },
   computed: {
     // Cancel Date should be the last day of the month. In JavaScript this can be done by using day 0 of the next month
-    adjustToLastDayOfMonth() {
-      return new Date(this.cancelDate.year, this.cancelDate.month + 1, 0)
+    adjustToFirstDayOfMonth() {
+      return new Date(this.coverageEffectiveDate.year, this.coverageEffectiveDate.month, 1)
     },
   },
   methods: {
@@ -114,12 +117,11 @@ export default {
         this.result = (
           await GroupMemberService.addDependent({
             groupNumber: this.groupNumber,
-            coverageEffectiveDate: dayjs(this.coverageEffectiveDate).format(API_DATE_FORMAT),
+            coverageEffectiveDate: dayjs(this.adjustToFirstDayOfMonth).format(API_DATE_FORMAT),
             phn: this.phn,
             dependentPhn: this.dependentPhn,
             relationship: this.relationship,
-            isAttendingCanadianEducationalInstitute: this.isAttendingCanadianEducationalInstitute,
-            isNotAttendingCanadianEducationalInstitute: this.isNotAttendingCanadianEducationalInstitute,
+            isAttendingCanadianEducationalInstitute: this.isAttendingCanadianEducationalInstitute === 'Y',
             studentEndDate: dayjs(this.studentEndDate).format(API_DATE_FORMAT),
           })
         ).data
@@ -149,8 +151,7 @@ export default {
       this.phn = ''
       this.dependentPhn = ''
       this.relationship = ''
-      this.isAttendingCanadianEducationalInstitute = false
-      this.isNotAttendingCanadianEducationalInstitute = false
+      this.isAttendingCanadianEducationalInstitute = 'N'
       this.studentEndDate = null
       this.result = null
       this.inputFormActive = true
@@ -176,10 +177,9 @@ export default {
       relationship: {
         required,
       },
-      isAttendingCanadianEducationalInstitute: {},
-      isNotAttendingCanadianEducationalInstitute: {},
+      isAttendingCanadianEducationalInstitute: { required },
       studentEndDate: {
-        requiredIfIsAttending: requiredIf(this.isAttendingCanadianEducationalInstitute),
+        requiredIfIsAttending: requiredIf(this.isAttendingCanadianEducationalInstitute === 'Y'),
       },
     }
   },
