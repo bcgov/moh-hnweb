@@ -106,7 +106,7 @@ public class GroupMemberService {
 
 		logger.info("Request {}", rpbspxp0Str);
 		
-		ResponseEntity<String> response = postRapidRequest(r35Path, rpbspxp0Str);
+		ResponseEntity<String> response = postRapidRequest(r30Path, rpbspxp0Str);
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		

@@ -15,7 +15,7 @@ public class AddGroupMemberResponse extends BaseResponse {
 
 	@Override
 	public String toString() {
-		return "CancelGroupMemberResponse [phn=" + phn + ", status=" + status + ", message=" + message + "]";
+		return "AddGroupMemberResponse [phn=" + phn + ", status=" + status + ", message=" + message + "]";
 	}
 
 }
