@@ -20,18 +20,20 @@ import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPED0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPEE0Converter;
+import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPWB0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPWC0Converter;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPED0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPEE0;
-
-import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPWB0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPWC0;
+import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddDependentRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddDependentResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberResponse;
-
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
 import ca.bc.gov.hlth.hnweb.service.GroupMemberService;
 
 /**
@@ -46,6 +48,40 @@ public class GroupMemberController {
 
 	@Autowired
 	private GroupMemberService groupMemberService;
+
+	/**
+	 * Add a dependent to a group member's coverage.
+	 * Maps to the legacy R31.
+	 *  
+	 * @param addDependentRequest
+	 * @return The result of the operation.
+	 */
+	@PostMapping("/add-dependent")
+	public ResponseEntity<AddDependentResponse> addDependent(@Valid @RequestBody AddDependentRequest addDependentRequest) {
+
+		try {
+			RPBSPWB0Converter converter = new RPBSPWB0Converter();
+			RPBSPWB0 rpbspwb0Request = converter.convertRequest(addDependentRequest);
+			RPBSPWB0 rpbspwb0Response = groupMemberService.addDependent(rpbspwb0Request);
+			AddDependentResponse addDependentResponse = converter.convertResponse(rpbspwb0Response);
+					
+			ResponseEntity<AddDependentResponse> response = ResponseEntity.ok(addDependentResponse);
+
+			logger.info("addDependentResponse response: {} ", addDependentResponse);
+			return response;
+		} catch (HNWebException hwe) {
+			switch (hwe.getType()) {
+			case DOWNSTREAM_FAILURE:
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
+			default:
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /add-dependent request", hwe);				
+			}
+		} catch (WebClientException wce) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /add-dependent request", e);
+		}		
+	}
 
 	/**
 	 * Updates a group member's number and/or department.

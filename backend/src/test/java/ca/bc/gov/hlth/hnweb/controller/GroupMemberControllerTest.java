@@ -23,11 +23,12 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddDependentRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddDependentResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberResponse;
-
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
 import okhttp3.mockwebserver.MockResponse;
@@ -48,6 +49,7 @@ public class GroupMemberControllerTest {
 	private static final String RPBSPWC0_ERROR_PHN_DOES_NOT_HAVE_COVERAGE = "        RPBSPWC000000010                                ERRORMSGRPBS0081PHN DOES NOT HAVE COVERAGE UNDER YOUR ORGANIZATION                      934798407463371092022-01-31K";
 	private static final String RPBSPWC0_ERROR_FUTURE_CANCEL_DATE = "        RPBSPWC000000010                                ERRORMSGRPBS0048SUBSCRIBER HAS A FUTURE CANCEL DATE.PLS FORWARD DOCS TO MSP             987389592763371092022-12-31K";
 	private static final String RPBSPWC0_SUCCESS = "        RPBSPWC000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  987389592763371092022-12-31K";
+	private static final String RPBSPWB0_SUCCESS = "        RPBSPWB000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  987389592763371092022-12-31S";
 	
 	private static MockWebServer mockBackEnd;
 
@@ -278,6 +280,31 @@ public class GroupMemberControllerTest {
 		assertEquals(StatusEnum.SUCCESS, cancelGroupMemberResponse.getStatus());
         assertEquals("TRANSACTION SUCCESSFUL", cancelGroupMemberResponse.getMessage());
         assertEquals("9873895927", cancelGroupMemberResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+    }
+    
+    @Test
+    public void testAddDependent_success() throws InterruptedException {
+    	mockBackEnd.enqueue(new MockResponse()
+        		.setBody(RPBSPWB0_SUCCESS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+    	
+    	AddDependentRequest addDependentRequest = new AddDependentRequest();
+    	addDependentRequest.setPhn("9873895927");
+    	addDependentRequest.setGroupNumber("6337109");
+    	addDependentRequest.setDependentPHN("9873895937");
+    	addDependentRequest.setCoverageEffectiveDate(LocalDate.of(2022, 01, 31));
+    	addDependentRequest.setRelationship("S");
+    	
+		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest);
+		
+		AddDependentResponse addDependentResponse = response.getBody();
+		assertEquals(StatusEnum.SUCCESS, addDependentResponse.getStatus());
+        assertEquals("TRANSACTION SUCCESSFUL", addDependentResponse.getMessage());
+        assertEquals("9873895927", addDependentResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
