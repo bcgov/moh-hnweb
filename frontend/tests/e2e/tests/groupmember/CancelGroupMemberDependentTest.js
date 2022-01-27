@@ -63,17 +63,17 @@ test('Check invalid formats validation', async (t) => {
 test('Check properly filled form passes validation', async (t) => {
   await t
     // Given I have a form filled out with data
+    .typeText(CancelGroupMemberDependent.groupNumberInput, '6243109')
     .typeText(CancelGroupMemberDependent.phnInput, '9397105575')
     .typeText(CancelGroupMemberDependent.dependentPhnInput, '9397105575')
-    .typeText(CancelGroupMemberDependent.cancelDateInput, '2022-12')
-    .pressKey('tab')
-    .click(CancelGroupMemberDependent.groupNumberInput)
-    .typeText(CancelGroupMemberDependent.groupNumberInput, '6243109')
+    .click(CancelGroupMemberDependent.cancelDateInput)
+    .click(CancelGroupMemberDependent.divSelectedDate)
     .click(CancelGroupMemberDependent.cancelReasonInput)
     .pressKey('down')
     .pressKey('enter')
     // When I click the submit button
     .click(CancelGroupMemberDependent.submitButton)
+    .wait(10000)
     // I expect a response from RAPID
     .expect(AlertPage.alertBannerText.textContent)
     .contains(RAPID_RESPONSE)
@@ -85,10 +85,14 @@ test('Check clear button clears the form', async (t) => {
     .typeText(CancelGroupMemberDependent.phnInput, '9882807277')
     .typeText(CancelGroupMemberDependent.dependentPhnInput, '9882807277')
     .typeText(CancelGroupMemberDependent.groupNumberInput, '6337109')
+    .click(CancelGroupMemberDependent.relationshipInput)
+    .pressKey('down')
+    .pressKey('enter')
     .click(CancelGroupMemberDependent.cancelReasonInput)
     .pressKey('down')
-    .typeText(CancelGroupMemberDependent.cancelDateInput, '2022-12')
-    .pressKey('tab')
+    .pressKey('enter')
+    .click(CancelGroupMemberDependent.cancelDateInput)
+    .click(CancelGroupMemberDependent.divSelectedDate)
     // When I click the clear button
     .click(CancelGroupMemberDependent.clearButton)
     // I expect the form to be cleared

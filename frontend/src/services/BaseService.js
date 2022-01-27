@@ -16,9 +16,10 @@ export const resources = {
   groupMember: {
     updateNumberAndDept: '/group-member/update-number-and-dept',
     cancelGroupMember: '/group-member/cancel-group-member',
+    cancelGroupMemberDependent: '/group-member/cancel-group-member-dependent',
   },
   user: {
-    permissions: '/user/permissions'
+    permissions: '/user/permissions',
   },
 }
 

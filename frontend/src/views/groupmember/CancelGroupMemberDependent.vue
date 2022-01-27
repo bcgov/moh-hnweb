@@ -13,6 +13,11 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
+          <AppSelect :e-model="v$.relationship" id="relationship" label="Relationship" v-model="relationship" :options="relationshipOption" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col3">
           <AppInput :e-model="v$.dependentPhn" id="dependentPhn" label="Dependent's PHN" type="text" v-model="dependentPhn" />
         </AppCol>
       </AppRow>
@@ -59,6 +64,7 @@ export default {
       groupNumber: '',
       phn: '',
       dependentPhn: '',
+      relationship: '',
       cancelDate: null,
       cancelReason: '',
       result: {
@@ -69,7 +75,11 @@ export default {
       cancelReasons: [
         { text: 'Divorced', value: 'K' },
         { text: 'No longer a child', value: 'E' },
-        { text: 'out of province move', value: 'E' },
+        { text: 'Out of province move', value: 'E' },
+      ],
+      relationshipOption: [
+        { text: 'Spouse', value: 'S' },
+        { text: 'Dependent', value: 'D' },
       ],
     }
   },
@@ -96,6 +106,7 @@ export default {
             phn: this.phn,
             dependentPhn: this.dependentPhn,
             groupNumber: this.groupNumber,
+            relationship: this.relationship,
             coverageCancelDate: this.cancelDateAdjusted,
             cancelReason: this.cancelReason,
           })
@@ -124,6 +135,7 @@ export default {
       this.phn = ''
       this.dependentPhn = ''
       this.groupNumber = ''
+      this.relationship = ''
       this.cancelDate = null
       this.cancelReason = ''
       this.result = null
@@ -142,6 +154,7 @@ export default {
         required,
         validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
       },
+      relationship: {},
       groupNumber: {
         required,
         validateGroupNumber: helpers.withMessage(VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber),
