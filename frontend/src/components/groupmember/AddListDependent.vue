@@ -1,10 +1,10 @@
 <template>
   <div id="addDependent">
     <AppRow>
-      <AppCol class="col4">
+      <AppCol class="col3">
         <AppLabel>Dependent</AppLabel>
       </AppCol>
-      <AppCol class="col4">
+      <AppCol class="col3">
         <AppInput :e-model="v$.phn" id="dependentPHN" label="PHN" v-model.trim="phn" />
       </AppCol>
       <AppCol class="col2 center">
@@ -13,8 +13,8 @@
     </AppRow>
 
     <AppRow>
-      <AppCol class="col4"></AppCol>
-      <AppCol class="col4">
+      <AppCol class="col3"></AppCol>
+      <AppCol class="col3">
         <ul id="dependentList" class="dependent-list">
           <li v-for="(dependent, index) in dependents">
             {{ dependent }} <font-awesome-icon id="removeIcon" icon="trash-alt" @click="removeDependent(index)" class="trash" />

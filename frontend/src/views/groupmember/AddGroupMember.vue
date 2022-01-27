@@ -88,15 +88,15 @@
           </AppCol> 
         </AppRow>       
         <AppRow>
-          <AppCol class="col4"><b>Relationship</b>
+          <AppCol class="col3"><b>Relationship</b>
           </AppCol>
-          <AppCol class="col4"><b>PHN</b>
+          <AppCol class="col3"><b>PHN</b>
           </AppCol> 
         </AppRow> 
         <AppRow>
-          <AppCol class="col4"><b> Spouse </b>
+          <AppCol class="col3"><b> Spouse </b>
           </AppCol>
-          <AppCol class="col4">
+          <AppCol class="col3">
             <AppInput :e-model="v$.spousePhn" id="spousePhn" type="text" v-model.trim="spousePhn" />
           </AppCol> 
         </AppRow>
