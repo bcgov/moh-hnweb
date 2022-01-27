@@ -8,7 +8,7 @@
         <AppInput :e-model="v$.phn" id="dependentPHN" label="PHN" v-model.trim="phn" />
       </AppCol>
       <AppCol class="col2 center">
-        <AppButton @click="addDependent()" class="btn-sm" mode="secondary" type="button" v-if="isAddVisible" >Add</AppButton>
+        <AppButton @click="addDependent()" class="btn-sm" mode="secondary" type="button" v-if="isAddVisible">Add</AppButton>
       </AppCol>
     </AppRow>
 
@@ -16,9 +16,7 @@
       <AppCol class="col3"></AppCol>
       <AppCol class="col3">
         <ul id="dependentList" class="dependent-list">
-          <li v-for="(dependent, index) in dependents">
-            {{ dependent }} <font-awesome-icon id="removeIcon" icon="trash-alt" @click="removeDependent(index)" class="trash" />
-          </li>
+          <li v-for="(dependent, index) in dependents">{{ dependent }} <font-awesome-icon id="removeIcon" icon="trash-alt" @click="removeDependent(index)" class="trash" /></li>
         </ul>
       </AppCol>
     </AppRow>
@@ -33,12 +31,12 @@ import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
 
 export default {
   name: 'AddDependent',
-  components: { 
+  components: {
     AppLabel,
   },
   setup() {
     return {
-      v$: useVuelidate({$stopPropagation: true}),
+      v$: useVuelidate({ $stopPropagation: true }),
     }
   },
   data() {
@@ -49,8 +47,8 @@ export default {
   props: {
     dependents: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   emits: ['addDependent', 'removeDependent'],
   methods: {
@@ -67,12 +65,12 @@ export default {
     },
     removeDependent(index) {
       this.$emit('removeDependent', index)
-    }
+    },
   },
   computed: {
     isAddVisible() {
       return this.dependents.length < 7
-    }
+    },
   },
   validations() {
     return {
@@ -81,13 +79,11 @@ export default {
         validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
       },
     }
-  }
+  },
 }
-
 </script>
 
 <style scoped>
-
 .dependent-list > li {
   font-size: 18px;
   list-style: circle;
