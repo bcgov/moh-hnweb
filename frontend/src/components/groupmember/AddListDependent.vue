@@ -7,15 +7,15 @@
       <AppCol class="col4">
         <AppInput :e-model="v$.phn" id="dependentPHN" label="PHN" v-model.trim="phn" />
       </AppCol>
-      <AppCol class="col2" style="align-content: flex-end; align-items: flex-end; align-self: center;">
-        <AppButton @click="addDependent()" class="add-button" mode="secondary" type="button" v-if="isAddVisible" >Add</AppButton>
+      <AppCol class="col2 center">
+        <AppButton @click="addDependent()" class="btn-sm" mode="secondary" type="button" v-if="isAddVisible" >Add</AppButton>
       </AppCol>
     </AppRow>
 
     <AppRow>
       <AppCol class="col4"></AppCol>
       <AppCol class="col4">
-        <ul id="phnList" class="dependent-list">
+        <ul id="dependentList" class="dependent-list">
           <li v-for="(dependent, index) in dependents">
             {{ dependent }} <font-awesome-icon id="removeIcon" icon="trash-alt" @click="removeDependent(index)" class="trash" />
           </li>
@@ -87,9 +87,7 @@ export default {
 </script>
 
 <style scoped>
-.add-button {
-  align-self: center;
-}
+
 .dependent-list > li {
   font-size: 18px;
   list-style: circle;

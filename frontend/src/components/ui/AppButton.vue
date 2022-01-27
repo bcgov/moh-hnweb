@@ -113,4 +113,20 @@
     text-decoration: none;
     cursor: not-allowed;
   }
+
+  .btn-sm {
+    width: 100px;
+  }
+
+  .btn-md {
+    width: 150px;
+  }
+
+  .btn-lg {
+    width: 200px;
+  }
+
+  .btn-xl {
+    width: 250px;
+  }
 </style>
