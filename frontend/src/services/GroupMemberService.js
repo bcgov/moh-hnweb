@@ -11,5 +11,8 @@ export default {
   addGroupMember(request) {  
     return apiRequest().then(axiosInstance => axiosInstance.post(resources.groupMember.addGroupMember, request)) 
    },
+  cancelGroupMemberDependent(request) {
+    return apiRequest().then(axiosInstance => axiosInstance.post(resources.groupMember.cancelGroupMemberDependent, request))
+  },
 
 }
