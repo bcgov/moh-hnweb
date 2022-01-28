@@ -6,7 +6,7 @@
           <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" type="text" v-model.trim="groupNumber"/>
         </AppCol>
           <AppCol class="col3">
-          <AppDateInput :e-model="v$.coverageEffectiveDate" id="dp-input-coverageEffectiveDate" label="Coverage Effective Date" tooltip tooltipText="Date always defaults to first day of the month"
+          <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" tooltip tooltipText="Date always defaults to first day of the month"
                         monthPicker inputDateFormat="yyyy-MM" placeholder="YYYY-MM" v-model="coverageEffectiveDate"/>
         </AppCol>
       </AppRow>
@@ -26,57 +26,57 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col4">
+        <AppCol class="col3">
           <AppInput :e-model="v$.telephone" id="telephone" label="Telephone (Optional)" type="text" v-model.trim="telephone" placeholder="1234567890" />
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col7">
+        <AppCol class="col6">
           <AppInput :e-model="v$.homeAddress.addressLine1" id="addressLine1" label="Home Address Line 1" type="text" v-model="homeAddress.addressLine1" />
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col7">
+        <AppCol class="col6">
           <AppInput :e-model="v$.homeAddress.addressLine2" id="addressLine2" label="Line 2 (Optional)" type="text" v-model="homeAddress.addressLine2" />
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col7">
+        <AppCol class="col6">
           <AppInput :e-model="v$.homeAddress.addressLine3" id="addressLine3" label="Line 3 (Optional)" type="text" v-model="homeAddress.addressLine3" />
         </AppCol>
       </AppRow>
        <AppRow>
-        <AppCol class="col7">
+        <AppCol class="col6">
           <AppInput :e-model="v$.homeAddress.addressLine4" id="addressLine4" label="Line 4 (Optional)" type="text" v-model="homeAddress.addressLine4" />
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col4">
+        <AppCol class="col3">
           <AppInput :e-model="v$.homeAddress.postalCode" id="postalCode" label="Postal Code" type="text" v-model.trim="homeAddress.postalCode" />
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col7">
+        <AppCol class="col6">
           <AppInput :e-model="v$.mailingAddress.addressLine1" id="mailingAddress1" label="Mailing Address (if different from home address)" v-model="mailingAddress.addressLine1" />
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col7">
+        <AppCol class="col6">
           <AppInput :e-model="v$.mailingAddress.addressLine2" id="mailingAddress2" label="Line 2 (Optional)" v-model="mailingAddress.addressLine2" />
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col7">
+        <AppCol class="col6">
           <AppInput :e-model="v$.mailingAddress.addressLine3" id="mailingAddress3" label="Line 3 (Optional)" v-model="mailingAddress.addressLine3" />
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col7">
+        <AppCol class="col6">
           <AppInput :e-model="v$.mailingAddress.addressLine4" id="mailingAddress4" label="Line 4 (Optional)" v-model="mailingAddress.addressLine4" />
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col4">
+        <AppCol class="col3">
           <AppInput :e-model="v$.mailingAddress.postalCode" id="mailingPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddress.postalCode" />
         </AppCol>
       </AppRow>
@@ -111,8 +111,8 @@
         <AppButton @click="resetForm()" mode="secondary" type="button">Clear</AppButton>
       </AppRow>
     </form>
-  <br />
   </div>
+  <br />
   <div id="confirmation" v-if="addOk">
     <p>PHN: {{ result?.phn }}</p>  
     <AppButton @click="resetForm" mode="primary" type="button">Add Another Group Member</AppButton>
@@ -184,7 +184,6 @@ export default {
       this.addMode= true
       try {
         const isValid = await this.v$.$validate()
-        console.log(isValid)
         if (!isValid) {
           this.$store.commit('alert/setErrorAlert')
           this.submitting = false
@@ -242,7 +241,7 @@ export default {
       }
     },
     addDependent(dependentPHN) {    
-      this.dependents.push(dependentPHN);
+      this.dependents.push(dependentPHN)
     },
     removeDependent(index) {
       this.dependents.splice(index, 1)
@@ -266,6 +265,7 @@ export default {
       this.mailingAddress.postalCode = ''
       this.spousePhn = ''
       this.dependents = []
+      this.result = null
       this.v$.$reset()
       this.$store.commit('alert/dismissAlert')
       this.submitting = false,

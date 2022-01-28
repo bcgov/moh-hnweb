@@ -43,8 +43,8 @@ test('Check properly filled form passes validation', async t => {
     await t
         // Given the page is filled out correctly
         .typeText(AddGroupMember.groupNumberInput, '6337109')
-        .typeText(AddGroupMember.coverageEffectiveDateInput, '2022-02') 
-        .pressKey('tab')
+        .click(AddGroupMember.coverageEffectiveDateInput)
+        .click(AddGroupMember.divSelectedDate)
         .click(AddGroupMember.phnInput)     
         .typeText(AddGroupMember.phnInput, '9882807277')        
         .typeText(AddGroupMember.address1Input, 'Test 111 ST')
@@ -60,8 +60,8 @@ test('Check invalid field validation', async t => {
     await t
         // Given a Group Number entered with an invalid format
         .typeText(AddGroupMember.groupNumberInput, '9000444000')
-        .typeText(AddGroupMember.coverageEffectiveDateInput, '2022-02') 
-        .pressKey('tab')
+        .click(AddGroupMember.coverageEffectiveDateInput)
+        .click(AddGroupMember.divSelectedDate)
         .click(AddGroupMember.phnInput)
         .typeText(AddGroupMember.phnInput, '9000444000')
         .typeText(AddGroupMember.telephoneInput, '7807777')  
@@ -81,8 +81,8 @@ test('Check click Add button adds dependent', async t => {
         .typeText(AddGroupMember.dependentPhn, '9882807277')
         //When I click Add buttton
 		.click(AddGroupMember.addButton)
-        // I expect entered phn is added in depenedent list
-        .expect(AddGroupMember.dependentList.innerText).eql('9882807277 ')
+        // I expect entered phn is added in depenedent list     
+        .expect(AddGroupMember.dependentText.innerText).eql('9882807277 ')
 });
 
 test('Check invalid dependent PHN format', async t => {
@@ -110,8 +110,8 @@ test('Check clear button clears the form', async t => {
     await t
         // Given the page is filled out correctly
         .typeText(AddGroupMember.groupNumberInput, '6337109')
-        .typeText(AddGroupMember.coverageEffectiveDateInput, '2022-12')
-        .pressKey('tab')
+        .click(AddGroupMember.coverageEffectiveDateInput)
+        .click(AddGroupMember.divSelectedDate)
         .typeText(AddGroupMember.phnInput, '9882807277')
         .typeText(AddGroupMember.groupMemberNumberInput, '000001')
         .typeText(AddGroupMember.departmentNumberInput, '000002')
