@@ -1,27 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import store from '../store'
-
 import Help from './../views/Help.vue'
 import Home from './../views/Home.vue'
+import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
+import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
+import store from '../store'
 import NotFound from '../views/NotFound.vue'
 import Unauthorized from '../views/Unauthorized.vue'
-
-import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
-import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
-import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
-import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
-import PhnLookup from '../views/eligibility/PhnLookup.vue'
-
-import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
 import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
 import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
-
-import GroupMemberHome from '../views/groupmember/GroupMemberHome.vue'
-import CancelGroupMember from '../views/groupmember/CancelGroupMember.vue'
-import UpdateNumberAndDept from '../views/groupmember/UpdateNumberAndDept.vue'
-
+import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
 import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
+import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
+import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
+import PhnLookup from '../views/eligibility/PhnLookup.vue'
+import AddGroupMember from '../views/groupmember/AddGroupMember.vue'
+import CancelGroupMember from '../views/groupmember/CancelGroupMember.vue'
+import GroupMemberHome from '../views/groupmember/GroupMemberHome.vue'
+import UpdateNumberAndDept from '../views/groupmember/UpdateNumberAndDept.vue'
 
 const routes = [
   {
@@ -101,9 +97,14 @@ const routes = [
     name: 'GroupMember',
     component: GroupMemberHome,
     redirect: {
-      name: 'UpdateNumberAndDept',
+      name: 'AddGroupMember',
     },
     children: [
+      {
+        path: 'addGroupMember',
+        name: 'AddGroupMember',
+        component: AddGroupMember,      
+      },
       {
         path: 'updateNumberAndDept',
         name: 'UpdateNumberAndDept',
