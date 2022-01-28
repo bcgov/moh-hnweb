@@ -21,21 +21,19 @@ import org.springframework.web.server.ResponseStatusException;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPED0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPEE0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPWC0Converter;
-import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPWP0Converter;
+import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPXP0Converter;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPED0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPEE0;
-
-import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPWC0;
-import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPWP0;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberDependentRequest;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberDependentResponse;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPXP0;
+import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberResponse;
-
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
 import ca.bc.gov.hlth.hnweb.service.GroupMemberService;
 
 /**
@@ -105,7 +103,41 @@ public class GroupMemberController {
 		}
 		
 	}
-	
+
+	/**
+	 * Add a group member and spouse/dependents.
+	 * Maps to the legacy R30.
+	 *  
+	 * @param addGroupMemberRequest
+	 * @return The result of the operation.
+	 */
+	@PostMapping("/add-group-member")
+	public ResponseEntity<AddGroupMemberResponse> addGroupMember(@Valid @RequestBody AddGroupMemberRequest addGroupMemberRequest) {
+
+		try {
+			RPBSPXP0Converter converter = new RPBSPXP0Converter();
+			RPBSPXP0 rpbspxp0 = converter.convertRequest(addGroupMemberRequest);
+			RPBSPXP0 rpbspxp0Response = groupMemberService.addGroupMember(rpbspxp0);
+			AddGroupMemberResponse addGroupMemberResponse = converter.convertResponse(rpbspxp0Response);
+					
+			ResponseEntity<AddGroupMemberResponse> response = ResponseEntity.ok(addGroupMemberResponse);
+
+			logger.info("addGroupMemberResponse response: {} ", addGroupMemberResponse);
+			return response;	
+		} catch (HNWebException hwe) {
+			switch (hwe.getType()) {
+			case DOWNSTREAM_FAILURE:
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
+			default:
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /add-group-member request", hwe);				
+			}
+		} catch (WebClientException wce) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /add-group-member request", e);
+		}
+		
+	}
 
 	/**
 	 * Cancels a group member's coverage.
@@ -126,41 +158,6 @@ public class GroupMemberController {
 			ResponseEntity<CancelGroupMemberResponse> response = ResponseEntity.ok(cancelGroupMemberResponse);
 
 			logger.info("cancelGroupMemberResponse response: {} ", cancelGroupMemberResponse);
-			return response;	
-		} catch (HNWebException hwe) {
-			switch (hwe.getType()) {
-			case DOWNSTREAM_FAILURE:
-				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
-			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /cancel-group-member request", hwe);				
-			}
-		} catch (WebClientException wce) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /cancel-group-member request", e);
-		}
-		
-	}
-	
-	/**
-	 * Cancels a group member's dependent coverage.
-	 * Maps to the legacy R36.
-	 *  
-	 * @param cancelGroupMemberDependentRequest
-	 * @return The result of the operation.
-	 */
-	@PostMapping("/cancel-group-member-dependent")
-	public ResponseEntity<CancelGroupMemberDependentResponse> cancelGroupMemberDependent(@Valid @RequestBody CancelGroupMemberDependentRequest cancelGroupMemberDependentRequest) {
-
-		try {
-			RPBSPWP0Converter converter = new RPBSPWP0Converter();
-			RPBSPWP0 rpbspwp0 = converter.convertRequest(cancelGroupMemberDependentRequest);
-			RPBSPWP0 rpbspwc0Response = groupMemberService.cancelGroupMemberDependent(rpbspwp0);
-			CancelGroupMemberDependentResponse cancelGroupMemberDependentResponse = converter.convertResponse(rpbspwc0Response);
-					
-			ResponseEntity<CancelGroupMemberDependentResponse> response = ResponseEntity.ok(cancelGroupMemberDependentResponse);
-
-			logger.info("cancelGroupMemberResponse response: {} ", cancelGroupMemberDependentResponse);
 			return response;	
 		} catch (HNWebException hwe) {
 			switch (hwe.getType()) {

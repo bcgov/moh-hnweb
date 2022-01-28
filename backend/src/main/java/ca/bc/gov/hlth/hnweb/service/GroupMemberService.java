@@ -17,7 +17,7 @@ import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPED0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPEE0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPWC0;
-import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPWP0;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPXP0;
 
 /**
  * Service for:
@@ -29,15 +29,15 @@ public class GroupMemberService {
 	private static final Logger logger = LoggerFactory.getLogger(GroupMemberService.class);
 
 	public static final String TRANSACTION_ID = "TransactionID";
+
+	@Value("${rapid.r30Path}")
+	private String r30Path;
 	
 	@Value("${rapid.r34Path}")
 	private String r34Path;
 
 	@Value("${rapid.r35Path}")
 	private String r35Path;
-	
-	@Value("${rapid.r36Path}")
-	private String r36Path;
 	
 	@Autowired
 	private WebClient rapidWebClient;
@@ -95,6 +95,32 @@ public class GroupMemberService {
 	}
 	
 	/**
+	 * Adds the group member and spouse/dependents based on the R30/RPBSPXP0.
+	 * 
+	 * @param rpbspxp0
+	 * @return The RPBSPXP0 response.
+	 * @throws HNWebException
+	 */
+	public RPBSPXP0 addGroupMember(RPBSPXP0 rpbspxp0) throws HNWebException {
+		String rpbspxp0Str = rpbspxp0.serialize();
+
+		logger.info("Request {}", rpbspxp0Str);
+		
+		ResponseEntity<String> response = postRapidRequest(r30Path, rpbspxp0Str);
+		
+		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
+		
+		if (response.getStatusCode() != HttpStatus.OK) {
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
+		}
+		
+		RPBSPXP0 rpbspxp0Response = new RPBSPXP0(response.getBody());
+
+		return rpbspxp0Response;
+	}
+	
+	/**
 	 * Cancels the group member's coverage based on the R35/RPBSPWC0.
 	 * 
 	 * @param rpbspwc0
@@ -118,32 +144,6 @@ public class GroupMemberService {
 		RPBSPWC0 rpbspwc0Response = new RPBSPWC0(response.getBody());
 
 		return rpbspwc0Response;
-	}
-	
-	/**
-	 * Cancels the group member's dependent coverage based on the R36/RPBSPWP0.
-	 * 
-	 * @param rpbspwc0
-	 * @return The RPBSPWC0 response.
-	 * @throws HNWebException
-	 */
-	public RPBSPWP0 cancelGroupMemberDependent(RPBSPWP0 rpbspwp0) throws HNWebException {
-		String rpbspwp0Str = rpbspwp0.serialize();
-
-		logger.info("Request {}", rpbspwp0Str);
-		
-		ResponseEntity<String> response = postRapidRequest(r36Path, rpbspwp0Str);
-		
-		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
-		
-		if (response.getStatusCode() != HttpStatus.OK) {
-			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
-			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
-		}
-		
-		RPBSPWP0 rpbspwp0Response = new RPBSPWP0(response.getBody());
-
-		return rpbspwp0Response;
 	}
 
 	private ResponseEntity<String> postRapidRequest(String path, String body) {

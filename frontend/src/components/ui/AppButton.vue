@@ -51,6 +51,7 @@
     letter-spacing: 1px;
     cursor: pointer;
     margin: 4px; /* Added to Design System template */
+    height: 45px; /* Added to Design System template */
   }
 
   .BC-Gov-PrimaryButton:hover {
@@ -89,6 +90,7 @@
     cursor: pointer;
     color: #003366;
     margin: 4px; /* Added to Design System template */
+    height: 45px; /* Added to Design System template */
   }
   .BC-Gov-SecondaryButton:hover {
     opacity: 0.80;
@@ -110,5 +112,21 @@
     color: #003366;
     text-decoration: none;
     cursor: not-allowed;
+  }
+
+  .btn-sm {
+    width: 100px;
+  }
+
+  .btn-md {
+    width: 150px;
+  }
+
+  .btn-lg {
+    width: 200px;
+  }
+
+  .btn-xl {
+    width: 250px;
   }
 </style>
