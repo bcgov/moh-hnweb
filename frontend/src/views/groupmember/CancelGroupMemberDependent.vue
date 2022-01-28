@@ -73,13 +73,13 @@ export default {
         message: '',
       },
       cancelReasons: [
-        { text: 'Divorced', value: 'K' },
-        { text: 'No longer a child', value: 'E' },
+        { text: 'Divorced', value: 'I' },
+        { text: 'No longer a child', value: 'P' },
         { text: 'Out of province move', value: 'E' },
       ],
       relationshipOption: [
-        { text: 'Spouse', value: 'S' },
-        { text: 'Dependent', value: 'D' },
+        { text: 'Spouse', value: 'SP' },
+        { text: 'Dependent', value: 'DP' },
       ],
     }
   },
@@ -102,7 +102,7 @@ export default {
         }
 
         this.result = (
-          await GroupMemberService.cancelGroupMember({
+          await GroupMemberService.cancelGroupMemberDependent({
             phn: this.phn,
             dependentPhn: this.dependentPhn,
             groupNumber: this.groupNumber,
