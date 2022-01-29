@@ -40,7 +40,7 @@
   <div id="confirmation" v-if="!inputFormActive">
     <br />
     <p>PHN: {{ result?.phn }}</p>
-    <AppButton @click="resetForm" mode="primary" type="button">Cancel Another Group Member</AppButton>
+    <AppButton @click="resetForm" mode="primary" type="button">Cancel Another Group Member's Dependent</AppButton>
   </div>
 </template>
 
