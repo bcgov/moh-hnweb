@@ -11,7 +11,7 @@ const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
 const COVERAGE_CANCEL_DATE_REQUIRED_MESSAGE = 'Coverage Cancel Date is required'
 const DEPENDENT_PHN_REQUIRED_MESSAGE = 'PHN is required'
 const CANCEL_REASON_REQUIRED_MESSAGE = 'Cancel Reason is required'
-const RAPID_RESPONSE = 'RPBS0003 SUBSCRIBER PHN MUST BE ENTERED'
+const RAPID_RESPONSE = 'RPBS0097 SUBSCRIBER AND DEPENDENT PHN MUST BE DIFFERENT.'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/groupmember/CancelGroupMemberDependent'
 
@@ -73,7 +73,6 @@ test('Check properly filled form passes validation', async (t) => {
     .pressKey('enter')
     // When I click the submit button
     .click(CancelGroupMemberDependent.submitButton)
-    .wait(10000)
     // I expect a response from RAPID
     .expect(AlertPage.alertBannerText.textContent)
     .contains(RAPID_RESPONSE)

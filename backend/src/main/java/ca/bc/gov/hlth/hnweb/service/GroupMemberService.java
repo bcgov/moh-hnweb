@@ -153,8 +153,8 @@ public class GroupMemberService {
 	/**
 	 * Cancels the group member's dependent coverage based on the R36/RPBSPWP0.
 	 * 
-	 * @param rpbspwc0
-	 * @return The RPBSPWC0 response.
+	 * @param rpbspwp0
+	 * @return The RPBSPWP0 response.
 	 * @throws HNWebException
 	 */
 	public RPBSPWP0 cancelGroupMemberDependent(RPBSPWP0 rpbspwp0) throws HNWebException {
@@ -163,7 +163,6 @@ public class GroupMemberService {
 		logger.info("Request {}", rpbspwp0Str);
 		
 		ResponseEntity<String> response = postRapidRequest(r36Path, rpbspwp0Str);
-		System.out.println(response.getBody());
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		

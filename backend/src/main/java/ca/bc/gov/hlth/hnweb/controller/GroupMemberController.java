@@ -196,19 +196,19 @@ public class GroupMemberController {
 					
 			ResponseEntity<CancelGroupMemberDependentResponse> response = ResponseEntity.ok(cancelGroupMemberDependentResponse);
 
-			logger.info("cancelGroupMemberResponse response: {} ", cancelGroupMemberDependentResponse);
+			logger.info("cancelGroupMemberDependentResponse response: {} ", cancelGroupMemberDependentResponse);
 			return response;	
 		} catch (HNWebException hwe) {
 			switch (hwe.getType()) {
 			case DOWNSTREAM_FAILURE:
 				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
 			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /cancel-group-member request", hwe);				
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /cancel-group-member-dependent request", hwe);				
 			}
 		} catch (WebClientException wce) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /cancel-group-member request", e);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /cancel-group-member-dependent request", e);
 		}
 		
 	}

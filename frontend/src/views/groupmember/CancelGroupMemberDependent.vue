@@ -13,7 +13,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppSelect :e-model="v$.relationship" id="relationship" label="Relationship" v-model="relationship" :options="relationshipOption" />
+          <AppSelect :e-model="v$.relationship" id="relationship" label="Relationship (Optional)" v-model="relationship" :options="relationshipOptions" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -77,7 +77,7 @@ export default {
         { text: 'No longer a child', value: 'P' },
         { text: 'Out of province move', value: 'E' },
       ],
-      relationshipOption: [
+      relationshipOptions: [
         { text: 'Spouse', value: 'SP' },
         { text: 'Dependent', value: 'DP' },
       ],

@@ -361,7 +361,7 @@ public class GroupMemberControllerTest {
     
 
     @Test
-    public void testCancelGroupMemberDependent_DependentNotUnderSubcriberCoverage() throws InterruptedException {
+    public void testCancelGroupMemberDependent_dependentNotUnderSubcriberCoverage() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()
         		.setBody(RPBSPWP0_DEPENDENT_HAS_NO_COVERAGE_UNDER_SUBSCRIBER)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
@@ -386,7 +386,7 @@ public class GroupMemberControllerTest {
     }
     
     @Test
-    public void testCancelGroupMemberDependent_PhnNotInGroup() throws InterruptedException {
+    public void testCancelGroupMemberDependent_subscriberPhnNotInGroup() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()
         		.setBody( RPBSPWP0_PHN_NOT_IN_GROUP)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
@@ -411,7 +411,7 @@ public class GroupMemberControllerTest {
     }
     
     @Test
-    public void testCancelGroupMemberDependent_SameDependentPhn() throws InterruptedException {
+    public void testCancelGroupMemberDependent_subscriberAndDependentPhnAreSame() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()
         		.setBody(RPBSPWP0_ERROR_SAME_DEPENDENT_PHN)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
@@ -436,7 +436,7 @@ public class GroupMemberControllerTest {
     }
     
     @Test
-    public void testCancelGroupMemberDependent_NoActiveCovereage() throws InterruptedException {
+    public void testCancelGroupMemberDependent_noActiveCovereage() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()
         		.setBody(RPBSWP0_NO_ACTIVE_COVERAGES_FOUND)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
@@ -460,7 +460,7 @@ public class GroupMemberControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
     }
     @Test
-    public void testCancelGroupMemberDependent_FutureCancelDate() throws InterruptedException {
+    public void testCancelGroupMemberDependent_futureCancelDate() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()
         		.setBody(RPBSWP0_FUTURE_CANCEL_DATE)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
