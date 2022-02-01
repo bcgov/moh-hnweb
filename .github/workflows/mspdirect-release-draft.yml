@@ -55,20 +55,19 @@ jobs:
       run: |
         echo "RELEASE_VERSION= Release_1.0_main_${{github.run_number}} " | tee -a $GITHUB_ENV
         echo "IMAGE_TAGS= ${GITHUB_SHA::12} ${{env.RELEASE_VERSION}} ${{ github.event.inputs.OPTIONAL_TAG }}  " | tee -a $GITHUB_ENV
+        echo "Print all env variables"
+        env
         echo "Final tags are ${{env.IMAGE_TAGS}}"
         echo "Final Release version is ${{env.RELEASE_VERSION}}"
     
     # 2. Edit .env in frontend with the value
     - name: Edit env file to add version
-      # 
       run: |
         echo "Current path is"
         pwd
-        cd ./moh-hnweb/frontend/env_config
+        cd ./frontend/env_config
         sed -i 's/[VER]]/${{env.RELEASE_VERSION}}/' .env.dev
-        echo "RELEASE_VERSION= Release_1.0_main_${{github.run_number}} " | tee -a $GITHUB_ENV
-        echo "IMAGE_TAGS= ${GITHUB_SHA::12} ${{env.RELEASE_VERSION}} ${{ github.event.inputs.OPTIONAL_TAG }}  " | tee -a $GITHUB_ENV
-        echo "Final tags are ${{env.IMAGE_TAGS}}"
+        cat .env.dev
 
 
     # # Build from docker file
