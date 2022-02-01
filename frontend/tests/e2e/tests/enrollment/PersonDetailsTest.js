@@ -1,8 +1,8 @@
-import AddVisaResidentWithPHNPage from '../pages/enrollement/AddVisaResidentWithPHNPage';
-import AlertPage from '../pages/AlertPage';
-import PersonDetailsPage from '../pages/enrollement/PersonDetailsPage';
-import { SITE_UNDER_TEST } from '../configuration';
-import { regularAccUser } from '../roles/roles';
+import { SITE_UNDER_TEST } from '../../configuration';
+import AlertPage from '../../pages/AlertPage';
+import AddVisaResidentWithPHNPage from '../../pages/enrollment/AddVisaResidentWithPHNPage';
+import PersonDetailsPage from '../../pages/enrollment/PersonDetailsPage';
+import { regularAccUser } from '../../roles/roles';
 
 const ERROR_MESSAGE = 'Please correct errors before submitting';
 const PHN_REQUIRED_MESSAGE = 'PHN is required'
