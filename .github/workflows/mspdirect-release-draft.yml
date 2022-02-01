@@ -15,8 +15,7 @@ env:
   IMAGE_REGISTRY_PASSWORD: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
   IMAGE_NAME_BACKEND: mspdirect-backend
   IMAGE_NAME_FRONTEND: mspdirect-frontend
-  IMAGE_TAGS:
-  RELEASE_VERSION:
+  IMAGE_TAGS: 
 
 
 on:
@@ -54,8 +53,8 @@ jobs:
       if: env.IMAGE_TAGS == ''
       # Branch name is fixed to 'main' in version identifier
       run: |
-        echo "RELEASE_VERSION= Draft_1.0_main_${{github.run_number}} " | tee -a $RELEASE_VERSION
-        echo "IMAGE_TAGS= ${GITHUB_SHA::12} ${{env.RELEASE_VERSION}} ${{ github.event.inputs.OPTIONAL_TAG }}  " | tee -a $IMAGE_TAGS
+        echo "RELEASE_VERSION= Release_1.0_main_${{github.run_number}} " | tee -a $GITHUB_ENV
+        echo "IMAGE_TAGS= ${GITHUB_SHA::12} ${{env.RELEASE_VERSION}} ${{ github.event.inputs.OPTIONAL_TAG }}  " | tee -a $GITHUB_ENV
         echo "Print all env variables"
         env
         echo "Final tags are ${{env.IMAGE_TAGS}}"
@@ -67,7 +66,7 @@ jobs:
         echo "Current path is"
         pwd
         cd ./frontend/env_config
-        sed -i 's/RELEASE_VERSION/${{env.RELEASE_VERSION}}/' .env.dev
+        sed -i 's/[VER]]/${{env.RELEASE_VERSION}}/' .env.dev
         cat .env.dev
 
 
