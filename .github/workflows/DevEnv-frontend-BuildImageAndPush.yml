@@ -40,6 +40,9 @@ jobs:
       if: env.IMAGE_TAGS == ''
       run: |
         echo "IMAGE_TAGS=latest ${GITHUB_SHA::12} mspdirect-dev" | tee -a $GITHUB_ENV
+        echo "Value of IMAGE TAG in env variable:  ${{ env.IMAGE_NAME }}"
+        env
+
 
 
     # Build from docker file
