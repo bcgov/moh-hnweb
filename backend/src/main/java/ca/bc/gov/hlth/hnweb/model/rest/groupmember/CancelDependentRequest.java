@@ -2,7 +2,7 @@ package ca.bc.gov.hlth.hnweb.model.rest.groupmember;
 
 import java.time.LocalDate;
 
-public class CancelGroupMemberDependentRequest {
+public class CancelDependentRequest {
 	private String phn;
 	private String groupNumber;
 	private String dependentPhn;

@@ -27,8 +27,8 @@ import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberResponse;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberDependentRequest;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberDependentResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelDependentRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelDependentResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.MemberAddress;
@@ -55,12 +55,13 @@ public class GroupMemberControllerTest {
 	
 	private static final String RPBSPXP0_ERROR_COVERAGE_ALREADY_EXISTS = "        RPBSPXP000000010                                ERRORMSGRPBS0065COVERAGE ALREADY EXISTS FOR THE PHN/GROUP NUMBER SPECIFIED              63371091111     222   2022-01-01                                                                                                                                                                                                                                        6045551234                              9873895927                                                                                          9873895927";
 	private static final String RPBSPXP0_SUCCESS = "        RPBSPXP000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  62431091111     222   2022-01-01123 main st                                                                                         V1V1V1                                                                                                                              6045551234                              9873895902                                                                                                    ";
+	
 	private static final String RPBSPWP0_SUCCESS = "        RPBSPWP000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  9873895927633710998828072772022-12-31P";
 	private static final String RPBSPWP0_ERROR_SAME_DEPENDENT_PHN = "        RPBSPWP000000010                                ERRORMSGRPBS0097SUBSCRIBER AND DEPENDENT PHN MUST BE DIFFERENT.                         9882807277624310998828072772022-01-31P";
-	private static final String RPBSPWP0_PHN_NOT_IN_GROUP = "        RPBSPWP000000010                                ERRORMSGRPBS0105PHN MUST BE A SUBSCRIBER IN GROUP                                       9340338122624310993290908952023-02-28I";
-	private static final String RPBSPWP0_DEPENDENT_HAS_NO_COVERAGE_UNDER_SUBSCRIBER= "        RPBSPWP000000010                                ERRORMSGRPBS0104DEPENDENT MUST HAVE COVERAGE UNDER SUBSCRIBER.                          9331926919633710998828072772022-01-31P";
-	private static final String RPBSWP0_NO_ACTIVE_COVERAGES_FOUND= "        RPBSPWP000000010                                ERRORMSGRPBS0047NO ACTIVE COVERAGES FOUND. PLS FORWARD SOURCE DOCS TO MSP               9340338122633710993290908952022-01-31I";
-	private static final String RPBSWP0_FUTURE_CANCEL_DATE= "        RPBSPWP000000010                                ERRORMSGRPBS0090DEPENDENT HAS A FUTURE CANCEL DATE. PLS FORWARD DOCS TO MSP             9340338122633710993290908952023-02-28I";
+	private static final String RPBSPWP0_ERROR_PHN_NOT_IN_GROUP = "        RPBSPWP000000010                                ERRORMSGRPBS0105PHN MUST BE A SUBSCRIBER IN GROUP                                       9340338122624310993290908952023-02-28I";
+	private static final String RPBSPWP0_ERROR_DEPENDENT_HAS_NO_COVERAGE_UNDER_SUBSCRIBER= "        RPBSPWP000000010                                ERRORMSGRPBS0104DEPENDENT MUST HAVE COVERAGE UNDER SUBSCRIBER.                          9331926919633710998828072772022-01-31P";
+	private static final String RPBSPWP0_ERROR_NO_ACTIVE_COVERAGES_FOUND= "        RPBSPWP000000010                                ERRORMSGRPBS0047NO ACTIVE COVERAGES FOUND. PLS FORWARD SOURCE DOCS TO MSP               9340338122633710993290908952022-01-31I";
+	private static final String RPBSPWP0_ERROR_FUTURE_CANCEL_DATE= "        RPBSPWP000000010                                ERRORMSGRPBS0090DEPENDENT HAS A FUTURE CANCEL DATE. PLS FORWARD DOCS TO MSP             9340338122633710993290908952023-02-28I";
 	
 	private static MockWebServer mockBackEnd;
 
@@ -361,24 +362,24 @@ public class GroupMemberControllerTest {
     
 
     @Test
-    public void testCancelGroupMemberDependent_dependentNotUnderSubcriberCoverage() throws InterruptedException {
+    public void testCancelDependent_dependentNotUnderSubcriberCoverage() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()
-        		.setBody(RPBSPWP0_DEPENDENT_HAS_NO_COVERAGE_UNDER_SUBSCRIBER)
+        		.setBody(RPBSPWP0_ERROR_DEPENDENT_HAS_NO_COVERAGE_UNDER_SUBSCRIBER)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
     	
-    	CancelGroupMemberDependentRequest cancelGroupMemberDependentRequest = new CancelGroupMemberDependentRequest();
-    	cancelGroupMemberDependentRequest.setPhn("9331926919");
-    	cancelGroupMemberDependentRequest.setGroupNumber("6337109");
-    	cancelGroupMemberDependentRequest.setDependentPhn("9882807277");
-    	cancelGroupMemberDependentRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
-    	cancelGroupMemberDependentRequest.setCancelReason("I");
+    	CancelDependentRequest cancelDependentRequest = new CancelDependentRequest();
+    	cancelDependentRequest.setPhn("9331926919");
+    	cancelDependentRequest.setGroupNumber("6337109");
+    	cancelDependentRequest.setDependentPhn("9882807277");
+    	cancelDependentRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
+    	cancelDependentRequest.setCancelReason("I");
     	
-		ResponseEntity<CancelGroupMemberDependentResponse> response = groupMemberController.cancelGroupMemberDependent(cancelGroupMemberDependentRequest);
+		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest);
 		
-		CancelGroupMemberDependentResponse cancelGroupMemberDependentResponse = response.getBody();
-		assertEquals(StatusEnum.ERROR, cancelGroupMemberDependentResponse.getStatus());
-        assertEquals("RPBS0104 DEPENDENT MUST HAVE COVERAGE UNDER SUBSCRIBER.", cancelGroupMemberDependentResponse.getMessage());
-        assertEquals("9331926919", cancelGroupMemberDependentResponse.getPhn());
+		CancelDependentResponse cancelDependentResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, cancelDependentResponse.getStatus());
+        assertEquals("RPBS0104 DEPENDENT MUST HAVE COVERAGE UNDER SUBSCRIBER.", cancelDependentResponse.getMessage());
+        assertEquals("9331926919", cancelDependentResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -386,24 +387,24 @@ public class GroupMemberControllerTest {
     }
     
     @Test
-    public void testCancelGroupMemberDependent_subscriberPhnNotInGroup() throws InterruptedException {
+    public void testCancelDependent_subscriberPhnNotInGroup() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()
-        		.setBody( RPBSPWP0_PHN_NOT_IN_GROUP)
+        		.setBody( RPBSPWP0_ERROR_PHN_NOT_IN_GROUP)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
     	
-    	CancelGroupMemberDependentRequest cancelGroupMemberDependentRequest = new CancelGroupMemberDependentRequest();
-    	cancelGroupMemberDependentRequest.setPhn("9340338122");
-    	cancelGroupMemberDependentRequest.setGroupNumber("6243109");
-    	cancelGroupMemberDependentRequest.setDependentPhn("9329090895");
-    	cancelGroupMemberDependentRequest.setCoverageCancelDate(LocalDate.of(2023, 02, 28));
-    	cancelGroupMemberDependentRequest.setCancelReason("I");
+    	CancelDependentRequest cancelDependentRequest = new CancelDependentRequest();
+    	cancelDependentRequest.setPhn("9340338122");
+    	cancelDependentRequest.setGroupNumber("6243109");
+    	cancelDependentRequest.setDependentPhn("9329090895");
+    	cancelDependentRequest.setCoverageCancelDate(LocalDate.of(2023, 02, 28));
+    	cancelDependentRequest.setCancelReason("I");
     	
-		ResponseEntity<CancelGroupMemberDependentResponse> response = groupMemberController.cancelGroupMemberDependent(cancelGroupMemberDependentRequest);
+		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest);
 		
-		CancelGroupMemberDependentResponse cancelGroupMemberDependentResponse = response.getBody();
-		assertEquals(StatusEnum.ERROR, cancelGroupMemberDependentResponse.getStatus());
-        assertEquals("RPBS0105 PHN MUST BE A SUBSCRIBER IN GROUP", cancelGroupMemberDependentResponse.getMessage());
-        assertEquals("9340338122", cancelGroupMemberDependentResponse.getPhn());
+		CancelDependentResponse cancelDependentResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, cancelDependentResponse.getStatus());
+        assertEquals("RPBS0105 PHN MUST BE A SUBSCRIBER IN GROUP", cancelDependentResponse.getMessage());
+        assertEquals("9340338122", cancelDependentResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -411,24 +412,24 @@ public class GroupMemberControllerTest {
     }
     
     @Test
-    public void testCancelGroupMemberDependent_subscriberAndDependentPhnAreSame() throws InterruptedException {
+    public void testCancelDependent_subscriberAndDependentPhnAreSame() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()
         		.setBody(RPBSPWP0_ERROR_SAME_DEPENDENT_PHN)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
     	
-    	CancelGroupMemberDependentRequest cancelGroupMemberDependentRequest = new CancelGroupMemberDependentRequest();
-    	cancelGroupMemberDependentRequest.setPhn("9882807277");
-    	cancelGroupMemberDependentRequest.setGroupNumber("6337109");
-    	cancelGroupMemberDependentRequest.setDependentPhn("9882807277");
-    	cancelGroupMemberDependentRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
-    	cancelGroupMemberDependentRequest.setCancelReason("I");
+    	CancelDependentRequest cancelDependentRequest = new CancelDependentRequest();
+    	cancelDependentRequest.setPhn("9882807277");
+    	cancelDependentRequest.setGroupNumber("6337109");
+    	cancelDependentRequest.setDependentPhn("9882807277");
+    	cancelDependentRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
+    	cancelDependentRequest.setCancelReason("I");
     	
-		ResponseEntity<CancelGroupMemberDependentResponse> response = groupMemberController.cancelGroupMemberDependent(cancelGroupMemberDependentRequest);
+		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest);
 		
-		CancelGroupMemberDependentResponse cancelGroupMemberDependentResponse = response.getBody();
-		assertEquals(StatusEnum.ERROR, cancelGroupMemberDependentResponse.getStatus());
-        assertEquals("RPBS0097 SUBSCRIBER AND DEPENDENT PHN MUST BE DIFFERENT.", cancelGroupMemberDependentResponse.getMessage());
-        assertEquals("9882807277", cancelGroupMemberDependentResponse.getPhn());
+		CancelDependentResponse cancelDependentResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, cancelDependentResponse.getStatus());
+        assertEquals("RPBS0097 SUBSCRIBER AND DEPENDENT PHN MUST BE DIFFERENT.", cancelDependentResponse.getMessage());
+        assertEquals("9882807277", cancelDependentResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -436,80 +437,79 @@ public class GroupMemberControllerTest {
     }
     
     @Test
-    public void testCancelGroupMemberDependent_noActiveCovereage() throws InterruptedException {
+    public void testCancelDependent_noActiveCoverage() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()
-        		.setBody(RPBSWP0_NO_ACTIVE_COVERAGES_FOUND)
+        		.setBody(RPBSPWP0_ERROR_NO_ACTIVE_COVERAGES_FOUND)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
     	
-    	CancelGroupMemberDependentRequest cancelGroupMemberDependentRequest = new CancelGroupMemberDependentRequest();
-    	cancelGroupMemberDependentRequest.setPhn("9340338122");
-    	cancelGroupMemberDependentRequest.setGroupNumber("6337109");
-    	cancelGroupMemberDependentRequest.setDependentPhn("9329090895");
-    	cancelGroupMemberDependentRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
-    	cancelGroupMemberDependentRequest.setCancelReason("I");
+    	CancelDependentRequest cancelDependentRequest = new CancelDependentRequest();
+    	cancelDependentRequest.setPhn("9340338122");
+    	cancelDependentRequest.setGroupNumber("6337109");
+    	cancelDependentRequest.setDependentPhn("9329090895");
+    	cancelDependentRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
+    	cancelDependentRequest.setCancelReason("I");
     	
-		ResponseEntity<CancelGroupMemberDependentResponse> response = groupMemberController.cancelGroupMemberDependent(cancelGroupMemberDependentRequest);
+		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest);
 		
-		CancelGroupMemberDependentResponse cancelGroupMemberDependentResponse = response.getBody();
-		assertEquals(StatusEnum.ERROR, cancelGroupMemberDependentResponse.getStatus());
-        assertEquals("RPBS0047 NO ACTIVE COVERAGES FOUND. PLS FORWARD SOURCE DOCS TO MSP", cancelGroupMemberDependentResponse.getMessage());
-        assertEquals("9340338122", cancelGroupMemberDependentResponse.getPhn());
+		CancelDependentResponse cancelDependentResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, cancelDependentResponse.getStatus());
+        assertEquals("RPBS0047 NO ACTIVE COVERAGES FOUND. PLS FORWARD SOURCE DOCS TO MSP", cancelDependentResponse.getMessage());
+        assertEquals("9340338122", cancelDependentResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
     }
     @Test
-    public void testCancelGroupMemberDependent_futureCancelDate() throws InterruptedException {
+    public void testCancelDependent_futureCancelDate() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()
-        		.setBody(RPBSWP0_FUTURE_CANCEL_DATE)
+        		.setBody(RPBSPWP0_ERROR_FUTURE_CANCEL_DATE)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
     	
-    	CancelGroupMemberDependentRequest cancelGroupMemberDependentRequest = new CancelGroupMemberDependentRequest();
-    	cancelGroupMemberDependentRequest.setPhn("9340338122");
-    	cancelGroupMemberDependentRequest.setGroupNumber("6337109");
-    	cancelGroupMemberDependentRequest.setDependentPhn("9329090895");
-    	cancelGroupMemberDependentRequest.setCoverageCancelDate(LocalDate.of(2023, 02, 28));
-    	cancelGroupMemberDependentRequest.setCancelReason("I");
+    	CancelDependentRequest cancelDependentRequest = new CancelDependentRequest();
+    	cancelDependentRequest.setPhn("9340338122");
+    	cancelDependentRequest.setGroupNumber("6337109");
+    	cancelDependentRequest.setDependentPhn("9329090895");
+    	cancelDependentRequest.setCoverageCancelDate(LocalDate.of(2023, 02, 28));
+    	cancelDependentRequest.setCancelReason("I");
     	
-		ResponseEntity<CancelGroupMemberDependentResponse> response = groupMemberController.cancelGroupMemberDependent(cancelGroupMemberDependentRequest);
+		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest);
 		
-		CancelGroupMemberDependentResponse cancelGroupMemberDependentResponse = response.getBody();
-		assertEquals(StatusEnum.ERROR, cancelGroupMemberDependentResponse.getStatus());
-        assertEquals("RPBS0090 DEPENDENT HAS A FUTURE CANCEL DATE. PLS FORWARD DOCS TO MSP", cancelGroupMemberDependentResponse.getMessage());
-        assertEquals("9340338122", cancelGroupMemberDependentResponse.getPhn());
+		CancelDependentResponse cancelDependentResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, cancelDependentResponse.getStatus());
+        assertEquals("RPBS0090 DEPENDENT HAS A FUTURE CANCEL DATE. PLS FORWARD DOCS TO MSP", cancelDependentResponse.getMessage());
+        assertEquals("9340338122", cancelDependentResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
     }
     @Test
-    public void testCancelGroupMemberDependent_success() throws InterruptedException {
+    public void testCancelDependent_success() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()
         		.setBody(RPBSPWP0_SUCCESS)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
     	
     	
-    	CancelGroupMemberDependentRequest cancelGroupMemberDependentRequest = new CancelGroupMemberDependentRequest();
-    	cancelGroupMemberDependentRequest.setPhn("9873895927");
-    	cancelGroupMemberDependentRequest.setGroupNumber("6337109");
-    	cancelGroupMemberDependentRequest.setDependentPhn("9397105575");
-    	cancelGroupMemberDependentRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
-    	cancelGroupMemberDependentRequest.setCancelReason("K");
+    	CancelDependentRequest cancelDependentRequest = new CancelDependentRequest();
+    	cancelDependentRequest.setPhn("9873895927");
+    	cancelDependentRequest.setGroupNumber("6337109");
+    	cancelDependentRequest.setDependentPhn("9397105575");
+    	cancelDependentRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
+    	cancelDependentRequest.setCancelReason("K");
     	
-		ResponseEntity<CancelGroupMemberDependentResponse> response = groupMemberController.cancelGroupMemberDependent(cancelGroupMemberDependentRequest);
+		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest);
 		
-		CancelGroupMemberDependentResponse cancelGroupMemberDependentResponse = response.getBody();
-		assertEquals(StatusEnum.SUCCESS, cancelGroupMemberDependentResponse.getStatus());
-        assertEquals("TRANSACTION SUCCESSFUL", cancelGroupMemberDependentResponse.getMessage());
-        assertEquals("9873895927", cancelGroupMemberDependentResponse.getPhn());
+		CancelDependentResponse cancelDependentResponse = response.getBody();
+		assertEquals(StatusEnum.SUCCESS, cancelDependentResponse.getStatus());
+        assertEquals("TRANSACTION SUCCESSFUL", cancelDependentResponse.getMessage());
+        assertEquals("9873895927", cancelDependentResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
     }
-
-    
+   
     /**
      * The URL property used by the mocked endpoint needs to be set after the MockWebServer starts as the port it uses is 
      * created dynamically on start up to ensure it uses an available port so it is not known before then. 

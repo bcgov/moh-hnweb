@@ -3,8 +3,8 @@ package ca.bc.gov.hlth.hnweb.converter.rapid;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPWP0;
 import ca.bc.gov.hlth.hnweb.model.rapid.WP0;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberDependentRequest;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberDependentResponse;;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelDependentRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelDependentResponse;;
 
 public class RPBSPWP0Converter extends BaseRapidConverter {
 	private static final String TRAN_CODE = "RPBSPWP0";
@@ -13,7 +13,7 @@ public class RPBSPWP0Converter extends BaseRapidConverter {
 		super();
 	}
 	
-	public RPBSPWP0 convertRequest(CancelGroupMemberDependentRequest request) {
+	public RPBSPWP0 convertRequest(CancelDependentRequest request) {
 		RPBSHeader rpbsHeader = new RPBSHeader();
 		rpbsHeader.setOrganization(userInfo.getOrganization());
 		rpbsHeader.setTranCode(getTranCode());
@@ -31,11 +31,9 @@ public class RPBSPWP0Converter extends BaseRapidConverter {
 
 		return rpbspwp0;
 	}
-	
-	
-	
-	public CancelGroupMemberDependentResponse convertResponse(RPBSPWP0 rpbspwp0) {
-		CancelGroupMemberDependentResponse response = new CancelGroupMemberDependentResponse();
+			
+	public CancelDependentResponse convertResponse(RPBSPWP0 rpbspwp0) {
+		CancelDependentResponse response = new CancelDependentResponse();
 		RPBSHeader header = rpbspwp0.getRpbsHeader();
 		
 		handleStatus(header, response);
@@ -43,7 +41,6 @@ public class RPBSPWP0Converter extends BaseRapidConverter {
 		
 		return response;
 	}
-
 
 	@Override
 	public String getTranCode() {

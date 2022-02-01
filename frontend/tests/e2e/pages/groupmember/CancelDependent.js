@@ -1,6 +1,6 @@
 import { Selector } from 'testcafe'
 
-class CancelGroupMemberDependent {
+class CancelDependent {
   constructor() {
     this.phnInput = Selector('#phn')
     this.dependentPhnInput = Selector('#dependentPhn')
@@ -15,4 +15,4 @@ class CancelGroupMemberDependent {
   }
 }
 
-export default new CancelGroupMemberDependent()
+export default new CancelDependent()

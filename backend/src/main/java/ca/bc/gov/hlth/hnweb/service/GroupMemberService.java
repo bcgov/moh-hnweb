@@ -157,7 +157,7 @@ public class GroupMemberService {
 	 * @return The RPBSPWP0 response.
 	 * @throws HNWebException
 	 */
-	public RPBSPWP0 cancelGroupMemberDependent(RPBSPWP0 rpbspwp0) throws HNWebException {
+	public RPBSPWP0 cancelDependent(RPBSPWP0 rpbspwp0) throws HNWebException {
 		String rpbspwp0Str = rpbspwp0.serialize();
 
 		logger.info("Request {}", rpbspwp0Str);
@@ -175,8 +175,6 @@ public class GroupMemberService {
 
 		return rpbspwp0Response;
 	}
-
-
 
 	private ResponseEntity<String> postRapidRequest(String path, String body) {
 		return rapidWebClient

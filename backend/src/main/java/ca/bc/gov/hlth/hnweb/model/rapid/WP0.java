@@ -4,15 +4,15 @@ import org.apache.commons.lang3.StringUtils;
 
 public class WP0 {
 
-	/** 1 PHN String No 0...10 1..1 */
+	/** 1 SubscriberPHN String No 0...10 */
 	private String subscriberPhn;
-	/** 2 GroupNumber String No 0...7 1..1 */
+	/** 2 GroupNumber String No	0...7 */
 	private String groupNumber;
-	/** 3 beneficiaryPhn String No 0...10 1..1 */
+	/** 3 BeneficiaryPHN String	No 0...10 */
 	private String beneficiaryPhn;	
-	/** 4 CoverageCancelDate String No 0...10 1..1 */
+	/** 4 CoverageCancelDate String No 0...10 */
 	private String coverageCancelDate;
-	/** 5 PayerCancelReason String No 0...1 1..1 */
+	/** 5 PayerCancelReason String No 0...1 */
 	private String payerCancelReason;
 
 	public WP0() {
@@ -25,7 +25,7 @@ public class WP0 {
 		groupNumber = StringUtils.substring(message, 10, 17);
 		beneficiaryPhn = StringUtils.substring(message, 17, 27);
 		coverageCancelDate = StringUtils.substring(message, 27, 37);
-		// K or E
+		// I , E or P
 		payerCancelReason = StringUtils.substring(message, 37, 38);
 	}
 
@@ -80,8 +80,5 @@ public class WP0 {
 	public void setPayerCancelReason(String payerCancelReason) {
 		this.payerCancelReason = payerCancelReason;
 	}
-
-	
-
 
 }

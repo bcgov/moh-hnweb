@@ -1,5 +1,5 @@
 <template>
-  <div id="cancelGroupMemberDependent" v-if="inputFormActive">
+  <div id="cancelDependent" v-if="inputFormActive">
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
@@ -51,7 +51,7 @@ import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumbe
 import GroupMemberService from '../../services/GroupMemberService'
 
 export default {
-  name: 'CancelGroupMemberDependent',
+  name: 'CancelDependent',
   setup() {
     return {
       v$: useVuelidate(),
@@ -102,7 +102,7 @@ export default {
         }
 
         this.result = (
-          await GroupMemberService.cancelGroupMemberDependent({
+          await GroupMemberService.cancelDependent({
             phn: this.phn,
             dependentPhn: this.dependentPhn,
             groupNumber: this.groupNumber,

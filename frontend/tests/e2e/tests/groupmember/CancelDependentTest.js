@@ -1,5 +1,5 @@
 import AlertPage from '../../pages/AlertPage'
-import CancelGroupMemberDependent from '../../pages/groupmember/CancelGroupMemberDependent'
+import CancelDependent from '../../pages/groupmember/CancelDependent'
 import { SITE_UNDER_TEST } from '../../configuration'
 import { regularAccUser } from '../../roles/roles'
 
@@ -13,9 +13,9 @@ const DEPENDENT_PHN_REQUIRED_MESSAGE = 'PHN is required'
 const CANCEL_REASON_REQUIRED_MESSAGE = 'Cancel Reason is required'
 const RAPID_RESPONSE = 'RPBS0097 SUBSCRIBER AND DEPENDENT PHN MUST BE DIFFERENT.'
 
-const PAGE_TO_TEST = SITE_UNDER_TEST + '/groupmember/CancelGroupMemberDependent'
+const PAGE_TO_TEST = SITE_UNDER_TEST + '/groupmember/CancelDependent'
 
-fixture(`CancelGroupMemberDependent Page`).disablePageCaching`Test CancelGroupMemberDependent`
+fixture(`CancelDependent Page`).disablePageCaching`Test CancelDependent`
   .beforeEach(async (t) => {
     await t.useRole(regularAccUser)
   })
@@ -25,36 +25,36 @@ test('Check required fields validation', async (t) => {
   await t
     // Given required fields aren't filled out (phn, dependent phn, group member, group member number, department)
     // When I click the submit button
-    .click(CancelGroupMemberDependent.submitButton)
+    .click(CancelDependent.submitButton)
     // I expect an error message stating the page had errors and individual error messages for each required field
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
-    .expect(CancelGroupMemberDependent.errorText.nth(0).textContent)
+    .expect(CancelDependent.errorText.nth(0).textContent)
     .contains(GROUP_NUMBER_REQUIRED_MESSAGE)
-    .expect(CancelGroupMemberDependent.errorText.nth(1).textContent)
+    .expect(CancelDependent.errorText.nth(1).textContent)
     .contains(PHN_REQUIRED_MESSAGE)
-    .expect(CancelGroupMemberDependent.errorText.nth(2).textContent)
+    .expect(CancelDependent.errorText.nth(2).textContent)
     .contains(DEPENDENT_PHN_REQUIRED_MESSAGE)
-    .expect(CancelGroupMemberDependent.errorText.nth(3).textContent)
+    .expect(CancelDependent.errorText.nth(3).textContent)
     .contains(COVERAGE_CANCEL_DATE_REQUIRED_MESSAGE)
-    .expect(CancelGroupMemberDependent.errorText.nth(4).textContent)
+    .expect(CancelDependent.errorText.nth(4).textContent)
     .contains(CANCEL_REASON_REQUIRED_MESSAGE)
 })
 
 test('Check invalid formats validation', async (t) => {
   await t
     // Given I enter PHN, Dependent PHN, Group Number, and Cancel dates with invalid formats
-    .typeText(CancelGroupMemberDependent.phnInput, '9000448000')
-    .typeText(CancelGroupMemberDependent.dependentPhnInput, '9000448000')
-    .typeText(CancelGroupMemberDependent.groupNumberInput, '123')
+    .typeText(CancelDependent.phnInput, '9000448000')
+    .typeText(CancelDependent.dependentPhnInput, '9000448000')
+    .typeText(CancelDependent.groupNumberInput, '123')
     // When I click the submit button
-    .click(CancelGroupMemberDependent.submitButton)
+    .click(CancelDependent.submitButton)
     // I expect an error message stating the page had errors and an individual error message for the PHN and Group and Cancel Date formats
-    .expect(CancelGroupMemberDependent.errorText.nth(0).textContent)
+    .expect(CancelDependent.errorText.nth(0).textContent)
     .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
-    .expect(CancelGroupMemberDependent.errorText.nth(1).textContent)
+    .expect(CancelDependent.errorText.nth(1).textContent)
     .contains(INVALID_PHN_ERROR_MESSAGE)
-    .expect(CancelGroupMemberDependent.errorText.nth(2).textContent)
+    .expect(CancelDependent.errorText.nth(2).textContent)
     .contains(INVALID_PHN_ERROR_MESSAGE)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
@@ -63,16 +63,16 @@ test('Check invalid formats validation', async (t) => {
 test('Check properly filled form passes validation', async (t) => {
   await t
     // Given I have a form filled out with data
-    .typeText(CancelGroupMemberDependent.groupNumberInput, '6243109')
-    .typeText(CancelGroupMemberDependent.phnInput, '9397105575')
-    .typeText(CancelGroupMemberDependent.dependentPhnInput, '9397105575')
-    .click(CancelGroupMemberDependent.cancelDateInput)
-    .click(CancelGroupMemberDependent.divSelectedDate)
-    .click(CancelGroupMemberDependent.cancelReasonInput)
+    .typeText(CancelDependent.groupNumberInput, '6243109')
+    .typeText(CancelDependent.phnInput, '9397105575')
+    .typeText(CancelDependent.dependentPhnInput, '9397105575')
+    .click(CancelDependent.cancelDateInput)
+    .click(CancelDependent.divSelectedDate)
+    .click(CancelDependent.cancelReasonInput)
     .pressKey('down')
     .pressKey('enter')
     // When I click the submit button
-    .click(CancelGroupMemberDependent.submitButton)
+    .click(CancelDependent.submitButton)
     // I expect a response from RAPID
     .expect(AlertPage.alertBannerText.textContent)
     .contains(RAPID_RESPONSE)
@@ -81,28 +81,28 @@ test('Check properly filled form passes validation', async (t) => {
 test('Check clear button clears the form', async (t) => {
   await t
     // Given I have a form filled out with data
-    .typeText(CancelGroupMemberDependent.phnInput, '9882807277')
-    .typeText(CancelGroupMemberDependent.dependentPhnInput, '9882807277')
-    .typeText(CancelGroupMemberDependent.groupNumberInput, '6337109')
-    .click(CancelGroupMemberDependent.relationshipInput)
+    .typeText(CancelDependent.phnInput, '9882807277')
+    .typeText(CancelDependent.dependentPhnInput, '9882807277')
+    .typeText(CancelDependent.groupNumberInput, '6337109')
+    .click(CancelDependent.relationshipInput)
     .pressKey('down')
     .pressKey('enter')
-    .click(CancelGroupMemberDependent.cancelReasonInput)
+    .click(CancelDependent.cancelReasonInput)
     .pressKey('down')
     .pressKey('enter')
-    .click(CancelGroupMemberDependent.cancelDateInput)
-    .click(CancelGroupMemberDependent.divSelectedDate)
+    .click(CancelDependent.cancelDateInput)
+    .click(CancelDependent.divSelectedDate)
     // When I click the clear button
-    .click(CancelGroupMemberDependent.clearButton)
+    .click(CancelDependent.clearButton)
     // I expect the form to be cleared
-    .expect(CancelGroupMemberDependent.phnInput.value)
+    .expect(CancelDependent.phnInput.value)
     .eql('')
-    .expect(CancelGroupMemberDependent.dependentPhnInput.value)
+    .expect(CancelDependent.dependentPhnInput.value)
     .eql('')
-    .expect(CancelGroupMemberDependent.groupNumberInput.value)
+    .expect(CancelDependent.groupNumberInput.value)
     .eql('')
-    .expect(CancelGroupMemberDependent.cancelReasonInput.value)
+    .expect(CancelDependent.cancelReasonInput.value)
     .eql('')
-    .expect(CancelGroupMemberDependent.cancelDateInput.value)
+    .expect(CancelDependent.cancelDateInput.value)
     .eql('')
 })

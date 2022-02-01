@@ -32,8 +32,8 @@ import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPXP0;
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberResponse;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberDependentRequest;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberDependentResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelDependentRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelDependentResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
@@ -182,33 +182,33 @@ public class GroupMemberController {
 	 * Cancels a group member's dependent coverage.
 	 * Maps to the legacy R36.
 	 *  
-	 * @param cancelGroupMemberDependentRequest
+	 * @param cancelDependentRequest
 	 * @return The result of the operation.
 	 */
-	@PostMapping("/cancel-group-member-dependent")
-	public ResponseEntity<CancelGroupMemberDependentResponse> cancelGroupMemberDependent(@Valid @RequestBody CancelGroupMemberDependentRequest cancelGroupMemberDependentRequest) {
+	@PostMapping("/cancel-dependent")
+	public ResponseEntity<CancelDependentResponse> cancelDependent(@Valid @RequestBody CancelDependentRequest cancelDependentRequest) {
 
 		try {
 			RPBSPWP0Converter converter = new RPBSPWP0Converter();
-			RPBSPWP0 rpbspwp0 = converter.convertRequest(cancelGroupMemberDependentRequest);
-			RPBSPWP0 rpbspwc0Response = groupMemberService.cancelGroupMemberDependent(rpbspwp0);
-			CancelGroupMemberDependentResponse cancelGroupMemberDependentResponse = converter.convertResponse(rpbspwc0Response);
+			RPBSPWP0 rpbspwp0 = converter.convertRequest(cancelDependentRequest);
+			RPBSPWP0 rpbspwc0Response = groupMemberService.cancelDependent(rpbspwp0);
+			CancelDependentResponse cancelDependentResponse = converter.convertResponse(rpbspwc0Response);
 					
-			ResponseEntity<CancelGroupMemberDependentResponse> response = ResponseEntity.ok(cancelGroupMemberDependentResponse);
+			ResponseEntity<CancelDependentResponse> response = ResponseEntity.ok(cancelDependentResponse);
 
-			logger.info("cancelGroupMemberDependentResponse response: {} ", cancelGroupMemberDependentResponse);
+			logger.info("CancelDependentResponse response: {} ", cancelDependentResponse);
 			return response;	
 		} catch (HNWebException hwe) {
 			switch (hwe.getType()) {
 			case DOWNSTREAM_FAILURE:
 				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
 			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /cancel-group-member-dependent request", hwe);				
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /cancel-dependent request", hwe);				
 			}
 		} catch (WebClientException wce) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /cancel-group-member-dependent request", e);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /cancel-dependent request", e);
 		}
 		
 	}

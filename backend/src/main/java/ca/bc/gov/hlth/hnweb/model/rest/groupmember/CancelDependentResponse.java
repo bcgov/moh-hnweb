@@ -2,7 +2,7 @@ package ca.bc.gov.hlth.hnweb.model.rest.groupmember;
 
 import ca.bc.gov.hlth.hnweb.model.rest.BaseResponse;
 
-public class CancelGroupMemberDependentResponse extends BaseResponse {
+public class CancelDependentResponse extends BaseResponse {
 	private String phn;
 
 	public String getPhn() {
