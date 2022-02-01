@@ -5,9 +5,11 @@ import java.time.LocalDate;
 public class AddDependentRequest {
 	private String phn;
 	private String groupNumber;
-	private String dependentPHN;
+	private String dependentPhn;
 	private LocalDate coverageEffectiveDate;
 	private String relationship;
+	private String isStudent;
+	private LocalDate studentEndDate;
 	
 	public String getPhn() {
 		return phn;
@@ -25,12 +27,12 @@ public class AddDependentRequest {
 		this.groupNumber = groupNumber;
 	}
 
-	public String getDependentPHN() {
-		return dependentPHN;
+	public String getDependentPhn() {
+		return dependentPhn;
 	}
 
-	public void setDependentPHN(String dependentPHN) {
-		this.dependentPHN = dependentPHN;
+	public void setDependentPhn(String dependentPhn) {
+		this.dependentPhn = dependentPhn;
 	}
 
 	public LocalDate getCoverageEffectiveDate() {
@@ -49,10 +51,27 @@ public class AddDependentRequest {
 		this.relationship = relationship;
 	}
 
+	public String getIsStudent() {
+		return isStudent;
+	}
+
+	public void setIsStudent(String isStudent) {
+		this.isStudent = isStudent;
+	}
+
+	public LocalDate getStudentEndDate() {
+		return studentEndDate;
+	}
+
+	public void setStudentEndDate(LocalDate studentEndDate) {
+		this.studentEndDate = studentEndDate;
+	}
+
 	@Override
 	public String toString() {
-		return "AddDependentRequest [phn=" + phn + ", groupNumber=" + groupNumber + ", dependentPHN=" + dependentPHN
-				+ ", coverageEffectiveDate=" + coverageEffectiveDate + ", relationship=" + relationship + "]";
+		return "AddDependentRequest [phn=" + phn + ", groupNumber=" + groupNumber + ", dependentPhn=" + dependentPhn
+				+ ", coverageEffectiveDate=" + coverageEffectiveDate + ", relationship=" + relationship + ", isStudent="
+				+ isStudent + ", studentEndDate=" + studentEndDate + "]";
 	}
 
 }

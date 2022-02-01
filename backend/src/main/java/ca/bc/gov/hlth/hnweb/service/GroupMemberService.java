@@ -57,7 +57,7 @@ public class GroupMemberService {
 		
 		ResponseEntity<String> response = postRapidRequest(r31Path, rpbspwb0Str);
 		
-		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
+		logger.info("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		
 		if (response.getStatusCode() != HttpStatus.OK) {
 			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());

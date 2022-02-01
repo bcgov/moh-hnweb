@@ -14,7 +14,12 @@ public class WB0 {
 	private String coverageEffectiveDate;
 	/** 5	RelationshipCode	String	No	0...1 .. */
 	private String relationshipCode;
-
+	//Modifications to this messaging protocol added the following values 
+	/** 6 StudentEndDate **/
+	private String studentEndDate;	
+	/** 7 StudentFlag Valid values are 'Y', 'N' **/
+	private String studentFlag;
+	
 	public WB0() {
 		super();
 	}
@@ -27,6 +32,9 @@ public class WB0 {
 		coverageEffectiveDate = StringUtils.substring(message, 27, 37);
 		// S or D
 		relationshipCode = StringUtils.substring(message, 37, 38);
+		// Y or N
+		studentFlag = StringUtils.substring(message, 38, 39);
+		studentEndDate = StringUtils.substring(message, 39, 49);
 	}
 
 	public String serialize() {
@@ -37,6 +45,8 @@ public class WB0 {
 		sb.append(StringUtils.rightPad(benficiaryPHN, 10));
 		sb.append(StringUtils.rightPad(coverageEffectiveDate, 10));
 		sb.append(StringUtils.rightPad(relationshipCode, 1));
+		sb.append(StringUtils.rightPad(studentFlag, 1));
+		sb.append(StringUtils.rightPad(studentEndDate, 7));
 
 		return sb.toString();
 	}
@@ -79,6 +89,22 @@ public class WB0 {
 
 	public void setRelationshipCode(String relationshipCode) {
 		this.relationshipCode = relationshipCode;
+	}
+
+	public String getStudentEndDate() {
+		return studentEndDate;
+	}
+
+	public void setStudentEndDate(String studentEndDate) {
+		this.studentEndDate = studentEndDate;
+	}
+
+	public String getStudentFlag() {
+		return studentFlag;
+	}
+
+	public void setStudentFlag(String studentFlag) {
+		this.studentFlag = studentFlag;
 	}
 
 }

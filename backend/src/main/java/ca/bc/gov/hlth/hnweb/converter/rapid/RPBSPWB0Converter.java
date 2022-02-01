@@ -1,5 +1,7 @@
 package ca.bc.gov.hlth.hnweb.converter.rapid;
 
+import org.apache.commons.lang3.StringUtils;
+
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPWB0;
 import ca.bc.gov.hlth.hnweb.model.rapid.WB0;
@@ -21,9 +23,15 @@ public class RPBSPWB0Converter extends BaseRapidConverter {
 		WB0 wb0 = new WB0();
 		wb0.setGroupNumber(request.getGroupNumber());
 		wb0.setPhn(request.getPhn());
-		wb0.setBenficiaryPHN(request.getDependentPHN());
+		wb0.setBenficiaryPHN(request.getDependentPhn());
 		wb0.setCoverageEffectiveDate(formatDate(request.getCoverageEffectiveDate()));
 		wb0.setRelationshipCode(request.getRelationship());
+		wb0.setStudentFlag(request.getIsStudent());
+		if (StringUtils.equals("Y", request.getIsStudent())) {
+			wb0.setStudentEndDate(formatDate(request.getStudentEndDate()));
+		} else {
+			wb0.setStudentEndDate("");
+		}
 
 		RPBSPWB0 rpbspwb0 = new RPBSPWB0();
 		rpbspwb0.setRpbsHeader(rpbsHeader);
