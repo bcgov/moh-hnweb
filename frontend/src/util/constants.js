@@ -65,6 +65,6 @@ export const PRIOR_RESIDENCES = [
 // Dependent Relationships
 export const RELATIONSHIPS = [
   { text: 'Select', value: '' },
-  { text: 'Spouse', value: 'Spouse' },
-  { text: 'Dependent', value: 'Dependent' },
+  { text: 'Spouse', value: 'S' },
+  { text: 'Dependent', value: 'D' },
 ]

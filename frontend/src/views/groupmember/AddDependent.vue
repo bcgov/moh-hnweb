@@ -1,12 +1,22 @@
 <template>
-  <div id="addDependent" v-if="inputFormActive">
+  <div id="addGroupMemberDependent" v-if="inputFormActive">
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col4">
           <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" type="text" v-model.trim="groupNumber" />
         </AppCol>
         <AppCol class="col4">
-          <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" tooltip tooltipText="Day always defaults to 1st of month" monthPicker inputDateFormat="yyyy-MM" placeholder="YYYY-MM" v-model="coverageEffectiveDate" />
+          <AppDateInput
+            :e-model="v$.coverageEffectiveDate"
+            id="coverageEffectiveDate"
+            label="Coverage Effective Date"
+            tooltip
+            tooltipText="Day always defaults to 1st of month"
+            monthPicker
+            inputDateFormat="yyyyMM"
+            placeholder="YYYYMM"
+            v-model="coverageEffectiveDate"
+          />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -25,12 +35,12 @@
       <AppRow>
         <AppCol class="col6">
           <YesNoRadioButtonGroup
-            :e-model="v$.isAttendingCanadianEducationalInstitute"
-            id="isAttendingCanadianEducationalInstitute"
+            :e-model="v$.isStudent"
+            id="isStudent"
             label="Is this Dependent attending a Canadian Educational Institution?"
             tooltip
             tooltipText="Click either Yes or No"
-            v-model="isAttendingCanadianEducationalInstitute"
+            v-model="isStudent"
           />
         </AppCol>
       </AppRow>
@@ -83,7 +93,7 @@ export default {
       phn: '',
       dependentPhn: '',
       relationship: '',
-      isAttendingCanadianEducationalInstitute: 'N',
+      isStudent: '',
       studentEndDate: null,
       result: {
         phn: '',
@@ -121,7 +131,7 @@ export default {
             phn: this.phn,
             dependentPhn: this.dependentPhn,
             relationship: this.relationship,
-            isAttendingCanadianEducationalInstitute: this.isAttendingCanadianEducationalInstitute === 'Y',
+            isStudent: this.isStudent,
             studentEndDate: dayjs(this.studentEndDate).format(API_DATE_FORMAT),
           })
         ).data
@@ -151,7 +161,7 @@ export default {
       this.phn = ''
       this.dependentPhn = ''
       this.relationship = ''
-      this.isAttendingCanadianEducationalInstitute = 'N'
+      this.isStudent = ''
       this.studentEndDate = null
       this.result = null
       this.inputFormActive = true
@@ -177,9 +187,12 @@ export default {
       relationship: {
         required,
       },
-      isAttendingCanadianEducationalInstitute: { required },
+      isStudent: { required },
       studentEndDate: {
-        requiredIfIsAttending: requiredIf(this.isAttendingCanadianEducationalInstitute === 'Y'),
+        // required,
+        requiredIfIsStudent: requiredIf(() => {
+          return this.isStudent === 'Y'
+        }),
       },
     }
   },
