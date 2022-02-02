@@ -58,16 +58,15 @@ import dayjs from 'dayjs'
 import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumber, validatePHN } from '../../util/validators'
 import { API_DATE_FORMAT, RELATIONSHIPS } from '../../util/constants'
 import GroupMemberService from '../../services/GroupMemberService'
-import { ref } from 'vue'
 
 export default {
   name: 'AddDependent',
   components: { YesNoRadioButtonGroup },
   setup() {
-    const currentMonth = ref({
+    const currentMonth = {
       month: new Date().getMonth(),
       year: new Date().getFullYear(),
-    })
+    }
 
     return {
       v$: useVuelidate(),
