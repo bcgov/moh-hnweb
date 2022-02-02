@@ -47,7 +47,6 @@ jobs:
       run: |
         echo "Value of IMAGE TAG in env variable:  ${{ env.IMAGE_TAGS }}"
         echo $IMAGE_TAGS
-        echo ${{IMAGE_TAGS}}
         echo ${{env.IMAGE_TAGS}}
 
 
