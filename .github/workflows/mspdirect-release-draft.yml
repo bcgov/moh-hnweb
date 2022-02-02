@@ -37,7 +37,11 @@ on:
         default:
       PRE_RELEASE:
         type: boolean
-        description: Pre release.         
+        description: Pre release.
+      DEVELOPMENT:
+        type: boolean
+        description: Remove after development of workflow is complete
+        default: true                 
         
   #push:
   #  branches: [ main ]
@@ -89,6 +93,8 @@ jobs:
     # Build frontend from docker file
     - name: Build frontend from Dockerfile
       id: build-docker-frontend
+      # Remove after dev is complete
+      if: ${{ github.event.inputs.DEVELOPMENT == 'false' }}
       uses: redhat-actions/buildah-build@v2
       with:
         image: ${{ env.IMAGE_NAME_FRONTEND }}
@@ -100,6 +106,8 @@ jobs:
     # Build backend from docker file
     - name: Build backend from Dockerfile
       id: build-docker-backend
+      # Remove after dev is complete
+      if: ${{ github.event.inputs.DEVELOPMENT == 'false' }}
       uses: redhat-actions/buildah-build@v2
       with:
         image: ${{ env.IMAGE_NAME_BACKEND }}
@@ -111,6 +119,8 @@ jobs:
 # 6. Upload the images in image repository in tools namespace
     - name: Push frontend image to registry
       id: push-image-frontend
+      # Remove after dev is complete
+      if: ${{ github.event.inputs.DEVELOPMENT == 'false' }}
       uses: redhat-actions/push-to-registry@v2
       with:
         image: ${{ steps.build-docker-frontend.outputs.image }}
@@ -121,6 +131,8 @@ jobs:
 
     - name: Push backend image to registry
       id: push-image-backend
+      # Remove after dev is complete
+      if: ${{ github.event.inputs.DEVELOPMENT == 'false' }}
       uses: redhat-actions/push-to-registry@v2
       with:
         image: ${{ steps.build-docker-backend.outputs.image }}
@@ -142,8 +154,8 @@ jobs:
 
     - name: Print Release URL
       env:
-        URL: ${{ steps.html_url.outputs.html_url }}
-        ID: ${{ steps.html_url.outputs.id }}
+        URL: ${{ steps.tag-and-release.outputs.html_url }}
+        ID: ${{ steps.tag-and-release.outputs.id }}
       run: |
         echo
         echo "======================== Your new release is available at: ========================"
