@@ -28,13 +28,14 @@ on:
   
   workflow_dispatch:
     inputs:
-      RELEASE_NAME:
-        required: true
-        default: 
       OPENSHIFT_IMAGE_TAG:
         description: 'Optional parameter for additional tags on released images. '
         required: false
         default:
+      DEVELOPMENT:
+        type: boolean
+        description: Remove after development of workflow is complete
+        default: true                 
         
   #push:
   #  branches: [ main ]
