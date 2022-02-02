@@ -1,10 +1,12 @@
 # This is a manual workflow that performs following activities:
 # 1. Determine the version number tag i.e. Release_1.0_<branch-name>_<build execution>  
-# 2. Edit .env in frontend with the value
+# 2. Determine tags for OpenShift image
+# 3. Edit .env in frontend with the value
 # 3. Creates images for frontend and backend code
 # 4. Tags the images with release number
 # 5. Tags the images with additional tags if any
 # 6. Upload the images in image repository in tools namespace
+# 7. Tag the commit in Git with release number and <Check> Optional tags
 
 name: mspdirect-release-draft
 # Build the image and deploy in OpenShift environment
@@ -26,10 +28,13 @@ on:
   
   workflow_dispatch:
     inputs:
-      OPTIONAL_TAG:
-        description: 'Enter any optional tag name, For example Sprint-20'
+      OPENSHIFT_IMAGE_TAG:
+        description: 'Enter any tags for final image for example Sprint-N. You can add multiple tags using space delimiter. '
         required: false
-        default: 
+        default:
+      PRE_RELEASE:
+        type: boolean
+        description: Pre release.         
         
   #push:
   #  branches: [ main ]
@@ -63,18 +68,21 @@ jobs:
       run: |
         echo "RELEASE_VERSION= Draft_1.0_main_${{github.run_number}} " | tee -a $GITHUB_ENV
         
-    # 1. Determine the tags for build image
+    # 2. Determine tags for OpenShift image
     - name: Determine image tags
       run: |
-        echo "IMAGE_TAGS= ${GITHUB_SHA::12} ${{ env.RELEASE_VERSION }} ${{ github.event.inputs.OPTIONAL_TAG }}  " | tee -a $GITHUB_ENV
+        echo "IMAGE_TAGS= ${GITHUB_SHA::12} ${{ env.RELEASE_VERSION }} ${{ github.event.inputs.OPENSHIFT_IMAGE_TAG }}  " | tee -a $GITHUB_ENV
 
 
-    # 2. Edit .env in frontend with the value
+    # 3. Edit .env in frontend with the value
     - name: Edit env file to add version
       run: |
         cd ./frontend/env_config
         sed -i 's/<VERSION>/${{ env.RELEASE_VERSION }}/' .env
 
+# 3. Creates images for frontend and backend code
+# 4. Tags the images with release number
+# 5. Tags the images with additional tags if any
     # Build frontend from docker file
     - name: Build frontend from Dockerfile
       id: build-docker-frontend
@@ -85,16 +93,6 @@ jobs:
         context: ./frontend
         dockerfiles: |
           ./frontend/Dockerfile
-
-    - name: Push frontend image to registry
-      id: push-image-frontend
-      uses: redhat-actions/push-to-registry@v2
-      with:
-        image: ${{ steps.build-docker-frontend.outputs.image }}
-        tags: ${{ steps.build-docker-frontend.outputs.tags }}
-        registry: ${{ env.IMAGE_REGISTRY }}
-        username: ${{ env.IMAGE_REGISTRY_USER }}
-        password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
 
     # Build backend from docker file
     - name: Build backend from Dockerfile
@@ -107,6 +105,17 @@ jobs:
         dockerfiles: |
           ./backend/Dockerfile
 
+# 6. Upload the images in image repository in tools namespace
+    - name: Push frontend image to registry
+      id: push-image-frontend
+      uses: redhat-actions/push-to-registry@v2
+      with:
+        image: ${{ steps.build-docker-frontend.outputs.image }}
+        tags: ${{ steps.build-docker-frontend.outputs.tags }}
+        registry: ${{ env.IMAGE_REGISTRY }}
+        username: ${{ env.IMAGE_REGISTRY_USER }}
+        password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
+
     - name: Push backend image to registry
       id: push-image-backend
       uses: redhat-actions/push-to-registry@v2
@@ -116,6 +125,14 @@ jobs:
         registry: ${{ env.IMAGE_REGISTRY }}
         username: ${{ env.IMAGE_REGISTRY_USER }}
         password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
+
+# 7. Tag the commit in Git with release number and <Check> Optional tags
+    - name: Tag and create Release
+      uses: avakar/tag-and-release@v1
+      with:
+        tag_name: ${{  env.RELEASE_VERSION }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     # # Update the image ID in the manifest repository used by Argo CD.
     # # We need to use the SSH deploy key to check out the manifest repo, set up
