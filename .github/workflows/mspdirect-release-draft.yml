@@ -28,13 +28,13 @@ on:
   
   workflow_dispatch:
     inputs:
-      OPENSHIFT_IMAGE_TAG:
-        description: 'Enter any tags for final image for example Sprint-N. You can add multiple tags using space delimiter. '
-        required: false
-        default:
       RELEASE_NAME:
         required: true
         default: 
+      OPENSHIFT_IMAGE_TAG:
+        description: 'Optional parameter for additional tags on released images. '
+        required: false
+        default:
       PRE_RELEASE:
         type: boolean
         description: Pre release.         
