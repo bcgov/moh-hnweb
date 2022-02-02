@@ -58,13 +58,20 @@ import dayjs from 'dayjs'
 import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumber, validatePHN } from '../../util/validators'
 import { API_DATE_FORMAT, RELATIONSHIPS } from '../../util/constants'
 import GroupMemberService from '../../services/GroupMemberService'
+import { ref } from 'vue'
 
 export default {
   name: 'AddDependent',
   components: { YesNoRadioButtonGroup },
   setup() {
+    const currentMonth = ref({
+      month: new Date().getMonth(),
+      year: new Date().getFullYear(),
+    })
+
     return {
       v$: useVuelidate(),
+      currentMonth,
     }
   },
   data() {
@@ -72,7 +79,7 @@ export default {
       inputFormActive: true,
       submitting: false,
       groupNumber: '',
-      coverageEffectiveDate: dayjs().startOf('month').toDate(),
+      coverageEffectiveDate: this.currentMonth,
       phn: '',
       dependentPhn: '',
       relationship: '',
@@ -139,7 +146,7 @@ export default {
     },
     resetForm() {
       this.groupNumber = ''
-      this.coverageEffectiveDate = dayjs().startOf('month').toDate()
+      this.coverageEffectiveDate = this.currentMonth
       this.phn = ''
       this.dependentPhn = ''
       this.relationship = ''
