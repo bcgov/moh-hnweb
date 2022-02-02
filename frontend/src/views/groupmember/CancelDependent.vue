@@ -13,7 +13,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppSelect :e-model="relationship" id="relationship" label="Relationship (Optional)" v-model="relationship" :options="relationshipOptions" />
+          <AppSelect id="relationship" label="Relationship (Optional)" v-model="relationship" :options="relationshipOptions" />
         </AppCol>
       </AppRow>
       <AppRow>
