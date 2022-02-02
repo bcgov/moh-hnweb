@@ -132,12 +132,25 @@ jobs:
 # 7. Tag the commit in Git with release number and <Check> Optional tags
     - name: Tag and create Release
       uses: avakar/tag-and-release@v1
+      id: tag-and-release
       with:
         tag_name: ${{  env.RELEASE_VERSION }}
         prerelease: ${{ github.event.inputs.PRE_RELEASE }}
         release_name: ${{ github.event.inputs.RELEASE_NAME }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Print Release URL
+      env:
+        URL: ${{ steps.html_url.outputs.html_url }}
+        ID: ${{ steps.html_url.outputs.id }}
+      run: |
+        echo
+        echo "======================== Your new release is available at: ========================"
+        echo ${{ env.URL }}
+        echo "==================================================================================="
+        echo
+        echo "Unique ID for this release : ${{ env.URL }} "        
 
     # # Update the image ID in the manifest repository used by Argo CD.
     # # We need to use the SSH deploy key to check out the manifest repo, set up
