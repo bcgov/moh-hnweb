@@ -13,7 +13,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppSelect :e-model="v$.relationship" id="relationship" label="Relationship (Optional)" v-model="relationship" :options="relationshipOptions" />
+          <AppSelect :e-model="relationship" id="relationship" label="Relationship (Optional)" v-model="relationship" :options="relationshipOptions" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -154,7 +154,6 @@ export default {
         required,
         validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
       },
-      relationship: {},
       groupNumber: {
         required,
         validateGroupNumber: helpers.withMessage(VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber),
