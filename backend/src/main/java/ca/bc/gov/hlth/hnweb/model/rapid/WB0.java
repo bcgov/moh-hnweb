@@ -14,7 +14,7 @@ public class WB0 {
 	private String coverageEffectiveDate;
 	/** 5	RelationshipCode	String	No	0...1 .. */
 	private String relationshipCode;
-	//Modifications to this messaging protocol added the following values 
+	// Modifications to this messaging protocol added the following values 
 	/** 6 StudentEndDate **/
 	private String studentEndDate;	
 	/** 7 StudentFlag Valid values are 'Y', 'N' **/

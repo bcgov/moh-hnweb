@@ -9,6 +9,7 @@ import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddDependentRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddDependentResponse;
 
 public class RPBSPWB0Converter extends BaseRapidConverter {
+	
 	private static final String TRAN_CODE = "RPBSPWB0";
 
 	public RPBSPWB0Converter() {
@@ -49,7 +50,6 @@ public class RPBSPWB0Converter extends BaseRapidConverter {
 		
 		return response;
 	}
-
 
 	@Override
 	public String getTranCode() {

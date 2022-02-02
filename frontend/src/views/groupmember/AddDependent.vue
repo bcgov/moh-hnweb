@@ -28,8 +28,8 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col4">
-          <p>If Yes, enter the expected date studies in Canada will be completed</p>
+        <AppCol class="col6">
+          <AppOutput label="If Yes, enter the expected date studies in Canada will be completed" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -90,7 +90,7 @@ export default {
     this.relationshipOptions = RELATIONSHIPS
   },
   computed: {
-    // Cancel Date should be the last day of the month. In JavaScript this can be done by using day 0 of the next month
+    // Coverage Effective Date should be the first day of the month. Set entered date to have first day of the month
     adjustToFirstDayOfMonth() {
       return new Date(this.coverageEffectiveDate.year, this.coverageEffectiveDate.month, 1)
     },
@@ -99,7 +99,6 @@ export default {
     async submitForm() {
       this.submitting = true
       this.$store.commit('alert/dismissAlert')
-
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
@@ -172,7 +171,6 @@ export default {
       },
       isStudent: { required },
       studentEndDate: {
-        // required,
         requiredIfIsStudent: requiredIf(() => {
           return this.isStudent === 'Y'
         }),
