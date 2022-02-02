@@ -6,17 +6,7 @@
           <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" type="text" v-model.trim="groupNumber" />
         </AppCol>
         <AppCol class="col4">
-          <AppDateInput
-            :e-model="v$.coverageEffectiveDate"
-            id="coverageEffectiveDate"
-            label="Coverage Effective Date"
-            tooltip
-            tooltipText="Day always defaults to 1st of month"
-            monthPicker
-            inputDateFormat="yyyyMM"
-            placeholder="YYYYMM"
-            v-model="coverageEffectiveDate"
-          />
+          <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" tooltip tooltipText="Day always defaults to 1st of month" monthPicker inputDateFormat="yyyyMM" placeholder="YYYYMM" v-model="coverageEffectiveDate" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -34,14 +24,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <YesNoRadioButtonGroup
-            :e-model="v$.isStudent"
-            id="isStudent"
-            label="Is this Dependent attending a Canadian Educational Institution?"
-            tooltip
-            tooltipText="Click either Yes or No"
-            v-model="isStudent"
-          />
+          <YesNoRadioButtonGroup :e-model="v$.isStudent" id="isStudent" label="Is this Dependent attending a Canadian Educational Institution?" tooltip tooltipText="Click either Yes or No" v-model="isStudent" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -132,7 +115,7 @@ export default {
             dependentPhn: this.dependentPhn,
             relationship: this.relationship,
             isStudent: this.isStudent,
-            studentEndDate: dayjs(this.studentEndDate).format(API_DATE_FORMAT),
+            studentEndDate: this.studentEndDate ? dayjs(this.studentEndDate).format(API_DATE_FORMAT) : null,
           })
         ).data
 
