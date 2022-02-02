@@ -87,7 +87,7 @@ jobs:
           ./frontend/Dockerfile
 
     - name: Push frontend image to registry
-      id: push-image
+      id: push-image-frontend
       uses: redhat-actions/push-to-registry@v2
       with:
         image: ${{ steps.build-docker-frontend.outputs.image }}
@@ -108,7 +108,7 @@ jobs:
           ./backend/Dockerfile
 
     - name: Push backend image to registry
-      id: push-image
+      id: push-image-backend
       uses: redhat-actions/push-to-registry@v2
       with:
         image: ${{ steps.build-docker-backend.outputs.image }}
