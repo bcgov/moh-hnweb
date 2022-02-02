@@ -32,6 +32,9 @@ on:
         description: 'Enter any tags for final image for example Sprint-N. You can add multiple tags using space delimiter. '
         required: false
         default:
+      RELEASE_NAME:
+        required: true
+        default: 
       PRE_RELEASE:
         type: boolean
         description: Pre release.         
@@ -131,6 +134,7 @@ jobs:
       uses: avakar/tag-and-release@v1
       with:
         tag_name: ${{  env.RELEASE_VERSION }}
+        prerelease: ${{ github.event.inputs.PRE_RELEASE }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
