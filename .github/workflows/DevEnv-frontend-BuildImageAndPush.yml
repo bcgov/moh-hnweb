@@ -39,18 +39,7 @@ jobs:
     - name: Determine image tags
       if: env.IMAGE_TAGS == ''
       run: |
-        echo "IMAGE_TAGS=latest ${GITHUB_SHA::12} mspdirect-dev" | tee -a $IMAGE_TAGS
-        echo "Value of IMAGE TAG in env variable:  ${{ env.IMAGE_TAGS }}"
-        env
-
-    - name: Display image tags
-      run: |
-        echo "Value of IMAGE TAG in env variable:  ${{ env.IMAGE_TAGS }}"
-        echo $IMAGE_TAGS
-        echo ${{env.IMAGE_TAGS}}
-
-
-
+        echo "IMAGE_TAGS=latest ${GITHUB_SHA::12} mspdirect-dev" | tee -a $GITHUB_ENV
 
     # Build from docker file
     - name: Build from Dockerfile
