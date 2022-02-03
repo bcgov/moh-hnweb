@@ -18,6 +18,9 @@
 
 </script>
 <style scoped>
+  .center {
+    align-self: center;
+  }
   .col {
     display: flex;
     flex-direction: column;

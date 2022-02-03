@@ -29,25 +29,42 @@ public abstract class BaseRapidConverter {
 		this.userInfo = SecurityUtil.loadUserInfo();
 	}
 	
-	protected void handleStatus(RPBSHeader header, BaseResponse response) {
+	protected void handleStatus(RPBSHeader header, BaseResponse response, String phn) {
 		String statusCode = header.getStatusCode();
 		String statusText = StringUtils.trimToEmpty(header.getStatusText());
 		if (StringUtils.equals(header.getIdentifier(), RPBSHeader.IDENTIFER_ERRORMSG)) {
 			response.setStatus(StatusEnum.ERROR);
-			response.setMessage(statusCode + " " + statusText);
+			response.setMessage(generateMessage(statusCode, statusText, phn));
 		} else if (StringUtils.equals(header.getIdentifier(), RPBSHeader.IDENTIFER_RESPONSE)) {
 			if (StringUtils.equals(statusCode, STATUS_CODE_SUCCESS)) {
 				response.setStatus(StatusEnum.SUCCESS);
 				response.setMessage(statusText);
 			} else {
 				response.setStatus(StatusEnum.WARNING);
-				response.setMessage(statusCode + " " + statusText);
+				response.setMessage(generateMessage(statusCode, statusText, phn));
 			}			
 		} else {
 			logger.warn("Unrecognized identifier {}", header.getIdentifier());
 			response.setStatus(StatusEnum.WARNING);
-			response.setMessage(statusCode + " " + statusText);
+			response.setMessage(generateMessage(statusCode, statusText, phn));
 		}
+	}
+	
+	protected void handleStatus(RPBSHeader header, BaseResponse response) {
+		handleStatus(header, response, null);
+	}
+	
+	private String generateMessage(String statusCode, String statusText, String phn) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(statusCode);
+		sb.append(" ");
+		if (StringUtils.isNotBlank(phn)) {
+			sb.append(phn);
+			sb.append(" ");
+		}
+		sb.append(statusText);
+		return sb.toString();
+
 	}
 	
 	protected String convertBirthDate(String birthDate) {

@@ -14,9 +14,11 @@ export const resources = {
     lookupPhn: '/eligibility/lookup-phn',
   },
   groupMember: {
+    addGroupMember: '/group-member/add-group-member',
+    addDependent: '/group-member/add-dependent',
     updateNumberAndDept: '/group-member/update-number-and-dept',
     cancelGroupMember: '/group-member/cancel-group-member',
-    addDependent: '/group-member/add-dependent',
+    cancelDependent: '/group-member/cancel-dependent',
   },
   user: {
     permissions: '/user/permissions',

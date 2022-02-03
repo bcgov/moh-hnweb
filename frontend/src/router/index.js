@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import AddDependent from '../views/groupmember/AddDependent.vue'
+import AddGroupMember from '../views/groupmember/AddGroupMember.vue'
 import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
 import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
+import CancelDependent from '../views/groupmember/CancelDependent.vue'
 import CancelGroupMember from '../views/groupmember/CancelGroupMember.vue'
 import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
 import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
@@ -97,9 +99,14 @@ const routes = [
     name: 'GroupMember',
     component: GroupMemberHome,
     redirect: {
-      name: 'UpdateNumberAndDept',
+      name: 'AddGroupMember',
     },
     children: [
+      {
+        path: 'addGroupMember',
+        name: 'AddGroupMember',
+        component: AddGroupMember,
+      },
       {
         path: 'addDependent',
         name: 'AddDependent',
@@ -114,6 +121,11 @@ const routes = [
         path: 'cancelGroupMember',
         name: 'CancelGroupMember',
         component: CancelGroupMember,
+      },
+      {
+        path: 'cancelDependent',
+        name: 'CancelDependent',
+        component: CancelDependent,
       },
     ],
   },
