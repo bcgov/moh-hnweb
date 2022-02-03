@@ -7,7 +7,7 @@ env:
   IMAGE_REGISTRY_USER: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_USER }}
   IMAGE_REGISTRY_PASSWORD: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
   IMAGE_NAME: mspdirect-frontend
-  IMAGE_TAGS: 
+  IMAGE_TAGS:
 
 on:
   # Run the workflow manually, instead of on a push.
@@ -45,7 +45,6 @@ jobs:
     # Build from docker file
     - name: Build from Dockerfile
       id: build-docker
-      if: env.IMAGE_TAGS == ''
       uses: redhat-actions/buildah-build@v2
       with:
         image: ${{ env.IMAGE_NAME }}
@@ -100,7 +99,7 @@ jobs:
       if: ${{ success() }}
       run: |
         cd mspdirect-devops/overlays/dev
-        kustomize edit set image "frontend-image=image-registry.openshift-image-registry.svc:5000/c5839f-tools/${{ env.IMAGE_NAME }}@${{ steps.push-image-dev.outputs.digest }}"
+        kustomize edit set image "frontend-image=image-registry.openshift-image-registry.svc:5000/c5839f-dev/${{ env.IMAGE_NAME }}@${{ steps.push-image-dev.outputs.digest }}"
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git commit -am "Update frontend API image ID for Dev"

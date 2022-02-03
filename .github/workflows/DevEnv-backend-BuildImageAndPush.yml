@@ -97,7 +97,7 @@ jobs:
       if: ${{ success() }}
       run: |
         cd mspdirect-devops/overlays/dev
-        kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/c5839f-tools/${{ env.IMAGE_NAME }}@${{ steps.push-image-dev.outputs.digest }}"
+        kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/c5839f-dev/${{ env.IMAGE_NAME }}@${{ steps.push-image-dev.outputs.digest }}"
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git commit -am "Update Backend API image ID for Dev"
