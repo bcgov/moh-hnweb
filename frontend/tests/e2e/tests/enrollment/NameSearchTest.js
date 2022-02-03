@@ -1,8 +1,8 @@
-import AddVisaResidentWithoutPHNPage from '../pages/enrollement/AddVisaResidentWithoutPHNPage';
-import AlertPage from '../pages/AlertPage';
-import NameSearchPage from '../pages/enrollement/NameSearchPage';
-import { SITE_UNDER_TEST } from '../configuration';
-import { regularAccUser } from '../roles/roles';
+import { SITE_UNDER_TEST } from '../../configuration';
+import AlertPage from '../../pages/AlertPage';
+import AddVisaResidentWithoutPHNPage from '../../pages/enrollment/AddVisaResidentWithoutPHNPage';
+import NameSearchPage from '../../pages/enrollment/NameSearchPage';
+import { regularAccUser } from '../../roles/roles';
 
 const ERROR_MESSAGE = 'Please correct errors before submitting';
 const SURNAME_REQUIRED_MESSAGE = 'Surname is required'

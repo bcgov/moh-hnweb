@@ -1,5 +1,5 @@
-import AlertPage from '../../pages/AlertPage';
 import { SITE_UNDER_TEST } from '../../configuration';
+import AlertPage from '../../pages/AlertPage';
 import CancelGroupMember from '../../pages/groupmember/CancelGroupMember';
 import { regularAccUser } from '../../roles/roles';
 
@@ -75,5 +75,5 @@ test('Check clear button clears the form', async t => {
         // I expect the form to be cleared
         .expect(CancelGroupMember.phnInput.value).eql('')
         .expect(CancelGroupMember.groupNumberInput.value).eql('')
-        .expect(CancelGroupMember.cancelDateInput.value).eql(undefined)
+        .expect(CancelGroupMember.cancelDateInput.value).eql('')
 });

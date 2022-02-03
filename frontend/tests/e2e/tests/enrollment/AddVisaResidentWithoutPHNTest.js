@@ -1,32 +1,32 @@
-import AddVisaResidentWithoutPHNPage from '../pages/enrollement/AddVisaResidentWithoutPHNPage';
-import AlertPage from '../pages/AlertPage';
-import NameSearchPage from '../pages/enrollement/NameSearchPage';
-import { SITE_UNDER_TEST } from '../configuration';
-import { regularAccUser } from '../roles/roles';
+import { SITE_UNDER_TEST } from '../../configuration'
+import AlertPage from '../../pages/AlertPage'
+import AddVisaResidentWithoutPHNPage from '../../pages/enrollment/AddVisaResidentWithoutPHNPage'
+import NameSearchPage from '../../pages/enrollment/NameSearchPage'
+import { regularAccUser } from '../../roles/roles'
 
-const immigrationCodeOption = AddVisaResidentWithoutPHNPage.immigrationCodeSelect.find('option');    
-const provinceOption = AddVisaResidentWithoutPHNPage.provinceSelect.find('option');
-const priorResidenceCodeOption = AddVisaResidentWithoutPHNPage.priorResidenceCodeInput.find('option');
+const immigrationCodeOption = AddVisaResidentWithoutPHNPage.immigrationCodeSelect.find('option')
+const provinceOption = AddVisaResidentWithoutPHNPage.provinceSelect.find('option')
+const priorResidenceCodeOption = AddVisaResidentWithoutPHNPage.priorResidenceCodeInput.find('option')
 
-const ERROR_MESSAGE = 'Please correct errors before submitting';
-const SUCCESS_MESSAGE = 'HRPB191ECOVERAGE CANCEL DATE MUST BE AFTER COVERAGE EFFECTIVE DATE';
+const ERROR_MESSAGE = 'Please correct errors before submitting'
+const SUCCESS_MESSAGE = 'HRPB191ECOVERAGE CANCEL DATE MUST BE AFTER COVERAGE EFFECTIVE DATE'
 const NO_SEARCH_RESULT = 'No results were returned. Please ensure you have entered the correct information.'
 
-const GROUPNUMBER_REQUIRED_MESSAGE = 'Group Number is required';
-const IMMIGRATION_CODE_REQUIRED_MESSAGE = 'Immigration Code is required';
-const PERMIT_ISSUE_DATE_REQUIRED_MESSAGE = 'Permit Issue Date is required';
-const PERMIT_EXPIRY_DATE_REQUIRED_MESSAGE = 'Permit Expiry Date is required';
-const RESIDENCE_DATE_REQUIRED_MESSAGE = 'Residence Date is required';
-const COVERAGE_CANCELLATION_DATE_REQUIRED_MESSAGE = 'Coverage Cancellation Date is required';
-const HOME_ADDRESS_REQUIRED_MESSAGE = 'Home Address Line 1 is required';
-const CITY_REQUIRED_MESSAGE = 'City is required';
-const PROVINCE_REQUIRED_MESSAGE = 'Province is required';
-const PRIOR_RESIDENCE_REQUIRED_MESSAGE = 'Prior Residence Code is required';
-const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required';
-const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid';
-const INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE = 'Group Member Number is invalid';
-const INVALID_DEPARTMENT_NUMBER_VALIDATION_MESSAGE = 'Department Number is invalid';
-const PHONE_NUMBER_VALIDATION_MESSAGE = 'Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.';
+const GROUPNUMBER_REQUIRED_MESSAGE = 'Group Number is required'
+const IMMIGRATION_CODE_REQUIRED_MESSAGE = 'Immigration Code is required'
+const PERMIT_ISSUE_DATE_REQUIRED_MESSAGE = 'Permit Issue Date is required'
+const PERMIT_EXPIRY_DATE_REQUIRED_MESSAGE = 'Permit Expiry Date is required'
+const RESIDENCE_DATE_REQUIRED_MESSAGE = 'Residence Date is required'
+const COVERAGE_CANCELLATION_DATE_REQUIRED_MESSAGE = 'Coverage Cancellation Date is required'
+const HOME_ADDRESS_REQUIRED_MESSAGE = 'Home Address Line 1 is required'
+const CITY_REQUIRED_MESSAGE = 'City is required'
+const PROVINCE_REQUIRED_MESSAGE = 'Province is required'
+const PRIOR_RESIDENCE_REQUIRED_MESSAGE = 'Prior Residence Code is required'
+const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
+const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
+const INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE = 'Group Member Number is invalid'
+const INVALID_DEPARTMENT_NUMBER_VALIDATION_MESSAGE = 'Department Number is invalid'
+const PHONE_NUMBER_VALIDATION_MESSAGE = 'Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addStudyPermitHolderWithoutPHN'
 
@@ -36,7 +36,7 @@ fixture(`AddVisaResidentWithoutPHNPage Page`)
         await t
             .useRole(regularAccUser)
     })
-    .page(PAGE_TO_TEST);
+    .page(PAGE_TO_TEST)
 
 test('Check required fields validation', async t => {
     await t
@@ -60,7 +60,6 @@ test('Check required fields validation', async t => {
         .expect(AddVisaResidentWithoutPHNPage.errorText.nth(2).textContent).contains(PERMIT_ISSUE_DATE_REQUIRED_MESSAGE)
         .expect(AddVisaResidentWithoutPHNPage.errorText.nth(3).textContent).contains(PERMIT_EXPIRY_DATE_REQUIRED_MESSAGE)
         .expect(AddVisaResidentWithoutPHNPage.errorText.nth(4).textContent).contains(RESIDENCE_DATE_REQUIRED_MESSAGE)
-     
         .expect(AddVisaResidentWithoutPHNPage.errorText.nth(5).textContent).contains(COVERAGE_CANCELLATION_DATE_REQUIRED_MESSAGE)
        // .expect(AddVisaResidentWithoutPHNPage.errorText.nth(7).textContent).contains(GENDER_REQUIRED_MESSAGE)
         .expect(AddVisaResidentWithoutPHNPage.errorText.nth(6).textContent).contains(HOME_ADDRESS_REQUIRED_MESSAGE)
@@ -68,7 +67,7 @@ test('Check required fields validation', async t => {
         .expect(AddVisaResidentWithoutPHNPage.errorText.nth(8).textContent).contains(PROVINCE_REQUIRED_MESSAGE)
         .expect(AddVisaResidentWithoutPHNPage.errorText.nth(9).textContent).contains(POSTAL_CODE_REQUIRED_MESSAGE)
         .expect(AddVisaResidentWithoutPHNPage.errorText.nth(10).textContent).contains(PRIOR_RESIDENCE_REQUIRED_MESSAGE)
-});
+})
 
 test('Check properly filled form passes validation', async t => {
     await t
@@ -103,7 +102,7 @@ test('Check properly filled form passes validation', async t => {
         .wait(5000)
         // I expect a success message
         .expect(AlertPage.alertBannerText.textContent).contains(SUCCESS_MESSAGE)
-});
+})
 
 test('Check invalid field validation', async t => {
     await t
@@ -127,7 +126,7 @@ test('Check invalid field validation', async t => {
         .expect(AddVisaResidentWithoutPHNPage.errorText.nth(7).textContent).contains(PHONE_NUMBER_VALIDATION_MESSAGE)
         .expect(AlertPage.alertBannerText.textContent).contains(ERROR_MESSAGE)
 
-});
+})
 
 test('Check clear button clears the form', async t => {	  
     await t
@@ -172,5 +171,4 @@ test('Check clear button clears the form', async t => {
         .expect(AddVisaResidentWithoutPHNPage.provinceSelect.value).eql('')
         .expect(AddVisaResidentWithoutPHNPage.postalCodeInput.value).eql('')
         .expect(AddVisaResidentWithoutPHNPage.telephoneInput.value).eql('')
-});
-
+})
