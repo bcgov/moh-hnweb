@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+import AddDependent from '../views/groupmember/AddDependent.vue'
 import AddGroupMember from '../views/groupmember/AddGroupMember.vue'
 import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
 import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
@@ -105,6 +106,11 @@ const routes = [
         path: 'addGroupMember',
         name: 'AddGroupMember',
         component: AddGroupMember,
+      },
+      {
+        path: 'addDependent',
+        name: 'AddDependent',
+        component: AddDependent,
       },
       {
         path: 'updateNumberAndDept',

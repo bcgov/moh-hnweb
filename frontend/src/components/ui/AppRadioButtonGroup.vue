@@ -2,6 +2,9 @@
   <div>
     <div class="text_label">
       <label>{{ label }}</label>
+      <AppTooltip v-if="tooltip" :tooltipText="tooltipText">
+        <font-awesome-icon class="tooltip-icon" icon="question-circle" />
+      </AppTooltip>
     </div>
     <div :class="groupClass">
       <AppRadioButton v-for="item in this.group" :id="item.value" :label="item.label" :value="item.value" v-model="modelValue" />
@@ -11,10 +14,12 @@
 </template>
 <script>
 import AppRadioButton from './AppRadioButton.vue'
+import AppTooltip from './AppTooltip.vue'
 export default {
   name: 'AppRadioButtonGroup',
   components: {
     AppRadioButton,
+    AppTooltip,
   },
   computed: {
     groupClass() {
@@ -29,6 +34,8 @@ export default {
     label: String,
     modelValue: String,
     group: Array,
+    tooltip: Boolean,
+    tooltipText: String,
   },
   watch: {
     modelValue: function (val) {

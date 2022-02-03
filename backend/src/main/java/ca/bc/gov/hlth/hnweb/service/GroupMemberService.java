@@ -16,12 +16,14 @@ import ca.bc.gov.hlth.hnweb.exception.ExceptionType;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPED0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPEE0;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPWB0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPWC0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPWP0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPXP0;
 
 /**
  * Service for:
+ *  Add a dependent for the Group Member. (R31)
  *  Update Group Member's Number and/or Department. (R34)
  */
 @Service
@@ -34,6 +36,9 @@ public class GroupMemberService {
 	@Value("${rapid.r30Path}")
 	private String r30Path;
 	
+	@Value("${rapid.r31Path}")
+	private String r31Path;
+
 	@Value("${rapid.r34Path}")
 	private String r34Path;
 
@@ -46,6 +51,32 @@ public class GroupMemberService {
 	@Autowired
 	private WebClient rapidWebClient;
 
+	/**
+	 * Add a dependent for the group member based on the R31/RPBSPWB0 request.
+	 * 
+	 * @param rpbspwb0
+	 * @return The RPBSPWB0 response.
+	 * @throws HNWebException
+	 */
+	public RPBSPWB0 addDependent(RPBSPWB0 rpbspwb0) throws HNWebException {
+		String rpbspwb0Str = rpbspwb0.serialize();
+
+		logger.info("Request {}", rpbspwb0Str);
+		
+		ResponseEntity<String> response = postRapidRequest(r31Path, rpbspwb0Str);
+		
+		logger.info("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
+		
+		if (response.getStatusCode() != HttpStatus.OK) {
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
+		}
+		
+		RPBSPWB0 rpbspwb0Response = new RPBSPWB0(response.getBody());
+
+		return rpbspwb0Response;
+	}
+	
 	/**
 	 * Update the group member's department number based on the R34/RPBSPPE0 request.
 	 * 

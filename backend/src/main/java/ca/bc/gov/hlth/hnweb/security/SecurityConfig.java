@@ -12,8 +12,13 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.oauth2.core.*;
-import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtDecoders;
+import org.springframework.security.oauth2.jwt.JwtValidators;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -48,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .mvcMatchers(HttpMethod.POST,"/eligibility/check-msp-coverage-status").hasRole("E45")
             .mvcMatchers(HttpMethod.POST,"/eligibility/check-eligibility").hasRole("R15")
             .mvcMatchers(HttpMethod.POST,"/eligibility/inquire-phn").hasRole("R41")
+            .mvcMatchers(HttpMethod.POST, "/group-member/**").fullyAuthenticated()
             .mvcMatchers(HttpMethod.POST,"/enrollment/**").fullyAuthenticated()
             .mvcMatchers(HttpMethod.POST,"/group-member/**").fullyAuthenticated()
             .mvcMatchers(HttpMethod.GET,"/user/**").fullyAuthenticated()

@@ -23,8 +23,8 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
-import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddDependentRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddDependentResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelDependentRequest;
@@ -32,6 +32,8 @@ import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelDependentResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.MemberAddress;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
 import okhttp3.mockwebserver.MockResponse;
@@ -53,6 +55,11 @@ public class GroupMemberControllerTest {
 	private static final String RPBSPWC0_ERROR_FUTURE_CANCEL_DATE = "        RPBSPWC000000010                                ERRORMSGRPBS0048SUBSCRIBER HAS A FUTURE CANCEL DATE.PLS FORWARD DOCS TO MSP             987389592763371092022-12-31K";
 	private static final String RPBSPWC0_SUCCESS = "        RPBSPWC000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  987389592763371092022-12-31K";
 	
+	private static final String RPBSPWB0_SUCCESS = "        RPBSPWB000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  9347984074222222293955681392022-01-01AN       ";	
+	private static final String RPBSPWB0_ERROR_RELATIONSHIP_CODE_INVALID = "        RPBSPWB000000010                                ERRORMSGRPBS0064RELATIONSHIP CODE INVALID                                               9347984074222222293955681392022-01-01AN       ";
+	private static final String RPBSPWB0_ERROR_IS_STUDENT_FLAG_INVALID = "        RPBSPWB000000010                                ERRORMSGRPBS9280CANADIAN STUDENT FLAG IS INVALID                                        9347984074222222293955681392022-01-01SA2022-06-01";
+	private static final String RPBSPWB0_ERROR_PHN_NOT_FOUND = "        RPBSPWB000000010                                ERRORMSGRPBS9145PHN NOT FOUND                                                           9347984074222222293955681392022-01-01SN       ";
+
 	private static final String RPBSPXP0_ERROR_COVERAGE_ALREADY_EXISTS = "        RPBSPXP000000010                                ERRORMSGRPBS0065COVERAGE ALREADY EXISTS FOR THE PHN/GROUP NUMBER SPECIFIED              63371091111     222   2022-01-01                                                                                                                                                                                                                                        6045551234                              9873895927                                                                                          9873895927";
 	private static final String RPBSPXP0_SUCCESS = "        RPBSPXP000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  62431091111     222   2022-01-01123 main st                                                                                         V1V1V1                                                                                                                              6045551234                              9873895902                                                                                                    ";
 	
@@ -360,7 +367,107 @@ public class GroupMemberControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
     }
     
+    @Test
+    public void testAddDependent_success() throws InterruptedException {
+    	mockBackEnd.enqueue(new MockResponse()
+        		.setBody(RPBSPWB0_SUCCESS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+    	
+    	AddDependentRequest addDependentRequest = new AddDependentRequest();
+    	addDependentRequest.setPhn("9873895927");
+    	addDependentRequest.setGroupNumber("6337109");
+    	addDependentRequest.setDependentPhn("9873895937");
+    	addDependentRequest.setCoverageEffectiveDate(LocalDate.of(2022, 01, 31));
+    	addDependentRequest.setRelationship("S");
+    	
+		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest);
+		
+		AddDependentResponse addDependentResponse = response.getBody();
+		assertEquals(StatusEnum.SUCCESS, addDependentResponse.getStatus());
+        assertEquals("TRANSACTION SUCCESSFUL", addDependentResponse.getMessage());
+        assertEquals("9347984074", addDependentResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+    }
 
+    @Test
+    public void testAddDependent_InvalidRelationship() throws InterruptedException {
+    	mockBackEnd.enqueue(new MockResponse()
+        		.setBody(RPBSPWB0_ERROR_RELATIONSHIP_CODE_INVALID)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+    	
+    	AddDependentRequest addDependentRequest = new AddDependentRequest();
+    	addDependentRequest.setPhn("9873895927");
+    	addDependentRequest.setGroupNumber("6337109");
+    	addDependentRequest.setDependentPhn("9873895937");
+    	addDependentRequest.setCoverageEffectiveDate(LocalDate.of(2022, 01, 31));
+    	addDependentRequest.setRelationship("B");
+    	
+		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest);
+		
+		AddDependentResponse addDependentResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, addDependentResponse.getStatus());
+        assertEquals("RPBS0064 RELATIONSHIP CODE INVALID", addDependentResponse.getMessage());
+        assertEquals("9347984074", addDependentResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+    }
+
+    @Test
+    public void testAddDependent_InvalidIsStudentFlag() throws InterruptedException {
+    	mockBackEnd.enqueue(new MockResponse()
+        		.setBody(RPBSPWB0_ERROR_IS_STUDENT_FLAG_INVALID)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+    	
+    	AddDependentRequest addDependentRequest = new AddDependentRequest();
+    	addDependentRequest.setPhn("9873895927");
+    	addDependentRequest.setGroupNumber("6337109");
+    	addDependentRequest.setDependentPhn("9873895937");
+    	addDependentRequest.setCoverageEffectiveDate(LocalDate.of(2022, 01, 31));
+    	addDependentRequest.setRelationship("S");
+    	addDependentRequest.setIsStudent("A");
+    	
+		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest);
+		
+		AddDependentResponse addDependentResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, addDependentResponse.getStatus());
+        assertEquals("RPBS9280 CANADIAN STUDENT FLAG IS INVALID", addDependentResponse.getMessage());
+        assertEquals("9347984074", addDependentResponse.getPhn());
+    
+		// Check the client request is sent as expected
+	    RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+	    assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+	}
+    
+    @Test
+    public void testAddDependent_PhnNotFound() throws InterruptedException {
+    	mockBackEnd.enqueue(new MockResponse()
+        		.setBody(RPBSPWB0_ERROR_PHN_NOT_FOUND)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+    	
+    	AddDependentRequest addDependentRequest = new AddDependentRequest();
+    	addDependentRequest.setPhn("9347984074");
+    	addDependentRequest.setGroupNumber("6337109");
+    	addDependentRequest.setDependentPhn("9873895937");
+    	addDependentRequest.setCoverageEffectiveDate(LocalDate.of(2022, 01, 31));
+    	addDependentRequest.setRelationship("S");
+    	
+		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest);
+		
+		AddDependentResponse addDependentResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, addDependentResponse.getStatus());
+        assertEquals("RPBS9145 PHN NOT FOUND", addDependentResponse.getMessage());
+        assertEquals("9347984074", addDependentResponse.getPhn());
+        
+		// Check the client request is sent as expected
+	    RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+	    assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+	}
+	
     @Test
     public void testCancelDependent_dependentNotUnderSubcriberCoverage() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()

@@ -61,3 +61,10 @@ export const PRIOR_RESIDENCES = [
   { text: 'Yukon', value: 'YT' },
   { text: 'British Columbia', value: 'BC' },
 ]
+
+// Dependent Relationships
+export const RELATIONSHIPS = [
+  { text: 'Select', value: '' },
+  { text: 'Spouse', value: 'S' },
+  { text: 'Dependent', value: 'D' },
+]
