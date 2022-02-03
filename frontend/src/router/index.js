@@ -1,23 +1,24 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import Help from './../views/Help.vue'
-import Home from './../views/Home.vue'
-import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
-import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
-import store from '../store'
-import NotFound from '../views/NotFound.vue'
-import Unauthorized from '../views/Unauthorized.vue'
+import AddGroupMember from '../views/groupmember/AddGroupMember.vue'
 import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
 import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
+import CancelDependent from '../views/groupmember/CancelDependent.vue'
+import CancelGroupMember from '../views/groupmember/CancelGroupMember.vue'
+import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
 import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
 import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
+import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
 import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
+import GroupMemberHome from '../views/groupmember/GroupMemberHome.vue'
+import Help from './../views/Help.vue'
+import Home from './../views/Home.vue'
+import NotFound from '../views/NotFound.vue'
 import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
 import PhnLookup from '../views/eligibility/PhnLookup.vue'
-import AddGroupMember from '../views/groupmember/AddGroupMember.vue'
-import CancelGroupMember from '../views/groupmember/CancelGroupMember.vue'
-import GroupMemberHome from '../views/groupmember/GroupMemberHome.vue'
+import Unauthorized from '../views/Unauthorized.vue'
 import UpdateNumberAndDept from '../views/groupmember/UpdateNumberAndDept.vue'
+import store from '../store'
 
 const routes = [
   {
@@ -103,20 +104,24 @@ const routes = [
       {
         path: 'addGroupMember',
         name: 'AddGroupMember',
-        component: AddGroupMember,      
+        component: AddGroupMember,
       },
       {
         path: 'updateNumberAndDept',
         name: 'UpdateNumberAndDept',
-        component: UpdateNumberAndDept,      
+        component: UpdateNumberAndDept,
       },
       {
         path: 'cancelGroupMember',
         name: 'CancelGroupMember',
         component: CancelGroupMember,
       },
-     
-    ]
+      {
+        path: 'cancelDependent',
+        name: 'CancelDependent',
+        component: CancelDependent,
+      },
+    ],
   },
   {
     path: '/help',
