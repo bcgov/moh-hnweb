@@ -8,6 +8,13 @@ spring:
           issuer-uri: ${keycloak.base-oauth-url}
           jwk-set-uri: ${keycloak.base-oauth-url}/protocol/openid-connect/certs
           audience: MSPDIRECT-SERVICE
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL95Dialect
 
 springdoc:
   swagger-ui:

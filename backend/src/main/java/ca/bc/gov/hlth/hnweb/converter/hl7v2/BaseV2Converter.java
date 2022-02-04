@@ -53,8 +53,12 @@ public abstract class BaseV2Converter {
 	}
 
 	protected void populateMSH(MSH msh) throws HL7Exception {
+		populateMSH(msh, messageDateTime);
+	}
+	
+	protected void populateMSH(MSH msh, String messageId) throws HL7Exception {
 		V2MessageUtil.setMshValues(msh, mshDefaults.getSendingApplication(), mshDefaults.getSendingFacility(), getReceivingApplication(), 
-				mshDefaults.getReceivingFacility(), messageDateTime, userInfo.getUsername(), getMessageType(), messageDateTime, mshDefaults.getProcessingID());
+				mshDefaults.getReceivingFacility(), messageDateTime, userInfo.getUsername(), getMessageType(), StringUtils.substring(messageId, 0, 20), mshDefaults.getProcessingID());
 	}
 	
 	protected void populateZHD(ZHD zhd) throws HL7Exception {

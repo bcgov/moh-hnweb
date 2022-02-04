@@ -153,7 +153,7 @@ public class EligibilityControllerTest {
 		checkEligibilityRequest.setEligibilityDate(LocalDate.now());
 		checkEligibilityRequest.setPhn("9347984074");
 		
-		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(checkEligibilityRequest);
+		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(checkEligibilityRequest, null);
 		
 		CheckEligibilityResponse checkEligibilityResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, checkEligibilityResponse.getStatus());
@@ -182,7 +182,7 @@ public class EligibilityControllerTest {
 		checkEligibilityRequest.setEligibilityDate(LocalDate.now());
 		checkEligibilityRequest.setPhn("9347984074");
 		
-		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(checkEligibilityRequest);
+		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(checkEligibilityRequest, null);
 		
 		CheckEligibilityResponse checkEligibilityResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, checkEligibilityResponse.getStatus());
@@ -211,7 +211,7 @@ public class EligibilityControllerTest {
 		checkEligibilityRequest.setEligibilityDate(LocalDate.now());
 		checkEligibilityRequest.setPhn("9123456789");
 		
-		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(checkEligibilityRequest);
+		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(checkEligibilityRequest, null);
 		
 		CheckEligibilityResponse checkEligibilityResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, checkEligibilityResponse.getStatus());

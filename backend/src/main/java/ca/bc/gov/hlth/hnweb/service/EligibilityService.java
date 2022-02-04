@@ -18,6 +18,7 @@ import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPL0;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
+import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
@@ -31,7 +32,7 @@ import ca.uhn.hl7v2.parser.Parser;
  *
  */
 @Service
-public class EligibilityService {
+public class EligibilityService extends BaseService {
 
 	private static final Logger logger = LoggerFactory.getLogger(EligibilityService.class);
 
@@ -60,7 +61,7 @@ public class EligibilityService {
 	
 	@Value("${rapid.r42Path}")
 	private String r42Path;
-
+	
 	@Autowired
 	private Parser parser;
 
@@ -78,10 +79,12 @@ public class EligibilityService {
 	 * @throws HNWebException
 	 * @throws HL7Exception
 	 */
-	public Message checkEligibility(R15 r15) throws HNWebException, HL7Exception {
+	public Message checkEligibility(R15 r15, Transaction transaction) throws HNWebException, HL7Exception {
 		String r15v2 = parser.encode(r15);
 
+		messageSent(transaction);
 		ResponseEntity<String> response = postHibcRequest(r15Path, r15Username, r15Password, r15v2);
+		messageReceived(transaction);
 		
 		if (response.getStatusCode() != HttpStatus.OK) {
 			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());

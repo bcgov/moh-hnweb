@@ -1,5 +1,6 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -17,8 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 import ca.bc.gov.hlth.hnweb.converter.hl7v2.E45Converter;
 import ca.bc.gov.hlth.hnweb.converter.hl7v2.MSHDefaults;
 import ca.bc.gov.hlth.hnweb.converter.hl7v2.R15Converter;
-import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPPL0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPPE0Converter;
+import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPPL0Converter;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPL0;
@@ -32,6 +33,8 @@ import ca.bc.gov.hlth.hnweb.model.rest.eligibility.LookupPhnRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.eligibility.LookupPhnResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
+import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
+import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.service.EligibilityService;
 import ca.uhn.hl7v2.model.Message;
 
@@ -41,7 +44,7 @@ import ca.uhn.hl7v2.model.Message;
  */
 @RequestMapping("/eligibility")
 @RestController
-public class EligibilityController {
+public class EligibilityController extends BaseController {
 
 	private static final Logger logger = LoggerFactory.getLogger(EligibilityController.class);
 
@@ -59,18 +62,22 @@ public class EligibilityController {
 	 * @return The result of the query
 	 */
 	@PostMapping("/check-eligibility")
-	public ResponseEntity<CheckEligibilityResponse> checkEligibility(@Valid @RequestBody CheckEligibilityRequest checkEligibilityRequest) {
+	public ResponseEntity<CheckEligibilityResponse> checkEligibility(@Valid @RequestBody CheckEligibilityRequest checkEligibilityRequest, HttpServletRequest request) {
 
 		try {
+			Transaction transaction = transactionStart(request, TransactionType.CHECK_ELIGIBILITY, checkEligibilityRequest.getPhn());
+
 			R15Converter converter = new R15Converter(mshDefaults);
-			R15 r15 = converter.convertRequest(checkEligibilityRequest);
-			Message r15Response = eligibilityService.checkEligibility(r15);
+			R15 r15 = converter.convertRequest(checkEligibilityRequest, transaction.getTransactionId().toString());
+			Message r15Response = eligibilityService.checkEligibility(r15, transaction);
 			
 			CheckEligibilityResponse checkEligibilityResponse = converter.convertResponse(r15Response);
 			
 			ResponseEntity<CheckEligibilityResponse> response = ResponseEntity.ok(checkEligibilityResponse);
+			logger.info("checkEligibility response: {} ", checkEligibilityResponse);			
 
-			logger.info("checkEligibility response: {} ", checkEligibilityResponse);
+			transactionEnd(transaction);
+			
 			return response;	
 		} catch (HNWebException hwe) {
 			switch (hwe.getType()) {

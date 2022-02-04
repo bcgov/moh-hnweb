@@ -1,0 +1,119 @@
+package ca.bc.gov.hlth.hnweb.persistence.entity;
+
+import java.util.Date;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
+
+/**
+ * Audit entity TransactionEvent
+ */
+@Entity
+@Table(schema = "mspdirect", name = "transaction_event")
+public class TransactionEvent {
+
+	/**
+	 * primary key
+	 */
+	@Id
+	@Column(name = "transaction_event_id", columnDefinition = "bigserial")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long transactionEventId;
+
+	/**
+	 * time that the event occured
+	 */
+	@Basic
+	@Column(name = "event_time", columnDefinition = "timestamptz")
+	private Date eventTime;
+
+	/**
+	 * message id created by the application. could be the id from a request or
+	 * response message to an external system (ie RAPID or HCIM).
+	 */
+	@Basic
+	@Column(name = "message_id")
+	private String messageId;
+
+	/**
+	 * transaction event type, for example error.
+	 */
+	@Basic
+	private String type;
+
+	/**
+	 * foreign key to the transaction this event belongs to.
+	 */
+	@ManyToOne
+	@JoinColumn(name = "transaction_id")
+	private Transaction transaction;
+
+	public TransactionEvent() {
+	}
+
+	public TransactionEvent(long transactionEventId) {
+		this.transactionEventId = transactionEventId;
+	}
+
+	public Date getEventTime() {
+		return eventTime;
+	}
+
+	public void setEventTime(Date eventTime) {
+		this.eventTime = eventTime;
+	}
+
+	public String getMessageId() {
+		return messageId;
+	}
+
+	public void setMessageId(String messageId) {
+		this.messageId = messageId;
+	}
+
+	public Long getTransactionEventId() {
+		return transactionEventId;
+	}
+
+	public void setTransactionEventId(Long transactionEventId) {
+		this.transactionEventId = transactionEventId;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public Transaction getTransaction() {
+		return transaction;
+	}
+
+	public void setTransaction(Transaction transaction) {
+		this.transaction = transaction;
+	}
+
+	@PrePersist
+	public void prePersist() {
+		if (eventTime == null) {
+			eventTime = new Date();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "TransactionEvent [transactionEventId=" + transactionEventId + ", eventTime=" + eventTime + ", messageId=" + messageId
+				+ ", type=" + type + ", transaction=" + transaction + "]";
+	}
+
+}

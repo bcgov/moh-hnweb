@@ -7,6 +7,7 @@ public class UserInfo {
 	private String username;
 	private String organization;
 	private String role;
+	private String sessionState;
 
 	public UserInfo() {
 		super();
@@ -41,6 +42,14 @@ public class UserInfo {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	public String getSessionState() {
+		return sessionState;
+	}
+
+	public void setSessionState(String sessionState) {
+		this.sessionState = sessionState;
 	}
 
 }

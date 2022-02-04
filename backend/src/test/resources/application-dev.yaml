@@ -7,15 +7,24 @@ config:
 
 server:
   port: 9090
+  
+  
+spring:
+  datasource:
+    url: jdbc:h2:mem:test
+    driverClassName: org.h2.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL95Dialect
    
 # Configuration for RAPID (R32, R40, R41, R42) endpoint
 rapid:
   url:
-  r30Path:
   r31Path:
   r34Path:
   r35Path:
-  r36Path:  
+  r36Path:   
   r41Path: 
   r42Path: 
   user: 
