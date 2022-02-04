@@ -1,17 +1,36 @@
-# This is a basic workflow to help you get started with Actions
+# This is a deployment workflow to deploy a selected release in selcted environment
+# Steps Shold be:
+# 1. Determine the image digest from release number
 
 name: deploy-mspdirect
 
+env:
+  # 🖊️ EDIT your repository secrets to log into your OpenShift cluster and set up the context.
+  # See https://github.com/redhat-actions/oc-login#readme for how to retrieve these values.
+  # To get a permanent token, refer to https://github.com/redhat-actions/oc-login/wiki/Using-a-Service-Account-for-GitHub-Actions
+  OPENSHIFT_SERVER: ${{ secrets.C5839F_OPENSHIFT_SERVER }}
+  OPENSHIFT_TOKEN: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
+  # 🖊️ EDIT to set the kube context's namespace after login. Leave blank to use your user's default namespace.
+  OPENSHIFT_NAMESPACE: "c5839f-"
+  DEFAULT_NAMESPACE: "c5839f-tools"
+
+
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      Environment:
+        type: choice
+        description: Select an environment
+        options:
+        - Dev
+        - Test
+      Release:
+        description: 'Enter build number. This'
+        required: true
+        default: 
+               
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -25,12 +44,26 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Install oc
+        uses: redhat-actions/openshift-tools-installer@v1
+        with:
+          oc: 4
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Determine Namespace
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          echo "OPENSHIFT_NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}${{ github.event.inputs.Environment }}"  | tee -a $GITHUB_ENV
+
+      # https://github.com/redhat-actions/oc-login#readme
+      - name: Log in to OpenShift
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{ env.OPENSHIFT_SERVER }}
+          openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+          insecure_skip_tls_verify: true
+          namespace: ${{ env.DEFAULT_NAMESPACE }}
+
+      - name: Run OC commands
+        run: |
+        oc project
+
+
