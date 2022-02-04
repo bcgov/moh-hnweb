@@ -82,16 +82,18 @@ public class EligibilityService extends BaseService {
 	public Message checkEligibility(R15 r15, Transaction transaction) throws HNWebException, HL7Exception {
 		String r15v2 = parser.encode(r15);
 
-		messageSent(transaction);
+		messageSent(transaction, V2MessageUtil.getMessageID(r15));
 		ResponseEntity<String> response = postHibcRequest(r15Path, r15Username, r15Password, r15v2);
-		messageReceived(transaction);
 		
 		if (response.getStatusCode() != HttpStatus.OK) {
 			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
 			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
 		}
 
-		return parseResponse(response.getBody(), "R15");
+		Message v2Response = parseResponse(response.getBody(), "R15");
+    	messageReceived(transaction, V2MessageUtil.getMessageID(v2Response));
+		
+		return v2Response;
 	}
 	
 	/**

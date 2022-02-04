@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
@@ -153,7 +154,7 @@ public class EligibilityControllerTest {
 		checkEligibilityRequest.setEligibilityDate(LocalDate.now());
 		checkEligibilityRequest.setPhn("9347984074");
 		
-		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(checkEligibilityRequest, null);
+		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(checkEligibilityRequest, createHttpServletRequest());
 		
 		CheckEligibilityResponse checkEligibilityResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, checkEligibilityResponse.getStatus());
@@ -182,7 +183,7 @@ public class EligibilityControllerTest {
 		checkEligibilityRequest.setEligibilityDate(LocalDate.now());
 		checkEligibilityRequest.setPhn("9347984074");
 		
-		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(checkEligibilityRequest, null);
+		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(checkEligibilityRequest, createHttpServletRequest());
 		
 		CheckEligibilityResponse checkEligibilityResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, checkEligibilityResponse.getStatus());
@@ -211,7 +212,7 @@ public class EligibilityControllerTest {
 		checkEligibilityRequest.setEligibilityDate(LocalDate.now());
 		checkEligibilityRequest.setPhn("9123456789");
 		
-		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(checkEligibilityRequest, null);
+		ResponseEntity<CheckEligibilityResponse> response = eligibilityController.checkEligibility(checkEligibilityRequest, createHttpServletRequest());
 		
 		CheckEligibilityResponse checkEligibilityResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, checkEligibilityResponse.getStatus());
@@ -386,7 +387,7 @@ public class EligibilityControllerTest {
         InquirePhnRequest inquirePhnRequest = new InquirePhnRequest();
         inquirePhnRequest.getPhns().add("9123456789");
         
-        ResponseEntity<InquirePhnResponse> response = eligibilityController.inquirePhn(inquirePhnRequest);
+        ResponseEntity<InquirePhnResponse> response = eligibilityController.inquirePhn(inquirePhnRequest, createHttpServletRequest());
         
         InquirePhnResponse inquirePhnResponse = response.getBody();
 
@@ -422,7 +423,7 @@ public class EligibilityControllerTest {
         InquirePhnRequest inquirePhnRequest = new InquirePhnRequest();
         inquirePhnRequest.getPhns().add("9123456789");
         
-        ResponseEntity<InquirePhnResponse> response = eligibilityController.inquirePhn(inquirePhnRequest);
+        ResponseEntity<InquirePhnResponse> response = eligibilityController.inquirePhn(inquirePhnRequest, createHttpServletRequest());
         
         InquirePhnResponse inquirePhnResponse = response.getBody();
 
@@ -448,7 +449,7 @@ public class EligibilityControllerTest {
         InquirePhnRequest inquirePhnRequest = new InquirePhnRequest();
         inquirePhnRequest.getPhns().add("9123456789");
         
-        ResponseEntity<InquirePhnResponse> response = eligibilityController.inquirePhn(inquirePhnRequest);
+        ResponseEntity<InquirePhnResponse> response = eligibilityController.inquirePhn(inquirePhnRequest, createHttpServletRequest());
         
         InquirePhnResponse inquirePhnResponse = response.getBody();
 
@@ -476,7 +477,7 @@ public class EligibilityControllerTest {
         inquirePhnRequest.getPhns().add("9123123123");
         inquirePhnRequest.getPhns().add("9456456456");
         
-        ResponseEntity<InquirePhnResponse> response = eligibilityController.inquirePhn(inquirePhnRequest);
+        ResponseEntity<InquirePhnResponse> response = eligibilityController.inquirePhn(inquirePhnRequest, createHttpServletRequest());
         
         InquirePhnResponse inquirePhnResponse = response.getBody();
 
@@ -637,6 +638,12 @@ public class EligibilityControllerTest {
 		checkMspCoverageStatusRequest.setCheckPatientRestriction(checkPatientRestriction);
 		
 		return checkMspCoverageStatusRequest;
+	}
+	
+	private MockHttpServletRequest createHttpServletRequest() {
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.setRemoteAddr("1.1.1.1");
+		return request;
 	}
 	
 }

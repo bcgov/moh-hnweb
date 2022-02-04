@@ -11,10 +11,12 @@ import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIH;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIK;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.Version;
+import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.model.v24.segment.IN1;
 import ca.uhn.hl7v2.model.v24.segment.MSH;
 import ca.uhn.hl7v2.model.v24.segment.PID;
 import ca.uhn.hl7v2.model.v24.segment.RCP;
+import ca.uhn.hl7v2.util.Terser;
 
 /**
  * Contains utility methods related to HL7 V2 messages
@@ -358,6 +360,15 @@ public class V2MessageUtil {
 	public static String correctMSH9(String v2, String messageType) {
 		// XXX This is to fix the following parsing issue: Can't determine message structure from MSH-9: R15 HINT: there are only 1 of 3 components present]
     	return v2.replaceAll("\\|" + messageType + "\\|", "|" + messageType + "^^|");
+	}
+	
+	public static String getMessageID(Message message) {
+    	try {
+			return new Terser(message).get("/.MSH-10");
+		} catch (HL7Exception e) {
+			return null;
+		}
+   
 	}
 
 }

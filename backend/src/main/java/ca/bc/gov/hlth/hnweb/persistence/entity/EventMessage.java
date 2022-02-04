@@ -3,6 +3,8 @@ package ca.bc.gov.hlth.hnweb.persistence.entity;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,7 +16,7 @@ import javax.persistence.Table;
  * Audit entity EventMessage
  */
 @Entity
-@Table(schema = "mspdirect", name = "event_message")
+@Table(name = "event_message")
 public class EventMessage {
 
 	/**
@@ -35,9 +37,9 @@ public class EventMessage {
 	/**
 	 * Error level, similar to logging levels (INFO, WARNING, ERROR, ETC)
 	 */
-	@Basic
+	@Enumerated(EnumType.STRING)
 	@Column(name = "error_level")
-	private String errorLevel;
+	private ErrorLevel errorLevel;
 
 	/**
 	 * Complete response/error message text.
@@ -68,11 +70,11 @@ public class EventMessage {
 		this.errorCode = errorCode;
 	}
 
-	public String getErrorLevel() {
+	public ErrorLevel getErrorLevel() {
 		return errorLevel;
 	}
 
-	public void setErrorLevel(String errorLevel) {
+	public void setErrorLevel(ErrorLevel errorLevel) {
 		this.errorLevel = errorLevel;
 	}
 

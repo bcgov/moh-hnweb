@@ -67,17 +67,17 @@ public class AuditService {
 		return hostname;
 	}
 
-	public void createTransactionEvent(Transaction transaction, TransactionEventType eventType) {
-		createTransactionEvent(transaction, eventType, null);
+	public TransactionEvent createTransactionEvent(Transaction transaction, TransactionEventType eventType) {
+		return createTransactionEvent(transaction, eventType, null);
 	}
 
-	public void createTransactionEvent(Transaction transaction, TransactionEventType eventType, String messageId) {
+	public TransactionEvent createTransactionEvent(Transaction transaction, TransactionEventType eventType, String messageId) {
 		TransactionEvent transactionEvent = new TransactionEvent();
 		transactionEvent.setEventTime(new Date());
 		transactionEvent.setMessageId(messageId);
 		transactionEvent.setTransaction(transaction);
 		transactionEvent.setType(eventType.getValue());
-		transactionEventRepository.save(transactionEvent);
+		return transactionEventRepository.save(transactionEvent);
 	}
 	
 	public void createEventMessage(EventMessage eventMessage) {

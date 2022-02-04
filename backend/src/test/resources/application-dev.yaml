@@ -11,16 +11,18 @@ server:
   
 spring:
   datasource:
-    url: jdbc:h2:mem:test
+    url: jdbc:h2:mem:mspdirect;MODE=PostgreSQL;INIT=runscript from 'classpath:scripts/create.sql'
     driverClassName: org.h2.Driver
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQL95Dialect
+        defaults_chema: mspdirect
+        dialect: org.hibernate.dialect.H2Dialect
    
 # Configuration for RAPID (R32, R40, R41, R42) endpoint
 rapid:
   url:
+  r30Path:
   r31Path:
   r34Path:
   r35Path:

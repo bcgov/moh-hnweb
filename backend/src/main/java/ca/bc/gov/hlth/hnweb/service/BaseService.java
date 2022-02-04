@@ -10,13 +10,12 @@ public class BaseService {
 	@Autowired
 	private AuditService auditService;
 	
-	protected void messageSent(Transaction transaction) {
-		auditService.createTransactionEvent(transaction, TransactionEventType.MESSAGE_SENT, transaction.getTransactionId().toString());
+	protected void messageSent(Transaction transaction, String messageId) {
+		auditService.createTransactionEvent(transaction, TransactionEventType.MESSAGE_SENT, messageId);
 	}
 	
-	protected void messageReceived(Transaction transaction) {
-		auditService.createTransactionEvent(transaction, TransactionEventType.MESSAGE_RECEIVED);
+	protected void messageReceived(Transaction transaction, String messageId) {
+		auditService.createTransactionEvent(transaction, TransactionEventType.MESSAGE_RECEIVED, messageId);
 	}
-	
-	
+
 }

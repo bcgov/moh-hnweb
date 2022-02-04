@@ -1,5 +1,8 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -63,10 +66,9 @@ public class EligibilityController extends BaseController {
 	 */
 	@PostMapping("/check-eligibility")
 	public ResponseEntity<CheckEligibilityResponse> checkEligibility(@Valid @RequestBody CheckEligibilityRequest checkEligibilityRequest, HttpServletRequest request) {
+		Transaction transaction = transactionStart(request, TransactionType.CHECK_ELIGIBILITY, checkEligibilityRequest.getPhn());
 
 		try {
-			Transaction transaction = transactionStart(request, TransactionType.CHECK_ELIGIBILITY, checkEligibilityRequest.getPhn());
-
 			R15Converter converter = new R15Converter(mshDefaults);
 			R15 r15 = converter.convertRequest(checkEligibilityRequest, transaction.getTransactionId().toString());
 			Message r15Response = eligibilityService.checkEligibility(r15, transaction);
@@ -76,20 +78,12 @@ public class EligibilityController extends BaseController {
 			ResponseEntity<CheckEligibilityResponse> response = ResponseEntity.ok(checkEligibilityResponse);
 			logger.info("checkEligibility response: {} ", checkEligibilityResponse);			
 
-			transactionEnd(transaction);
+			transactionEnd(transaction, checkEligibilityResponse.getPhn());
 			
 			return response;	
-		} catch (HNWebException hwe) {
-			switch (hwe.getType()) {
-			case DOWNSTREAM_FAILURE:
-				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
-			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /check-eligibility request", hwe);				
-			}
-		} catch (WebClientException wce) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /check-eligibility request", e);
+			handleException(transaction, e);
+			return null;
 		}
 	}	
 
@@ -101,7 +95,8 @@ public class EligibilityController extends BaseController {
 	 * @return The result of the query
 	 */
 	@PostMapping("/inquire-phn")
-	public ResponseEntity<InquirePhnResponse> inquirePhn(@Valid @RequestBody InquirePhnRequest inquirePhnRequest) {
+	public ResponseEntity<InquirePhnResponse> inquirePhn(@Valid @RequestBody InquirePhnRequest inquirePhnRequest, HttpServletRequest request) {
+		Transaction transaction = transactionStart(request, TransactionType.CHECK_ELIGIBILITY, inquirePhnRequest.getPhns());
 
 		try {
 			RPBSPPE0Converter converter = new RPBSPPE0Converter();
@@ -114,20 +109,14 @@ public class EligibilityController extends BaseController {
 			ResponseEntity<InquirePhnResponse> response = ResponseEntity.ok(inquirePhnResponse);
 
 			logger.info("inquirePHN response: {} ", inquirePhnResponse);
+			
+			List<String> phns = inquirePhnResponse.getBeneficiaries().stream().map(beneficary -> beneficary.getPhn()).collect(Collectors.toList());
+			transactionEnd(transaction, phns);
 			return response;	
-		} catch (HNWebException hwe) {
-			switch (hwe.getType()) {
-			case DOWNSTREAM_FAILURE:
-				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
-			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /inquire-phn request", hwe);				
-			}
-		} catch (WebClientException wce) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /inquire-phn request", e);
-		}
-		
+			handleException(transaction, e);
+			return null;
+		}		
 	}
 	
 	/**

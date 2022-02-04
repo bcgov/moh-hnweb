@@ -14,7 +14,7 @@ import javax.persistence.Table;
  * Audit entity AffectedParty
  */
 @Entity
-@Table(schema = "mspdirect", name = "affected_party")
+@Table(name = "affected_party")
 public class AffectedParty {
 
 	/**
