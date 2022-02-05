@@ -75,6 +75,7 @@ jobs:
       - name: Find image
         run: |
           oc project
+          echo "Version is ${{ env.VERSION }}"
           echo "IMAGE=$(oc get istag/mspdirect-frontend:${{ env.VERSION }} -o jsonpath={.image.metadata.name})" | tee -a $GITHUB_ENV
 
       - name: Validate image
