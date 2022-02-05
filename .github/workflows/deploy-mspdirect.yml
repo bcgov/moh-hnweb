@@ -30,11 +30,11 @@ on:
         - Dev
         - Test
       Branch:
-        description: 'Enter branch name (For now releases are created only on main branch'
+        description: 'Enter branch name (For now releases are created only on main branch)'
         required: true
         default: main
       Release:
-        description: 'Enter build number. '
+        description: 'Enter build number: '
         required: true
         default: 
                
@@ -70,10 +70,8 @@ jobs:
           namespace: ${{ env.DEFAULT_NAMESPACE }}
 
       - name: Test
-        env:
-          IMAGE:
         run: |
           oc project
-          oc get istag/mspdirect-frontend:${{ env.VERSION }} -o jsonpath={.image.metadata.name}
-          echo "IMAGE=oc get istag/mspdirect-frontend:${{ env.VERSION }} -o jsonpath={.image.metadata.name}" | tee -a $GITHUB_ENV
-          echo "{{ env.IMAGE }}"
+          echo "Before: {{ env.IMAGE }}"
+          echo "IMAGE=$(oc get istag/mspdirect-frontend:${{ env.VERSION }} -o jsonpath={.image.metadata.name})" | tee -a $GITHUB_ENV
+          echo "After: {{ env.IMAGE }}"
