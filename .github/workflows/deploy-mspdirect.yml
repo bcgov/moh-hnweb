@@ -1,16 +1,18 @@
 # This is a deployment workflow to deploy a selected release in selcted environment
 # Steps Shold be:
-# 1. Determine the image digest from release number
+# 1. Login to OpenShift
+# 2. Find the image digest from input parameters
+# 3. Validate if that is correct. If not, exit the job
+# 4. Push the image to selected repository
+# 5. Edit the selcted Argo CD manifest file
+
+
 
 name: deploy-mspdirect
 
 env:
-  # 🖊️ EDIT your repository secrets to log into your OpenShift cluster and set up the context.
-  # See https://github.com/redhat-actions/oc-login#readme for how to retrieve these values.
-  # To get a permanent token, refer to https://github.com/redhat-actions/oc-login/wiki/Using-a-Service-Account-for-GitHub-Actions
   OPENSHIFT_SERVER: ${{ secrets.C5839F_OPENSHIFT_SERVER }}
   OPENSHIFT_TOKEN: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
-  # 🖊️ EDIT to set the kube context's namespace after login. Leave blank to use your user's default namespace.
   OPENSHIFT_NAMESPACE: "c5839f-"
   DEFAULT_NAMESPACE: "c5839f-tools"
   VERSION: "Draft_1.0_"
@@ -50,20 +52,8 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
 
-      - name: Install oc
-        uses: redhat-actions/openshift-tools-installer@v1
-        with:
-          oc: 4
-
-      - name: Determine Namespace and Build
-        run: |
-          echo "OPENSHIFT_NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}${{ github.event.inputs.Environment }}"  | tee -a $GITHUB_ENV
-          echo "VERSION=${{ env.VERSION }}${{ github.event.inputs.Branch }}_${{ github.event.inputs.Release }}"  | tee -a $GITHUB_ENV
-
-      # https://github.com/redhat-actions/oc-login#readme
+      # 1. Login to OpenShift
       - name: Log in to OpenShift
         uses: redhat-actions/oc-login@v1
         with:
@@ -71,13 +61,28 @@ jobs:
           openshift_token: ${{ env.OPENSHIFT_TOKEN }}
           insecure_skip_tls_verify: true
           namespace: ${{ env.DEFAULT_NAMESPACE }}
+      # 2. Find the namespace and image digest from input parameters
+      - name: Find the namespace
+        uses: actions/github-script@v4
+        with:
+          script: |
+            if (`${{ github.event.inputs.Environment }}` == 'Dev') {
+              ${{ env.OPENSHIFT_NAMESPACE }} = ${{ env.OPENSHIFT_NAMESPACE }}"dev"
+            }
+            if (`${{ github.event.inputs.Environment }}` == 'Test' || `${{ github.event.inputs.Environment }}` == 'UAT') {
+              ${{ env.OPENSHIFT_NAMESPACE }} = ${{ env.OPENSHIFT_NAMESPACE }}"test"
+            }
+            core.info(` Calculated namespace is: ${{ env.OPENSHIFT_NAMESPACE }}`);
 
-      - name: Find image
+      - name: Find image and compute namespace for selcted environment
         run: |
+          echo "${{ env.OPENSHIFT_NAMESPACE }}"  | tee -a $GITHUB_ENV
+          echo "VERSION=${{ env.VERSION }}${{ github.event.inputs.Branch }}_${{ github.event.inputs.Release }}"  | tee -a $GITHUB_ENV
           oc project
           echo "Version is ${{ env.VERSION }}"
           echo "IMAGE=$(oc get istag/mspdirect-frontend:${{ env.VERSION }} -o jsonpath={.image.metadata.name})" | tee -a $GITHUB_ENV
 
+      # 3. Validate if that is correct. If not, exit the job
       - name: Validate image
         uses: actions/github-script@v4
         with:
@@ -89,4 +94,11 @@ jobs:
             else {
               core.info(`✅ Valid image found.`);
             }
+      # 4. Push the image to selected repository
+      - name: Push Image
+        run: |
+          oc tag 
+
+      # 5. Edit the selcted Argo CD manifest file
+
           
