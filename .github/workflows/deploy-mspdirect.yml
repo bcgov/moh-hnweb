@@ -13,6 +13,9 @@ env:
   # 🖊️ EDIT to set the kube context's namespace after login. Leave blank to use your user's default namespace.
   OPENSHIFT_NAMESPACE: "c5839f-"
   DEFAULT_NAMESPACE: "c5839f-tools"
+  VERSION: "Draft_1.0_"
+  IMAGE:
+
 
 
 # Controls when the workflow will run
@@ -22,20 +25,23 @@ on:
     inputs:
       Environment:
         type: choice
-        description: Select an environment
+        description: Select an environment to deploy
         options:
         - Dev
         - Test
+      Branch:
+        description: 'Enter branch name (For now releases are created only on main branch'
+        required: true
+        default: main
       Release:
-        description: 'Enter build number. This'
+        description: 'Enter build number. '
         required: true
         default: 
                
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
+  deploy:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -49,9 +55,10 @@ jobs:
         with:
           oc: 4
 
-      - name: Determine Namespace
+      - name: Determine Namespace and Build
         run: |
           echo "OPENSHIFT_NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}${{ github.event.inputs.Environment }}"  | tee -a $GITHUB_ENV
+          echo "VERSION=${{ env.VERSION }}${{ github.event.inputs.Branch }}_${{ github.event.inputs.Release }}"  | tee -a $GITHUB_ENV
 
       # https://github.com/redhat-actions/oc-login#readme
       - name: Log in to OpenShift
@@ -62,8 +69,11 @@ jobs:
           insecure_skip_tls_verify: true
           namespace: ${{ env.DEFAULT_NAMESPACE }}
 
-      - name: Run OC commands
+      - name: Test
+        env:
+          IMAGE:
         run: |
-        oc project
-
-
+          oc project
+          oc get istag/mspdirect-frontend:${{ env.VERSION }} -o jsonpath={.image.metadata.name}
+          echo "IMAGE=oc get istag/mspdirect-frontend:${{ env.VERSION }} -o jsonpath={.image.metadata.name}" | tee -a $GITHUB_ENV
+          echo "{{ env.IMAGE }}"
