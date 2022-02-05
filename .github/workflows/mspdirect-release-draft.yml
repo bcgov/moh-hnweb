@@ -180,9 +180,6 @@ jobs:
           insecure_skip_tls_verify: true
           namespace: ${{ env.DEFAULT_NAMESPACE }}
 
-      - name: Run OC commands
-        run: |
-        oc project
 
 
 
