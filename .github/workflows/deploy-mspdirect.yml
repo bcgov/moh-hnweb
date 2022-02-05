@@ -20,6 +20,9 @@ env:
 
 # Controls when the workflow will run
 on:
+  push:
+    branch:
+      [5492-release-process]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
@@ -36,7 +39,7 @@ on:
       Release:
         description: 'Enter build number: '
         required: true
-        default: 
+        default: 11
                
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -69,16 +72,20 @@ jobs:
           insecure_skip_tls_verify: true
           namespace: ${{ env.DEFAULT_NAMESPACE }}
 
-      - name: Test
+      - name: Find image
         run: |
           oc project
-          echo "Before: $IMAGE"
           echo "IMAGE=$(oc get istag/mspdirect-frontend:${{ env.VERSION }} -o jsonpath={.image.metadata.name})" | tee -a $GITHUB_ENV
-          echo "After: $IMAGE"
 
-      - name: Verify
-        run: |
-          
-          echo "Before: $IMAGE"
-          echo "Using env: ${{ env.IMAGE }}"
+      - name: Validate image
+        uses: actions/github-script@v4
+        with:
+          script: |
+            if (`${{ env.IMAGE }}`.length == 0) {
+              core.setFailed(`❌ Image version: ${{ env.VERSION }}. \n` +
+                "Please provide a valid image build number." );
+            }
+            else {
+              core.info(`✅ Valid image found.`);
+            }
           
