@@ -75,3 +75,10 @@ jobs:
           echo "Before: $IMAGE"
           echo "IMAGE=$(oc get istag/mspdirect-frontend:${{ env.VERSION }} -o jsonpath={.image.metadata.name})" | tee -a $GITHUB_ENV
           echo "After: $IMAGE"
+
+      - name: Verify
+        run: |
+          
+          echo "Before: $IMAGE"
+          echo "Using env: ${{ env.IMAGE }}"
+          
