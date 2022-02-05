@@ -180,6 +180,12 @@ jobs:
           insecure_skip_tls_verify: true
           namespace: ${{ env.DEFAULT_NAMESPACE }}
 
+      - name: Run the oc commands
+        uses: actions/github-script@v4
+        with:
+          script: |          
+            oc project
+
 
 
 
