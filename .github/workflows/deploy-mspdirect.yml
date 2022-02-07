@@ -66,7 +66,7 @@ jobs:
       # 2. Find the namespace and image digest from input parameters
       - name: Find namespace
         id: set-namespace
-        uses: actions/github-script@v4
+        uses: actions/github-script@v5
         with:
           script: |
             if (`${{ github.event.inputs.Environment }}` == 'Dev') {
@@ -77,7 +77,6 @@ jobs:
               return "c5839f-test"
               result-encoding: string
             }
-
       - name: Find image
         run: |
           echo "OPENSHIFT_NAMESPACE=${{steps.set-namespace.outputs.result}}"  | tee -a $GITHUB_ENV
