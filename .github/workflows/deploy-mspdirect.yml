@@ -102,8 +102,8 @@ jobs:
       # 4. Push the image to selected repository
       - name: Push Image
         run: |
-          oc tag mspdirect-frontend:${{ env.VERSION }} :${{ env.OPENSHIFT_NAMESPACE }}/mspdirect-frontend:${{ env.VERSION }}
-          oc tag mspdirect-backend:${{ env.VERSION }} :${{ env.OPENSHIFT_NAMESPACE }}/mspdirect-backend:${{ env.VERSION }}
+          oc tag mspdirect-frontend:${{ env.VERSION }} ${{ env.OPENSHIFT_NAMESPACE }}/mspdirect-frontend:${{ env.VERSION }}
+          oc tag mspdirect-backend:${{ env.VERSION }} ${{ env.OPENSHIFT_NAMESPACE }}/mspdirect-backend:${{ env.VERSION }}
 
       # 5. Edit the selcted Argo CD manifest file
       # Update the image ID in the manifest repository used by Argo CD.
