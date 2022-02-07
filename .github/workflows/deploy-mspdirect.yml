@@ -101,7 +101,6 @@ jobs:
             }
       # 4. Push the image to selected repository
       - name: Push Image
-        if: ${{ 'true' == 'false' }}
         run: |
           oc tag mspdirect-frontend:${{ env.VERSION }} :${{ env.OPENSHIFT_NAMESPACE }}/mspdirect-frontend:${{ env.VERSION }}
           oc tag mspdirect-backend:${{ env.VERSION }} :${{ env.OPENSHIFT_NAMESPACE }}/mspdirect-backend:${{ env.VERSION }}
