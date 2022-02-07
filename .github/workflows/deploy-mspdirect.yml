@@ -71,12 +71,11 @@ jobs:
           script: |
             if (`${{ github.event.inputs.Environment }}` == 'Dev') {
               return "c5839f-dev"
-              result-encoding: string
             }
             if (`${{ github.event.inputs.Environment }}` == 'Test' || `${{ github.event.inputs.Environment }}` == 'UAT') {
               return "c5839f-test"
-              result-encoding: string
             }
+            
       - name: Find image
         run: |
           echo "OPENSHIFT_NAMESPACE=${{steps.set-namespace.outputs.result}}"  | tee -a $GITHUB_ENV
