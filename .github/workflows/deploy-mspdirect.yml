@@ -51,6 +51,7 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
 
@@ -68,16 +69,14 @@ jobs:
         with:
           script: |
             if (`${{ github.event.inputs.Environment }}` == 'Dev') {
-              ${{ env.OPENSHIFT_NAMESPACE }} = ${{ env.OPENSHIFT_NAMESPACE }}"dev"
+              echo "${{ env.OPENSHIFT_NAMESPACE }} = ${{ env.OPENSHIFT_NAMESPACE }}dev" | tee -a $GITHUB_ENV
             }
             if (`${{ github.event.inputs.Environment }}` == 'Test' || `${{ github.event.inputs.Environment }}` == 'UAT') {
-              ${{ env.OPENSHIFT_NAMESPACE }} = ${{ env.OPENSHIFT_NAMESPACE }}"test"
+              echo "${{ env.OPENSHIFT_NAMESPACE }} = ${{ env.OPENSHIFT_NAMESPACE }}test" | tee -a $GITHUB_ENV
             }
-            core.info(` Calculated namespace is: ${{ env.OPENSHIFT_NAMESPACE }}`);
 
       - name: Find image and compute namespace for selcted environment
         run: |
-          echo "${{ env.OPENSHIFT_NAMESPACE }}"  | tee -a $GITHUB_ENV
           echo "VERSION=${{ env.VERSION }}${{ github.event.inputs.Branch }}_${{ github.event.inputs.Release }}"  | tee -a $GITHUB_ENV
           oc project
           echo "Version is ${{ env.VERSION }}"
