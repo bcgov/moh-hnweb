@@ -13,9 +13,9 @@ name: deploy-mspdirect
 env:
   OPENSHIFT_SERVER: ${{ secrets.C5839F_OPENSHIFT_SERVER }}
   OPENSHIFT_TOKEN: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
-  OPENSHIFT_NAMESPACE: "c5839f-"
   DEFAULT_NAMESPACE: "c5839f-tools"
   VERSION: "Draft_1.0_"
+  OPENSHIFT_NAMESPACE:
   FRONTEND_IMAGE:
   BACKEND_IMAGE:
 
@@ -64,19 +64,23 @@ jobs:
           insecure_skip_tls_verify: true
           namespace: ${{ env.DEFAULT_NAMESPACE }}
       # 2. Find the namespace and image digest from input parameters
-      - name: Find the namespace
+      - name: Find namespace
+        id: set-namespace
         uses: actions/github-script@v4
         with:
           script: |
             if (`${{ github.event.inputs.Environment }}` == 'Dev') {
-              echo "${{ env.OPENSHIFT_NAMESPACE }} = ${{ env.OPENSHIFT_NAMESPACE }}dev" | tee -a $GITHUB_ENV
+              return "c5839f-dev"
+              result-encoding: string
             }
             if (`${{ github.event.inputs.Environment }}` == 'Test' || `${{ github.event.inputs.Environment }}` == 'UAT') {
-              echo "${{ env.OPENSHIFT_NAMESPACE }} = ${{ env.OPENSHIFT_NAMESPACE }}test" | tee -a $GITHUB_ENV
+              return "c5839f-test"
+              result-encoding: string
             }
 
-      - name: Find image and compute namespace for selcted environment
+      - name: Find image
         run: |
+          echo "OPENSHIFT_NAMESPACE=${{steps.set-namespace.outputs.result}}"  | tee -a $GITHUB_ENV
           echo "VERSION=${{ env.VERSION }}${{ github.event.inputs.Branch }}_${{ github.event.inputs.Release }}"  | tee -a $GITHUB_ENV
           oc project
           echo "Version is ${{ env.VERSION }}"
