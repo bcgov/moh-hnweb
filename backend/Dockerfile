@@ -8,7 +8,7 @@ RUN mvn -f /home/app/pom.xml clean install
 FROM adoptopenjdk:11-jre-hotspot
 
 WORKDIR /tmp
-#Creating new directory in tmp
+#Creating new directory in tmp.
 RUN mkdir -p keystore
 
 COPY --from=build-stage /home/app/target/*.jar /tmp/app.jar
