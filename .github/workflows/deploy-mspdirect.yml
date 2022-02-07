@@ -64,7 +64,7 @@ jobs:
           insecure_skip_tls_verify: true
           namespace: ${{ env.DEFAULT_NAMESPACE }}
       # 2. Find the namespace and image digest from input parameters
-      - name: Find namespace
+      - name: Compute namespace
         id: set-namespace
         uses: actions/github-script@v5
         with:
@@ -76,13 +76,14 @@ jobs:
               return "c5839f-test"
             }
 
-      - name: Find image
+      - name: Compute Version image
         run: |
           echo "OPENSHIFT_NAMESPACE=${{steps.set-namespace.outputs.result}}"  | tee -a $GITHUB_ENV
           echo "VERSION=${{ env.VERSION }}${{ github.event.inputs.Branch }}_${{ github.event.inputs.Release }}"  | tee -a $GITHUB_ENV
+
+      - name: Find image
+        run: |
           oc project
-          echo "Version is ${{ env.VERSION }}"
-          echo "Version is $VERSION"
           echo "FRONTEND_IMAGE=$(oc get istag/mspdirect-frontend:${{ env.VERSION }} -o jsonpath={.image.metadata.name})" | tee -a $GITHUB_ENV
           echo "BACKEND_IMAGE=$(oc get istag/mspdirect-backend:${{ env.VERSION }} -o jsonpath={.image.metadata.name})" | tee -a $GITHUB_ENV
 
