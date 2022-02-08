@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedParty;
 import ca.bc.gov.hlth.hnweb.persistence.entity.EventMessage;
+import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 import ca.bc.gov.hlth.hnweb.persistence.entity.TransactionEvent;
 import ca.bc.gov.hlth.hnweb.persistence.entity.TransactionEventType;
@@ -42,6 +43,13 @@ public class AuditService {
 	@Autowired
 	private TransactionRepository transactionRepository;
 
+	/**
+	 * Creates a new {@link Transaction}.
+	 * 
+	 * @param sourceIP Source IP address
+	 * @param type The type of transaction
+	 * @return The persisted Transaction
+	 */
 	public Transaction createTransaction(String sourceIP, TransactionType type) {
 		Transaction transaction = new Transaction();
 		UserInfo userInfo = SecurityUtil.loadUserInfo();
@@ -55,6 +63,27 @@ public class AuditService {
 		transaction.setUserId(userInfo.getUsername());
 		return transactionRepository.save(transaction);
 	}
+	
+	public void unauthorized(String sourceIP, TransactionType type) {
+		Transaction transaction = new Transaction();
+		UserInfo userInfo = null;
+		try {
+			// This can be thrown an exception if a token is not available
+			userInfo = SecurityUtil.loadUserInfo();	
+		} catch (Exception e) {
+			// Ignore
+		}
+		
+		transaction.setOrganization(userInfo != null ? userInfo.getOrganization() : null);
+		transaction.setServer(getServer());
+		transaction.setSessionId(userInfo != null ? userInfo.getSessionState() : null);
+		transaction.setSourceIp(sourceIP);
+		transaction.setStartTime(new Date());
+		transaction.setTransactionId(UUID.randomUUID());
+		transaction.setType(type.getValue());
+		transaction.setUserId(userInfo.getUsername());
+		transactionRepository.save(transaction);
+	}
 
 	private String getServer() {		
 		String hostname = "";
@@ -67,10 +96,25 @@ public class AuditService {
 		return hostname;
 	}
 
+	/**
+	 * Creates a new {@link TransactionEvent}.
+	 * 
+	 * @param transaction The associated Transaction
+	 * @param eventType The type of event
+	 * @return The persisted TransactionEvent.
+	 */
 	public TransactionEvent createTransactionEvent(Transaction transaction, TransactionEventType eventType) {
 		return createTransactionEvent(transaction, eventType, null);
 	}
 
+	/**
+	 * Creates a new {@link TransactionEvent}.
+	 * 
+	 * @param transaction The associated Transaction
+	 * @param eventType The type of event
+	 * @param messageId The associated message ID
+	 * @return The persisted TransactionEvent.
+	 */
 	public TransactionEvent createTransactionEvent(Transaction transaction, TransactionEventType eventType, String messageId) {
 		TransactionEvent transactionEvent = new TransactionEvent();
 		transactionEvent.setEventTime(new Date());
@@ -80,24 +124,37 @@ public class AuditService {
 		return transactionEventRepository.save(transactionEvent);
 	}
 	
+	/**
+	 * Creates a new {@link EventMessage}.
+	 * @param eventMessage The EventMessage to persist.
+	 */
 	public void createEventMessage(EventMessage eventMessage) {
 		eventMessageRepository.save(eventMessage);
 	}
-	
-	public void createAffectedParty(Transaction transaction, String identifier) {
-		//public static final String BCPHN = "BCPHN";
 
-	    //public static final String STATUS_CODE_ACTIVE = "active";
+	/**
+	 * Creates a new {@link AffectedParty}.
+	 * 
+	 * @param transaction The associated Transaction
+	 * @param phn The phn of the affected party
+	 */
+	public void createAffectedParty(Transaction transaction, String phn) {
+		createAffectedParty(transaction, IdentifierType.PHN, phn);
+	}
+	
+	/**
+	 * Creates a new {@link AffectedParty}.
+	 * 
+	 * @param transaction The associated Transaction
+	 * @param identifierType The type of identifier
+	 * @param identifier The value of the identifier
+	 */
+	public void createAffectedParty(Transaction transaction, IdentifierType identifierType, String identifier) {
 		AffectedParty affectedParty = new AffectedParty();
 		affectedParty.setIdentifier(identifier);
-		// TODO (weskubo-cgi) What is identifier source?
-		affectedParty.setIdentifierSource("BC");
-		// TODO (weskubo-cgi) What is identifier type?
-		affectedParty.setIdentifierType("BCPHN");
-		affectedParty.setStatus("active");
+		affectedParty.setIdentifierType(identifierType.getValue());
 		affectedParty.setTransaction(transaction);
 		affectedPartyRepository.save(affectedParty);
 	}
-	
 	
 }

@@ -240,7 +240,7 @@ public class EligibilityControllerTest {
         LocalDate serviceDate = LocalDate.of(2021, 12, 01);
 		CheckMspCoverageStatusRequest checkMspCoverageStatusRequest = createCheckMspCoverageStatusRequest("9395568139", LocalDate.of(1971, 9, 19), serviceDate, true, true, true);
 		
-		ResponseEntity<CheckMspCoverageStatusResponse> response = eligibilityController.checkMspCoverageStatus(checkMspCoverageStatusRequest);
+		ResponseEntity<CheckMspCoverageStatusResponse> response = eligibilityController.checkMspCoverageStatus(checkMspCoverageStatusRequest, createHttpServletRequest());
 		
 		CheckMspCoverageStatusResponse checkCoverageResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, checkCoverageResponse.getStatus());
@@ -277,7 +277,7 @@ public class EligibilityControllerTest {
         LocalDate serviceDate = LocalDate.of(2021, 12, 01);
 		CheckMspCoverageStatusRequest checkMspCoverageStatusRequest = createCheckMspCoverageStatusRequest("9347984074", LocalDate.of(1985, 9, 15), serviceDate, true, true, true);
 		
-		ResponseEntity<CheckMspCoverageStatusResponse> response = eligibilityController.checkMspCoverageStatus(checkMspCoverageStatusRequest);
+		ResponseEntity<CheckMspCoverageStatusResponse> response = eligibilityController.checkMspCoverageStatus(checkMspCoverageStatusRequest, createHttpServletRequest());
 		
 		CheckMspCoverageStatusResponse checkCoverageResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, checkCoverageResponse.getStatus());
@@ -315,7 +315,7 @@ public class EligibilityControllerTest {
         LocalDate serviceDate = LocalDate.of(2021, 12, 01);
 		CheckMspCoverageStatusRequest checkMspCoverageStatusRequest = createCheckMspCoverageStatusRequest("9123456789", LocalDate.of(1971, 9, 19), LocalDate.of(2021, 12, 01), true, true, true);
 		
-		ResponseEntity<CheckMspCoverageStatusResponse> response = eligibilityController.checkMspCoverageStatus(checkMspCoverageStatusRequest);
+		ResponseEntity<CheckMspCoverageStatusResponse> response = eligibilityController.checkMspCoverageStatus(checkMspCoverageStatusRequest, createHttpServletRequest());
 		
 		CheckMspCoverageStatusResponse checkCoverageResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, checkCoverageResponse.getStatus());
@@ -351,7 +351,7 @@ public class EligibilityControllerTest {
         LocalDate serviceDate = LocalDate.of(2021, 12, 01);
 		CheckMspCoverageStatusRequest checkMspCoverageStatusRequest = createCheckMspCoverageStatusRequest("9395568139", LocalDate.of(1981, 9, 19),  LocalDate.of(2021, 12, 01), true, true, true);
 		
-		ResponseEntity<CheckMspCoverageStatusResponse> response = eligibilityController.checkMspCoverageStatus(checkMspCoverageStatusRequest);
+		ResponseEntity<CheckMspCoverageStatusResponse> response = eligibilityController.checkMspCoverageStatus(checkMspCoverageStatusRequest, createHttpServletRequest());
 		
 		CheckMspCoverageStatusResponse checkCoverageResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, checkCoverageResponse.getStatus());
@@ -515,7 +515,7 @@ public class EligibilityControllerTest {
         lookupPhnRequest.setContractNumber("123456789");
         lookupPhnRequest.setGroupNumber("1234567");
         
-        ResponseEntity<LookupPhnResponse> response = eligibilityController.lookupPhn(lookupPhnRequest);
+        ResponseEntity<LookupPhnResponse> response = eligibilityController.lookupPhn(lookupPhnRequest, createHttpServletRequest());
         
         LookupPhnResponse lookupPhnResponse = response.getBody();
 
@@ -547,7 +547,7 @@ public class EligibilityControllerTest {
         lookupPhnRequest.setContractNumber("123456789");
         lookupPhnRequest.setGroupNumber("1234567");
         
-        ResponseEntity<LookupPhnResponse> response = eligibilityController.lookupPhn(lookupPhnRequest);
+        ResponseEntity<LookupPhnResponse> response = eligibilityController.lookupPhn(lookupPhnRequest, createHttpServletRequest());
         
         LookupPhnResponse lookupPhnResponse = response.getBody();
 
@@ -579,7 +579,7 @@ public class EligibilityControllerTest {
         lookupPhnRequest.setContractNumber("123456789");
         lookupPhnRequest.setGroupNumber("1234567");
         
-        ResponseEntity<LookupPhnResponse> response = eligibilityController.lookupPhn(lookupPhnRequest);
+        ResponseEntity<LookupPhnResponse> response = eligibilityController.lookupPhn(lookupPhnRequest, createHttpServletRequest());
         
         LookupPhnResponse lookupPhnResponse = response.getBody();
 
@@ -602,7 +602,7 @@ public class EligibilityControllerTest {
         lookupPhnRequest.setContractNumber("123456789");
         lookupPhnRequest.setGroupNumber("1234567");
         
-        ResponseEntity<LookupPhnResponse> response = eligibilityController.lookupPhn(lookupPhnRequest);
+        ResponseEntity<LookupPhnResponse> response = eligibilityController.lookupPhn(lookupPhnRequest, createHttpServletRequest());
         
         LookupPhnResponse lookupPhnResponse = response.getBody();
 

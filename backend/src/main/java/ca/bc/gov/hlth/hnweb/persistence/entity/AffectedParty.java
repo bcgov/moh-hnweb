@@ -32,24 +32,11 @@ public class AffectedParty {
 	private String identifier;
 
 	/**
-	 * name of the source system that issued the identifier
-	 */
-	@Basic
-	@Column(name = "identifier_source")
-	private String identifierSource;
-
-	/**
 	 * the type of identifier (PHN, MRN, drivers license no, etc)
 	 */
 	@Basic
 	@Column(name = "identifier_type")
-	private String identifierType;
-
-	/**
-	 * Status of the identifier (Active, Merged, Deleted)
-	 */
-	@Basic
-	private String status;
+	private String identifierType = IdentifierType.PHN.getValue();
 
 	/**
 	 * Foreign key to the transaction the party is the subject of.
@@ -59,10 +46,6 @@ public class AffectedParty {
 	private Transaction transaction;
 
 	public AffectedParty() {
-	}
-
-	public AffectedParty(long affectedPartyId) {
-		this.affectedPartyId = affectedPartyId;
 	}
 
 	public long getAffectedPartyId() {
@@ -81,28 +64,12 @@ public class AffectedParty {
 		this.identifier = identifier;
 	}
 
-	public String getIdentifierSource() {
-		return identifierSource;
-	}
-
-	public void setIdentifierSource(String identifierSource) {
-		this.identifierSource = identifierSource;
-	}
-
 	public String getIdentifierType() {
 		return identifierType;
 	}
 
 	public void setIdentifierType(String identifierType) {
 		this.identifierType = identifierType;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
 	}
 
 	public Transaction getTransaction() {
@@ -115,8 +82,8 @@ public class AffectedParty {
 
 	@Override
 	public String toString() {
-		return "AffectedParty [affectedPartyId=" + affectedPartyId + ", identifier=" + identifier + ", identifierSource=" + identifierSource
-				+ ", identifierType=" + identifierType + ", status=" + status + ", transaction=" + transaction + "]";
+		return "AffectedParty [affectedPartyId=" + affectedPartyId + ", identifier=" + identifier + ", identifierType=" + identifierType
+				+ ", transaction=" + transaction + "]";
 	}
 
 }

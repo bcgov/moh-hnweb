@@ -1,7 +1,5 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.persistence.entity.ErrorLevel;
 import ca.bc.gov.hlth.hnweb.persistence.entity.EventMessage;
+import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 import ca.bc.gov.hlth.hnweb.persistence.entity.TransactionEvent;
 import ca.bc.gov.hlth.hnweb.persistence.entity.TransactionEventType;
@@ -22,67 +21,83 @@ public abstract class BaseController {
 	
 	@Autowired
 	private AuditService auditService;
-	
-	protected Transaction transactionStart(HttpServletRequest request, TransactionType type, String identifier) {
+
+	/**
+	 * Audits the Transaction Start event.
+	 * 
+	 * @param request The HTTP request
+	 * @param type The type of transaction
+	 * @return
+	 */
+	protected Transaction transactionStart(HttpServletRequest request, TransactionType type) {
 		Transaction transaction = auditService.createTransaction(request.getRemoteAddr(), type);
 		auditService.createTransactionEvent(transaction, TransactionEventType.TRANSACTION_START);
-		auditService.createAffectedParty(transaction, identifier);
 		return transaction;
 	}
 	
-	protected Transaction transactionStart(HttpServletRequest request, TransactionType type, List<String> identifiers) {
-		Transaction transaction = auditService.createTransaction(request.getRemoteAddr(), type);
-		auditService.createTransactionEvent(transaction, TransactionEventType.TRANSACTION_START);
-		identifiers.forEach(id -> {
-			auditService.createAffectedParty(transaction, id);	
-		});
-		
-		return transaction;
+	/**
+	 * Adds an AffectedParty to the Transaction.
+	 * 
+	 * @param transaction The transaction
+	 * @param type The type of identifier. E.g. PHN
+	 * @param identifier The value of the identifier
+	 */
+	protected void addAffectedParty(Transaction transaction, IdentifierType type, String identifier) {
+		auditService.createAffectedParty(transaction, type, identifier);
 	}
 	
-	protected void transactionEnd(Transaction transaction, String identifier) {
+	/**
+	 * Audits the Transaction Complete event.
+	 * 
+	 * @param transaction The transaction
+	 */
+	protected void transactionComplete(Transaction transaction) {
 		auditService.createTransactionEvent(transaction, TransactionEventType.TRANSACTION_COMPLETE);
-		auditService.createAffectedParty(transaction, identifier);
 	}
 	
-	protected void transactionEnd(Transaction transaction, List<String> identifiers) {
-		auditService.createTransactionEvent(transaction, TransactionEventType.TRANSACTION_COMPLETE);
-		identifiers.forEach(identifier -> {
-			auditService.createAffectedParty(transaction, identifier);	
-		});		
+	/**
+	 * Handles exceptions generated during handling the request.
+	 * 
+	 * @param transaction The request
+	 * @param exception The exception
+	 * @throws ResponseStatusException Used to generate the response to the client
+	 */
+	protected void handleException(Transaction transaction, Exception exception) throws ResponseStatusException {
+		HttpStatus status = null;
+		if (exception instanceof HNWebException) {
+			HNWebException hwe = (HNWebException)exception;
+			switch (hwe.getType()) {
+			case DOWNSTREAM_FAILURE:
+				status = HttpStatus.INTERNAL_SERVER_ERROR;
+			default:
+				status = HttpStatus.BAD_REQUEST;		
+			}
+		} else if (exception instanceof WebClientException) {
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		} else {
+			status = HttpStatus.BAD_REQUEST;
+		}
+		transactionError(transaction, status, exception);
+		transactionComplete(transaction);
+		throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage(), exception);
 	}
-	
-	protected void createTransactionEvent(Transaction transaction, TransactionEventType eventType) {
-		auditService.createTransactionEvent(transaction, eventType);
-	}
-	
-	protected void transactionError(Transaction transaction, Throwable t) {
+
+	/**
+	 * Audits an Error event.
+	 * 
+	 * @param transaction The transaction
+	 * @param status The HTTP status code
+	 * @param exception The exception
+	 */
+	private void transactionError(Transaction transaction, HttpStatus status, Exception exception) {
 		TransactionEvent transactionEvent = auditService.createTransactionEvent(transaction, TransactionEventType.ERROR);
 		EventMessage eventMessage = new EventMessage();
-		// TODO (weskubo-cgi) Do we need an error code?
-		eventMessage.setErrorCode(null);
+		// Just use the HTTP status code
+		eventMessage.setErrorCode(status.toString());
 		eventMessage.setErrorLevel(ErrorLevel.ERROR);
-		eventMessage.setMessageText(t.getMessage());
+		eventMessage.setMessageText(exception.getMessage());
 		eventMessage.setTransactionEvent(transactionEvent);
 		auditService.createEventMessage(eventMessage);
 	}
 	
-	protected void handleException(Transaction transaction, Exception e) throws ResponseStatusException {
-		transactionError(transaction, e);
-		if (e instanceof HNWebException) {
-			HNWebException hwe = (HNWebException)e;
-			transactionError(transaction, hwe);
-			switch (hwe.getType()) {
-			case DOWNSTREAM_FAILURE:
-				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);				
-			}
-		} else if (e instanceof WebClientException) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-		} else {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-		}
-	}
-
 }
