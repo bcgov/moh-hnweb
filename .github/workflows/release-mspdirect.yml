@@ -48,8 +48,7 @@ jobs:
       id: checkout
       uses: actions/checkout@v2
       with:
-      # Change to main before code review as release can be created on main only
-        ref: 5492-release-process     
+        ref: main     
 
     # 1. Determine the version number tag i.e. Release_1.0_<branch-name>_<build execution> 
     - name: Determine Version number
