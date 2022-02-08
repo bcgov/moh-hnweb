@@ -1,5 +1,5 @@
 <template>
-  <AppRadioButtonGroup :e-model="eModel" id="gender" label="Gender" :group="this.GENDER_RADIO_BUTTON_GROUP" v-model="modelValue" />
+  <AppRadioButtonGroup :e-model="eModel" id="gender" :label="label" :group="this.GENDER_RADIO_BUTTON_GROUP" v-model="modelValue" />
 </template>
 
 <script>
@@ -12,7 +12,7 @@ export default {
   },
   props: {
     eModel: Object,
-    label: String,
+    label: { default: 'Gender', type: String },
     modelValue: String,
   },
   data() {

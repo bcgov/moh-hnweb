@@ -15,6 +15,7 @@ export const resources = {
   },
   groupMember: {
     addGroupMember: '/group-member/add-group-member',
+    addDependent: '/group-member/add-dependent',
     updateNumberAndDept: '/group-member/update-number-and-dept',
     cancelGroupMember: '/group-member/cancel-group-member',
     cancelDependent: '/group-member/cancel-dependent',
