@@ -24,9 +24,6 @@ env:
 
 # Controls when the workflow will run
 on:
-  push:
-    branch:
-      [5492-release-process]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
@@ -37,7 +34,7 @@ on:
         - dev
         - test
       Branch:
-        description: 'Enter branch name (For now releases are created only on main branch)'
+        description: 'Enter branch name (Currently deployable releases are created only from main )'
         required: true
         default: main
       Release:
