@@ -35,10 +35,7 @@ on:
         description: 'Optional parameter for additional tags on released images. '
         required: false
         default:
-      DEVELOPMENT:
-        type: boolean
-        description: Remove after development of workflow is complete
-        default: true                 
+              
 
 jobs:
 
