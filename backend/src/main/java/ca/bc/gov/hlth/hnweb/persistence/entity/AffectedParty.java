@@ -29,20 +29,21 @@ public class AffectedParty {
 	 * identifier number, such as a PHN or MRN
 	 */
 	@Basic
+	@Column(name = "identifier", nullable = false)
 	private String identifier;
 
 	/**
 	 * the type of identifier (PHN, MRN, drivers license no, etc)
 	 */
 	@Basic
-	@Column(name = "identifier_type")
-	private String identifierType = IdentifierType.PHN.getValue();
+	@Column(name = "identifier_type", nullable = false)
+	private String identifierType;
 
 	/**
 	 * Foreign key to the transaction the party is the subject of.
 	 */
 	@ManyToOne
-	@JoinColumn(name = "transaction_id")
+	@JoinColumn(name = "transaction_id", nullable = false)
 	private Transaction transaction;
 
 	public AffectedParty() {

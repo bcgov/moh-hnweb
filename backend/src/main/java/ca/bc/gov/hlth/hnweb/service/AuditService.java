@@ -8,9 +8,11 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedParty;
+import ca.bc.gov.hlth.hnweb.persistence.entity.ErrorLevel;
 import ca.bc.gov.hlth.hnweb.persistence.entity.EventMessage;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
@@ -52,37 +54,23 @@ public class AuditService {
 	 */
 	public Transaction createTransaction(String sourceIP, TransactionType type) {
 		Transaction transaction = new Transaction();
-		UserInfo userInfo = SecurityUtil.loadUserInfo();
-		transaction.setOrganization(userInfo.getOrganization());
-		transaction.setServer(getServer());
-		transaction.setSessionId(userInfo.getSessionState());
-		transaction.setSourceIp(sourceIP);
-		transaction.setStartTime(new Date());
-		transaction.setTransactionId(UUID.randomUUID());
-		transaction.setType(type.getValue());
-		transaction.setUserId(userInfo.getUsername());
-		return transactionRepository.save(transaction);
-	}
-	
-	public void unauthorized(String sourceIP, TransactionType type) {
-		Transaction transaction = new Transaction();
 		UserInfo userInfo = null;
 		try {
-			// This can be thrown an exception if a token is not available
+			// This can throw an exception under certain auth failures
+			// E.g. if an empty or invalid token is provided
 			userInfo = SecurityUtil.loadUserInfo();	
 		} catch (Exception e) {
 			// Ignore
 		}
-		
-		transaction.setOrganization(userInfo != null ? userInfo.getOrganization() : null);
+		transaction.setOrganization(userInfo != null ? userInfo.getOrganization(): null);
 		transaction.setServer(getServer());
-		transaction.setSessionId(userInfo != null ? userInfo.getSessionState() : null);
+		transaction.setSessionId(userInfo != null ? userInfo.getSessionState(): null);
 		transaction.setSourceIp(sourceIP);
 		transaction.setStartTime(new Date());
 		transaction.setTransactionId(UUID.randomUUID());
 		transaction.setType(type.getValue());
-		transaction.setUserId(userInfo.getUsername());
-		transactionRepository.save(transaction);
+		transaction.setUserId(userInfo != null ? userInfo.getUsername() : null);
+		return transactionRepository.save(transaction);
 	}
 
 	private String getServer() {		
@@ -126,9 +114,34 @@ public class AuditService {
 	
 	/**
 	 * Creates a new {@link EventMessage}.
-	 * @param eventMessage The EventMessage to persist.
+	 * 
+	 * @param transactionEvent The associated TransactionEvent
+	 * @param level The level of the event (e.g.ERROR)
+	 * @param status The HTTP Status code related to the message
 	 */
-	public void createEventMessage(EventMessage eventMessage) {
+	public void createEventMessage(TransactionEvent transactionEvent, ErrorLevel level, HttpStatus status) {
+    	EventMessage eventMessage = new EventMessage();
+    	eventMessage.setErrorCode(Integer.toString(status.value()));
+    	eventMessage.setErrorLevel(level);
+    	eventMessage.setMessageText(status.getReasonPhrase());
+    	eventMessage.setTransactionEvent(transactionEvent);
+		eventMessageRepository.save(eventMessage);
+	}
+
+	/**
+	 * Creates a new {@link EventMessage}.
+	 * 
+	 * @param transactionEvent The associated TransactionEvent
+	 * @param level The level of the event (e.g.ERROR)
+	 * @param exception The associated exception
+	 * @param status The HTTP Status code related to the message
+	 */
+	public void createEventMessage(TransactionEvent transactionEvent, ErrorLevel level, HttpStatus status, Exception exception) {
+    	EventMessage eventMessage = new EventMessage();
+    	eventMessage.setErrorCode(Integer.toString(status.value()));
+    	eventMessage.setErrorLevel(level);
+    	eventMessage.setMessageText(exception.getMessage());
+    	eventMessage.setTransactionEvent(transactionEvent);
 		eventMessageRepository.save(eventMessage);
 	}
 

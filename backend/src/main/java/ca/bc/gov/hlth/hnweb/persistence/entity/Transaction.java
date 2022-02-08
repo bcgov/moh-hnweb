@@ -24,7 +24,7 @@ public class Transaction {
 	 * Type of transaction. Pulled from the message header. for example E45, R15
 	 */
 	@Basic
-	@Column(name="type")
+	@Column(name="type", nullable = false)
 	private String type;
 	
 	/**
@@ -38,14 +38,14 @@ public class Transaction {
 	 * Name of the server/instance/container id that processed the transaction. Used to track potential issues in an environment with multiple instances.
 	 */
 	@Basic
-	@Column(name="server")
+	@Column(name="server", nullable = false)
 	private String server;
 	
 	/**
-	 * Name of the server/instance/container id that processed the transaction. Used to track potential issues in an environment with multiple instances.
+	 * IP address of the source system that sent the transaction. (note that you may have to look in the HTTP headers due to load balancing),IP address of the source system that sent the transaction. (note that you may have to look in the HTTP headers due to load balancing)
 	 */
 	@Basic
-	@Column(name="source_ip")
+	@Column(name="source_ip", nullable = false)
 	private String sourceIp;
 	
 	/**
@@ -66,7 +66,7 @@ public class Transaction {
 	 * Time that the transaction was started/created
 	 */
 	@Basic
-	@Column(name="start_time", columnDefinition="TIMESTAMPTZ")
+	@Column(name="start_time", columnDefinition="TIMESTAMPTZ", nullable = false)
 	private Date startTime;
 
 	public UUID getTransactionId() {

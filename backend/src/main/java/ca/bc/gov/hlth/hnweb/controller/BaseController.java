@@ -9,7 +9,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.persistence.entity.ErrorLevel;
-import ca.bc.gov.hlth.hnweb.persistence.entity.EventMessage;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 import ca.bc.gov.hlth.hnweb.persistence.entity.TransactionEvent;
@@ -69,6 +68,7 @@ public abstract class BaseController {
 			switch (hwe.getType()) {
 			case DOWNSTREAM_FAILURE:
 				status = HttpStatus.INTERNAL_SERVER_ERROR;
+				break;
 			default:
 				status = HttpStatus.BAD_REQUEST;		
 			}
@@ -91,13 +91,7 @@ public abstract class BaseController {
 	 */
 	private void transactionError(Transaction transaction, HttpStatus status, Exception exception) {
 		TransactionEvent transactionEvent = auditService.createTransactionEvent(transaction, TransactionEventType.ERROR);
-		EventMessage eventMessage = new EventMessage();
-		// Just use the HTTP status code
-		eventMessage.setErrorCode(status.toString());
-		eventMessage.setErrorLevel(ErrorLevel.ERROR);
-		eventMessage.setMessageText(exception.getMessage());
-		eventMessage.setTransactionEvent(transactionEvent);
-		auditService.createEventMessage(eventMessage);
+		auditService.createEventMessage(transactionEvent, ErrorLevel.ERROR, status, exception);
 	}
 	
 }

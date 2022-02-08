@@ -38,21 +38,21 @@ public class EventMessage {
 	 * Error level, similar to logging levels (INFO, WARNING, ERROR, ETC)
 	 */
 	@Enumerated(EnumType.STRING)
-	@Column(name = "error_level")
+	@Column(name = "error_level", nullable = false)
 	private ErrorLevel errorLevel;
 
 	/**
 	 * Complete response/error message text.
 	 */
 	@Basic
-	@Column(name = "message_text", columnDefinition = "text", length = 2147483647)
+	@Column(name = "message_text", columnDefinition = "text", length = 2147483647, nullable = false)
 	private String messageText;
 
 	/**
 	 * foreign key to the original event
 	 */
 	@ManyToOne
-	@JoinColumn(name = "transaction_event_id")
+	@JoinColumn(name = "transaction_event_id", nullable = false)
 	private TransactionEvent transactionEvent;
 
 	public EventMessage() {

@@ -37,7 +37,7 @@ import ca.bc.gov.hlth.hnweb.model.v3.Telecommunication;
  * model defined in the ca.bc.gov.health.hnweb.model package.
  *
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({"deprecation", "rawtypes", "unchecked"})
 public class HL7Serializer {
 
   private static final String hl4DateFormat = "yyyyMMdd";

@@ -32,7 +32,7 @@ public class TransactionEvent {
 	 * time that the event occured
 	 */
 	@Basic
-	@Column(name = "event_time", columnDefinition = "timestamptz")
+	@Column(name = "event_time", columnDefinition = "timestamptz", nullable = false)
 	private Date eventTime;
 
 	/**
@@ -47,13 +47,14 @@ public class TransactionEvent {
 	 * transaction event type, for example error.
 	 */
 	@Basic
+	@Column(name = "type", nullable = false)
 	private String type;
 
 	/**
 	 * foreign key to the transaction this event belongs to.
 	 */
 	@ManyToOne
-	@JoinColumn(name = "transaction_id")
+	@JoinColumn(name = "transaction_id", nullable = false)
 	private Transaction transaction;
 
 	public TransactionEvent() {
