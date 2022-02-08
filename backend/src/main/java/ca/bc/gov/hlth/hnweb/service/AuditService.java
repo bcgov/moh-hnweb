@@ -68,7 +68,7 @@ public class AuditService {
 		Transaction transaction = new Transaction();
 		UserInfo userInfo = null;
 		try {
-			// This can be thrown an exception if a token is not available
+			// This can throw an exception if a token is not available
 			userInfo = SecurityUtil.loadUserInfo();	
 		} catch (Exception e) {
 			// Ignore
