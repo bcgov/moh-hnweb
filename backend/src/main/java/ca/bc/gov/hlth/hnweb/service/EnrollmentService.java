@@ -21,10 +21,12 @@ import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.MessageMetaData;
+import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
 import ca.bc.gov.hlth.hnweb.serialization.HL7Config;
 import ca.bc.gov.hlth.hnweb.serialization.HL7Serializer;
+import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
 import ca.bc.gov.hlth.hnweb.util.V3MessageUtil;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
@@ -36,7 +38,7 @@ import ca.uhn.hl7v2.parser.Parser;
  *
  */
 @Service
-public class EnrollmentService {
+public class EnrollmentService extends BaseService {
 
 	private static final Logger logger = LoggerFactory.getLogger(EnrollmentService.class);
 	private static final String SOURCE_SYSTEM_OVERRIDE = "MOH_CRS";
@@ -67,28 +69,32 @@ public class EnrollmentService {
 	 * over Https using TLS. The endpoint also requires Basic Authentication. 
 	 * 
 	 * @param r50
-	 * @param transactionId
+	 * @param transaction 
 	 * @return
 	 * @throws HL7Exception
 	 * @throws IOException
 	 */
-	public Message enrollSubscriber(R50 r50) throws HNWebException, HL7Exception{
+	public Message enrollSubscriber(R50 r50, Transaction transaction) throws HNWebException, HL7Exception{
 		String transactionId = UUID.randomUUID().toString();
 		logger.debug("Enroll subscriber for Message ID [{}]; Transaction ID [{}]", r50.getMSH().getMsh10_MessageControlID(), transactionId);
 		
 		String r50v2RequiredFormat = formatMessage(r50);
 		logger.debug("Updated V2 message:\n{}", r50v2RequiredFormat);
 		
+		messageSent(transaction, V2MessageUtil.getMessageID(r50));
 		ResponseEntity<String> response = postHibcRequest(r50Path, r50Username, r50Password, r50v2RequiredFormat);
+		
+		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		
 		if (response.getStatusCode() != HttpStatus.OK) {
 			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
 			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
 		}
-		
-		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
-		
-		return parseR50v2ToAck(response.getBody());
+	
+		Message v2Response = parseR50v2ToAck(response.getBody());
+    	messageReceived(transaction, V2MessageUtil.getMessageID(v2Response));
+				
+		return v2Response;
 	}
 	
 	 
@@ -96,11 +102,11 @@ public class EnrollmentService {
 	 * Gets the demographic details by sending a V3 message to external endpoint.
 	 * Calls HL7Serializer api to serialize and deserialize request/response
 	 * @param demographicsRequest
-	 * @param transactionId
+	 * @param transaction 
 	 * @return
 	 * @throws HNWebException
 	 */
-	public GetDemographicsResponse getDemographics(GetDemographicsRequest demographicsRequest)
+	public GetDemographicsResponse getDemographics(GetDemographicsRequest demographicsRequest, Transaction transaction)
 	      throws HNWebException {
 		String transactionId = UUID.randomUUID().toString();
 		
@@ -114,6 +120,7 @@ public class EnrollmentService {
 		String xmlString = V3MessageUtil.wrap(formattedRequest.toString());
 		logger.debug("Get Demographics wrapped xml request[{}]", xmlString);
 		  
+		messageSent(transaction, null);	//TODO (dbarrett) See if there is a message ID
 	    ResponseEntity<String> response = postHcimRequest(xmlString, transactionId); 
 	    logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 	    
@@ -123,6 +130,7 @@ public class EnrollmentService {
 		}
 		//De-Serialize demographics response
 		GetDemographicsResponse getDemographicsResponse = hl7Serializer.fromXml(response.getBody(), GetDemographicsResponse.class);
+    	messageReceived(transaction, null);	//TODO (dbarrett) See if there is a message ID
 	    
 	    return getDemographicsResponse;
 	
@@ -133,11 +141,11 @@ public class EnrollmentService {
 	 * Finds the candidates details by sending a V3 message to external endpoint.
 	 * Calls HL7Serializer api to serialize and deserialize request/response
 	 * @param findCandidatesRequest
-	 * @param transactionId
+	 * @param transaction 
 	 * @return
 	 * @throws HNWebException
 	 */
-	public FindCandidatesResponse findCandidates(FindCandidatesRequest findCandidatesRequest)
+	public FindCandidatesResponse findCandidates(FindCandidatesRequest findCandidatesRequest, Transaction transaction)
 	      throws HNWebException {
 		String transactionId = UUID.randomUUID().toString();
 		
@@ -151,6 +159,7 @@ public class EnrollmentService {
 		String xmlString = V3MessageUtil.wrap(formattedRequest.toString());
 		logger.debug("Get Name Search wrapped xml request[{}]", xmlString);
 		  
+		messageSent(transaction, null);	//TODO (dbarrett) See if there is a message ID
 	    ResponseEntity<String> response = postHcimRequest(xmlString, transactionId); 
 	    logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 	    
@@ -160,6 +169,7 @@ public class EnrollmentService {
 		}
 		//De-Serialize findCandidate response
 		FindCandidatesResponse findCandidatesResponse = hl7Serializer.fromXml(response.getBody(), FindCandidatesResponse.class);
+    	messageReceived(transaction, null);	//TODO (dbarrett) See if there is a message ID
 	    
 	    return findCandidatesResponse;
 	

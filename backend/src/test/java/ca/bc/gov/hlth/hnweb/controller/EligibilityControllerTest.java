@@ -15,14 +15,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
+import ca.bc.gov.hlth.hnweb.BaseControllerTest;
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.eligibility.CheckEligibilityRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.eligibility.CheckEligibilityResponse;
@@ -41,8 +40,7 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
-@SpringBootTest
-public class EligibilityControllerTest {
+public class EligibilityControllerTest extends BaseControllerTest {
 	
 	private static final String R41_SUCCESS = "RPBSPGW0RPBSPPE000006412HN000002                        RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  9123456789                                                                                          2021-06-229123456789GFMSRHNISNAME                      GERHNIMODFNAME                               1970-09-09MRPBS9014TRANSACTION SUCCESSFUL                                                  Y                                                                                          N";
 	
@@ -638,12 +636,6 @@ public class EligibilityControllerTest {
 		checkMspCoverageStatusRequest.setCheckPatientRestriction(checkPatientRestriction);
 		
 		return checkMspCoverageStatusRequest;
-	}
-	
-	private MockHttpServletRequest createHttpServletRequest() {
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.setRemoteAddr("1.1.1.1");
-		return request;
 	}
 	
 }
