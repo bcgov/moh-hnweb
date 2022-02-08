@@ -13,11 +13,13 @@ name: deploy-mspdirect
 env:
   OPENSHIFT_SERVER: ${{ secrets.C5839F_OPENSHIFT_SERVER }}
   OPENSHIFT_TOKEN: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
+  FRONTEND_IMAGE_NAME: mspdirect-frontend
+  BACKEND_IMAGE_NAME: mspdirect-backend
   DEFAULT_NAMESPACE: "c5839f-tools"
   VERSION: "Release_1.0_"
   OPENSHIFT_NAMESPACE:
-  FRONTEND_IMAGE:
-  BACKEND_IMAGE:
+  FRONTEND_IMAGE_ID:
+  BACKEND_IMAGE_ID:
   
 
 
@@ -82,15 +84,15 @@ jobs:
       - name: Find image
         run: |
           oc project
-          echo "FRONTEND_IMAGE=$(oc get istag/mspdirect-frontend:${{ env.VERSION }} -o jsonpath={.image.metadata.name})" | tee -a $GITHUB_ENV
-          echo "BACKEND_IMAGE=$(oc get istag/mspdirect-backend:${{ env.VERSION }} -o jsonpath={.image.metadata.name})" | tee -a $GITHUB_ENV
+          echo "FRONTEND_IMAGE_ID=$(oc get istag/${{ env.FRONTEND_IMAGE_NAME }}:${{ env.VERSION }} -o jsonpath={.image.metadata.name})" | tee -a $GITHUB_ENV
+          echo "BACKEND_IMAGE_ID=$(oc get istag/${{ env.BACKEND_IMAGE_NAME }}:${{ env.VERSION }} -o jsonpath={.image.metadata.name})" | tee -a $GITHUB_ENV
 
       # 3. Validate if that is correct. If not, exit the job
       - name: Validate image
         uses: actions/github-script@v4
         with:
           script: |
-            if (`${{ env.FRONTEND_IMAGE }}`.length == 0 || `${{ env.BACKEND_IMAGE }}`.length == 0) {
+            if (`${{ env.FRONTEND_IMAGE_ID }}`.length == 0 || `${{ env.BACKEND_IMAGE_ID }}`.length == 0) {
               core.setFailed(`❌ Image version: ${{ env.VERSION }}. \n` +
                 "Please provide a valid image build number." );
             }
@@ -100,8 +102,8 @@ jobs:
       # 4. Push the image to selected repository
       - name: Push Image
         run: |
-          oc tag mspdirect-frontend:${{ env.VERSION }} ${{ env.OPENSHIFT_NAMESPACE }}/mspdirect-frontend:${{ env.VERSION }}
-          oc tag mspdirect-backend:${{ env.VERSION }} ${{ env.OPENSHIFT_NAMESPACE }}/mspdirect-backend:${{ env.VERSION }}
+          oc tag ${{ env.FRONTEND_IMAGE_NAME }}:${{ env.VERSION }} ${{ env.OPENSHIFT_NAMESPACE }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ env.VERSION }}
+          oc tag ${{ env.BACKEND_IMAGE_NAME }}:${{ env.VERSION }} ${{ env.OPENSHIFT_NAMESPACE }}/${{ env.BACKEND_IMAGE_NAME }}:${{ env.VERSION }}
 
       # 5. Edit the selcted Argo CD manifest file
       # Update the image ID in the manifest repository used by Argo CD.
@@ -128,10 +130,10 @@ jobs:
         if: ${{ success() }}
         run: |
           cd mspdirect-devops/overlays/${{ github.event.inputs.Environment }}
-          kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/${{ env.OPENSHIFT_NAMESPACE }}/${{ env.IMAGE_NAME }}@${{ env.BACKEND_IMAGE }}"
-          kustomize edit set image "frontend-image=image-registry.openshift-image-registry.svc:5000/${{ env.OPENSHIFT_NAMESPACE }}/${{ env.IMAGE_NAME }}@${{ env.BACKEND_IMAGE }}"
+          kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/${{ env.OPENSHIFT_NAMESPACE }}/${{ env.BACKEND_IMAGE_NAME }}@${{ env.BACKEND_IMAGE_ID }}"
+          kustomize edit set image "frontend-image=image-registry.openshift-image-registry.svc:5000/${{ env.OPENSHIFT_NAMESPACE }}/${{ env.FRONTEND_IMAGE_NAME }}@${{ env.FRONTEND_IMAGE_ID }}"
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git commit -am "Update Backend API image ID for test"
+          git commit -am "Update frontend and backend image ids using deploy workflow."
           git push origin    
           
