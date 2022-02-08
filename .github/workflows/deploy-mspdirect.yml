@@ -14,10 +14,11 @@ env:
   OPENSHIFT_SERVER: ${{ secrets.C5839F_OPENSHIFT_SERVER }}
   OPENSHIFT_TOKEN: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
   DEFAULT_NAMESPACE: "c5839f-tools"
-  VERSION: "Draft_1.0_"
+  VERSION: "Release_1.0_"
   OPENSHIFT_NAMESPACE:
   FRONTEND_IMAGE:
   BACKEND_IMAGE:
+  
 
 
 
@@ -33,8 +34,8 @@ on:
         type: choice
         description: Select an environment to deploy
         options:
-        - Dev
-        - Test
+        - dev
+        - test
       Branch:
         description: 'Enter branch name (For now releases are created only on main branch)'
         required: true
@@ -69,10 +70,10 @@ jobs:
         uses: actions/github-script@v5
         with:
           script: |
-            if (`${{ github.event.inputs.Environment }}` == 'Dev') {
+            if (`${{ github.event.inputs.Environment }}` == 'dev') {
               return "c5839f-dev"
             }
-            if (`${{ github.event.inputs.Environment }}` == 'Test' || `${{ github.event.inputs.Environment }}` == 'UAT') {
+            if (`${{ github.event.inputs.Environment }}` == 'test' || `${{ github.event.inputs.Environment }}` == 'uat') {
               return "c5839f-test"
             }
 
@@ -127,11 +128,11 @@ jobs:
         uses: imranismail/setup-kustomize@v1
 
       - name: Update image ID and commit change
-        #if: ${{ success() }}
-        if: ${{ 'true' == 'false' }}
+        if: ${{ success() }}
         run: |
-          cd mspdirect-devops/overlays/test
-          kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/c5839f-tools/${{ env.IMAGE_NAME }}@${{ steps.push-image.outputs.digest }}"
+          cd mspdirect-devops/overlays/${{ github.event.inputs.Environment }}
+          kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/${{ env.OPENSHIFT_NAMESPACE }}/${{ env.IMAGE_NAME }}@${{ env.BACKEND_IMAGE }}"
+          kustomize edit set image "frontend-image=image-registry.openshift-image-registry.svc:5000/${{ env.OPENSHIFT_NAMESPACE }}/${{ env.IMAGE_NAME }}@${{ env.BACKEND_IMAGE }}"
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -am "Update Backend API image ID for test"

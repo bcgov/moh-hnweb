@@ -11,7 +11,7 @@ env:
 
 on:
   push:
-    branches: [ main, 5492-release-process ]
+    branches: [ main ]
     paths: 
       - "frontend/**"
     
