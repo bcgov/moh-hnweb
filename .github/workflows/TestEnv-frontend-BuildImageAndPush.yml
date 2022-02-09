@@ -2,7 +2,8 @@ name: TestEnv-frontend-BuildImageAndPush
 # Build the image and deploy in OpenShift environment
 env:
   # Registries such as GHCR, Quay.io, and Docker Hub are supported.
-  IMAGE_REGISTRY: image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools
+  TOOLSNS_IMAGE_REGISTRY: image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools
+  TESTNS_IMAGE_REGISTRY: image-registry.apps.silver.devops.gov.bc.ca/c5839f-test
   IMAGE_REGISTRY_USER: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_USER }}
   IMAGE_REGISTRY_PASSWORD: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
   IMAGE_NAME: mspdirect-frontend
@@ -13,6 +14,8 @@ on:
     branches: [ main ]
     paths: 
       - "frontend/**"
+    
+    workflow_dispatch:
 
 jobs:
   
@@ -46,13 +49,23 @@ jobs:
         dockerfiles: |
           ./frontend/Dockerfile
 
-    - name: Push to registry
-      id: push-image
+    - name: Push to tools registry
+      id: push-image-tools
       uses: redhat-actions/push-to-registry@v2
       with:
         image: ${{ steps.build-docker.outputs.image }}
         tags: ${{ steps.build-docker.outputs.tags }}
-        registry: ${{ env.IMAGE_REGISTRY }}
+        registry: ${{ env.TOOLSNS_IMAGE_REGISTRY }}
+        username: ${{ env.IMAGE_REGISTRY_USER }}
+        password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
+
+    - name: Push to test registry
+      id: push-image-test
+      uses: redhat-actions/push-to-registry@v2
+      with:
+        image: ${{ steps.build-docker.outputs.image }}
+        tags: ${{ steps.build-docker.outputs.tags }}
+        registry: ${{ env.TESTNS_IMAGE_REGISTRY }}
         username: ${{ env.IMAGE_REGISTRY_USER }}
         password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
 
@@ -80,7 +93,7 @@ jobs:
       if: ${{ success() }}
       run: |
         cd mspdirect-devops/overlays/test
-        kustomize edit set image "frontend-image=image-registry.openshift-image-registry.svc:5000/c5839f-tools/${{ env.IMAGE_NAME }}@${{ steps.push-image.outputs.digest }}"
+        kustomize edit set image "frontend-image=image-registry.openshift-image-registry.svc:5000/c5839f-test/${{ env.IMAGE_NAME }}@${{ steps.push-image-test.outputs.digest }}"
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git commit -am "Update frontend API image ID for Test"
