@@ -104,9 +104,10 @@ public class EligibilityService extends BaseService {
 	 * @throws HNWebException
 	 * @throws HL7Exception
 	 */
-	public Message checkMspCoverageStatus(E45 e45) throws HNWebException, HL7Exception {
-
+	public Message checkMspCoverageStatus(E45 e45, Transaction transaction) throws HNWebException, HL7Exception {
 		String e45v2 = parser.encode(e45);
+		
+		messageSent(transaction, V2MessageUtil.getMessageID(e45));
 		ResponseEntity<String> response = postHibcRequest(e45Path, e45Username, e45Password, e45v2);
 		
 		if (response.getStatusCode() != HttpStatus.OK) {
@@ -114,7 +115,10 @@ public class EligibilityService extends BaseService {
 			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
 		}
 
-		return parseResponse(response.getBody(), "E45");
+		Message v2Response = parseResponse(response.getBody(), "E45");
+    	messageReceived(transaction, V2MessageUtil.getMessageID(v2Response));
+		
+		return v2Response;
 	}
 
 	/**
@@ -124,11 +128,12 @@ public class EligibilityService extends BaseService {
 	 * @return The RPBSPPE0 response.
 	 * @throws HNWebException
 	 */
-	public RPBSPPE0 inquirePhn(RPBSPPE0 rpbsppe0) throws HNWebException {
+	public RPBSPPE0 inquirePhn(RPBSPPE0 rpbsppe0, Transaction transaction) throws HNWebException {
 		String rpbsppe0Str = rpbsppe0.serialize();
 
 		logger.info("Request {}", rpbsppe0Str);
-		
+
+		messageSent(transaction);
 		ResponseEntity<String> response = postRapidRequest(r41Path, rpbsppe0Str);
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
@@ -137,10 +142,9 @@ public class EligibilityService extends BaseService {
 			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
 			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
 		}
-		
-		RPBSPPE0 rpbsppe0Response = new RPBSPPE0(response.getBody());
 
-		return rpbsppe0Response;
+		messageReceived(transaction);
+		return new RPBSPPE0(response.getBody());
 	}
 	
 	/**
@@ -150,11 +154,12 @@ public class EligibilityService extends BaseService {
 	 * @return The RPBSPPL0 response.
 	 * @throws HNWebException
 	 */
-	public RPBSPPL0 lookupPhn(RPBSPPL0 rpbsppl0) throws HNWebException {
+	public RPBSPPL0 lookupPhn(RPBSPPL0 rpbsppl0, Transaction transaction) throws HNWebException {
 		String rpbsppl0Str = rpbsppl0.serialize();
 
 		logger.info("Request {}", rpbsppl0Str);
 		
+		messageSent(transaction);
 		ResponseEntity<String> response = postRapidRequest(r42Path, rpbsppl0Str);
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
@@ -164,9 +169,8 @@ public class EligibilityService extends BaseService {
 			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
 		}
 		
-		RPBSPPL0 rpbsppl0Response = new RPBSPPL0(response.getBody());
-
-		return rpbsppl0Response;
+		messageReceived(transaction);
+		return new RPBSPPL0(response.getBody());
 	}
 
 	private ResponseEntity<String> postRapidRequest(String path, String body) {

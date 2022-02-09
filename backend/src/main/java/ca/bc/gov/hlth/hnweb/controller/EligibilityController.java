@@ -100,7 +100,7 @@ public class EligibilityController extends BaseController {
 			RPBSPPE0Converter converter = new RPBSPPE0Converter();
 			RPBSPPE0 ppe0Request = converter.convertRequest(inquirePhnRequest);
 		
-			RPBSPPE0 ppe0Response = eligibilityService.inquirePhn(ppe0Request);	
+			RPBSPPE0 ppe0Response = eligibilityService.inquirePhn(ppe0Request, transaction);	
 			
 			InquirePhnResponse inquirePhnResponse = converter.convertResponse(ppe0Response);
 					
@@ -128,7 +128,7 @@ public class EligibilityController extends BaseController {
 	 */
 	@PostMapping("/lookup-phn")
 	public ResponseEntity<LookupPhnResponse> lookupPhn(@Valid @RequestBody LookupPhnRequest lookupPhnRequest, HttpServletRequest request) {
-		Transaction transaction = transactionStart(request, TransactionType.MSP_COVERAGE_STATUS_CHECK);
+		Transaction transaction = transactionStart(request, TransactionType.PHN_LOOKUP);
 		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, lookupPhnRequest.getGroupNumber());
 		addAffectedParty(transaction, IdentifierType.CONTRACT_NUMBER, lookupPhnRequest.getContractNumber());
 
@@ -136,7 +136,7 @@ public class EligibilityController extends BaseController {
 			RPBSPPL0Converter converter = new RPBSPPL0Converter();
 			RPBSPPL0 r42Request = converter.convertRequest(lookupPhnRequest);
 			
-			RPBSPPL0 r42Response = eligibilityService.lookupPhn(r42Request);
+			RPBSPPL0 r42Response = eligibilityService.lookupPhn(r42Request, transaction);
 			
 			LookupPhnResponse lookupPhnResponse = converter.convertResponse(r42Response);
 			
@@ -170,7 +170,7 @@ public class EligibilityController extends BaseController {
 		try {
 			E45Converter converter = new E45Converter(mshDefaults);
 			E45 e45 = converter.convertRequest(checkMspCoverageStatusRequest);
-			Message e45Response = eligibilityService.checkMspCoverageStatus(e45);
+			Message e45Response = eligibilityService.checkMspCoverageStatus(e45, transaction);
 			
 			CheckMspCoverageStatusResponse coverageResponse = converter.convertResponse(e45Response);
 
