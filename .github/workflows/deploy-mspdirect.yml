@@ -1,5 +1,5 @@
-# This is a deployment workflow to deploy a selected release in selcted environment
-# Steps Shold be:
+# This is a deployment workflow to deploy a selected release in selected environment
+# Steps are:
 # 1. Login to OpenShift
 # 2. Find the image digest from input parameters
 # 3. Validate if that is correct. If not, exit the job
@@ -16,7 +16,7 @@ env:
   FRONTEND_IMAGE_NAME: mspdirect-frontend
   BACKEND_IMAGE_NAME: mspdirect-backend
   DEFAULT_NAMESPACE: "c5839f-tools"
-  VERSION: "Release_1.0_"
+  VERSION_PREFIX: "Release_1.0_"
   OPENSHIFT_NAMESPACE:
   FRONTEND_IMAGE_ID:
   BACKEND_IMAGE_ID:
@@ -79,7 +79,7 @@ jobs:
       - name: Compute Version image
         run: |
           echo "OPENSHIFT_NAMESPACE=${{steps.set-namespace.outputs.result}}"  | tee -a $GITHUB_ENV
-          echo "VERSION=${{ env.VERSION }}${{ github.event.inputs.Branch }}_${{ github.event.inputs.Release }}"  | tee -a $GITHUB_ENV
+          echo "VERSION=${{ env.VERSION_PREFIX }}${{ github.event.inputs.Branch }}_${{ github.event.inputs.Release }}"  | tee -a $GITHUB_ENV
 
       - name: Find image
         run: |
