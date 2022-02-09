@@ -82,6 +82,46 @@ public class AffectedParty {
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (affectedPartyId ^ (affectedPartyId >>> 32));
+		result = prime * result + ((identifier == null) ? 0 : identifier.hashCode());
+		result = prime * result + ((identifierType == null) ? 0 : identifierType.hashCode());
+		result = prime * result + ((transaction == null) ? 0 : transaction.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AffectedParty other = (AffectedParty) obj;
+		if (affectedPartyId != other.affectedPartyId)
+			return false;
+		if (identifier == null) {
+			if (other.identifier != null)
+				return false;
+		} else if (!identifier.equals(other.identifier))
+			return false;
+		if (identifierType == null) {
+			if (other.identifierType != null)
+				return false;
+		} else if (!identifierType.equals(other.identifierType))
+			return false;
+		if (transaction == null) {
+			if (other.transaction != null)
+				return false;
+		} else if (!transaction.equals(other.transaction))
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString() {
 		return "AffectedParty [affectedPartyId=" + affectedPartyId + ", identifier=" + identifier + ", identifierType=" + identifierType
 				+ ", transaction=" + transaction + "]";

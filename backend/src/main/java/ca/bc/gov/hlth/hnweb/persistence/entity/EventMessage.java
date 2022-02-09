@@ -103,6 +103,52 @@ public class EventMessage {
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((errorCode == null) ? 0 : errorCode.hashCode());
+		result = prime * result + ((errorLevel == null) ? 0 : errorLevel.hashCode());
+		result = prime * result + ((eventMessageId == null) ? 0 : eventMessageId.hashCode());
+		result = prime * result + ((messageText == null) ? 0 : messageText.hashCode());
+		result = prime * result + ((transactionEvent == null) ? 0 : transactionEvent.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EventMessage other = (EventMessage) obj;
+		if (errorCode == null) {
+			if (other.errorCode != null)
+				return false;
+		} else if (!errorCode.equals(other.errorCode))
+			return false;
+		if (errorLevel != other.errorLevel)
+			return false;
+		if (eventMessageId == null) {
+			if (other.eventMessageId != null)
+				return false;
+		} else if (!eventMessageId.equals(other.eventMessageId))
+			return false;
+		if (messageText == null) {
+			if (other.messageText != null)
+				return false;
+		} else if (!messageText.equals(other.messageText))
+			return false;
+		if (transactionEvent == null) {
+			if (other.transactionEvent != null)
+				return false;
+		} else if (!transactionEvent.equals(other.transactionEvent))
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString() {
 		return "EventMessage [eventMessageId=" + eventMessageId + ", errorCode=" + errorCode + ", errorLevel=" + errorLevel
 				+ ", messageText=" + messageText + ", transactionEvent=" + transactionEvent + "]";

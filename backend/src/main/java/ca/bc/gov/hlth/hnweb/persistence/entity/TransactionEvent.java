@@ -112,6 +112,55 @@ public class TransactionEvent {
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((eventTime == null) ? 0 : eventTime.hashCode());
+		result = prime * result + ((messageId == null) ? 0 : messageId.hashCode());
+		result = prime * result + ((transaction == null) ? 0 : transaction.hashCode());
+		result = prime * result + ((transactionEventId == null) ? 0 : transactionEventId.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TransactionEvent other = (TransactionEvent) obj;
+		if (eventTime == null) {
+			if (other.eventTime != null)
+				return false;
+		} else if (!eventTime.equals(other.eventTime))
+			return false;
+		if (messageId == null) {
+			if (other.messageId != null)
+				return false;
+		} else if (!messageId.equals(other.messageId))
+			return false;
+		if (transaction == null) {
+			if (other.transaction != null)
+				return false;
+		} else if (!transaction.equals(other.transaction))
+			return false;
+		if (transactionEventId == null) {
+			if (other.transactionEventId != null)
+				return false;
+		} else if (!transactionEventId.equals(other.transactionEventId))
+			return false;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString() {
 		return "TransactionEvent [transactionEventId=" + transactionEventId + ", eventTime=" + eventTime + ", messageId=" + messageId
 				+ ", type=" + type + ", transaction=" + transaction + "]";
