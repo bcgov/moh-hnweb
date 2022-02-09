@@ -3,6 +3,7 @@ package ca.bc.gov.hlth.hnweb.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +39,8 @@ import ca.uhn.hl7v2.model.Message;
  * <ul>
  * <li>Z03
  * <li>Z04
- * <li>Z05
- * <li>Z06
+ * <li>Z05 Enroll Visa Subscriber without PHN
+ * <li>Z06 Enroll Visa Subscriber with PHN
  * <ul>
  *
  */
@@ -60,8 +61,7 @@ public class EnrollmentController extends BaseController {
 
 		logger.info("Subscriber enroll request: {} ", enrollSubscriberRequest.getPhn());
 		
-		Transaction transaction = transactionStart(request, TransactionType.ENROLL_SUBSCRIBER);
-		addAffectedParty(transaction, IdentifierType.PHN, enrollSubscriberRequest.getPhn());
+		Transaction transaction = auditEnrollSubscriberStart(enrollSubscriberRequest, request);
 
 		try {
 			R50Converter converter = new R50Converter(mshDefaults);
@@ -72,13 +72,38 @@ public class EnrollmentController extends BaseController {
 
 			logger.info("Subscriber enroll Response: {} ", enrollSubscriberResponse.getMessage());
 
-			transactionComplete(transaction);
-			addAffectedParty(transaction, IdentifierType.PHN, enrollSubscriberRequest.getPhn());
+			auditEnrollSubscriberComplete(transaction, enrollSubscriberResponse);
 
 			return responseEntity;
 		} catch (Exception e) {
 			handleException(transaction, e);
 			return null;
+		}
+	}
+
+	private Transaction auditEnrollSubscriberStart(EnrollSubscriberRequest enrollSubscriberRequest,	HttpServletRequest request) {
+		
+		Transaction transaction = transactionStart(request, TransactionType.ENROLL_SUBSCRIBER);
+		//Some requests do not contain the PHN e.g R50 z05 as it is Enroll subscriber without PHN
+		if (StringUtils.isNotBlank(enrollSubscriberRequest.getPhn())) {
+			addAffectedParty(transaction, IdentifierType.PHN, enrollSubscriberRequest.getPhn());
+		}
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, enrollSubscriberRequest.getGroupNumber());
+		if (StringUtils.isNotBlank(enrollSubscriberRequest.getGroupMemberNumber())) {
+			addAffectedParty(transaction, IdentifierType.GROUP_MEMBER_NUMBER, enrollSubscriberRequest.getGroupMemberNumber());
+		}
+		if (StringUtils.isNotBlank(enrollSubscriberRequest.getDepartmentNumber())) {
+			addAffectedParty(transaction, IdentifierType.DEPARTMENT_NUMBER, enrollSubscriberRequest.getDepartmentNumber());
+		}
+		return transaction;
+	}
+
+	private void auditEnrollSubscriberComplete(Transaction transaction,	EnrollSubscriberResponse enrollSubscriberResponse) {
+		
+		transactionComplete(transaction);
+		//Some responses do not contain the PHN e.g. in the case of R50 z06 it is just an ACK
+		if (StringUtils.isNotBlank(enrollSubscriberResponse.getPhn())) {
+			addAffectedParty(transaction, IdentifierType.PHN, enrollSubscriberResponse.getPhn());
 		}
 	}
 
@@ -99,7 +124,7 @@ public class EnrollmentController extends BaseController {
 			ResponseEntity<GetPersonDetailsResponse> responseEntity = ResponseEntity.ok(personDetailsResponse);
 
 			transactionComplete(transaction);
-			addAffectedParty(transaction, IdentifierType.PHN, personDetailsRequest.getPhn());
+			addAffectedParty(transaction, IdentifierType.PHN, personDetailsResponse.getPhn());
 			
 			return responseEntity;
 		} catch (Exception e) {

@@ -4,7 +4,8 @@ public enum IdentifierType {
 	PHN("PHN"),
 	GROUP_NUMBER("Group Number"),
 	GROUP_MEMBER_NUMBER("Group Member Number"),
-	CONTRACT_NUMBER("Contract Number");
+	CONTRACT_NUMBER("Contract Number"),
+	DEPARTMENT_NUMBER("Department Number");
 
 	private String value;
 

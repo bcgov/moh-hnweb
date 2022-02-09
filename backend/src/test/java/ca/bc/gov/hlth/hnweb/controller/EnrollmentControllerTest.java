@@ -284,6 +284,7 @@ public class EnrollmentControllerTest extends BaseControllerTest {
     
     private EnrollSubscriberRequest createEnrollSubscriberRequest() {
 		EnrollSubscriberRequest enrollSubscriberRequest = new EnrollSubscriberRequest();
+		enrollSubscriberRequest.setGroupNumber("4567368");
 		enrollSubscriberRequest.setGivenName("FirstName");
 		enrollSubscriberRequest.setSecondName("SecondName");
 		enrollSubscriberRequest.setSurname("FamilyName");
