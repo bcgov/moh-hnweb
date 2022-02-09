@@ -23,9 +23,7 @@
           </li>
         </ul>
       </div>
-      <div class="version">
-        <span>{{ this.version }}</span>
-      </div>
+      <div class="version">Version: {{ version }}</div>
     </div>
   </footer>
 </template>
@@ -61,6 +59,7 @@ footer .container {
 
 footer .version {
   font-size: 0.813em;
+  align-self: center;
 }
 
 footer ul {
