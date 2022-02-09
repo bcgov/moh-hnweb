@@ -19,6 +19,14 @@ public class UserInfo {
 		this.organization = organization;
 		this.role = role;
 	}
+	
+	public UserInfo(String username, String organization, String role, String sessionState) {
+		super();
+		this.username = username;
+		this.organization = organization;
+		this.role = role;
+		this.sessionState = sessionState;
+	}
 
 	public String getUsername() {
 		return username;

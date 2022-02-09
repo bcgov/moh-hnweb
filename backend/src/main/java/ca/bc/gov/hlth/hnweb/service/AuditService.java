@@ -119,13 +119,13 @@ public class AuditService {
 	 * @param level The level of the event (e.g.ERROR)
 	 * @param status The HTTP Status code related to the message
 	 */
-	public void createEventMessage(TransactionEvent transactionEvent, ErrorLevel level, HttpStatus status) {
+	public EventMessage createEventMessage(TransactionEvent transactionEvent, ErrorLevel level, HttpStatus status) {
     	EventMessage eventMessage = new EventMessage();
     	eventMessage.setErrorCode(Integer.toString(status.value()));
     	eventMessage.setErrorLevel(level);
     	eventMessage.setMessageText(status.getReasonPhrase());
     	eventMessage.setTransactionEvent(transactionEvent);
-		eventMessageRepository.save(eventMessage);
+		return eventMessageRepository.save(eventMessage);
 	}
 
 	/**
@@ -136,13 +136,13 @@ public class AuditService {
 	 * @param exception The associated exception
 	 * @param status The HTTP Status code related to the message
 	 */
-	public void createEventMessage(TransactionEvent transactionEvent, ErrorLevel level, HttpStatus status, Exception exception) {
+	public EventMessage createEventMessage(TransactionEvent transactionEvent, ErrorLevel level, HttpStatus status, Exception exception) {
     	EventMessage eventMessage = new EventMessage();
     	eventMessage.setErrorCode(Integer.toString(status.value()));
     	eventMessage.setErrorLevel(level);
     	eventMessage.setMessageText(exception.getMessage());
     	eventMessage.setTransactionEvent(transactionEvent);
-		eventMessageRepository.save(eventMessage);
+		return eventMessageRepository.save(eventMessage);
 	}
 
 	/**
@@ -151,8 +151,8 @@ public class AuditService {
 	 * @param transaction The associated Transaction
 	 * @param phn The phn of the affected party
 	 */
-	public void createAffectedParty(Transaction transaction, String phn) {
-		createAffectedParty(transaction, IdentifierType.PHN, phn);
+	public AffectedParty createAffectedParty(Transaction transaction, String phn) {
+		return createAffectedParty(transaction, IdentifierType.PHN, phn);
 	}
 	
 	/**
@@ -162,12 +162,12 @@ public class AuditService {
 	 * @param identifierType The type of identifier
 	 * @param identifier The value of the identifier
 	 */
-	public void createAffectedParty(Transaction transaction, IdentifierType identifierType, String identifier) {
+	public AffectedParty createAffectedParty(Transaction transaction, IdentifierType identifierType, String identifier) {
 		AffectedParty affectedParty = new AffectedParty();
 		affectedParty.setIdentifier(identifier);
 		affectedParty.setIdentifierType(identifierType.getValue());
 		affectedParty.setTransaction(transaction);
-		affectedPartyRepository.save(affectedParty);
+		return affectedPartyRepository.save(affectedParty);
 	}
 	
 }
