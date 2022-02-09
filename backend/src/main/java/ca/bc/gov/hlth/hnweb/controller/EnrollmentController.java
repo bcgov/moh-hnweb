@@ -114,7 +114,7 @@ public class EnrollmentController extends BaseController {
 		logger.info("Name Search request: {} ", nameSearchRequest.getGivenName());
 
 		Transaction transaction = transactionStart(request, TransactionType.ENROLL_SUBSCRIBER);
-		addAffectedParty(transaction, IdentifierType.PHN, nameSearchRequest.getSurname());
+		addAffectedParty(transaction, IdentifierType.PHN, nameSearchRequest.getSurname()); //TODO (dbarrett) Confirm if a search name should be logged as an Affected Party 
 
 		try {
 			FindCandidatesConverter converter = new FindCandidatesConverter();
@@ -126,7 +126,9 @@ public class EnrollmentController extends BaseController {
 			ResponseEntity<NameSearchResponse> responseEntity = ResponseEntity.ok(nameSearchResponse);
 
 			transactionComplete(transaction);
-			nameSearchResponse.getCandidates().forEach(candidate -> addAffectedParty(transaction, IdentifierType.PHN, candidate.getPhn()));
+			if (nameSearchResponse.getCandidates() != null) {
+				nameSearchResponse.getCandidates().forEach(candidate -> addAffectedParty(transaction, IdentifierType.PHN, candidate.getPhn()));
+			}
 
 			return responseEntity;
 		} catch (Exception e) {

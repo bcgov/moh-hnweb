@@ -2,11 +2,15 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:template match="/">
         <findCandidatesResponse>
+        <xsl:apply-templates select="//HCIM_IN_FindCandidatesResponse/id"/>
         <xsl:apply-templates select="//queryAck"/>
         <results>
             <xsl:apply-templates select="//controlActProcess/subject"/>
         </results>
         </findCandidatesResponse>
+    </xsl:template>    
+    <xsl:template match="HCIM_IN_FindCandidatesResponse/id">
+    	<messageIdExtension><xsl:value-of select="@extension"/></messageIdExtension>
     </xsl:template>
     <xsl:template match="controlActProcess/queryAck">
         <resultCount><xsl:value-of select="resultTotalQuantity/@value"/></resultCount>

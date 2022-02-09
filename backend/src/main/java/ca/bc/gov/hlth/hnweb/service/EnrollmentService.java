@@ -75,8 +75,7 @@ public class EnrollmentService extends BaseService {
 	 * @throws IOException
 	 */
 	public Message enrollSubscriber(R50 r50, Transaction transaction) throws HNWebException, HL7Exception{
-		String transactionId = UUID.randomUUID().toString();
-		logger.debug("Enroll subscriber for Message ID [{}]; Transaction ID [{}]", r50.getMSH().getMsh10_MessageControlID(), transactionId);
+		logger.debug("Enroll subscriber for Message ID [{}]; Transaction ID [{}]", r50.getMSH().getMsh10_MessageControlID(), transaction.getTransactionId().toString());
 		
 		String r50v2RequiredFormat = formatMessage(r50);
 		logger.debug("Updated V2 message:\n{}", r50v2RequiredFormat);
@@ -108,11 +107,10 @@ public class EnrollmentService extends BaseService {
 	 */
 	public GetDemographicsResponse getDemographics(GetDemographicsRequest demographicsRequest, Transaction transaction)
 	      throws HNWebException {
-		String transactionId = UUID.randomUUID().toString();
 		
 		HL7Serializer hl7Serializer = new HL7Serializer(new HL7Config());
 		UserInfo userInfo = SecurityUtil.loadUserInfo();
-		MessageMetaData mmd = new MessageMetaData(userInfo.getUsername(), SOURCE_SYSTEM_OVERRIDE, ORGANIZATION, transactionId);
+		MessageMetaData mmd = new MessageMetaData(userInfo.getUsername(), SOURCE_SYSTEM_OVERRIDE, ORGANIZATION, transaction.getTransactionId().toString());
 		
 		//Serialize request object
 		Object formattedRequest = hl7Serializer.toXml(demographicsRequest, mmd);
@@ -120,8 +118,8 @@ public class EnrollmentService extends BaseService {
 		String xmlString = V3MessageUtil.wrap(formattedRequest.toString());
 		logger.debug("Get Demographics wrapped xml request[{}]", xmlString);
 		  
-		messageSent(transaction, null);	//TODO (dbarrett) See if there is a message ID
-	    ResponseEntity<String> response = postHcimRequest(xmlString, transactionId); 
+		messageSent(transaction, mmd.getMessageIdExt());
+	    ResponseEntity<String> response = postHcimRequest(xmlString, transaction.getTransactionId().toString()); 
 	    logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 	    
 		if (response.getStatusCode() != HttpStatus.OK) {
@@ -130,7 +128,7 @@ public class EnrollmentService extends BaseService {
 		}
 		//De-Serialize demographics response
 		GetDemographicsResponse getDemographicsResponse = hl7Serializer.fromXml(response.getBody(), GetDemographicsResponse.class);
-    	messageReceived(transaction, null);	//TODO (dbarrett) See if there is a message ID
+    	messageReceived(transaction, mmd.getMessageIdExt());
 	    
 	    return getDemographicsResponse;
 	
@@ -147,11 +145,10 @@ public class EnrollmentService extends BaseService {
 	 */
 	public FindCandidatesResponse findCandidates(FindCandidatesRequest findCandidatesRequest, Transaction transaction)
 	      throws HNWebException {
-		String transactionId = UUID.randomUUID().toString();
 		
 		HL7Serializer hl7Serializer = new HL7Serializer(new HL7Config());
 		UserInfo userInfo = SecurityUtil.loadUserInfo();
-		MessageMetaData mmd = new MessageMetaData(userInfo.getUsername(), SOURCE_SYSTEM_OVERRIDE, ORGANIZATION, transactionId);
+		MessageMetaData mmd = new MessageMetaData(userInfo.getUsername(), SOURCE_SYSTEM_OVERRIDE, ORGANIZATION, transaction.getTransactionId().toString());
 		
 		//Serialize request object
 		Object formattedRequest = hl7Serializer.toXml(findCandidatesRequest, mmd);
@@ -159,8 +156,8 @@ public class EnrollmentService extends BaseService {
 		String xmlString = V3MessageUtil.wrap(formattedRequest.toString());
 		logger.debug("Get Name Search wrapped xml request[{}]", xmlString);
 		  
-		messageSent(transaction, null);	//TODO (dbarrett) See if there is a message ID
-	    ResponseEntity<String> response = postHcimRequest(xmlString, transactionId); 
+		messageSent(transaction, mmd.getMessageIdExt());
+	    ResponseEntity<String> response = postHcimRequest(xmlString, transaction.getTransactionId().toString()); 
 	    logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 	    
 		if (response.getStatusCode() != HttpStatus.OK) {
@@ -169,7 +166,7 @@ public class EnrollmentService extends BaseService {
 		}
 		//De-Serialize findCandidate response
 		FindCandidatesResponse findCandidatesResponse = hl7Serializer.fromXml(response.getBody(), FindCandidatesResponse.class);
-    	messageReceived(transaction, null);	//TODO (dbarrett) See if there is a message ID
+    	messageReceived(transaction, findCandidatesResponse.getMessageIdExtension());
 	    
 	    return findCandidatesResponse;
 	
