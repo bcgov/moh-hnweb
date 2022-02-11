@@ -36,6 +36,7 @@ import ca.bc.gov.hlth.hnweb.model.rest.groupmember.MemberAddress;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
+import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -104,6 +105,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         });
     	assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
     	assertEquals("Department Number or Group Number is required", exception.getReason());
+    	
+        assertTransactionCreated(TransactionType.UPDATE_NUMBER_AND_OR_DEPT);
     }
 
     @Test
@@ -131,6 +134,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.UPDATE_NUMBER_AND_OR_DEPT);
     }
     
     @Test
@@ -158,6 +163,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.UPDATE_NUMBER_AND_OR_DEPT);
     }
     
     @Test
@@ -182,6 +189,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_GROUP_MEMBER);
     }
     
     @Test
@@ -207,6 +216,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_GROUP_MEMBER);
     }
     
     @Test
@@ -232,6 +243,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_GROUP_MEMBER);
     }
 
     @Test
@@ -256,6 +269,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_GROUP_MEMBER);
     }
     
     @Test
@@ -280,6 +295,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_GROUP_MEMBER);
     }
     
     @Test
@@ -304,6 +321,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_GROUP_MEMBER);
     }
     
     @Test
@@ -335,6 +354,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.ADD_GROUP_MEMBER);
     }
     
     @Test
@@ -366,6 +387,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.ADD_GROUP_MEMBER);
     }
     
     @Test
@@ -391,6 +414,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.ADD_DEPENDENT);
     }
 
     @Test
@@ -416,6 +441,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.ADD_DEPENDENT);
     }
 
     @Test
@@ -442,6 +469,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
 	    RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
 	    assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.ADD_DEPENDENT);
 	}
     
     @Test
@@ -467,6 +496,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
 	    RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
 	    assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.ADD_DEPENDENT);
 	}
 	
     @Test
@@ -492,6 +523,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_DEPENDENT);
     }
     
     @Test
@@ -517,6 +550,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_DEPENDENT);
     }
     
     @Test
@@ -542,6 +577,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_DEPENDENT);
     }
     
     @Test
@@ -567,7 +604,10 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_DEPENDENT);
     }
+
     @Test
     public void testCancelDependent_futureCancelDate() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()
@@ -591,7 +631,10 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_DEPENDENT);
     }
+
     @Test
     public void testCancelDependent_success() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()
@@ -616,6 +659,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_DEPENDENT);
     }
    
     /**
