@@ -20,6 +20,7 @@ import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPWB0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPWC0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPWP0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPXP0;
+import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 
 /**
  * Service for:
@@ -27,7 +28,7 @@ import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPXP0;
  *  Update Group Member's Number and/or Department. (R34)
  */
 @Service
-public class GroupMemberService {
+public class GroupMemberService extends BaseService {
 
 	private static final Logger logger = LoggerFactory.getLogger(GroupMemberService.class);
 
@@ -55,16 +56,18 @@ public class GroupMemberService {
 	 * Add a dependent for the group member based on the R31/RPBSPWB0 request.
 	 * 
 	 * @param rpbspwb0
+	 * @param transaction 
 	 * @return The RPBSPWB0 response.
 	 * @throws HNWebException
 	 */
-	public RPBSPWB0 addDependent(RPBSPWB0 rpbspwb0) throws HNWebException {
+	public RPBSPWB0 addDependent(RPBSPWB0 rpbspwb0, Transaction transaction) throws HNWebException {
 		String rpbspwb0Str = rpbspwb0.serialize();
 
 		logger.info("Request {}", rpbspwb0Str);
 		
+		messageSent(transaction);
 		ResponseEntity<String> response = postRapidRequest(r31Path, rpbspwb0Str);
-		
+		messageReceived(transaction);
 		logger.info("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		
 		if (response.getStatusCode() != HttpStatus.OK) {
@@ -84,12 +87,14 @@ public class GroupMemberService {
 	 * @return The RPBSPED0 response.
 	 * @throws HNWebException
 	 */
-	public RPBSPED0 updateGroupMemberDepartmentNumber(RPBSPED0 rpbsped0) throws HNWebException {
+	public RPBSPED0 updateGroupMemberDepartmentNumber(RPBSPED0 rpbsped0, Transaction transaction) throws HNWebException {
 		String rpbsped0Str = rpbsped0.serialize();
 
 		logger.info("Request {}", rpbsped0Str);
 		
+		messageSent(transaction);
 		ResponseEntity<String> response = postRapidRequest(r34Path, rpbsped0Str);
+		messageReceived(transaction);
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		
@@ -110,12 +115,14 @@ public class GroupMemberService {
 	 * @return The RPBSPED0 response.
 	 * @throws HNWebException
 	 */
-	public RPBSPEE0 updateGroupMemberEmployeeNumber(RPBSPEE0 rpbspee0) throws HNWebException {
+	public RPBSPEE0 updateGroupMemberEmployeeNumber(RPBSPEE0 rpbspee0, Transaction transaction) throws HNWebException {
 		String rpbseed0Str = rpbspee0.serialize();
 
 		logger.info("Request {}", rpbseed0Str);
 		
+		messageSent(transaction);
 		ResponseEntity<String> response = postRapidRequest(r34Path, rpbseed0Str);
+		messageReceived(transaction);
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		
@@ -136,12 +143,14 @@ public class GroupMemberService {
 	 * @return The RPBSPXP0 response.
 	 * @throws HNWebException
 	 */
-	public RPBSPXP0 addGroupMember(RPBSPXP0 rpbspxp0) throws HNWebException {
+	public RPBSPXP0 addGroupMember(RPBSPXP0 rpbspxp0, Transaction transaction) throws HNWebException {
 		String rpbspxp0Str = rpbspxp0.serialize();
 
 		logger.info("Request {}", rpbspxp0Str);
 		
+		messageSent(transaction);
 		ResponseEntity<String> response = postRapidRequest(r30Path, rpbspxp0Str);
+		messageReceived(transaction);
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		
@@ -162,12 +171,14 @@ public class GroupMemberService {
 	 * @return The RPBSPWC0 response.
 	 * @throws HNWebException
 	 */
-	public RPBSPWC0 cancelGroupMember(RPBSPWC0 rpbspwc0) throws HNWebException {
+	public RPBSPWC0 cancelGroupMember(RPBSPWC0 rpbspwc0, Transaction transaction) throws HNWebException {
 		String rpbspwc0Str = rpbspwc0.serialize();
 
 		logger.info("Request {}", rpbspwc0Str);
 		
+		messageSent(transaction);
 		ResponseEntity<String> response = postRapidRequest(r35Path, rpbspwc0Str);
+		messageReceived(transaction);
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		
@@ -188,12 +199,14 @@ public class GroupMemberService {
 	 * @return The RPBSPWP0 response.
 	 * @throws HNWebException
 	 */
-	public RPBSPWP0 cancelDependent(RPBSPWP0 rpbspwp0) throws HNWebException {
+	public RPBSPWP0 cancelDependent(RPBSPWP0 rpbspwp0, Transaction transaction) throws HNWebException {
 		String rpbspwp0Str = rpbspwp0.serialize();
 
 		logger.info("Request {}", rpbspwp0Str);
 		
+		messageSent(transaction);
 		ResponseEntity<String> response = postRapidRequest(r36Path, rpbspwp0Str);
+		messageReceived(transaction);
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		

@@ -3,6 +3,7 @@ package ca.bc.gov.hlth.hnweb.controller;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.WebClientException;
 import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPED0Converter;
@@ -24,7 +24,6 @@ import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPWB0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPWC0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPWP0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPXP0Converter;
-import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPED0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPEE0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPWB0;
@@ -42,6 +41,9 @@ import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
+import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
+import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
+import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.service.GroupMemberService;
 
 /**
@@ -50,7 +52,7 @@ import ca.bc.gov.hlth.hnweb.service.GroupMemberService;
  */
 @RequestMapping("/group-member")
 @RestController
-public class GroupMemberController {
+public class GroupMemberController extends BaseController {
 
 	private static final Logger logger = LoggerFactory.getLogger(GroupMemberController.class);
 
@@ -65,30 +67,28 @@ public class GroupMemberController {
 	 * @return The result of the operation.
 	 */
 	@PostMapping("/add-dependent")
-	public ResponseEntity<AddDependentResponse> addDependent(@Valid @RequestBody AddDependentRequest addDependentRequest) {
+	public ResponseEntity<AddDependentResponse> addDependent(@Valid @RequestBody AddDependentRequest addDependentRequest, HttpServletRequest request) {
+
+		Transaction transaction = auditAddDependentStart(addDependentRequest, request);
 
 		try {
 			RPBSPWB0Converter converter = new RPBSPWB0Converter();
 			RPBSPWB0 rpbspwb0Request = converter.convertRequest(addDependentRequest);
-			RPBSPWB0 rpbspwb0Response = groupMemberService.addDependent(rpbspwb0Request);
+			RPBSPWB0 rpbspwb0Response = groupMemberService.addDependent(rpbspwb0Request, transaction);
 			AddDependentResponse addDependentResponse = converter.convertResponse(rpbspwb0Response);
 					
 			ResponseEntity<AddDependentResponse> response = ResponseEntity.ok(addDependentResponse);
 
 			logger.info("addDependentResponse response: {} ", addDependentResponse);
+			
+			transactionComplete(transaction);
+			addAffectedParty(transaction, IdentifierType.PHN, addDependentResponse.getPhn());
+			
 			return response;
-		} catch (HNWebException hwe) {
-			switch (hwe.getType()) {
-			case DOWNSTREAM_FAILURE:
-				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
-			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /add-dependent request", hwe);				
-			}
-		} catch (WebClientException wce) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /add-dependent request", e);
-		}		
+			handleException(transaction, e);
+			return null;
+		}
 	}
 
 	/**
@@ -99,7 +99,10 @@ public class GroupMemberController {
 	 * @return The result of the update.
 	 */
 	@PostMapping("/update-number-and-dept")
-	public ResponseEntity<UpdateNumberAndDeptResponse> updateNumberAndDept(@Valid @RequestBody UpdateNumberAndDeptRequest updateNumberAndDeptRequest) {
+	public ResponseEntity<UpdateNumberAndDeptResponse> updateNumberAndDept(@Valid @RequestBody UpdateNumberAndDeptRequest updateNumberAndDeptRequest, HttpServletRequest request) {
+		
+		Transaction transaction = auditUpdateNumberAndDeptStart(updateNumberAndDeptRequest, request);
+
 		// Do basic validation since there's no point in calling the downstream systems if the data isn't valid
 		if (StringUtils.isBlank(updateNumberAndDeptRequest.getDepartmentNumber()) && StringUtils.isBlank(updateNumberAndDeptRequest.getGroupMemberNumber())) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Department Number or Group Number is required");	
@@ -111,7 +114,7 @@ public class GroupMemberController {
 			if (StringUtils.isNotBlank(updateNumberAndDeptRequest.getDepartmentNumber())) {
 				RPBSPED0Converter rpbsped0Converter = new RPBSPED0Converter();
 				RPBSPED0 rpbsped0Request = rpbsped0Converter.convertRequest(updateNumberAndDeptRequest);
-				RPBSPED0 rpbsped0Response = groupMemberService.updateGroupMemberDepartmentNumber(rpbsped0Request);
+				RPBSPED0 rpbsped0Response = groupMemberService.updateGroupMemberDepartmentNumber(rpbsped0Request, transaction);
 				deptNumberResponse = rpbsped0Converter.convertResponse(rpbsped0Response);
 			}
 
@@ -120,7 +123,7 @@ public class GroupMemberController {
 			if (StringUtils.isNotBlank(updateNumberAndDeptRequest.getGroupMemberNumber())) {
 				RPBSPEE0Converter rpbspee0Converter = new RPBSPEE0Converter();
 				RPBSPEE0 rpbspee0Request = rpbspee0Converter.convertRequest(updateNumberAndDeptRequest);
-				RPBSPEE0 rpbspee0Response = groupMemberService.updateGroupMemberEmployeeNumber(rpbspee0Request);
+				RPBSPEE0 rpbspee0Response = groupMemberService.updateGroupMemberEmployeeNumber(rpbspee0Request, transaction);
 				empNumberResponse = rpbspee0Converter.convertResponse(rpbspee0Response);
 			}
 				
@@ -130,18 +133,14 @@ public class GroupMemberController {
 			ResponseEntity<UpdateNumberAndDeptResponse> response = ResponseEntity.ok(updateNumberAndDeptResponse);
 
 			logger.info("updateNumberAndDept response: {} ", updateNumberAndDeptResponse);
-			return response;	
-		} catch (HNWebException hwe) {
-			switch (hwe.getType()) {
-			case DOWNSTREAM_FAILURE:
-				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
-			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /update-group-member request", hwe);				
-			}
-		} catch (WebClientException wce) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
+
+			transactionComplete(transaction);
+			addAffectedParty(transaction, IdentifierType.PHN, updateNumberAndDeptResponse.getPhn());
+			
+			return response;
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /update-group-member request", e);
+			handleException(transaction, e);
+			return null;
 		}
 		
 	}
@@ -154,29 +153,27 @@ public class GroupMemberController {
 	 * @return The result of the operation.
 	 */
 	@PostMapping("/add-group-member")
-	public ResponseEntity<AddGroupMemberResponse> addGroupMember(@Valid @RequestBody AddGroupMemberRequest addGroupMemberRequest) {
+	public ResponseEntity<AddGroupMemberResponse> addGroupMember(@Valid @RequestBody AddGroupMemberRequest addGroupMemberRequest, HttpServletRequest request) {
+
+		Transaction transaction = auditAddGroupMemberStart(addGroupMemberRequest, request);
 
 		try {
 			RPBSPXP0Converter converter = new RPBSPXP0Converter();
 			RPBSPXP0 rpbspxp0 = converter.convertRequest(addGroupMemberRequest);
-			RPBSPXP0 rpbspxp0Response = groupMemberService.addGroupMember(rpbspxp0);
+			RPBSPXP0 rpbspxp0Response = groupMemberService.addGroupMember(rpbspxp0, transaction);
 			AddGroupMemberResponse addGroupMemberResponse = converter.convertResponse(rpbspxp0Response);
 					
 			ResponseEntity<AddGroupMemberResponse> response = ResponseEntity.ok(addGroupMemberResponse);
 
 			logger.info("addGroupMemberResponse response: {} ", addGroupMemberResponse);
-			return response;	
-		} catch (HNWebException hwe) {
-			switch (hwe.getType()) {
-			case DOWNSTREAM_FAILURE:
-				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
-			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /add-group-member request", hwe);				
-			}
-		} catch (WebClientException wce) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
+			
+			transactionComplete(transaction);
+			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberResponse.getPhn());
+
+			return response;
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /add-group-member request", e);
+			handleException(transaction, e);
+			return null;
 		}
 		
 	}
@@ -189,33 +186,31 @@ public class GroupMemberController {
 	 * @return The result of the operation.
 	 */
 	@PostMapping("/cancel-group-member")
-	public ResponseEntity<CancelGroupMemberResponse> cancelGroupMember(@Valid @RequestBody CancelGroupMemberRequest cancelGroupMemberRequest) {
+	public ResponseEntity<CancelGroupMemberResponse> cancelGroupMember(@Valid @RequestBody CancelGroupMemberRequest cancelGroupMemberRequest, HttpServletRequest request) {
+
+		Transaction transaction = auditCancelGroupMemberStart(cancelGroupMemberRequest, request);
 
 		try {
 			RPBSPWC0Converter converter = new RPBSPWC0Converter();
 			RPBSPWC0 rpbspwc0 = converter.convertRequest(cancelGroupMemberRequest);
-			RPBSPWC0 rpbspwc0Response = groupMemberService.cancelGroupMember(rpbspwc0);
+			RPBSPWC0 rpbspwc0Response = groupMemberService.cancelGroupMember(rpbspwc0, transaction);
 			CancelGroupMemberResponse cancelGroupMemberResponse = converter.convertResponse(rpbspwc0Response);
 					
 			ResponseEntity<CancelGroupMemberResponse> response = ResponseEntity.ok(cancelGroupMemberResponse);
 
 			logger.info("cancelGroupMemberResponse response: {} ", cancelGroupMemberResponse);
+
+			transactionComplete(transaction);
+			addAffectedParty(transaction, IdentifierType.PHN, cancelGroupMemberResponse.getPhn());
+
 			return response;	
-		} catch (HNWebException hwe) {
-			switch (hwe.getType()) {
-			case DOWNSTREAM_FAILURE:
-				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
-			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /cancel-group-member request", hwe);				
-			}
-		} catch (WebClientException wce) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /cancel-group-member request", e);
+			handleException(transaction, e);
+			return null;
 		}
 		
 	}
-	
+
 	/**
 	 * Cancels a group member's dependent coverage.
 	 * Maps to the legacy R36.
@@ -224,33 +219,30 @@ public class GroupMemberController {
 	 * @return The result of the operation.
 	 */
 	@PostMapping("/cancel-dependent")
-	public ResponseEntity<CancelDependentResponse> cancelDependent(@Valid @RequestBody CancelDependentRequest cancelDependentRequest) {
+	public ResponseEntity<CancelDependentResponse> cancelDependent(@Valid @RequestBody CancelDependentRequest cancelDependentRequest, HttpServletRequest request) {
+
+		Transaction transaction = auditCancelDependentStart(cancelDependentRequest, request);
 
 		try {
 			RPBSPWP0Converter converter = new RPBSPWP0Converter();
 			RPBSPWP0 rpbspwp0 = converter.convertRequest(cancelDependentRequest);
-			RPBSPWP0 rpbspwc0Response = groupMemberService.cancelDependent(rpbspwp0);
+			RPBSPWP0 rpbspwc0Response = groupMemberService.cancelDependent(rpbspwp0, transaction);
 			CancelDependentResponse cancelDependentResponse = converter.convertResponse(rpbspwc0Response);
 					
 			ResponseEntity<CancelDependentResponse> response = ResponseEntity.ok(cancelDependentResponse);
 
 			logger.info("CancelDependentResponse response: {} ", cancelDependentResponse);
+			
+			transactionComplete(transaction);
+			addAffectedParty(transaction, IdentifierType.PHN, cancelDependentResponse.getPhn());
+
 			return response;	
-		} catch (HNWebException hwe) {
-			switch (hwe.getType()) {
-			case DOWNSTREAM_FAILURE:
-				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
-			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /cancel-dependent request", hwe);				
-			}
-		} catch (WebClientException wce) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /cancel-dependent request", e);
+			handleException(transaction, e);
+			return null;
 		}
 		
 	}
-
 
 	private UpdateNumberAndDeptResponse handleUpdateGroupMemberResponse(UpdateNumberAndDeptResponse deptNumberResponse, UpdateNumberAndDeptResponse empNumberResponse) {
 		UpdateNumberAndDeptResponse response = new UpdateNumberAndDeptResponse();
@@ -282,6 +274,79 @@ public class GroupMemberController {
 		}
 		
 		return String.join("\n", messages);
+	}
+
+	private Transaction auditAddGroupMemberStart(AddGroupMemberRequest addGroupMemberRequest, HttpServletRequest request) {
+		Transaction transaction = transactionStart(request, TransactionType.ADD_GROUP_MEMBER);
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, addGroupMemberRequest.getGroupNumber());
+		addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getPhn());
+		if (StringUtils.isNotBlank(addGroupMemberRequest.getGroupMemberNumber())) {
+			addAffectedParty(transaction, IdentifierType.GROUP_MEMBER_NUMBER, addGroupMemberRequest.getGroupMemberNumber());
+		}
+		if (StringUtils.isNotBlank(addGroupMemberRequest.getDepartmentNumber())) {
+			addAffectedParty(transaction, IdentifierType.DEPARTMENT_NUMBER, addGroupMemberRequest.getDepartmentNumber());
+		}
+		if (StringUtils.isNotBlank(addGroupMemberRequest.getSpousePhn())) {
+			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getSpousePhn());
+		}
+		if (StringUtils.isNotBlank(addGroupMemberRequest.getDependentPhn1())) {
+			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn1());
+		}
+		if (StringUtils.isNotBlank(addGroupMemberRequest.getDependentPhn2())) {
+			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn2());
+		}
+		if (StringUtils.isNotBlank(addGroupMemberRequest.getDependentPhn3())) {
+			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn3());
+		}
+		if (StringUtils.isNotBlank(addGroupMemberRequest.getDependentPhn4())) {
+			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn4());
+		}
+		if (StringUtils.isNotBlank(addGroupMemberRequest.getDependentPhn5())) {
+			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn5());
+		}
+		if (StringUtils.isNotBlank(addGroupMemberRequest.getDependentPhn6())) {
+			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn6());
+		}
+		if (StringUtils.isNotBlank(addGroupMemberRequest.getDependentPhn7())) {
+			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn7());
+		}
+		return transaction;
+	}
+
+	private Transaction auditAddDependentStart(AddDependentRequest addDependentRequest, HttpServletRequest request) {
+		Transaction transaction = transactionStart(request, TransactionType.ADD_DEPENDENT);
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, addDependentRequest.getGroupNumber());
+		addAffectedParty(transaction, IdentifierType.PHN, addDependentRequest.getPhn());
+		addAffectedParty(transaction, IdentifierType.PHN, addDependentRequest.getDependentPhn());
+		return transaction;
+	}
+
+	private Transaction auditUpdateNumberAndDeptStart(UpdateNumberAndDeptRequest updateNumberAndDeptRequest, HttpServletRequest request) {
+		Transaction transaction = transactionStart(request, TransactionType.UPDATE_NUMBER_AND_OR_DEPT);
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, updateNumberAndDeptRequest.getGroupNumber());
+		addAffectedParty(transaction, IdentifierType.PHN, updateNumberAndDeptRequest.getPhn());
+		if (StringUtils.isNotBlank(updateNumberAndDeptRequest.getGroupMemberNumber())) {
+			addAffectedParty(transaction, IdentifierType.GROUP_MEMBER_NUMBER, updateNumberAndDeptRequest.getGroupMemberNumber());
+		}
+		if (StringUtils.isNotBlank(updateNumberAndDeptRequest.getDepartmentNumber())) {
+			addAffectedParty(transaction, IdentifierType.DEPARTMENT_NUMBER, updateNumberAndDeptRequest.getDepartmentNumber());
+		}
+		return transaction;
+	}
+
+	private Transaction auditCancelGroupMemberStart(CancelGroupMemberRequest cancelGroupMemberRequest, HttpServletRequest request) {
+		Transaction transaction = transactionStart(request, TransactionType.CANCEL_GROUP_MEMBER);
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, cancelGroupMemberRequest.getGroupNumber());
+		addAffectedParty(transaction, IdentifierType.PHN, cancelGroupMemberRequest.getPhn());
+		return transaction;
+	}
+	
+	private Transaction auditCancelDependentStart(CancelDependentRequest cancelDependentRequest, HttpServletRequest request) {
+		Transaction transaction = transactionStart(request, TransactionType.CANCEL_DEPENDENT);
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, cancelDependentRequest.getGroupNumber());
+		addAffectedParty(transaction, IdentifierType.PHN, cancelDependentRequest.getPhn());
+		addAffectedParty(transaction, IdentifierType.PHN, cancelDependentRequest.getDependentPhn());
+		return transaction;
 	}
 
 }

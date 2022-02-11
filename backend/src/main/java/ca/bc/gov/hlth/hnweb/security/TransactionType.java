@@ -11,6 +11,12 @@ public enum TransactionType {
 	ENROLL_SUBSCRIBER("EnrollSubscriber"), // R50
 	GET_PERSON_DETAILS("GetPersonDetails"),
 	NAME_SEARCH("NameSearch"),
+	ADD_GROUP_MEMBER("AddGroupMember"),
+	ADD_DEPENDENT("AddDependent"),
+	UPDATE_NUMBER_AND_OR_DEPT("UpdateNumberAnd/OrDept"),
+	CANCEL_GROUP_MEMBER("CancelGroupMember"),
+	CANCEL_DEPENDENT("CancelDependent"),
+	
 	UNKNOWN("Unknown");
 
 	private String value;

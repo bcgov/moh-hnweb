@@ -22,6 +22,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.server.ResponseStatusException;
 
+import ca.bc.gov.hlth.hnweb.BaseControllerTest;
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddDependentRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddDependentResponse;
@@ -41,7 +42,7 @@ import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
 @SpringBootTest
-public class GroupMemberControllerTest {
+public class GroupMemberControllerTest extends BaseControllerTest {
 
 	private static final String RPBSPED0_ERROR_PHN_HAS_NO_COVERAGE_IN_GROUP = "        RPBSPED000000010                                ERRORMSGRPBS9179PHN HAS NO COVERAGE IN GROUP                                            93479840746337109111111   ";
 	private static final String RPBSPEE0_ERROR_PHN_HAS_NO_COVERAGE_IN_GROUP = "        RPBSPEE000000010                                ERRORMSGRPBS9179PHN HAS NO COVERAGE IN GROUP                                            93479840746337109111111   ";
@@ -99,7 +100,7 @@ public class GroupMemberControllerTest {
     	updateNumberAndDeptRequest.setPhn("9347984074");
     	updateNumberAndDeptRequest.setGroupNumber("6337109");
     	ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-    		groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest);
+    		groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest, createHttpServletRequest());
         });
     	assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
     	assertEquals("Department Number or Group Number is required", exception.getReason());
@@ -120,7 +121,7 @@ public class GroupMemberControllerTest {
     	updateNumberAndDeptRequest.setDepartmentNumber("000001");
     	updateNumberAndDeptRequest.setGroupMemberNumber("000000001");
     	
-		ResponseEntity<UpdateNumberAndDeptResponse> response = groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest);
+		ResponseEntity<UpdateNumberAndDeptResponse> response = groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest, createHttpServletRequest());
 		
 		UpdateNumberAndDeptResponse updateNumberAndDeptResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, updateNumberAndDeptResponse.getStatus());
@@ -147,7 +148,7 @@ public class GroupMemberControllerTest {
     	updateNumberAndDeptRequest.setDepartmentNumber("000001");
     	updateNumberAndDeptRequest.setGroupMemberNumber("000000001");
     	
-		ResponseEntity<UpdateNumberAndDeptResponse> response = groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest);
+		ResponseEntity<UpdateNumberAndDeptResponse> response = groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest, createHttpServletRequest());
 		
 		UpdateNumberAndDeptResponse updateNumberAndDeptResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, updateNumberAndDeptResponse.getStatus());
@@ -171,7 +172,7 @@ public class GroupMemberControllerTest {
     	cancelGroupMemberRequest.setCoverageCancelDate(null);
     	cancelGroupMemberRequest.setCancelReason(null);
     	
-		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
+		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest, createHttpServletRequest());
 		
 		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelGroupMemberResponse.getStatus());
@@ -196,7 +197,7 @@ public class GroupMemberControllerTest {
     	cancelGroupMemberRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 01));
     	cancelGroupMemberRequest.setCancelReason(null);
     	
-		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
+		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest, createHttpServletRequest());
 		
 		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelGroupMemberResponse.getStatus());
@@ -221,7 +222,7 @@ public class GroupMemberControllerTest {
     	// The reason must be K or E
     	cancelGroupMemberRequest.setCancelReason("A");
     	
-		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
+		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest, createHttpServletRequest());
 		
 		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelGroupMemberResponse.getStatus());
@@ -245,7 +246,7 @@ public class GroupMemberControllerTest {
     	cancelGroupMemberRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
     	cancelGroupMemberRequest.setCancelReason("K");
     	
-		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
+		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest, createHttpServletRequest());
 		
 		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelGroupMemberResponse.getStatus());
@@ -269,7 +270,7 @@ public class GroupMemberControllerTest {
     	cancelGroupMemberRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
     	cancelGroupMemberRequest.setCancelReason("K");
     	
-		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
+		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest, createHttpServletRequest());
 		
 		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelGroupMemberResponse.getStatus());
@@ -293,7 +294,7 @@ public class GroupMemberControllerTest {
     	cancelGroupMemberRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
     	cancelGroupMemberRequest.setCancelReason("K");
     	
-		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
+		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest, createHttpServletRequest());
 		
 		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, cancelGroupMemberResponse.getStatus());
@@ -324,7 +325,7 @@ public class GroupMemberControllerTest {
     	homeAddress.setPostalCode("V1V1V1");
     	addGroupMemberRequest.setHomeAddress(homeAddress);
     	
-		ResponseEntity<AddGroupMemberResponse> response = groupMemberController.addGroupMember(addGroupMemberRequest);
+		ResponseEntity<AddGroupMemberResponse> response = groupMemberController.addGroupMember(addGroupMemberRequest, createHttpServletRequest());
 		
 		AddGroupMemberResponse addGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, addGroupMemberResponse.getStatus());
@@ -355,7 +356,7 @@ public class GroupMemberControllerTest {
     	homeAddress.setPostalCode("V1V1V1");
     	addGroupMemberRequest.setHomeAddress(homeAddress);
     	
-		ResponseEntity<AddGroupMemberResponse> response = groupMemberController.addGroupMember(addGroupMemberRequest);
+		ResponseEntity<AddGroupMemberResponse> response = groupMemberController.addGroupMember(addGroupMemberRequest, createHttpServletRequest());
 		
 		AddGroupMemberResponse addGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, addGroupMemberResponse.getStatus());
@@ -380,7 +381,7 @@ public class GroupMemberControllerTest {
     	addDependentRequest.setCoverageEffectiveDate(LocalDate.of(2022, 01, 31));
     	addDependentRequest.setRelationship("S");
     	
-		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest);
+		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest, createHttpServletRequest());
 		
 		AddDependentResponse addDependentResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, addDependentResponse.getStatus());
@@ -405,7 +406,7 @@ public class GroupMemberControllerTest {
     	addDependentRequest.setCoverageEffectiveDate(LocalDate.of(2022, 01, 31));
     	addDependentRequest.setRelationship("B");
     	
-		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest);
+		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest, createHttpServletRequest());
 		
 		AddDependentResponse addDependentResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, addDependentResponse.getStatus());
@@ -431,7 +432,7 @@ public class GroupMemberControllerTest {
     	addDependentRequest.setRelationship("S");
     	addDependentRequest.setIsStudent("A");
     	
-		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest);
+		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest, createHttpServletRequest());
 		
 		AddDependentResponse addDependentResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, addDependentResponse.getStatus());
@@ -456,7 +457,7 @@ public class GroupMemberControllerTest {
     	addDependentRequest.setCoverageEffectiveDate(LocalDate.of(2022, 01, 31));
     	addDependentRequest.setRelationship("S");
     	
-		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest);
+		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest, createHttpServletRequest());
 		
 		AddDependentResponse addDependentResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, addDependentResponse.getStatus());
@@ -481,7 +482,7 @@ public class GroupMemberControllerTest {
     	cancelDependentRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
     	cancelDependentRequest.setCancelReason("I");
     	
-		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest);
+		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest, createHttpServletRequest());
 		
 		CancelDependentResponse cancelDependentResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelDependentResponse.getStatus());
@@ -506,7 +507,7 @@ public class GroupMemberControllerTest {
     	cancelDependentRequest.setCoverageCancelDate(LocalDate.of(2023, 02, 28));
     	cancelDependentRequest.setCancelReason("I");
     	
-		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest);
+		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest, createHttpServletRequest());
 		
 		CancelDependentResponse cancelDependentResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelDependentResponse.getStatus());
@@ -531,7 +532,7 @@ public class GroupMemberControllerTest {
     	cancelDependentRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
     	cancelDependentRequest.setCancelReason("I");
     	
-		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest);
+		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest, createHttpServletRequest());
 		
 		CancelDependentResponse cancelDependentResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelDependentResponse.getStatus());
@@ -556,7 +557,7 @@ public class GroupMemberControllerTest {
     	cancelDependentRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
     	cancelDependentRequest.setCancelReason("I");
     	
-		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest);
+		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest, createHttpServletRequest());
 		
 		CancelDependentResponse cancelDependentResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelDependentResponse.getStatus());
@@ -580,7 +581,7 @@ public class GroupMemberControllerTest {
     	cancelDependentRequest.setCoverageCancelDate(LocalDate.of(2023, 02, 28));
     	cancelDependentRequest.setCancelReason("I");
     	
-		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest);
+		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest, createHttpServletRequest());
 		
 		CancelDependentResponse cancelDependentResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelDependentResponse.getStatus());
@@ -605,7 +606,7 @@ public class GroupMemberControllerTest {
     	cancelDependentRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
     	cancelDependentRequest.setCancelReason("K");
     	
-		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest);
+		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest, createHttpServletRequest());
 		
 		CancelDependentResponse cancelDependentResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, cancelDependentResponse.getStatus());
