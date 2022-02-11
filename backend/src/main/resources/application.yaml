@@ -8,6 +8,8 @@ spring:
           issuer-uri: ${keycloak.base-oauth-url}
           jwk-set-uri: ${keycloak.base-oauth-url}/protocol/openid-connect/certs
           audience: MSPDIRECT-SERVICE
+  datasource:
+    driverClassName: org.postgresql.Driver
   jpa:
     properties:
       hibernate:
