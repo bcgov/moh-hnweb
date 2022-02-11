@@ -11,7 +11,7 @@ public class BaseService {
 	private AuditService auditService;
 	
 	protected void messageSent(Transaction transaction) {
-		messageSent(transaction, null);
+		auditService.createTransactionEvent(transaction, TransactionEventType.MESSAGE_SENT);
 	}
 	
 	protected void messageSent(Transaction transaction, String messageId) {
@@ -19,8 +19,9 @@ public class BaseService {
 	}
 	
 	protected void messageReceived(Transaction transaction) {
-		messageReceived(transaction, null);
+		auditService.createTransactionEvent(transaction, TransactionEventType.MESSAGE_RECEIVED);
 	}
+	
 	protected void messageReceived(Transaction transaction, String messageId) {
 		auditService.createTransactionEvent(transaction, TransactionEventType.MESSAGE_RECEIVED, messageId);
 	}

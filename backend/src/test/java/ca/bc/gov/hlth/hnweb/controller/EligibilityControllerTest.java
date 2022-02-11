@@ -1,20 +1,17 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,11 +30,16 @@ import ca.bc.gov.hlth.hnweb.model.rest.eligibility.InquirePhnResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.eligibility.LookupPhnBeneficiary;
 import ca.bc.gov.hlth.hnweb.model.rest.eligibility.LookupPhnRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.eligibility.LookupPhnResponse;
-import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
-import ca.bc.gov.hlth.hnweb.security.UserInfo;
+import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedParty;
+import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
+import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
+import ca.bc.gov.hlth.hnweb.persistence.entity.TransactionEvent;
+import ca.bc.gov.hlth.hnweb.persistence.entity.TransactionEventType;
+import ca.bc.gov.hlth.hnweb.persistence.repository.AffectedPartyRepository;
+import ca.bc.gov.hlth.hnweb.persistence.repository.TransactionEventRepository;
+import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
 import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
 public class EligibilityControllerTest extends BaseControllerTest {
@@ -121,27 +123,13 @@ public class EligibilityControllerTest extends BaseControllerTest {
 	
 	@Autowired
 	private EligibilityController eligibilityController;
-	
-	public static MockWebServer mockBackEnd;
-	
-	private static MockedStatic<SecurityUtil> mockStatic;
-	
-	@BeforeAll
-    static void setUp() throws IOException {
-        mockBackEnd = new MockWebServer();
-        mockBackEnd.start(0);
-        
-        mockStatic = Mockito.mockStatic(SecurityUtil.class);
-        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "00000010", "hnweb-user"));
-    }
 
-    @AfterAll
-    static void tearDown() throws IOException {
-        mockBackEnd.shutdown();
-        mockStatic.close();
-       
-    }
-
+	@Autowired
+	private AffectedPartyRepository affectedPartyRepository;
+	
+	@Autowired
+	private TransactionEventRepository transactionEventRepository;
+   
 	@Test
 	public void testCheckEligibility_success_eligible() throws Exception {
         mockBackEnd.enqueue(new MockResponse()
@@ -168,7 +156,9 @@ public class EligibilityControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
-        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));	
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.CHECK_ELIGIBILITY);
 	}
 	
 	@Test
@@ -197,7 +187,9 @@ public class EligibilityControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
-        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));	
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+      
+        assertTransactionCreated(TransactionType.CHECK_ELIGIBILITY);
 	}
 
 	@Test
@@ -227,6 +219,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.CHECK_ELIGIBILITY);
 	}
 
 	@Test
@@ -264,6 +258,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));		
+        
+        assertTransactionCreated(TransactionType.MSP_COVERAGE_STATUS_CHECK);
 	}
 	
 	@Test
@@ -301,7 +297,9 @@ public class EligibilityControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
-        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));		
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.MSP_COVERAGE_STATUS_CHECK);
 	}
 	
 	@Test
@@ -337,7 +335,9 @@ public class EligibilityControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
-        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));		
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.MSP_COVERAGE_STATUS_CHECK);
 	}
 	
 	@Test
@@ -373,7 +373,9 @@ public class EligibilityControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
-        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));		
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));	
+        
+        assertTransactionCreated(TransactionType.MSP_COVERAGE_STATUS_CHECK);
 	}
 	
 	@Test
@@ -410,6 +412,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.PHN_INQUIRY);
 	}
 	
 	@Test
@@ -436,6 +440,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.PHN_INQUIRY);
 	}
 	
 	@Test
@@ -462,6 +468,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.PHN_INQUIRY);
 	}
 	
 	@Test
@@ -500,6 +508,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.PHN_INQUIRY);
 	}
 	
 	
@@ -533,6 +543,77 @@ public class EligibilityControllerTest extends BaseControllerTest {
         assertEquals("CHESERSNDNAME", beneficiary.getSecondName());
         assertEquals("19700101", beneficiary.getDateOfBirth());
         assertEquals("M", beneficiary.getGender());
+        
+		// The request should produce:
+		// - Transaction
+		// - 'Transaction Start' TransactionEvent
+		// - 2 x Request AffectedParty
+		// - 'Message Sent' TransactionEvent
+		// - 'Message Received' TransactionEvent
+		// - 'Transaction Complete' TransactionEvent
+		// - 1 x Response AffectedParty
+
+        Transaction transaction = assertTransactionCreated(TransactionType.PHN_LOOKUP);
+		assertEquals("00000010", transaction.getOrganization());
+		assertNotNull(transaction.getServer());
+		assertNotNull(transaction.getSessionId());
+		assertEquals("1.1.1.1", transaction.getSourceIp());
+		assertNotNull(transaction.getStartTime());
+		assertNotNull(transaction.getTransactionId());
+		assertEquals(TransactionType.PHN_LOOKUP.getValue(), transaction.getType());
+		assertEquals("unittest", transaction.getUserId());
+        
+		List<TransactionEvent> transactionEvents = transactionEventRepository.findAll(Sort.by("eventTime"));
+		assertEquals(4, transactionEvents.size());
+		
+		TransactionEvent transactionStartEvent = transactionEvents.get(0);
+		assertNotNull(transactionStartEvent.getEventTime());
+		assertNull(transactionStartEvent.getMessageId());
+		assertEquals(transaction, transactionStartEvent.getTransaction());
+		assertNotNull(transactionStartEvent.getTransactionEventId());
+		assertEquals(TransactionEventType.TRANSACTION_START.getValue(), transactionStartEvent.getType());
+
+		TransactionEvent messageSentEvent = transactionEvents.get(1);
+		assertNotNull(messageSentEvent.getEventTime());
+		assertNull(messageSentEvent.getMessageId());
+		assertEquals(transaction, messageSentEvent.getTransaction());
+		assertNotNull(messageSentEvent.getTransactionEventId());
+		assertEquals(TransactionEventType.MESSAGE_SENT.getValue(), messageSentEvent.getType());
+		
+		TransactionEvent messageReceivedEvent = transactionEvents.get(2);
+		assertNotNull(messageReceivedEvent.getEventTime());
+		assertNull(messageReceivedEvent.getMessageId());
+		assertEquals(transaction, messageReceivedEvent.getTransaction());
+		assertNotNull(messageReceivedEvent.getTransactionEventId());
+		assertEquals(TransactionEventType.MESSAGE_RECEIVED.getValue(), messageReceivedEvent.getType());
+		
+		TransactionEvent transactionCompleteEvent = transactionEvents.get(3);
+		assertNotNull(transactionCompleteEvent.getEventTime());
+		assertNull(transactionCompleteEvent.getMessageId());
+		assertEquals(transaction, transactionCompleteEvent.getTransaction());
+		assertNotNull(transactionCompleteEvent.getTransactionEventId());
+		assertEquals(TransactionEventType.TRANSACTION_COMPLETE.getValue(), transactionCompleteEvent.getType());
+		
+		List<AffectedParty> affectedParties = affectedPartyRepository.findAll(Sort.by("identifierType"));
+		assertEquals(3, affectedParties.size());
+		
+		AffectedParty contractNumber = affectedParties.get(0);		
+		assertNotNull(contractNumber.getAffectedPartyId());
+		assertEquals("123456789", contractNumber.getIdentifier());
+		assertEquals(IdentifierType.CONTRACT_NUMBER.getValue(), contractNumber.getIdentifierType());
+		assertEquals(transaction, contractNumber.getTransaction());		
+		
+		AffectedParty groupNumber = affectedParties.get(1);
+		assertNotNull(groupNumber.getAffectedPartyId());
+		assertEquals("1234567", groupNumber.getIdentifier());
+		assertEquals(IdentifierType.GROUP_NUMBER.getValue(), groupNumber.getIdentifierType());
+		assertEquals(transaction, groupNumber.getTransaction());
+		
+		AffectedParty phn = affectedParties.get(2);
+		assertNotNull(phn.getAffectedPartyId());
+		assertEquals("9123456789", phn.getIdentifier());
+		assertEquals(IdentifierType.PHN.getValue(), phn.getIdentifierType());
+		assertEquals(transaction, phn.getTransaction());
 	}
 
 	@Test
@@ -565,6 +646,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         assertEquals("BRANDYNXD", beneficiary.getSecondName());
         assertEquals("19560825", beneficiary.getDateOfBirth());
         assertEquals("M", beneficiary.getGender());
+        
+        assertTransactionCreated(TransactionType.PHN_LOOKUP);
 	}
 	
 	@Test
@@ -588,6 +671,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         List<LookupPhnBeneficiary> beneficiaries = lookupPhnResponse.getBeneficiaries();
         assertEquals(0, beneficiaries.size());
+        
+        assertTransactionCreated(TransactionType.PHN_LOOKUP);
 	}
 	
 	@Test
@@ -611,6 +696,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         List<LookupPhnBeneficiary> beneficiaries = lookupPhnResponse.getBeneficiaries();
         assertEquals(0, beneficiaries.size());
+        
+        assertTransactionCreated(TransactionType.PHN_LOOKUP);
 	}
 
     /**
@@ -639,4 +726,5 @@ public class EligibilityControllerTest extends BaseControllerTest {
 	}
 	
 }
+
 
