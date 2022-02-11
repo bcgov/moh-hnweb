@@ -96,8 +96,7 @@ public class EnrollmentController extends BaseController {
 			GetPersonDetailsResponse personDetailsResponse = converter.convertResponse(demoGraphicsResponse);
 			ResponseEntity<GetPersonDetailsResponse> responseEntity = ResponseEntity.ok(personDetailsResponse);
 
-			transactionComplete(transaction);
-			addAffectedParty(transaction, IdentifierType.PHN, personDetailsResponse.getPhn());
+			auditGetPersonSearchComplete(transaction, personDetailsResponse);
 			
 			return responseEntity;
 		} catch (Exception e) {
@@ -152,6 +151,13 @@ public class EnrollmentController extends BaseController {
 		//Some responses do not contain the PHN e.g. in the case of R50 z06 it is just an ACK
 		if (StringUtils.isNotBlank(enrollSubscriberResponse.getPhn())) {
 			addAffectedParty(transaction, IdentifierType.PHN, enrollSubscriberResponse.getPhn());
+		}
+	}
+
+	private void auditGetPersonSearchComplete(Transaction transaction, GetPersonDetailsResponse personDetailsResponse) {
+		transactionComplete(transaction);
+		if (StringUtils.isNotBlank(personDetailsResponse.getPhn())) {
+			addAffectedParty(transaction, IdentifierType.PHN, personDetailsResponse.getPhn());
 		}
 	}
 

@@ -5,6 +5,9 @@
         <xsl:apply-templates/>
         </getDemographicsResponse>
     </xsl:template>
+    <xsl:template match="HCIM_IN_GetDemographicsResponse/id">
+    	<messageIdExtension><xsl:value-of select="@extension"/></messageIdExtension>
+    </xsl:template>
     <xsl:template match="queryAck">
         <resultCount><xsl:value-of select="resultTotalQuantity/@value"/></resultCount>
         <message>

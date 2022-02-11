@@ -128,7 +128,7 @@ public class EnrollmentService extends BaseService {
 		}
 		//De-Serialize demographics response
 		GetDemographicsResponse getDemographicsResponse = hl7Serializer.fromXml(response.getBody(), GetDemographicsResponse.class);
-    	messageReceived(transaction, mmd.getMessageIdExt());
+    	messageReceived(transaction, getDemographicsResponse.getMessageIdExtension());
 	    
 	    return getDemographicsResponse;
 	
