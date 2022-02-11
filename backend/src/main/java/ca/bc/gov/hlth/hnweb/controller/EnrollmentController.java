@@ -81,9 +81,57 @@ public class EnrollmentController extends BaseController {
 		}
 	}
 
+	@PostMapping("/get-person-details")
+	public ResponseEntity<GetPersonDetailsResponse> getPersonDetails(@Valid @RequestBody GetPersonDetailsRequest personDetailsRequest, HttpServletRequest request) {
+		
+		logger.info("Demographic request: {} ", personDetailsRequest.getPhn());
+
+		Transaction transaction = transactionStart(request, TransactionType.GET_PERSON_DETAILS);
+		addAffectedParty(transaction, IdentifierType.PHN, personDetailsRequest.getPhn());
+
+		try {
+			GetDemographicsConverter converter = new GetDemographicsConverter();
+			GetDemographicsRequest demographicsRequest = converter.convertRequest(personDetailsRequest.getPhn());
+			GetDemographicsResponse demoGraphicsResponse = enrollmentService.getDemographics(demographicsRequest, transaction);
+			GetPersonDetailsResponse personDetailsResponse = converter.convertResponse(demoGraphicsResponse);
+			ResponseEntity<GetPersonDetailsResponse> responseEntity = ResponseEntity.ok(personDetailsResponse);
+
+			transactionComplete(transaction);
+			addAffectedParty(transaction, IdentifierType.PHN, personDetailsResponse.getPhn());
+			
+			return responseEntity;
+		} catch (Exception e) {
+			handleException(transaction, e);
+			return null;
+		}
+	}
+
+	@PostMapping("/name-search")
+	public ResponseEntity<NameSearchResponse> getNameSearch(@Valid @RequestBody NameSearchRequest nameSearchRequest, HttpServletRequest request) {
+		
+		logger.info("Name Search request: {} ", nameSearchRequest.getGivenName());
+
+		Transaction transaction = transactionStart(request, TransactionType.NAME_SEARCH);
+
+		try {
+			FindCandidatesConverter converter = new FindCandidatesConverter();
+			FindCandidatesRequest findCandidatesRequest = converter.convertRequest(nameSearchRequest);
+			FindCandidatesResponse findCandidatesResponse = enrollmentService.findCandidates(findCandidatesRequest, transaction);
+			NameSearchResponse nameSearchResponse = converter.convertResponse(findCandidatesResponse);
+			ResponseEntity<NameSearchResponse> responseEntity = ResponseEntity.ok(nameSearchResponse);
+
+			auditGetNameSearchComplete(transaction, nameSearchResponse);
+
+			return responseEntity;
+		} catch (Exception e) {
+			handleException(transaction, e);
+			return null;
+		}
+	}
+
 	private Transaction auditEnrollSubscriberStart(EnrollSubscriberRequest enrollSubscriberRequest,	HttpServletRequest request) {
 		
-		Transaction transaction = transactionStart(request, TransactionType.ENROLL_SUBSCRIBER);
+		Transaction transaction = transactionStart(request, TransactionType.ENROLL_SUBSCRIBER);		
 		//Some requests do not contain the PHN e.g R50 z05 as it is Enroll subscriber without PHN
 		if (StringUtils.isNotBlank(enrollSubscriberRequest.getPhn())) {
 			addAffectedParty(transaction, IdentifierType.PHN, enrollSubscriberRequest.getPhn());
@@ -107,57 +155,10 @@ public class EnrollmentController extends BaseController {
 		}
 	}
 
-	@PostMapping("/get-person-details")
-	public ResponseEntity<GetPersonDetailsResponse> getPersonDetails(@Valid @RequestBody GetPersonDetailsRequest personDetailsRequest, HttpServletRequest request) {
-		
-		logger.info("Demographic request: {} ", personDetailsRequest.getPhn());
-
-		Transaction transaction = transactionStart(request, TransactionType.ENROLL_SUBSCRIBER);
-		addAffectedParty(transaction, IdentifierType.PHN, personDetailsRequest.getPhn());
-
-		try {
-			GetDemographicsConverter converter = new GetDemographicsConverter();
-
-			GetDemographicsRequest demographicsRequest = converter.convertRequest(personDetailsRequest.getPhn());
-			GetDemographicsResponse demoGraphicsResponse = enrollmentService.getDemographics(demographicsRequest, transaction);
-			GetPersonDetailsResponse personDetailsResponse = converter.convertResponse(demoGraphicsResponse);
-			ResponseEntity<GetPersonDetailsResponse> responseEntity = ResponseEntity.ok(personDetailsResponse);
-
-			transactionComplete(transaction);
-			addAffectedParty(transaction, IdentifierType.PHN, personDetailsResponse.getPhn());
-			
-			return responseEntity;
-		} catch (Exception e) {
-			handleException(transaction, e);
-			return null;
-		}
-	}
-
-	@PostMapping("/name-search")
-	public ResponseEntity<NameSearchResponse> getNameSearch(@Valid @RequestBody NameSearchRequest nameSearchRequest, HttpServletRequest request) {
-		
-		logger.info("Name Search request: {} ", nameSearchRequest.getGivenName());
-
-		Transaction transaction = transactionStart(request, TransactionType.ENROLL_SUBSCRIBER);
-
-		try {
-			FindCandidatesConverter converter = new FindCandidatesConverter();
-
-			FindCandidatesRequest findCandidatesRequest = converter.convertRequest(nameSearchRequest);
-			
-			FindCandidatesResponse findCandidatesResponse = enrollmentService.findCandidates(findCandidatesRequest, transaction);
-			NameSearchResponse nameSearchResponse = converter.convertResponse(findCandidatesResponse);
-			ResponseEntity<NameSearchResponse> responseEntity = ResponseEntity.ok(nameSearchResponse);
-
-			transactionComplete(transaction);
-			if (nameSearchResponse.getCandidates() != null) {
-				nameSearchResponse.getCandidates().forEach(candidate -> addAffectedParty(transaction, IdentifierType.PHN, candidate.getPhn()));
-			}
-
-			return responseEntity;
-		} catch (Exception e) {
-			handleException(transaction, e);
-			return null;
+	private void auditGetNameSearchComplete(Transaction transaction, NameSearchResponse nameSearchResponse) {
+		transactionComplete(transaction);
+		if (nameSearchResponse.getCandidates() != null) {
+			nameSearchResponse.getCandidates().forEach(candidate -> addAffectedParty(transaction, IdentifierType.PHN, candidate.getPhn()));
 		}
 	}
 

@@ -4,16 +4,10 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
-import java.io.IOException;
 import java.time.LocalDate;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,14 +29,10 @@ import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.MemberAddress;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
-import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
-import ca.bc.gov.hlth.hnweb.security.UserInfo;
 import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
-@SpringBootTest
 public class GroupMemberControllerTest extends BaseControllerTest {
 
 	private static final String RPBSPED0_ERROR_PHN_HAS_NO_COVERAGE_IN_GROUP = "        RPBSPED000000010                                ERRORMSGRPBS9179PHN HAS NO COVERAGE IN GROUP                                            93479840746337109111111   ";
@@ -72,28 +62,9 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 	private static final String RPBSPWP0_ERROR_NO_ACTIVE_COVERAGES_FOUND= "        RPBSPWP000000010                                ERRORMSGRPBS0047NO ACTIVE COVERAGES FOUND. PLS FORWARD SOURCE DOCS TO MSP               9340338122633710993290908952022-01-31I";
 	private static final String RPBSPWP0_ERROR_FUTURE_CANCEL_DATE= "        RPBSPWP000000010                                ERRORMSGRPBS0090DEPENDENT HAS A FUTURE CANCEL DATE. PLS FORWARD DOCS TO MSP             9340338122633710993290908952023-02-28I";
 	
-	private static MockWebServer mockBackEnd;
-
-	private static MockedStatic<SecurityUtil> mockStatic;
-
 	@Autowired
 	private GroupMemberController groupMemberController;
 	
-	@BeforeAll
-    static void setUp() throws IOException {
-        mockBackEnd = new MockWebServer();
-        mockBackEnd.start(0);
-        
-        mockStatic = Mockito.mockStatic(SecurityUtil.class);
-        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "00000010", "hnweb-user"));
-    }
-
-    @AfterAll
-    static void tearDown() throws IOException {
-        mockBackEnd.shutdown();
-        mockStatic.close();  
-    }
-
     @Test
     public void testUpdateGroupMember_invalidRequest() {
     	

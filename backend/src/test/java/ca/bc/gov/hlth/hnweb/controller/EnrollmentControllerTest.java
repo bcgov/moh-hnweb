@@ -3,15 +3,10 @@ package ca.bc.gov.hlth.hnweb.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -27,11 +22,9 @@ import ca.bc.gov.hlth.hnweb.model.rest.enrollment.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.NameSearchRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.NameSearchResponse;
-import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
-import ca.bc.gov.hlth.hnweb.security.UserInfo;
+import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.utils.TestUtil;
 import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
 /**
@@ -60,28 +53,9 @@ public class EnrollmentControllerTest extends BaseControllerTest {
 	
 	private static final String NO_RECORD_MESSAGE = " No results were returned. Please refine your search criteria, and try again.";
 	
-	public static MockWebServer mockBackEnd;
-	private static MockedStatic<SecurityUtil> mockStatic;
-	
-
 	@Autowired
 	private EnrollmentController enrollmentController;
 	
-	@BeforeAll
-    static void setUp() throws IOException {
-        mockBackEnd = new MockWebServer();
-        mockBackEnd.start(0);
-        mockStatic = Mockito.mockStatic(SecurityUtil.class);
-        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "00000010", "hnweb-user"));
-    }
-
-    @AfterAll
-    static void tearDown() throws IOException {
-    	mockStatic.close();
-        mockBackEnd.shutdown();
-       
-    }
-    
     @Test
     void testEnrollSubscriber_Z06_Error() throws Exception {    	
         
@@ -101,7 +75,9 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
-        assertEquals("/", recordedRequest.getPath());       
+        assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.ENROLL_SUBSCRIBER);
     }
     
     @Test
@@ -122,7 +98,9 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
-        assertEquals("/", recordedRequest.getPath());       
+        assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.ENROLL_SUBSCRIBER);
     }
     
     @Test
@@ -147,6 +125,8 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertEquals("/", recordedRequest.getPath());       
+        
+        assertTransactionCreated(TransactionType.ENROLL_SUBSCRIBER);
     }
     
     @Test
@@ -170,6 +150,8 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertEquals("/", recordedRequest.getPath());       
+        
+        assertTransactionCreated(TransactionType.ENROLL_SUBSCRIBER);
     }
     
     
@@ -194,6 +176,8 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.GET_PERSON_DETAILS);
     }
     
     @Test
@@ -217,6 +201,8 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.GET_PERSON_DETAILS);
     }
     
     @Test
@@ -244,6 +230,8 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.NAME_SEARCH);
     }
     
     
@@ -269,6 +257,8 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.NAME_SEARCH);
     }
     
     /**
@@ -308,6 +298,5 @@ public class EnrollmentControllerTest extends BaseControllerTest {
 		
 		return enrollSubscriberRequest;
 	}
-    
 
 }
