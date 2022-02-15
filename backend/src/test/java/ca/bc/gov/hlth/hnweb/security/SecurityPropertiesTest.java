@@ -18,7 +18,7 @@ public class SecurityPropertiesTest {
 	@Test
 	public void testGetProperties_success() {
 		Map<String, List<String>> rolePermissions = securityProperties.getRolePermissions();
-		assertEquals(3, rolePermissions.size());
+		assertEquals(4, rolePermissions.size());
 		
 		List<String> e45Permissions = rolePermissions.get("E45");
 		assertEquals(1, e45Permissions.size());
