@@ -30,8 +30,19 @@ public class SecurityUtilTest {
 	}
 	
 	@Test
-	public void testLoadPermissions_Eligibility() {
-		Jwt jwt = createToken("Eligibility");
+	public void testLoadPermissions_ELIGIBILITY() {
+		Jwt jwt = createToken("ELIGIBILITY");
+		
+		List<String> permissions = SecurityUtil.loadPermissions(jwt, securityProperties.getRolePermissions());
+		assertEquals(3, permissions.size());
+		assertEquals("E45", permissions.get(0));
+		assertEquals("R15", permissions.get(1));
+		assertEquals("R41", permissions.get(2));
+	}
+	
+	@Test
+	public void testLoadPermissions_TRAININGHEALTHAUTH() {
+		Jwt jwt = createToken("TRAININGHEALTHAUTH");
 		
 		List<String> permissions = SecurityUtil.loadPermissions(jwt, securityProperties.getRolePermissions());
 		assertEquals(3, permissions.size());
