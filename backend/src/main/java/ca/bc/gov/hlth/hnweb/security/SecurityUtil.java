@@ -77,8 +77,14 @@ public class SecurityUtil {
 	public static List<String> loadPermissions(Jwt jwt, Map<String, List<String>> rolePermissions) {
         List<String> roles = loadRoles(jwt);
         List<String> permissions = new ArrayList<>();
-        roles.forEach(role -> {        		
-        	permissions.addAll(rolePermissions.get(role));
+        roles.forEach(role -> {
+        	List<String> currentPermissions = rolePermissions.get(role);
+        	if (currentPermissions != null) {
+        		permissions.addAll(currentPermissions);	
+        	} else {
+        		logger.warn("Role {} has no permissions defined.", role);
+        	}
+        	
         });
         
         return permissions;

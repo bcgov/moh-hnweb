@@ -26,7 +26,7 @@
     name: 'App',
     data: function () {
       return {
-        dev: import.meta.env.MODE === 'DEV',
+        dev: import.meta.env.MODE === 'development',
       }
     },
     computed: {

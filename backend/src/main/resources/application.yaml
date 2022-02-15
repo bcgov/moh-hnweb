@@ -26,11 +26,15 @@ v2:
 # Mapping of roles (SPGs) to specific permissions
 security:
   rolePermissions:
+    DUMMY:
+      - Dummy
     E45:
       - E45
-    Eligibility:
+    ELIGIBILITY:
       - E45
       - R15
       - R41
-    Dummy:
-      - Dummy
+    TRAININGHEALTHAUTH:
+      - E45
+      - R15
+      - R41    
