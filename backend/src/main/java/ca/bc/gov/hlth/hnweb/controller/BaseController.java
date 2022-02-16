@@ -62,7 +62,7 @@ public abstract class BaseController {
 	 * @throws ResponseStatusException Used to generate the response to the client
 	 */
 	protected void handleException(Transaction transaction, Exception exception) throws ResponseStatusException {
-		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+		HttpStatus status;
 		if (exception instanceof HNWebException) {
 			HNWebException hwe = (HNWebException)exception;
 			switch (hwe.getType()) {
