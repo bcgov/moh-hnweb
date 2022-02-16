@@ -3,23 +3,18 @@ package ca.bc.gov.hlth.hnweb.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
+import ca.bc.gov.hlth.hnweb.BaseControllerTest;
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.EnrollSubscriberResponse;
@@ -27,19 +22,16 @@ import ca.bc.gov.hlth.hnweb.model.rest.enrollment.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.NameSearchRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.NameSearchResponse;
-import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
-import ca.bc.gov.hlth.hnweb.security.UserInfo;
+import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.utils.TestUtil;
 import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
 /**
  * JUnit test class for EnrollmentController
  *
  */
-@SpringBootTest
-public class EnrollmentControllerTest {
+public class EnrollmentControllerTest extends BaseControllerTest {
 
 	private static final String Z06_ERROR = "MSH|^~\\&|RAIPRSN-NM-SRCH|BC00002041|HNWeb|moh_hnclient_dev|20211013124847.746-0700||ACK|71902|D|2.4\r\n" + 
 			"MSA|AE|20191108082211|NHR529E^SEVERE SYSTEM ERROR\r\n" + 
@@ -61,28 +53,9 @@ public class EnrollmentControllerTest {
 	
 	private static final String NO_RECORD_MESSAGE = " No results were returned. Please refine your search criteria, and try again.";
 	
-	public static MockWebServer mockBackEnd;
-	private static MockedStatic<SecurityUtil> mockStatic;
-	
-
 	@Autowired
 	private EnrollmentController enrollmentController;
 	
-	@BeforeAll
-    static void setUp() throws IOException {
-        mockBackEnd = new MockWebServer();
-        mockBackEnd.start(0);
-        mockStatic = Mockito.mockStatic(SecurityUtil.class);
-        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "00000010", "hnweb-user"));
-    }
-
-    @AfterAll
-    static void tearDown() throws IOException {
-    	mockStatic.close();
-        mockBackEnd.shutdown();
-       
-    }
-    
     @Test
     void testEnrollSubscriber_Z06_Error() throws Exception {    	
         
@@ -92,7 +65,7 @@ public class EnrollmentControllerTest {
 
 		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();
 		enrollSubscriberRequest.setPhn("123456789");
-		ResponseEntity<EnrollSubscriberResponse> enrollSubscriber = enrollmentController.enrollSubscriber(enrollSubscriberRequest);
+		ResponseEntity<EnrollSubscriberResponse> enrollSubscriber = enrollmentController.enrollSubscriber(enrollSubscriberRequest, createHttpServletRequest());
 
 		//Check the response
 		assertEquals(StatusEnum.ERROR, enrollSubscriber.getBody().getStatus());
@@ -102,7 +75,9 @@ public class EnrollmentControllerTest {
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
-        assertEquals("/", recordedRequest.getPath());       
+        assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.ENROLL_SUBSCRIBER);
     }
     
     @Test
@@ -113,7 +88,7 @@ public class EnrollmentControllerTest {
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
 
 		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();		
-		ResponseEntity<EnrollSubscriberResponse> enrollSubscriber = enrollmentController.enrollSubscriber(enrollSubscriberRequest);
+		ResponseEntity<EnrollSubscriberResponse> enrollSubscriber = enrollmentController.enrollSubscriber(enrollSubscriberRequest, createHttpServletRequest());
 
 		//Check the response
 		assertEquals(StatusEnum.ERROR, enrollSubscriber.getBody().getStatus());
@@ -123,7 +98,9 @@ public class EnrollmentControllerTest {
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
-        assertEquals("/", recordedRequest.getPath());       
+        assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.ENROLL_SUBSCRIBER);
     }
     
     @Test
@@ -135,7 +112,7 @@ public class EnrollmentControllerTest {
 
 		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();
 		enrollSubscriberRequest.setPhn("123456789");
-		ResponseEntity<EnrollSubscriberResponse> enrollSubscriber = enrollmentController.enrollSubscriber(enrollSubscriberRequest);
+		ResponseEntity<EnrollSubscriberResponse> enrollSubscriber = enrollmentController.enrollSubscriber(enrollSubscriberRequest, createHttpServletRequest());
 
 		//Check the response
 		assertEquals(StatusEnum.SUCCESS, enrollSubscriber.getBody().getStatus());
@@ -148,6 +125,8 @@ public class EnrollmentControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertEquals("/", recordedRequest.getPath());       
+        
+        assertTransactionCreated(TransactionType.ENROLL_SUBSCRIBER);
     }
     
     @Test
@@ -158,7 +137,7 @@ public class EnrollmentControllerTest {
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
 
 		EnrollSubscriberRequest enrollSubscriberRequest = createEnrollSubscriberRequest();
-		ResponseEntity<EnrollSubscriberResponse> enrollSubscriber = enrollmentController.enrollSubscriber(enrollSubscriberRequest);
+		ResponseEntity<EnrollSubscriberResponse> enrollSubscriber = enrollmentController.enrollSubscriber(enrollSubscriberRequest, createHttpServletRequest());
 
 		//Check the response
 		assertEquals(StatusEnum.SUCCESS, enrollSubscriber.getBody().getStatus());
@@ -171,6 +150,8 @@ public class EnrollmentControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertEquals("/", recordedRequest.getPath());       
+        
+        assertTransactionCreated(TransactionType.ENROLL_SUBSCRIBER);
     }
     
     
@@ -184,7 +165,7 @@ public class EnrollmentControllerTest {
         GetPersonDetailsRequest getPersonQuery = new GetPersonDetailsRequest();
         getPersonQuery.setPhn("9862716574");
         
-        ResponseEntity<GetPersonDetailsResponse> response = enrollmentController.getPersonDetails(getPersonQuery);
+        ResponseEntity<GetPersonDetailsResponse> response = enrollmentController.getPersonDetails(getPersonQuery, createHttpServletRequest());
         GetPersonDetailsResponse getPersonDetailsResponse = response.getBody();
     	assertEquals("9862716574",  getPersonDetailsResponse.getPhn());	
     	assertEquals("Robert", getPersonDetailsResponse.getGivenName());
@@ -195,6 +176,8 @@ public class EnrollmentControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.GET_PERSON_DETAILS);
     }
     
     @Test
@@ -208,7 +191,7 @@ public class EnrollmentControllerTest {
         GetPersonDetailsRequest getPersonQuery = new GetPersonDetailsRequest();
         getPersonQuery.setPhn("9862716574");
         
-        ResponseEntity<GetPersonDetailsResponse> response = enrollmentController.getPersonDetails(getPersonQuery);
+        ResponseEntity<GetPersonDetailsResponse> response = enrollmentController.getPersonDetails(getPersonQuery, createHttpServletRequest());
         GetPersonDetailsResponse getPersonDetailsResponse = response.getBody();
         assertEquals(StatusEnum.WARNING, getPersonDetailsResponse.getStatus());
         assertEquals(expectedMessageText, getPersonDetailsResponse.getMessage());
@@ -218,6 +201,8 @@ public class EnrollmentControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.GET_PERSON_DETAILS);
     }
     
     @Test
@@ -233,7 +218,7 @@ public class EnrollmentControllerTest {
         nameSearchRequest.setGender("M");
         nameSearchRequest.setDateOfBirth(LocalDate.of(1973, 8, 11));
         	       
-        ResponseEntity<NameSearchResponse> response = enrollmentController.getNameSearch(nameSearchRequest);
+        ResponseEntity<NameSearchResponse> response = enrollmentController.getNameSearch(nameSearchRequest, createHttpServletRequest());
         NameSearchResponse nameSearchResponse = response.getBody();
         assertEquals(3, nameSearchResponse.getCandidates().size());
         assertEquals(new BigDecimal(31), nameSearchResponse.getCandidates().get(0).getScore());
@@ -245,6 +230,8 @@ public class EnrollmentControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.NAME_SEARCH);
     }
     
     
@@ -261,7 +248,7 @@ public class EnrollmentControllerTest {
         nameSearchRequest.setGender("M");
         nameSearchRequest.setDateOfBirth(LocalDate.of(1973, 8, 11));
         	       
-        ResponseEntity<NameSearchResponse> response = enrollmentController.getNameSearch(nameSearchRequest);
+        ResponseEntity<NameSearchResponse> response = enrollmentController.getNameSearch(nameSearchRequest, createHttpServletRequest());
         NameSearchResponse nameSearchResponse = response.getBody();
         assertEquals(NO_RECORD_MESSAGE, nameSearchResponse.getMessage());
     			
@@ -270,6 +257,8 @@ public class EnrollmentControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.NAME_SEARCH);
     }
     
     /**
@@ -285,6 +274,7 @@ public class EnrollmentControllerTest {
     
     private EnrollSubscriberRequest createEnrollSubscriberRequest() {
 		EnrollSubscriberRequest enrollSubscriberRequest = new EnrollSubscriberRequest();
+		enrollSubscriberRequest.setGroupNumber("4567368");
 		enrollSubscriberRequest.setGivenName("FirstName");
 		enrollSubscriberRequest.setSecondName("SecondName");
 		enrollSubscriberRequest.setSurname("FamilyName");
@@ -308,6 +298,5 @@ public class EnrollmentControllerTest {
 		
 		return enrollSubscriberRequest;
 	}
-    
 
 }

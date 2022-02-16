@@ -21,6 +21,7 @@ public class SecurityUtil {
 	private static final Logger logger = LoggerFactory.getLogger(SecurityUtil.class);
 
 	private static final String CLAIM_RESOURCE_ACCESS = "resource_access";
+	private static final String CLAIM_SESSION_STATE = "session_state";
 	private static final String CLAIM_USERNAME = "preferred_username";
 	private static final String CLAIM_ORGANIZATION = "org_details";
 	
@@ -40,6 +41,7 @@ public class SecurityUtil {
 		List<String> roles = loadRoles(jwt);
 		userInfo.setRole(StringUtils.join(roles, " "));
 
+		userInfo.setSessionState(jwt.getClaim(CLAIM_SESSION_STATE));
 		userInfo.setUsername(jwt.getClaim(CLAIM_USERNAME));
 		
 		return userInfo;

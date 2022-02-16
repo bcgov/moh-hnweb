@@ -4,10 +4,17 @@ import java.util.List;
 
 public class FindCandidatesResponse {
 	
+	private String messageIdExtension;
 	private List<FindCandidatesResult> results;
 	private Message message;
 	private int resultCount;
 	
+	public String getMessageIdExtension() {
+		return messageIdExtension;
+	}
+	public void setMessageIdExtension(String messageIdExtension) {
+		this.messageIdExtension = messageIdExtension;
+	}
 	public List<FindCandidatesResult> getResults() {
 		return results;
 	}

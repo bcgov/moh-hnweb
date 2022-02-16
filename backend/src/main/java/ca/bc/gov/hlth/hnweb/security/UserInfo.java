@@ -7,6 +7,7 @@ public class UserInfo {
 	private String username;
 	private String organization;
 	private String role;
+	private String sessionState;
 
 	public UserInfo() {
 		super();
@@ -17,6 +18,14 @@ public class UserInfo {
 		this.username = username;
 		this.organization = organization;
 		this.role = role;
+	}
+	
+	public UserInfo(String username, String organization, String role, String sessionState) {
+		super();
+		this.username = username;
+		this.organization = organization;
+		this.role = role;
+		this.sessionState = sessionState;
 	}
 
 	public String getUsername() {
@@ -41,6 +50,14 @@ public class UserInfo {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	public String getSessionState() {
+		return sessionState;
+	}
+
+	public void setSessionState(String sessionState) {
+		this.sessionState = sessionState;
 	}
 
 }

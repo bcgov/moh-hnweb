@@ -4,16 +4,10 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
-import java.io.IOException;
 import java.time.LocalDate;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +16,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.server.ResponseStatusException;
 
+import ca.bc.gov.hlth.hnweb.BaseControllerTest;
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddDependentRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddDependentResponse;
@@ -34,14 +29,11 @@ import ca.bc.gov.hlth.hnweb.model.rest.groupmember.CancelGroupMemberResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.MemberAddress;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
-import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
-import ca.bc.gov.hlth.hnweb.security.UserInfo;
+import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
-@SpringBootTest
-public class GroupMemberControllerTest {
+public class GroupMemberControllerTest extends BaseControllerTest {
 
 	private static final String RPBSPED0_ERROR_PHN_HAS_NO_COVERAGE_IN_GROUP = "        RPBSPED000000010                                ERRORMSGRPBS9179PHN HAS NO COVERAGE IN GROUP                                            93479840746337109111111   ";
 	private static final String RPBSPEE0_ERROR_PHN_HAS_NO_COVERAGE_IN_GROUP = "        RPBSPEE000000010                                ERRORMSGRPBS9179PHN HAS NO COVERAGE IN GROUP                                            93479840746337109111111   ";
@@ -70,28 +62,9 @@ public class GroupMemberControllerTest {
 	private static final String RPBSPWP0_ERROR_NO_ACTIVE_COVERAGES_FOUND= "        RPBSPWP000000010                                ERRORMSGRPBS0047NO ACTIVE COVERAGES FOUND. PLS FORWARD SOURCE DOCS TO MSP               9340338122633710993290908952022-01-31I";
 	private static final String RPBSPWP0_ERROR_FUTURE_CANCEL_DATE= "        RPBSPWP000000010                                ERRORMSGRPBS0090DEPENDENT HAS A FUTURE CANCEL DATE. PLS FORWARD DOCS TO MSP             9340338122633710993290908952023-02-28I";
 	
-	private static MockWebServer mockBackEnd;
-
-	private static MockedStatic<SecurityUtil> mockStatic;
-
 	@Autowired
 	private GroupMemberController groupMemberController;
 	
-	@BeforeAll
-    static void setUp() throws IOException {
-        mockBackEnd = new MockWebServer();
-        mockBackEnd.start(0);
-        
-        mockStatic = Mockito.mockStatic(SecurityUtil.class);
-        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "00000010", "hnweb-user"));
-    }
-
-    @AfterAll
-    static void tearDown() throws IOException {
-        mockBackEnd.shutdown();
-        mockStatic.close();  
-    }
-
     @Test
     public void testUpdateGroupMember_invalidRequest() {
     	
@@ -99,10 +72,12 @@ public class GroupMemberControllerTest {
     	updateNumberAndDeptRequest.setPhn("9347984074");
     	updateNumberAndDeptRequest.setGroupNumber("6337109");
     	ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-    		groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest);
+    		groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest, createHttpServletRequest());
         });
     	assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
     	assertEquals("Department Number or Group Number is required", exception.getReason());
+    	
+        assertTransactionCreated(TransactionType.UPDATE_NUMBER_AND_OR_DEPT);
     }
 
     @Test
@@ -120,7 +95,7 @@ public class GroupMemberControllerTest {
     	updateNumberAndDeptRequest.setDepartmentNumber("000001");
     	updateNumberAndDeptRequest.setGroupMemberNumber("000000001");
     	
-		ResponseEntity<UpdateNumberAndDeptResponse> response = groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest);
+		ResponseEntity<UpdateNumberAndDeptResponse> response = groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest, createHttpServletRequest());
 		
 		UpdateNumberAndDeptResponse updateNumberAndDeptResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, updateNumberAndDeptResponse.getStatus());
@@ -130,6 +105,8 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.UPDATE_NUMBER_AND_OR_DEPT);
     }
     
     @Test
@@ -147,7 +124,7 @@ public class GroupMemberControllerTest {
     	updateNumberAndDeptRequest.setDepartmentNumber("000001");
     	updateNumberAndDeptRequest.setGroupMemberNumber("000000001");
     	
-		ResponseEntity<UpdateNumberAndDeptResponse> response = groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest);
+		ResponseEntity<UpdateNumberAndDeptResponse> response = groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest, createHttpServletRequest());
 		
 		UpdateNumberAndDeptResponse updateNumberAndDeptResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, updateNumberAndDeptResponse.getStatus());
@@ -157,6 +134,8 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.UPDATE_NUMBER_AND_OR_DEPT);
     }
     
     @Test
@@ -171,7 +150,7 @@ public class GroupMemberControllerTest {
     	cancelGroupMemberRequest.setCoverageCancelDate(null);
     	cancelGroupMemberRequest.setCancelReason(null);
     	
-		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
+		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest, createHttpServletRequest());
 		
 		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelGroupMemberResponse.getStatus());
@@ -181,6 +160,8 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_GROUP_MEMBER);
     }
     
     @Test
@@ -196,7 +177,7 @@ public class GroupMemberControllerTest {
     	cancelGroupMemberRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 01));
     	cancelGroupMemberRequest.setCancelReason(null);
     	
-		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
+		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest, createHttpServletRequest());
 		
 		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelGroupMemberResponse.getStatus());
@@ -206,6 +187,8 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_GROUP_MEMBER);
     }
     
     @Test
@@ -221,7 +204,7 @@ public class GroupMemberControllerTest {
     	// The reason must be K or E
     	cancelGroupMemberRequest.setCancelReason("A");
     	
-		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
+		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest, createHttpServletRequest());
 		
 		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelGroupMemberResponse.getStatus());
@@ -231,6 +214,8 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_GROUP_MEMBER);
     }
 
     @Test
@@ -245,7 +230,7 @@ public class GroupMemberControllerTest {
     	cancelGroupMemberRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
     	cancelGroupMemberRequest.setCancelReason("K");
     	
-		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
+		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest, createHttpServletRequest());
 		
 		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelGroupMemberResponse.getStatus());
@@ -255,6 +240,8 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_GROUP_MEMBER);
     }
     
     @Test
@@ -269,7 +256,7 @@ public class GroupMemberControllerTest {
     	cancelGroupMemberRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
     	cancelGroupMemberRequest.setCancelReason("K");
     	
-		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
+		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest, createHttpServletRequest());
 		
 		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelGroupMemberResponse.getStatus());
@@ -279,6 +266,8 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_GROUP_MEMBER);
     }
     
     @Test
@@ -293,7 +282,7 @@ public class GroupMemberControllerTest {
     	cancelGroupMemberRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
     	cancelGroupMemberRequest.setCancelReason("K");
     	
-		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest);
+		ResponseEntity<CancelGroupMemberResponse> response = groupMemberController.cancelGroupMember(cancelGroupMemberRequest, createHttpServletRequest());
 		
 		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, cancelGroupMemberResponse.getStatus());
@@ -303,6 +292,8 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_GROUP_MEMBER);
     }
     
     @Test
@@ -324,7 +315,7 @@ public class GroupMemberControllerTest {
     	homeAddress.setPostalCode("V1V1V1");
     	addGroupMemberRequest.setHomeAddress(homeAddress);
     	
-		ResponseEntity<AddGroupMemberResponse> response = groupMemberController.addGroupMember(addGroupMemberRequest);
+		ResponseEntity<AddGroupMemberResponse> response = groupMemberController.addGroupMember(addGroupMemberRequest, createHttpServletRequest());
 		
 		AddGroupMemberResponse addGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, addGroupMemberResponse.getStatus());
@@ -334,6 +325,8 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.ADD_GROUP_MEMBER);
     }
     
     @Test
@@ -355,7 +348,7 @@ public class GroupMemberControllerTest {
     	homeAddress.setPostalCode("V1V1V1");
     	addGroupMemberRequest.setHomeAddress(homeAddress);
     	
-		ResponseEntity<AddGroupMemberResponse> response = groupMemberController.addGroupMember(addGroupMemberRequest);
+		ResponseEntity<AddGroupMemberResponse> response = groupMemberController.addGroupMember(addGroupMemberRequest, createHttpServletRequest());
 		
 		AddGroupMemberResponse addGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, addGroupMemberResponse.getStatus());
@@ -365,6 +358,8 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.ADD_GROUP_MEMBER);
     }
     
     @Test
@@ -380,7 +375,7 @@ public class GroupMemberControllerTest {
     	addDependentRequest.setCoverageEffectiveDate(LocalDate.of(2022, 01, 31));
     	addDependentRequest.setRelationship("S");
     	
-		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest);
+		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest, createHttpServletRequest());
 		
 		AddDependentResponse addDependentResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, addDependentResponse.getStatus());
@@ -390,6 +385,8 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.ADD_DEPENDENT);
     }
 
     @Test
@@ -405,7 +402,7 @@ public class GroupMemberControllerTest {
     	addDependentRequest.setCoverageEffectiveDate(LocalDate.of(2022, 01, 31));
     	addDependentRequest.setRelationship("B");
     	
-		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest);
+		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest, createHttpServletRequest());
 		
 		AddDependentResponse addDependentResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, addDependentResponse.getStatus());
@@ -415,6 +412,8 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.ADD_DEPENDENT);
     }
 
     @Test
@@ -431,7 +430,7 @@ public class GroupMemberControllerTest {
     	addDependentRequest.setRelationship("S");
     	addDependentRequest.setIsStudent("A");
     	
-		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest);
+		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest, createHttpServletRequest());
 		
 		AddDependentResponse addDependentResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, addDependentResponse.getStatus());
@@ -441,6 +440,8 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
 	    RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
 	    assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.ADD_DEPENDENT);
 	}
     
     @Test
@@ -456,7 +457,7 @@ public class GroupMemberControllerTest {
     	addDependentRequest.setCoverageEffectiveDate(LocalDate.of(2022, 01, 31));
     	addDependentRequest.setRelationship("S");
     	
-		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest);
+		ResponseEntity<AddDependentResponse> response = groupMemberController.addDependent(addDependentRequest, createHttpServletRequest());
 		
 		AddDependentResponse addDependentResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, addDependentResponse.getStatus());
@@ -466,6 +467,8 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
 	    RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
 	    assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.ADD_DEPENDENT);
 	}
 	
     @Test
@@ -481,7 +484,7 @@ public class GroupMemberControllerTest {
     	cancelDependentRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
     	cancelDependentRequest.setCancelReason("I");
     	
-		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest);
+		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest, createHttpServletRequest());
 		
 		CancelDependentResponse cancelDependentResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelDependentResponse.getStatus());
@@ -491,6 +494,8 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_DEPENDENT);
     }
     
     @Test
@@ -506,7 +511,7 @@ public class GroupMemberControllerTest {
     	cancelDependentRequest.setCoverageCancelDate(LocalDate.of(2023, 02, 28));
     	cancelDependentRequest.setCancelReason("I");
     	
-		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest);
+		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest, createHttpServletRequest());
 		
 		CancelDependentResponse cancelDependentResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelDependentResponse.getStatus());
@@ -516,6 +521,8 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_DEPENDENT);
     }
     
     @Test
@@ -531,7 +538,7 @@ public class GroupMemberControllerTest {
     	cancelDependentRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
     	cancelDependentRequest.setCancelReason("I");
     	
-		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest);
+		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest, createHttpServletRequest());
 		
 		CancelDependentResponse cancelDependentResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelDependentResponse.getStatus());
@@ -541,6 +548,8 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_DEPENDENT);
     }
     
     @Test
@@ -556,7 +565,7 @@ public class GroupMemberControllerTest {
     	cancelDependentRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
     	cancelDependentRequest.setCancelReason("I");
     	
-		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest);
+		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest, createHttpServletRequest());
 		
 		CancelDependentResponse cancelDependentResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelDependentResponse.getStatus());
@@ -566,7 +575,10 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_DEPENDENT);
     }
+
     @Test
     public void testCancelDependent_futureCancelDate() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()
@@ -580,7 +592,7 @@ public class GroupMemberControllerTest {
     	cancelDependentRequest.setCoverageCancelDate(LocalDate.of(2023, 02, 28));
     	cancelDependentRequest.setCancelReason("I");
     	
-		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest);
+		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest, createHttpServletRequest());
 		
 		CancelDependentResponse cancelDependentResponse = response.getBody();
 		assertEquals(StatusEnum.ERROR, cancelDependentResponse.getStatus());
@@ -590,7 +602,10 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_DEPENDENT);
     }
+
     @Test
     public void testCancelDependent_success() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()
@@ -605,7 +620,7 @@ public class GroupMemberControllerTest {
     	cancelDependentRequest.setCoverageCancelDate(LocalDate.of(2022, 01, 31));
     	cancelDependentRequest.setCancelReason("K");
     	
-		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest);
+		ResponseEntity<CancelDependentResponse> response = groupMemberController.cancelDependent(cancelDependentRequest, createHttpServletRequest());
 		
 		CancelDependentResponse cancelDependentResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, cancelDependentResponse.getStatus());
@@ -615,6 +630,8 @@ public class GroupMemberControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.CANCEL_DEPENDENT);
     }
    
     /**

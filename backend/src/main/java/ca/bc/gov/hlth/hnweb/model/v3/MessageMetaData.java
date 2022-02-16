@@ -16,6 +16,7 @@ public class MessageMetaData {
 	private String sourceSystemOverride;
 	private String organization;
 
+	@SuppressWarnings("deprecation")
 	public MessageMetaData(String transactionId) {
 		timestamp = sdf.format(new Date());
 		Date expiry = new Date();

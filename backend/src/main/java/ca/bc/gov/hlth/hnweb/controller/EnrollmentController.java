@@ -1,23 +1,22 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.converter.hl7v2.MSHDefaults;
 import ca.bc.gov.hlth.hnweb.converter.hl7v2.R50Converter;
 import ca.bc.gov.hlth.hnweb.converter.hl7v3.FindCandidatesConverter;
 import ca.bc.gov.hlth.hnweb.converter.hl7v3.GetDemographicsConverter;
-import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.EnrollSubscriberResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.GetPersonDetailsRequest;
@@ -29,8 +28,10 @@ import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
+import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
+import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
+import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.service.EnrollmentService;
-import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
 
 /**
@@ -38,14 +39,14 @@ import ca.uhn.hl7v2.model.Message;
  * <ul>
  * <li>Z03
  * <li>Z04
- * <li>Z05
- * <li>Z06
+ * <li>Z05 Enroll Visa Subscriber without PHN
+ * <li>Z06 Enroll Visa Subscriber with PHN
  * <ul>
  *
  */
 @RequestMapping("/enrollment")
 @RestController
-public class EnrollmentController {
+public class EnrollmentController extends BaseController {
 
 	private static final Logger logger = LoggerFactory.getLogger(EnrollmentController.class);
 
@@ -56,82 +57,114 @@ public class EnrollmentController {
 	private MSHDefaults mshDefaults;
 
 	@PostMapping("/enroll-subscriber")
-	public ResponseEntity<EnrollSubscriberResponse> enrollSubscriber(
-			@Valid @RequestBody EnrollSubscriberRequest enrollSubscriberRequest) throws HL7Exception, HNWebException {
+	public ResponseEntity<EnrollSubscriberResponse> enrollSubscriber(@Valid @RequestBody EnrollSubscriberRequest enrollSubscriberRequest, HttpServletRequest request) {
 
 		logger.info("Subscriber enroll request: {} ", enrollSubscriberRequest.getPhn());
+		
+		Transaction transaction = auditEnrollSubscriberStart(enrollSubscriberRequest, request);
+
 		try {
 			R50Converter converter = new R50Converter(mshDefaults);
 			R50 r50 = converter.convertRequest(enrollSubscriberRequest);
-			Message r50Message = enrollmentService.enrollSubscriber(r50);
+			Message r50Message = enrollmentService.enrollSubscriber(r50, transaction);
 			EnrollSubscriberResponse enrollSubscriberResponse = converter.convertResponse(r50Message);
 			ResponseEntity<EnrollSubscriberResponse> responseEntity = ResponseEntity.ok(enrollSubscriberResponse);
 
 			logger.info("Subscriber enroll Response: {} ", enrollSubscriberResponse.getMessage());
 
+			auditEnrollSubscriberComplete(transaction, enrollSubscriberResponse);
+
 			return responseEntity;
-		} catch (HNWebException hwe) {
-			switch (hwe.getType()) {
-			case DOWNSTREAM_FAILURE:
-				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
-			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /enroll subscriber request", hwe);
-			}
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /enroll subscriber request", e);
+			handleException(transaction, e);
+			return null;
 		}
 	}
 
 	@PostMapping("/get-person-details")
-	public ResponseEntity<GetPersonDetailsResponse> getPersonDetails(
-			@Valid @RequestBody GetPersonDetailsRequest personDetails) {
-		logger.info("Demographic request: {} ", personDetails.getPhn());
+	public ResponseEntity<GetPersonDetailsResponse> getPersonDetails(@Valid @RequestBody GetPersonDetailsRequest personDetailsRequest, HttpServletRequest request) {
+		
+		logger.info("Demographic request: {} ", personDetailsRequest.getPhn());
+
+		Transaction transaction = transactionStart(request, TransactionType.GET_PERSON_DETAILS);
+		addAffectedParty(transaction, IdentifierType.PHN, personDetailsRequest.getPhn());
 
 		try {
 			GetDemographicsConverter converter = new GetDemographicsConverter();
-
-			GetDemographicsRequest demographicsRequest = converter.convertRequest(personDetails.getPhn());
-			GetDemographicsResponse demoGraphicsResponse = enrollmentService.getDemographics(demographicsRequest);
+			GetDemographicsRequest demographicsRequest = converter.convertRequest(personDetailsRequest.getPhn());
+			GetDemographicsResponse demoGraphicsResponse = enrollmentService.getDemographics(demographicsRequest, transaction);
 			GetPersonDetailsResponse personDetailsResponse = converter.convertResponse(demoGraphicsResponse);
 			ResponseEntity<GetPersonDetailsResponse> responseEntity = ResponseEntity.ok(personDetailsResponse);
 
+			auditGetPersonSearchComplete(transaction, personDetailsResponse);
+			
 			return responseEntity;
-		} catch (HNWebException hwe) {
-			switch (hwe.getType()) {
-			case DOWNSTREAM_FAILURE:
-				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
-			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /person-details request", hwe);
-			}
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /person-details request", e);
+			handleException(transaction, e);
+			return null;
 		}
 	}
 
 	@PostMapping("/name-search")
-	public ResponseEntity<NameSearchResponse> getNameSearch(
-			@Valid @RequestBody NameSearchRequest nameSearchRequest) {
+	public ResponseEntity<NameSearchResponse> getNameSearch(@Valid @RequestBody NameSearchRequest nameSearchRequest, HttpServletRequest request) {
+		
 		logger.info("Name Search request: {} ", nameSearchRequest.getGivenName());
+
+		Transaction transaction = transactionStart(request, TransactionType.NAME_SEARCH);
 
 		try {
 			FindCandidatesConverter converter = new FindCandidatesConverter();
-
 			FindCandidatesRequest findCandidatesRequest = converter.convertRequest(nameSearchRequest);
-			
-			FindCandidatesResponse findCandidatesResponse = enrollmentService.findCandidates(findCandidatesRequest);
+			FindCandidatesResponse findCandidatesResponse = enrollmentService.findCandidates(findCandidatesRequest, transaction);
 			NameSearchResponse nameSearchResponse = converter.convertResponse(findCandidatesResponse);
 			ResponseEntity<NameSearchResponse> responseEntity = ResponseEntity.ok(nameSearchResponse);
 
+			auditGetNameSearchComplete(transaction, nameSearchResponse);
+
 			return responseEntity;
-		} catch (HNWebException hwe) {
-			switch (hwe.getType()) {
-			case DOWNSTREAM_FAILURE:
-				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
-			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /name-search request", hwe);
-			}
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /name-search request", e);
+			handleException(transaction, e);
+			return null;
+		}
+	}
+
+	private Transaction auditEnrollSubscriberStart(EnrollSubscriberRequest enrollSubscriberRequest,	HttpServletRequest request) {
+		
+		Transaction transaction = transactionStart(request, TransactionType.ENROLL_SUBSCRIBER);		
+		//Some requests do not contain the PHN e.g R50 z05 as it is Enroll subscriber without PHN
+		if (StringUtils.isNotBlank(enrollSubscriberRequest.getPhn())) {
+			addAffectedParty(transaction, IdentifierType.PHN, enrollSubscriberRequest.getPhn());
+		}
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, enrollSubscriberRequest.getGroupNumber());
+		if (StringUtils.isNotBlank(enrollSubscriberRequest.getGroupMemberNumber())) {
+			addAffectedParty(transaction, IdentifierType.GROUP_MEMBER_NUMBER, enrollSubscriberRequest.getGroupMemberNumber());
+		}
+		if (StringUtils.isNotBlank(enrollSubscriberRequest.getDepartmentNumber())) {
+			addAffectedParty(transaction, IdentifierType.DEPARTMENT_NUMBER, enrollSubscriberRequest.getDepartmentNumber());
+		}
+		return transaction;
+	}
+
+	private void auditEnrollSubscriberComplete(Transaction transaction,	EnrollSubscriberResponse enrollSubscriberResponse) {
+		
+		transactionComplete(transaction);
+		//Some responses do not contain the PHN e.g. in the case of R50 z06 it is just an ACK
+		if (StringUtils.isNotBlank(enrollSubscriberResponse.getPhn())) {
+			addAffectedParty(transaction, IdentifierType.PHN, enrollSubscriberResponse.getPhn());
+		}
+	}
+
+	private void auditGetPersonSearchComplete(Transaction transaction, GetPersonDetailsResponse personDetailsResponse) {
+		transactionComplete(transaction);
+		if (StringUtils.isNotBlank(personDetailsResponse.getPhn())) {
+			addAffectedParty(transaction, IdentifierType.PHN, personDetailsResponse.getPhn());
+		}
+	}
+
+	private void auditGetNameSearchComplete(Transaction transaction, NameSearchResponse nameSearchResponse) {
+		transactionComplete(transaction);
+		if (nameSearchResponse.getCandidates() != null) {
+			nameSearchResponse.getCandidates().forEach(candidate -> addAffectedParty(transaction, IdentifierType.PHN, candidate.getPhn()));
 		}
 	}
 

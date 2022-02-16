@@ -18,12 +18,12 @@ public class R15Converter extends BaseV2Converter {
 		super(mshDefaults);
 	}
 	
-	public R15 convertRequest(CheckEligibilityRequest request) throws HL7Exception {
+	public R15 convertRequest(CheckEligibilityRequest request, String messageId) throws HL7Exception {
 		phn = request.getPhn();
 		
 		R15 r15 = new R15();
 
-    	populateMSH(r15.getMSH());
+    	populateMSH(r15.getMSH(), messageId);
     	populateZHD(r15.getZHD());
     	populatePID(r15.getPID(), phn);
     	populateIN1(r15.getIN1(), request.getEligibilityDate());
