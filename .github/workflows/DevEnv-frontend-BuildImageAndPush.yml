@@ -42,6 +42,18 @@ jobs:
       run: |
         echo "IMAGE_TAGS=${GITHUB_SHA::12}" | tee -a $GITHUB_ENV
 
+    # Determine the version number tag i.e. Release_1.0_<branch-name>_<build execution> 
+    - name: Determine Version number
+      # Branch name is fixed to 'main' in version identifier
+      run: |
+        echo "RELEASE_VERSION=Dev_Build_${{ github.event.inputs.branch }}_${{github.run_number}}" | tee -a $GITHUB_ENV
+
+    # Edit .env in frontend with the value
+    - name: Edit env file to add version
+      run: |
+        cd ./frontend/env_config
+        sed -i 's/<VERSION>/${{ env.RELEASE_VERSION }}/' .env
+
     # Build from docker file
     - name: Build from Dockerfile
       id: build-docker
@@ -50,7 +62,6 @@ jobs:
         image: ${{ env.IMAGE_NAME }}
         tags: ${{ env.IMAGE_TAGS }}
         context: ./frontend
-        build-args: env=dev
         dockerfiles: |
           ./frontend/Dockerfile
 

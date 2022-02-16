@@ -10,7 +10,7 @@ RUN yarn install
 
 # Copy rest of the files
 COPY . .
-RUN yarn build --mode $env
+RUN yarn build
 
 # production stage
 FROM nginxinc/nginx-unprivileged:1.20 as production-stage
