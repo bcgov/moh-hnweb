@@ -92,9 +92,7 @@ public class EligibilityController extends BaseController {
 	@PostMapping("/inquire-phn")
 	public ResponseEntity<InquirePhnResponse> inquirePhn(@Valid @RequestBody InquirePhnRequest inquirePhnRequest, HttpServletRequest request) {
 		Transaction transaction = transactionStart(request, TransactionType.PHN_INQUIRY);
-		inquirePhnRequest.getPhns().forEach(phn -> {
-			addAffectedParty(transaction, IdentifierType.PHN, phn);	
-		});		
+		inquirePhnRequest.getPhns().forEach(phn -> addAffectedParty(transaction, IdentifierType.PHN, phn));		
 
 		try {
 			RPBSPPE0Converter converter = new RPBSPPE0Converter();
@@ -108,9 +106,7 @@ public class EligibilityController extends BaseController {
 			logger.info("inquirePHN response: {} ", inquirePhnResponse);
 
 			transactionComplete(transaction);
-			inquirePhnResponse.getBeneficiaries().forEach(beneficiary -> {
-				addAffectedParty(transaction, IdentifierType.PHN, beneficiary.getPhn());
-			});
+			inquirePhnResponse.getBeneficiaries().forEach(beneficiary -> addAffectedParty(transaction, IdentifierType.PHN, beneficiary.getPhn()));
 
 			return response;	
 		} catch (Exception e) {
@@ -144,9 +140,7 @@ public class EligibilityController extends BaseController {
 			logger.info("lookupPhn response: {} ", lookupPhnResponse);
 			
 			transactionComplete(transaction);
-			lookupPhnResponse.getBeneficiaries().forEach(beneficiary -> {
-				addAffectedParty(transaction, IdentifierType.PHN, beneficiary.getPhn());
-			});
+			lookupPhnResponse.getBeneficiaries().forEach(beneficiary -> addAffectedParty(transaction, IdentifierType.PHN, beneficiary.getPhn()));
 			
 			return response;	
 		} catch (Exception e) {
