@@ -43,7 +43,7 @@ public class MspContractsService {
 	public RPBSPMC0 getContractPeriods(RPBSPMC0 rpbspmc0) throws HNWebException {
 		String rpbspmc0Str = rpbspmc0.serialize();
 
-		logger.info("Request {}", rpbspmc0Str);
+		logger.info("Request:\n{}", rpbspmc0Str);
 		
 		ResponseEntity<String> response = postRapidRequest(r32Path, rpbspmc0Str);
 		

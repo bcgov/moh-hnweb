@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class RPBSPMC0 {
 	private RPBSHeader rpbsHeader = new RPBSHeader();
-	private RPBSMsgData rpbsMsgData = new RPBSMsgData();
+	private RPBSPMC0Data rpbsmc0Data = new RPBSPMC0Data();
 
 	public RPBSPMC0() {
 		super();
@@ -16,15 +16,15 @@ public class RPBSPMC0 {
 
 		rpbsHeader = new RPBSHeader(headerText);
 
-		rpbsMsgData = new RPBSMsgData(bodyText);
+		rpbsmc0Data = new RPBSPMC0Data(bodyText);
 	}
 
-	public RPBSMsgData getRpbsMsgData() {
-		return rpbsMsgData;
+	public RPBSPMC0Data getRpbsmc0Data() {
+		return rpbsmc0Data;
 	}
 
-	public void setRpbsMsgData(RPBSMsgData rpbsMsgData) {
-		this.rpbsMsgData = rpbsMsgData;
+	public void setRpbsmc0Data(RPBSPMC0Data rpbsmc0Data) {
+		this.rpbsmc0Data = rpbsmc0Data;
 	}
 
 	public RPBSHeader getRpbsHeader() {
@@ -36,7 +36,7 @@ public class RPBSPMC0 {
 	}
 
 	public String serialize() {
-		return rpbsHeader.serialize() + rpbsMsgData.serialize();
+		return rpbsHeader.serialize() + rpbsmc0Data.serialize();
 	}
 
 }

@@ -1,7 +1,7 @@
 package ca.bc.gov.hlth.hnweb.converter.rapid;
 
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
-import ca.bc.gov.hlth.hnweb.model.rapid.RPBSMsgData;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPMC0Data;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPMC0;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.GetContractPeriodsRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.GetContractPeriodsResponse;
@@ -19,12 +19,12 @@ public class RPBSPMC0Converter extends BaseRapidConverter {
 		rpbsHeader.setOrganization(userInfo.getOrganization());
 		rpbsHeader.setTranCode(getTranCode());
 
-		RPBSMsgData rpbsMsgData = new RPBSMsgData();
-		rpbsMsgData.setData(request.getPhn());
+		RPBSPMC0Data rpbsmc0Data = new RPBSPMC0Data();
+		rpbsmc0Data.setPhn(request.getPhn());
 		
 		RPBSPMC0 rpbspmc0 = new RPBSPMC0();
 		rpbspmc0.setRpbsHeader(rpbsHeader);
-		rpbspmc0.setRpbsMsgData(rpbsMsgData);
+		rpbspmc0.setRpbsmc0Data(rpbsmc0Data);
 
 		return rpbspmc0;
 	}
@@ -34,7 +34,7 @@ public class RPBSPMC0Converter extends BaseRapidConverter {
 		RPBSHeader header = rpbspmc0.getRpbsHeader();
 		
 		handleStatus(header, response);
-		response.setPhn(rpbspmc0.getRpbsMsgData().getData());
+		response.setPhn(rpbspmc0.getRpbsmc0Data().getPhn());
 		
 		return response;
 	}
