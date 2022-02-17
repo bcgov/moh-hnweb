@@ -25,11 +25,15 @@ public class RPBSPMC0Beneficiary {
 		
 	public RPBSPMC0Beneficiary(String message) {
 		super();
-		this.phn = StringUtils.substring(message, 0, 101);
+		this.phn = StringUtils.substring(message, 0, 10);
+		this.lastName = StringUtils.substring(message, 10, 45);
+		this.firstName = StringUtils.substring(message, 45, 90);
+		this.birthDate = StringUtils.substring(message, 90, 100);
+		this.gender = StringUtils.substring(message, 100, 101);
 		
 		//Build the remaining response from repeating coverage period segments for each beneficiary
 
-		String contractPeriodsStr = StringUtils.substring(message, 10);
+		String contractPeriodsStr = StringUtils.substring(message, 101);
 
 		if (StringUtils.isNotBlank(contractPeriodsStr)) {
 			int count = 0;
@@ -81,6 +85,14 @@ public class RPBSPMC0Beneficiary {
 
 	public void setGender(String gender) {
 		this.gender = gender;
+	}
+
+	public List<RPBSPMC0ContractPeriod> getContractPeriods() {
+		return contractPeriods;
+	}
+
+	public void setContractPeriods(List<RPBSPMC0ContractPeriod> contractPeriods) {
+		this.contractPeriods = contractPeriods;
 	}
 
 	@Override

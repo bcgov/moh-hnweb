@@ -13,12 +13,13 @@
     </form>
   </div>
   <br />
-  <div v-if="searchOk && result.beneficiaries.length > 0">
+  <div v-if="searchOk && result.beneficiaryContractPeriods.length > 0">
     <hr />
-    <p>More than....</p>
     <AppSimpleTable id="resultsTable">
       <thead>
         <tr>
+          <th>PHN</th>
+          <th>Name</th>
           <th>Contract Holder</th>
           <th>Relationship</th>
           <th>Group Number#</th>
@@ -28,8 +29,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="beneficiary in result.beneficiaries">
-          <BeneficiaryContractPeriod :beneficiary="beneficiary" />
+        <tr v-for="beneficiaryContractPeriod in result.beneficiaryContractPeriods">
+          <BeneficiaryContractPeriod :beneficiaryContractPeriod="beneficiaryContractPeriod" />
         </tr>
       </tbody>
     </AppSimpleTable>

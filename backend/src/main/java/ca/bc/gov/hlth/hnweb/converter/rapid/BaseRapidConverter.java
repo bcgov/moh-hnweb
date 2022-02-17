@@ -67,9 +67,9 @@ public abstract class BaseRapidConverter {
 
 	}
 	
-	protected String convertBirthDate(String birthDate) {
+	protected String convertDate(String date) {
 		// Convert the response Date from yyyy-MM-dd to yyyyMMdd
-		return StringUtils.remove(birthDate, "-");
+		return StringUtils.remove(date, "-");
 	}
 	
 	protected String formatDate(LocalDate date) {
