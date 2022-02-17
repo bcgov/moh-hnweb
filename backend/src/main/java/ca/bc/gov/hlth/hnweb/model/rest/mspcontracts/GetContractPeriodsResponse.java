@@ -8,7 +8,7 @@ import ca.bc.gov.hlth.hnweb.model.rest.BaseResponse;
 public class GetContractPeriodsResponse extends BaseResponse {
 	private String phn;
 	
-	private List<ContractPeriod> contractPeriods = new ArrayList<>();
+	private List<BeneficiaryContractPeriod> beneficiaryContractPeriods = new ArrayList<>();
 	
 	public String getPhn() {
 		return phn;
@@ -18,12 +18,12 @@ public class GetContractPeriodsResponse extends BaseResponse {
 		this.phn = phn;
 	}
 
-	public List<ContractPeriod> getContractPeriods() {
-		return contractPeriods;
+	public List<BeneficiaryContractPeriod> getBeneficiaryContractPeriods() {
+		return beneficiaryContractPeriods;
 	}
 
-	public void setContractPeriods(List<ContractPeriod> contractPeriods) {
-		this.contractPeriods = contractPeriods;
+	public void setBeneficiaryContractPeriods(List<BeneficiaryContractPeriod> beneficiaryContractPeriods) {
+		this.beneficiaryContractPeriods = beneficiaryContractPeriods;
 	}
 
 	@Override

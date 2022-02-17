@@ -23,7 +23,8 @@ public class RPBSPMC0ContractPeriod {
 		this.groupNumber = StringUtils.substring(message, 10, 17);
 		this.relationship = StringUtils.substring(message, 17, 18);
 		this.effectiveDate = StringUtils.substring(message, 18, 28);
-		this.cancelDate = StringUtils.substring(message, 28, 29);
+		this.cancelDate = StringUtils.substring(message, 28, 38);
+		this.reasonCode = StringUtils.substring(message, 38, 39);
 	}
 
 	public String getPhn() {
