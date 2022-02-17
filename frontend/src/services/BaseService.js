@@ -20,6 +20,9 @@ export const resources = {
     cancelGroupMember: '/group-member/cancel-group-member',
     cancelDependent: '/group-member/cancel-dependent',
   },
+  mspContracts: {
+    getContractPeriods: '/msp-contracts/get-contract-periods',
+  },
   user: {
     permissions: '/user/permissions',
   },
