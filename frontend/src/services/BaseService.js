@@ -27,9 +27,9 @@ export const resources = {
 
 export function apiRequest() {
   function createAxios() {
-    const baseURL = import.meta.env.VITE_SERVICE_URL
+    const baseURL = config.SERVICE_URL || import.meta.env.VITE_SERVICE_URL
     return axios.create({
-      baseURL: baseURL,
+      baseURL,
       headers: { Authorization: 'Bearer ' + keycloak.token },
     })
   }
