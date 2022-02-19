@@ -157,7 +157,6 @@ export default {
   },
   data() {
     return {
-      submitting: false,
       //Add Visa Resident Fields
       groupNumber: '',
       immigrationCode: '',
@@ -209,14 +208,16 @@ export default {
       return formatPersonName(this.resident)
     },
   },
+  submitting: {
+    required: true,
+    type: Boolean,
+  },
   methods: {
     async registerVisaResident() {
-      this.submitting = true
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
           this.$store.commit('alert/setErrorAlert')
-          this.submitting = false
           return
         }
         this.$emit('register-resident', {
@@ -253,8 +254,6 @@ export default {
         })
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
-      } finally {
-        this.submitting = false
       }
     },
     resetForm() {
@@ -284,7 +283,6 @@ export default {
       this.otherProvinceHealthcareNumber = ''
       this.v$.$reset()
       this.$store.commit('alert/dismissAlert')
-      this.submitting = false
     },
   },
   validations() {

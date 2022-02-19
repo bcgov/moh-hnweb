@@ -1,7 +1,7 @@
 <template>
-  <NameSearch v-if="isNameSearch" @search-for-candidates="searchForCandidates" />
+  <NameSearch v-if="isNameSearch" @search-for-candidates="searchForCandidates" :searching="searching" />
   <NameSearchResults v-else-if="isNameSearchResults" :candidates="this.nameSearchResult.candidates" />
-  <ResidentDetailsWithoutPHN v-else-if="isStudentRegistration" :resident="this.registrationPerson" @register-resident="registerResident" />
+  <ResidentDetailsWithoutPHN v-else-if="isStudentRegistration" :resident="this.registrationPerson" @register-resident="registerResident" :submitting="submitting" />
   <RegistrationConfirmation v-else-if="isConfirmation" :resident="this.registrationPerson" />
 </template>
 
@@ -41,6 +41,8 @@ export default {
         dateOfBirth: '',
         gender: '',
       },
+      searching: false,
+      submitting: false,
     }
   },
   created() {
@@ -69,10 +71,12 @@ export default {
   methods: {
     async searchForCandidates(searchCriteria) {
       try {
+        this.searching = true
         this.nameSearchResult = (await EnrollmentService.performNameSearch(searchCriteria)).data
 
         if (this.nameSearchResult?.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.nameSearchResult?.message)
+          this.searching = false
           return
         }
 
@@ -95,14 +99,18 @@ export default {
         }
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
+      } finally {
+        this.searching = false
       }
     },
     async registerResident(personDetails) {
       try {
+        this.submitting = true
         this.registrationResult = (await EnrollmentService.registerResident(personDetails)).data
 
         if (this.registrationResult?.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.registrationResult?.message)
+          this.submitting = false
           return
         }
 
@@ -114,6 +122,8 @@ export default {
         this.$store.commit('alert/setSuccessAlert', 'Transaction Successful')
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
+      } finally {
+        this.submitting = false
       }
     },
   },

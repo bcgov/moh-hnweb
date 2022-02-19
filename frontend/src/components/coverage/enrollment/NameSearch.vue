@@ -27,7 +27,7 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppButton :disabled="searching" mode="primary" type="submit">Submit</AppButton>
+        <AppButton :submitting="searching" mode="primary" type="submit">Submit</AppButton>
         <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
       </AppRow>
     </form>
@@ -58,18 +58,21 @@ export default {
       secondName: '',
       dateOfBirth: null,
       gender: '',
-      searching: false,
     }
+  },
+  props: {
+    searching: {
+      required: true,
+      type: Boolean,
+    },
   },
   methods: {
     async submitForm() {
-      this.searching = true
       this.$store.commit('alert/dismissAlert')
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
           this.$store.commit('alert/setErrorAlert')
-          this.searching = false
           return
         }
         this.$emit('search-for-candidates', {
@@ -81,8 +84,6 @@ export default {
         })
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
-      } finally {
-        this.searching = false
       }
     },
     resetForm() {
@@ -93,7 +94,6 @@ export default {
       this.gender = null
       this.v$.$reset()
       this.$store.commit('alert/dismissAlert')
-      this.searching = false
     },
   },
   validations() {
