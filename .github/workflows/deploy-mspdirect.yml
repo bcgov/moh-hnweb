@@ -35,6 +35,7 @@ on:
         options:
         - dev
         - test
+        - uat
       Branch:
         description: 'Enter branch name (Currently deployable releases are created only from main )'
         required: true
