@@ -1,9 +1,9 @@
 <template>
-    <h1>Welcome to HN Web</h1>
+  <h1>Welcome to MSP Direct</h1>
 </template>
 
 <script>
-    export default {
-        name: 'home'
-    }
+export default {
+  name: 'home',
+}
 </script>
