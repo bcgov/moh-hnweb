@@ -208,9 +208,11 @@ export default {
       return formatPersonName(this.resident)
     },
   },
-  submitting: {
-    required: true,
-    type: Boolean,
+  props: {
+    submitting: {
+      required: true,
+      type: Boolean,
+    },
   },
   methods: {
     async registerVisaResident() {

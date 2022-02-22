@@ -10,7 +10,7 @@
         <span>{{ formatDetailsLine3 }}</span>
       </AppCol>
       <AppCol class="col1">
-        <AppButton :disabled="submitting" mode="primary" @click="selectCandidate" type="button">Add</AppButton>
+        <AppButton :submitting="submitting" mode="primary" @click="selectCandidate" type="button">Add</AppButton>
       </AppCol>
     </AppRow>
   </div>
@@ -105,6 +105,7 @@ export default {
       this.submitting = true
       this.$store.commit('studyPermitHolder/setResident', this.candidate)
       this.$router.push({ name: 'AddVisaResidentWithPHN', query: { pageAction: 'REGISTRATION' } })
+      this.submitting = false
     },
   },
 }

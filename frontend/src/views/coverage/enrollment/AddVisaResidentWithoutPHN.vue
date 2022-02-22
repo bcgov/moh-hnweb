@@ -76,7 +76,6 @@ export default {
 
         if (this.nameSearchResult?.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.nameSearchResult?.message)
-          this.searching = false
           return
         }
 

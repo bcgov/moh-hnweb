@@ -1,6 +1,6 @@
 <template>
   <ResidentPHN v-if="isPhnSearch" @update-resident="updateResident" :searching="searching" />
-  <ResidentDetails v-else-if="isStudentRegistration" @register-resident="registerResident" :submittting="submitting" />
+  <ResidentDetails v-else-if="isStudentRegistration" @register-resident="registerResident" :submitting="submitting" />
   <RegistrationConfirmation v-else-if="isConfirmation" :resident="this.getPersonDetailsResult?.person" />
 </template>
 
@@ -84,7 +84,6 @@ export default {
 
         if (this.getPersonDetailsResult?.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.getPersonDetailsResult?.message)
-          this.searching = false
           return
         }
 
@@ -107,7 +106,6 @@ export default {
 
         if (this.registrationResult?.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.registrationResult?.message)
-          this.submitting = false
           return
         }
 
