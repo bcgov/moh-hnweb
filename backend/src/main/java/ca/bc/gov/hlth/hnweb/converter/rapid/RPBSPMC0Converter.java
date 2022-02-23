@@ -1,5 +1,7 @@
 package ca.bc.gov.hlth.hnweb.converter.rapid;
 
+import org.apache.commons.lang3.StringUtils;
+
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPMC0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPMC0Data;
@@ -42,16 +44,16 @@ public class RPBSPMC0Converter extends BaseRapidConverter {
 			b.getContractPeriods().forEach(cp -> {
 				BeneficiaryContractPeriod beneficiaryContractPeriod = new BeneficiaryContractPeriod();
 				beneficiaryContractPeriod.setPhn(b.getPhn());
-				beneficiaryContractPeriod.setFirstName(b.getFirstName());
-				beneficiaryContractPeriod.setLastName(b.getLastName());
-				beneficiaryContractPeriod.setDateOfBirth(b.getBirthDate());
+				beneficiaryContractPeriod.setFirstName(StringUtils.trim(b.getFirstName()));
+				beneficiaryContractPeriod.setLastName(StringUtils.trim(b.getLastName()));
+				beneficiaryContractPeriod.setDateOfBirth(convertDate(b.getBirthDate()));
 				beneficiaryContractPeriod.setGender(b.getGender());
 				beneficiaryContractPeriod.setContractHolder(cp.getPhn());
 				beneficiaryContractPeriod.setGroupNumber(cp.getGroupNumber());
 				beneficiaryContractPeriod.setRelationship(cp.getRelationship());
-				beneficiaryContractPeriod.setEffectiveDate(cp.getEffectiveDate());
-				beneficiaryContractPeriod.setCancelDate(cp.getCancelDate());
-				beneficiaryContractPeriod.setCancelReason(cp.getReasonCode());
+				beneficiaryContractPeriod.setEffectiveDate(convertDate(cp.getEffectiveDate()));
+				beneficiaryContractPeriod.setCancelDate(StringUtils.equals("0000-00-00", cp.getCancelDate()) ? null : convertDate(cp.getCancelDate()));
+				beneficiaryContractPeriod.setCancelReason(StringUtils.trim(cp.getReasonCode()));
 				response.getBeneficiaryContractPeriods().add(beneficiaryContractPeriod);
 			});
 		});

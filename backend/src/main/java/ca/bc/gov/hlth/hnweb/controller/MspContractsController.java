@@ -1,5 +1,6 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -39,10 +40,11 @@ public class MspContractsController {
 	 * Maps to the legacy R32.
 	 *  
 	 * @param getContractPeriodsRequest
+	 * @param mockHttpServletRequest 
 	 * @return The result of the operation.
 	 */
 	@PostMapping("/get-contract-periods")
-	public ResponseEntity<GetContractPeriodsResponse> getContractPeriods(@Valid @RequestBody GetContractPeriodsRequest getContractPeriodsRequest) {
+	public ResponseEntity<GetContractPeriodsResponse> getContractPeriods(@Valid @RequestBody GetContractPeriodsRequest getContractPeriodsRequest, HttpServletRequest request) {
 
 		try {
 			RPBSPMC0Converter converter = new RPBSPMC0Converter();
