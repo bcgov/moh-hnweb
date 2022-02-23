@@ -9,14 +9,22 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClientException;
+import org.springframework.web.server.ResponseStatusException;
 
+import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPCI0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPMC0Converter;
+import ca.bc.gov.hlth.hnweb.exception.HNWebException;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPCI0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPMC0;
+import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.ContractInquiryRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.ContractInquiryResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.GetContractPeriodsRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.GetContractPeriodsResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
@@ -68,6 +76,40 @@ public class MspContractsController extends BaseController {
 			return null;
 		}
 	}
+	
+	 /**
+	 * Get MSP Coverage info for a Personal Health Number (PHN) of a group Inquiry
+	 * Maps to the legacy R40.
+	 *  
+	 * @param contractInquireRequest
+	 * @return The result of the operation.
+	 */
+	@PostMapping("/inquire-contract")
+	public ResponseEntity<ContractInquiryResponse> inquireContract(@Valid @RequestBody ContractInquiryRequest contractInquireRequest) {
+
+		try {
+			RPBSPCI0Converter converter = new RPBSPCI0Converter();
+			RPBSPCI0 rpbspci0Request = converter.convertRequest(contractInquireRequest);
+			RPBSPCI0 rpbspci0Response = mspContractsService.inquireContract(rpbspci0Request);
+			ContractInquiryResponse contractInquireResponse = converter.convertResponse(rpbspci0Response);
+					
+			ResponseEntity<ContractInquiryResponse> response = ResponseEntity.ok(contractInquireResponse);
+
+			logger.info("ContractInquiry response: {} ", rpbspci0Response);
+			return response;
+		} catch (HNWebException hwe) {
+			switch (hwe.getType()) {
+			case DOWNSTREAM_FAILURE:
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
+			default:
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /inquire-contract request", hwe);				
+			}
+		} catch (WebClientException wce) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /inquire-contract request", e);
+		}		
+	}
 
 	private Transaction auditGetContractPeriodsStart(GetContractPeriodsRequest getContractPeriodsRequest, HttpServletRequest request) {
 		Transaction transaction = transactionStart(request, TransactionType.GET_CONTRACT_PERIODS);
@@ -98,5 +140,4 @@ public class MspContractsController extends BaseController {
 			}
 		});
 	}
-
 }

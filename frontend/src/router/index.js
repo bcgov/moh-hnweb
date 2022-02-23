@@ -7,6 +7,7 @@ import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResid
 import CancelDependent from '../views/groupmember/CancelDependent.vue'
 import CancelGroupMember from '../views/groupmember/CancelGroupMember.vue'
 import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
+import ContractInquiry from '../views/mspcontracts/ContractInquiry.vue'
 import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
 import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
 import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
@@ -143,6 +144,11 @@ const routes = [
         path: 'getContractPeriods',
         name: 'GetContractPeriods',
         component: GetContractPeriods,
+      },
+      {
+        path: 'contractInquiry',
+        name: 'ContractInquiry',
+        component: ContractInquiry,
       },
     ],
   },
