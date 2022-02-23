@@ -1,7 +1,7 @@
 import Keycloak from 'keycloak-js'
 
 let kcConfig = {
-  clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
+  clientId: config.KEYCLOAK_CLIENT_ID ||  import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
   realm: import.meta.env.VITE_KEYCLOAK_REALM,
   url: config.KEYCLOAK_URL || import.meta.env.VITE_KEYCLOAK_URL,
 }
