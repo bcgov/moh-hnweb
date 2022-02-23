@@ -15,13 +15,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 import ca.bc.gov.hlth.hnweb.exception.ExceptionType;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPMC0;
+import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 
 /**
  * Service for:
  *  Get Contract Periods. (R32)
  */
 @Service
-public class MspContractsService {
+public class MspContractsService extends BaseService {
 
 	private static final Logger logger = LoggerFactory.getLogger(MspContractsService.class);
 
@@ -40,12 +41,14 @@ public class MspContractsService {
 	 * @return The {@link RPBSPMC0} response.
 	 * @throws HNWebException
 	 */
-	public RPBSPMC0 getContractPeriods(RPBSPMC0 rpbspmc0) throws HNWebException {
+	public RPBSPMC0 getContractPeriods(RPBSPMC0 rpbspmc0, Transaction transaction) throws HNWebException {
 		String rpbspmc0Str = rpbspmc0.serialize();
 
 		logger.info("Request:\n{}", rpbspmc0Str);
 		
+		messageSent(transaction);
 		ResponseEntity<String> response = postRapidRequest(r32Path, rpbspmc0Str);
+		messageReceived(transaction);
 		
 		logger.info("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		
