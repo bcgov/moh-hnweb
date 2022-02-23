@@ -161,6 +161,10 @@ export default {
       dateOfBirth: '',
       gender: '',
     },
+    submitting: {
+      required: true,
+      type: Boolean,
+    },
   },
   components: {
     AppSelect,
@@ -216,12 +220,6 @@ export default {
   computed: {
     fullName() {
       return formatPersonName(this.resident)
-    },
-  },
-  props: {
-    submitting: {
-      required: true,
-      type: Boolean,
     },
   },
   methods: {

@@ -2,6 +2,8 @@ package ca.bc.gov.hlth.hnweb.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClientException;
@@ -17,6 +19,7 @@ import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.service.AuditService;
 
 public abstract class BaseController {
+	private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
 	
 	@Autowired
 	private AuditService auditService;
@@ -62,6 +65,8 @@ public abstract class BaseController {
 	 * @throws ResponseStatusException Used to generate the response to the client
 	 */
 	protected void handleException(Transaction transaction, Exception exception) throws ResponseStatusException {
+		logger.error("handleException: {}", exception.getMessage());
+
 		HttpStatus status;
 		if (exception instanceof HNWebException) {
 			HNWebException hwe = (HNWebException)exception;
@@ -79,7 +84,7 @@ public abstract class BaseController {
 		}
 		transactionError(transaction, status, exception);
 		transactionComplete(transaction);
-		throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage(), exception);
+		throw new ResponseStatusException(status, exception.getMessage(), exception);
 	}
 
 	/**
