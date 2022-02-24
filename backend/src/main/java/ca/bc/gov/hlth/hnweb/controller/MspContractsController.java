@@ -85,30 +85,25 @@ public class MspContractsController extends BaseController {
 	 * @return The result of the operation.
 	 */
 	@PostMapping("/inquire-contract")
-	public ResponseEntity<ContractInquiryResponse> inquireContract(@Valid @RequestBody ContractInquiryRequest contractInquireRequest) {
-
+	public ResponseEntity<ContractInquiryResponse> inquireContract(@Valid @RequestBody ContractInquiryRequest contractInquireRequest, HttpServletRequest request) {
+		
+		Transaction transaction = auditContractInquiryStart(contractInquireRequest, request);
 		try {
 			RPBSPCI0Converter converter = new RPBSPCI0Converter();
 			RPBSPCI0 rpbspci0Request = converter.convertRequest(contractInquireRequest);
 			RPBSPCI0 rpbspci0Response = mspContractsService.inquireContract(rpbspci0Request);
-			ContractInquiryResponse contractInquireResponse = converter.convertResponse(rpbspci0Response);
+			ContractInquiryResponse contractInquiryResponse = converter.convertResponse(rpbspci0Response);
 					
-			ResponseEntity<ContractInquiryResponse> response = ResponseEntity.ok(contractInquireResponse);
+			ResponseEntity<ContractInquiryResponse> response = ResponseEntity.ok(contractInquiryResponse);
 
 			logger.info("ContractInquiry response: {} ", rpbspci0Response);
+			
+			auditContractInquiryEnd(transaction, contractInquiryResponse);
 			return response;
-		} catch (HNWebException hwe) {
-			switch (hwe.getType()) {
-			case DOWNSTREAM_FAILURE:
-				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, hwe.getMessage(), hwe);
-			default:
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /inquire-contract request", hwe);				
-			}
-		} catch (WebClientException wce) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, wce.getMessage(), wce);
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad /inquire-contract request", e);
-		}		
+			handleException(transaction, e);
+			return null;
+		}	
 	}
 
 	private Transaction auditGetContractPeriodsStart(GetContractPeriodsRequest getContractPeriodsRequest, HttpServletRequest request) {
@@ -138,6 +133,28 @@ public class MspContractsController extends BaseController {
 				addAffectedParty(transaction, IdentifierType.PHN, bcp.getContractHolder());
 				auditedPhns.add(bcp.getContractHolder());
 			}
+		});
+	}
+	
+	private Transaction auditContractInquiryStart(ContractInquiryRequest contractInquiryRequest, HttpServletRequest request) {
+		Transaction transaction = transactionStart(request, TransactionType.CONTRACT_INQUIRY);
+		addAffectedParty(transaction, IdentifierType.PHN, contractInquiryRequest.getPhn());
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, contractInquiryRequest.getGroupNumber());
+		return transaction;
+	}
+
+	private void auditContractInquiryEnd(Transaction transaction, ContractInquiryResponse contractInquiryResponse) {
+		List<String> auditedPhns = new ArrayList<>();
+
+		transactionComplete(transaction);		
+		addAffectedParty(transaction, IdentifierType.PHN, contractInquiryResponse.getPhn());
+		auditedPhns.add(contractInquiryResponse.getPhn());
+		
+		contractInquiryResponse.getContractInquiryBeneficiaries().forEach(cib -> {
+			if(!auditedPhns.contains(cib.getPhn())) {
+				addAffectedParty(transaction, IdentifierType.PHN, cib.getPhn());				
+				auditedPhns.add(cib.getPhn());
+			}			
 		});
 	}
 }

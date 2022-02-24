@@ -39,7 +39,7 @@ public class MspContractsControllerTest extends BaseControllerTest {
 	
 	private static final String R40_ERROR_PHN_NOT_FOUND = "        RPBSPCI000000010                                ERRORMSGRPBS9145PHN NOT FOUND                                                           91598696736337109";
 	
-	
+	private static final String R40_ERROR_NO_COVERAGE_FOUND = "        RPBSPCI000000010                                ERRORMSGRPBS0067NO COVERAGE FOUND FOR THE PHN ENTERED. PLEASE CONTACT MSP               98736722556337109";
 	
 	protected static DateTimeFormatter dateOnlyFormatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_FORMAT_DATE_ONLY);
 	
@@ -223,8 +223,9 @@ public class MspContractsControllerTest extends BaseControllerTest {
         
         ContractInquiryRequest request = new ContractInquiryRequest();
         request.setPhn("9340338122");
+        request.setGroupNumber("6337109");
         
-        ResponseEntity<ContractInquiryResponse> response = mspContractsController.inquireContract(request);
+        ResponseEntity<ContractInquiryResponse> response = mspContractsController.inquireContract(request, createHttpServletRequest());
         
         ContractInquiryResponse contractInquiryResponse = response.getBody();
 
@@ -273,8 +274,9 @@ public class MspContractsControllerTest extends BaseControllerTest {
         
         ContractInquiryRequest request = new ContractInquiryRequest();
         request.setPhn("9159869673");
+        request.setGroupNumber("6337109");
         
-        ResponseEntity<ContractInquiryResponse> response = mspContractsController.inquireContract(request);
+        ResponseEntity<ContractInquiryResponse> response = mspContractsController.inquireContract(request, createHttpServletRequest());
         
         ContractInquiryResponse contractInquiryResponse = response.getBody();
 
@@ -283,6 +285,35 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals("RPBS9145 PHN NOT FOUND", contractInquiryResponse.getMessage());
 
         assertEquals("9159869673", contractInquiryResponse.getPhn());
+        
+        List<ContractInquiryBeneficiary> contractInquiryBeneficiaries = contractInquiryResponse.getContractInquiryBeneficiaries();
+        assertEquals(0, contractInquiryBeneficiaries.size());
+       
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+  
+	}
+	
+	@Test
+	public void testContractInquiry_error_NoCoverageFound() throws InterruptedException {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R40_ERROR_NO_COVERAGE_FOUND)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        ContractInquiryRequest request = new ContractInquiryRequest();
+        request.setPhn("9873672255");
+        request.setGroupNumber("6337109");
+        ResponseEntity<ContractInquiryResponse> response = mspContractsController.inquireContract(request, createHttpServletRequest());
+        
+        ContractInquiryResponse contractInquiryResponse = response.getBody();
+
+		// Check the response
+        assertEquals(StatusEnum.ERROR, contractInquiryResponse.getStatus());
+        assertEquals("RPBS0067 NO COVERAGE FOUND FOR THE PHN ENTERED. PLEASE CONTACT MSP", contractInquiryResponse.getMessage());
+
+        assertEquals("9873672255", contractInquiryResponse.getPhn());
         
         List<ContractInquiryBeneficiary> contractInquiryBeneficiaries = contractInquiryResponse.getContractInquiryBeneficiaries();
         assertEquals(0, contractInquiryBeneficiaries.size());

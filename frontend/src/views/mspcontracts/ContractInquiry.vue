@@ -18,7 +18,8 @@
     </form>
   </div>
   <br />
-  <div>
+  <div v-if="searchOk && result.contractInquiryBeneficiaries.length > 0">
+    <hr />
     <AppRow>
       <AppCol class="col3"><h2>Home Address</h2> </AppCol>
       <AppCol class="col3"><h2>Mailing Address</h2></AppCol>
@@ -62,17 +63,15 @@
     </AppRow>
     <AppRow>
       <AppCol class="col3">
-        <AppOutput label="Group Member Number" :value="result.groupNumber" />
+        <AppOutput label="Group Member Number" :value="result.groupMemberNumber" />
       </AppCol>
     </AppRow>
     <AppRow>
       <AppCol class="col3">
-        <AppOutput label="Department Number" :value="result.departmentNumber" />
+        <AppOutput label="Department Number" :value="result.groupMemberDepartmentNumber" />
       </AppCol>
     </AppRow>
-  </div>
-  <br />
-  <div>
+    <br />
     <AppSimpleTable id="resultsTable">
       <thead>
         <tr>
@@ -97,7 +96,7 @@
 </template>
 <script>
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
-import ContractInquiryBeneficiary from '../../components/groupmember/ContractInquiryBeneficiary.vue'
+import ContractInquiryBeneficiary from '../../components/mspcontracts/ContractInquiryBeneficiary.vue'
 import useVuelidate from '@vuelidate/core'
 import { validateOptionalPHN, validateGroupNumber, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE } from '../../util/validators'
 import { required, helpers } from '@vuelidate/validators'

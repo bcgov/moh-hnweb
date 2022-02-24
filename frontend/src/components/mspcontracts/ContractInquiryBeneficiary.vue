@@ -3,8 +3,8 @@
   <td>{{ fullName }}</td>
   <td>{{ contractInquiryBeneficiary.dateOfBirth }}</td>
   <td>{{ contractInquiryBeneficiary.gender }}</td>
-  <td>{{ contractInquiryBeneficiary.relationship }}</td>
-  <td>{{ contractInquiryBeneficiary.student }}</td>
+  <td>{{ contractInquiryBeneficiary.relationshipCode }}</td>
+  <td>{{ contractInquiryBeneficiary.studentStatus }}</td>
   <td>{{ contractInquiryBeneficiary.effectiveDate }}</td>
   <td>{{ contractInquiryBeneficiary.cancelDate }}</td>
   <td>{{ contractInquiryBeneficiary.cancelReason }}</td>
@@ -20,14 +20,14 @@ export default {
       if (this.contractInquiryBeneficiary.familyName) {
         name = name + this.contractInquiryBeneficiary.familyName
       }
-      if (this.contractInquiryBeneficiary.thirdName) {
-        name = name + this.contractInquiryBeneficiary.thirdName
-      }
-      if (this.contractInquiryBeneficiary.secondName) {
-        name = name + this.contractInquiryBeneficiary.secondName
-      }
       if (this.contractInquiryBeneficiary.firstName) {
         name = name + ', ' + this.contractInquiryBeneficiary.firstName
+      }
+      if (this.contractInquiryBeneficiary.secondName) {
+        name = name + ' ' + this.contractInquiryBeneficiary.secondName
+      }
+      if (this.contractInquiryBeneficiary.thirdName) {
+        name = name + ' ' + this.contractInquiryBeneficiary.thirdName
       }
       return name
     },

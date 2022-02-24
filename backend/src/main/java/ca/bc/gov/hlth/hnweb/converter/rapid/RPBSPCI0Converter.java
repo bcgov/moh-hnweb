@@ -58,21 +58,21 @@ public class RPBSPCI0Converter extends BaseRapidConverter {
 
 		response.setTelephone(ci0.getPhone().getPhoneAreaCode() + ci0.getPhone().getPhoneNumber());
 
-		for (RPBSBeneficiary ci0Beneficiary : ci0.getBeneficiary()) {
+		for (RPBSBeneficiary rPBSBeneficiary : ci0.getBeneficiary()) {
 			ContractInquiryBeneficiary beneficiary = new ContractInquiryBeneficiary();
-			beneficiary.setPhn(ci0Beneficiary.getPhn());
-			beneficiary.setFamilyName(StringUtils.trim(ci0Beneficiary.getFamilyName()));
-			beneficiary.setFirstName(StringUtils.trim(ci0Beneficiary.getFirstName()));
-			beneficiary.setSecondName(StringUtils.trim(ci0Beneficiary.getSecondName()));
-			beneficiary.setThirdName(StringUtils.trim(ci0Beneficiary.getThirdName()));
+			beneficiary.setPhn(rPBSBeneficiary.getPhn());
+			beneficiary.setFamilyName(StringUtils.trim(rPBSBeneficiary.getFamilyName()));
+			beneficiary.setFirstName(StringUtils.trim(rPBSBeneficiary.getFirstName()));
+			beneficiary.setSecondName(StringUtils.trim(rPBSBeneficiary.getSecondName()));
+			beneficiary.setThirdName(StringUtils.trim(rPBSBeneficiary.getThirdName()));
 			// Convert the response Date from yyyy-MM-dd to yyyyMMdd
-			beneficiary.setBirthDate(StringUtils.remove(ci0Beneficiary.getBirthDate(), "-"));
-			beneficiary.setEffectiveDate(StringUtils.remove(ci0Beneficiary.getEffectiveDate(), "-"));
-			beneficiary.setCancelDate(StringUtils.remove(ci0Beneficiary.getCancelDate(), "-"));
-			beneficiary.setGender(ci0Beneficiary.getGender());
-			beneficiary.setCancelReason(ci0Beneficiary.getCancelReason());
-			beneficiary.setStudentStatus(ci0Beneficiary.getStudentStatus());
-			beneficiary.setRelationshipCode(ci0Beneficiary.getRelationshipCode());
+			beneficiary.setBirthDate(StringUtils.remove(rPBSBeneficiary.getBirthDate(), "-"));
+			beneficiary.setEffectiveDate(StringUtils.remove(rPBSBeneficiary.getEffectiveDate(), "-"));
+			beneficiary.setCancelDate(StringUtils.remove(rPBSBeneficiary.getCancelDate(), "-"));
+			beneficiary.setGender(rPBSBeneficiary.getGender());
+			beneficiary.setCancelReason(rPBSBeneficiary.getCancelReason());
+			beneficiary.setStudentStatus(rPBSBeneficiary.getStudentStatus());
+			beneficiary.setRelationshipCode(rPBSBeneficiary.getRelationshipCode());
 			response.getContractInquiryBeneficiaries().add(beneficiary);
 		}
 

@@ -16,7 +16,8 @@ public enum TransactionType {
 	UPDATE_NUMBER_AND_OR_DEPT("UpdateNumberAnd/OrDept"),
 	CANCEL_GROUP_MEMBER("CancelGroupMember"),
 	CANCEL_DEPENDENT("CancelDependent"),
-	GET_CONTRACT_PERIODS("Get Contract Periods"),	
+	GET_CONTRACT_PERIODS("Get Contract Periods"),
+	CONTRACT_INQUIRY("ContractInquiry"),
 	
 	UNKNOWN("Unknown");
 
