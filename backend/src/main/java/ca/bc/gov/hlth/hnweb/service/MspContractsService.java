@@ -14,12 +14,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import ca.bc.gov.hlth.hnweb.exception.ExceptionType;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPCI0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPMC0;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 
 /**
  * Service for:
- *  Get Contract Periods. (R32)
+ *  Get Contract Periods. (R32), ContractInquiry(R40)
  */
 @Service
 public class MspContractsService extends BaseService {
@@ -30,6 +31,9 @@ public class MspContractsService extends BaseService {
 
 	@Value("${rapid.r32Path}")
 	private String r32Path;
+	
+	@Value("${rapid.r40Path}")
+	private String r40Path;
 	
 	@Autowired
 	private WebClient rapidWebClient;
@@ -60,6 +64,31 @@ public class MspContractsService extends BaseService {
 		RPBSPMC0 rpbsmc0Response = new RPBSPMC0(response.getBody());
 
 		return rpbsmc0Response;
+	}
+	
+	/**
+	 * Get MSP Coverage info for a Personal Health Number (PHN) of a group(GroupNumber) Inquiry based on the R40/RPBSPCI0 request.
+	 * @param rpbspci0
+	 * @return
+	 * @throws HNWebException
+	 */
+	public RPBSPCI0 inquireContract(RPBSPCI0 rpbspci0) throws HNWebException {
+		String rpbspci0Str = rpbspci0.serialize();
+
+		logger.info("Request:\n{}", rpbspci0Str);
+		
+		ResponseEntity<String> response = postRapidRequest(r40Path, rpbspci0Str);
+		
+		logger.info("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
+		
+		if (response.getStatusCode() != HttpStatus.OK) {
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
+		}
+		
+		RPBSPCI0 rpbspci0Response = new RPBSPCI0(response.getBody());		
+
+		return rpbspci0Response;
 	}
 	
 	private ResponseEntity<String> postRapidRequest(String path, String body) {

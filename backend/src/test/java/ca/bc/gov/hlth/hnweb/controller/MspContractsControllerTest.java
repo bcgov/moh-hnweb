@@ -17,6 +17,9 @@ import org.springframework.test.context.DynamicPropertySource;
 import ca.bc.gov.hlth.hnweb.BaseControllerTest;
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.BeneficiaryContractPeriod;
+import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.ContractInquiryBeneficiary;
+import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.ContractInquiryRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.ContractInquiryResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.GetContractPeriodsRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.GetContractPeriodsResponse;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
@@ -31,6 +34,12 @@ public class MspContractsControllerTest extends BaseControllerTest {
 	private static final String R32_WARNING_MORE_THAN_20_PERSONS_FOUND = "        RPBSPMC000000010                                INFO    RPBS0086MORE THAN 20 PERSONS FOUND - NOT ALL DISPLAYED                          98736722559873672255BIGDATASNAME                       BIGDATAFNAME                                 1983-09-09M98736722550000001C2022-02-010000-00-00 98736722484044574S2022-02-012022-02-28E                                                                                                                                                                                                                                                                                                                        9873672248SPBIGDATASNAME                     SPBIGDATAFNAME                               1983-01-01F98736722550000001S2022-02-010000-00-00 98736722484044574C2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                         9873671593CHSIXTNBIGDSNAME                   CHSIXTNBIGFNAME                              2018-01-16M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671601CHFRTENBDSNAME                     CHFRTNBDFNAME                                2018-01-14M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671769CHTRTBIGDTSNAME                    CHTRTBIGDATFNAM                              2018-01-13M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671776CHTWTREBIGDTSNAME                  CHTWTREBIGDTFNA                              2018-01-23M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671783CHTWNTTWBISNAME                    CHETWNTTWEBFNAM                              2018-01-21M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671809CHTWTONBIGSNAME                    CHTWTONBIGFNAME                              2018-01-21M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671816CHTNTYBIGDTSNAME                   CHNINTYBIGDTFNA                              2018-01-20M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671823CHNINTNBIGDTSNAME                  CHNINTBIGDAFNAM                              2018-01-19F98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671848CHEITNBIGDTSNAME                   CHDITNBIDTAFNAM                              2018-01-18M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671941CHSETNBIGDTSNAME                   CHSEVTNBDTFNAME                              2018-01-17M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671959CHFIFTNBIGDTSNAME                  CHFIFTNBIGDAFNA                              2018-01-15M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671966CHTLEBIGDTSNAME                    CHTLEBIGDTFNAME                              2018-12-12M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671973CHELNBIGDASNAME                    CHELNBIGDFNAME                               2018-11-11M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671998CHTENBIGSNAME                      CHTENBIGDFNAME                               2019-10-10M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873672001CHNINBIGDTSNAME                    CHNINBIGDATFNAM                              2019-09-09M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873672019CHETBIGDASNAME                     CHETBIGDTFNAME                               2018-08-08M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873672026CHSVNBIGDSNAME                     CHSVNBIGDFNAME                               2019-07-07M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873672033CHSIXBIGDTSNAME                    CHSIXBIGDTFNAME                              2018-06-06M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                ";
 	
 	private static final String R32_ERROR_PHN_NOT_FOUND = "        RPBSPMC000000010                                ERRORMSGRPBS9145PHN NOT FOUND                                                           9159869673		";
+	
+	private static final String R40_SUCCESS = "        RPBSPCI000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  93403381226337109                                                                                                                         TETS123                                                                                             V8V8V8                                                            9340338122PROTOCTIST ORDERXD                 SCIPIOXH       WILFRIDXP                     2002-10-19M2023-01-010000-00-00 NC9329090895PROTOCTIST ORDERXD                 YARISXN        DILLINXP                      2002-11-04F2023-01-012023-03-31ENS";
+	
+	private static final String R40_ERROR_PHN_NOT_FOUND = "        RPBSPCI000000010                                ERRORMSGRPBS9145PHN NOT FOUND                                                           91598696736337109";
+	
+	
 	
 	protected static DateTimeFormatter dateOnlyFormatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_FORMAT_DATE_ONLY);
 	
@@ -204,6 +213,85 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         
         assertTransactionCreated(TransactionType.GET_CONTRACT_PERIODS);
+	}
+	
+	@Test
+	public void testContractInquiry_success() throws InterruptedException {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R40_SUCCESS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        ContractInquiryRequest request = new ContractInquiryRequest();
+        request.setPhn("9340338122");
+        
+        ResponseEntity<ContractInquiryResponse> response = mspContractsController.inquireContract(request);
+        
+        ContractInquiryResponse contractInquiryResponse = response.getBody();
+
+		// Check the response
+        assertEquals(StatusEnum.SUCCESS, contractInquiryResponse.getStatus());
+        assertEquals("TRANSACTION SUCCESSFUL", contractInquiryResponse.getMessage());
+
+        assertEquals("9340338122", contractInquiryResponse.getPhn());
+        List<ContractInquiryBeneficiary> contractInquiryBeneficiaries = contractInquiryResponse.getContractInquiryBeneficiaries();
+        assertEquals(2, contractInquiryBeneficiaries.size());
+        
+        ContractInquiryBeneficiary contractInquiryBeneficiary1 = contractInquiryBeneficiaries.get(0);
+        ContractInquiryBeneficiary contractInquiryBeneficiary2 = contractInquiryBeneficiaries.get(1);
+        
+        assertEquals("9340338122", contractInquiryBeneficiary1.getPhn());
+        assertEquals("SCIPIOXH", contractInquiryBeneficiary1.getFirstName());
+        assertEquals("WILFRIDXP", contractInquiryBeneficiary1.getSecondName());
+        assertEquals("", contractInquiryBeneficiary1.getThirdName());
+        assertEquals("20021019", contractInquiryBeneficiary1.getBirthDate());
+        assertEquals("20230101", contractInquiryBeneficiary1.getEffectiveDate());
+        assertEquals("00000000", contractInquiryBeneficiary1.getCancelDate());
+        assertEquals("C", contractInquiryBeneficiary1.getRelationshipCode());
+        assertEquals("N", contractInquiryBeneficiary1.getStudentStatus());
+        assertEquals("M", contractInquiryBeneficiary1.getGender());
+        assertEquals(" ", contractInquiryBeneficiary1.getCancelReason());
+        
+        assertEquals("9329090895", contractInquiryBeneficiary2.getPhn());
+        assertEquals("YARISXN", contractInquiryBeneficiary2.getFirstName());
+        assertEquals("DILLINXP", contractInquiryBeneficiary2.getSecondName());
+        assertEquals("", contractInquiryBeneficiary2.getThirdName());
+        assertEquals("20021104", contractInquiryBeneficiary2.getBirthDate());
+        assertEquals("20230101", contractInquiryBeneficiary2.getEffectiveDate());
+        assertEquals("20230331", contractInquiryBeneficiary2.getCancelDate());
+        assertEquals("S", contractInquiryBeneficiary2.getRelationshipCode());
+        assertEquals("N", contractInquiryBeneficiary2.getStudentStatus());
+        assertEquals("F", contractInquiryBeneficiary2.getGender());
+        assertEquals("E", contractInquiryBeneficiary2.getCancelReason());
+        
+	}
+	
+	@Test
+	public void testContractInquiry_error_phnNotFound() throws InterruptedException {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R40_ERROR_PHN_NOT_FOUND)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        ContractInquiryRequest request = new ContractInquiryRequest();
+        request.setPhn("9159869673");
+        
+        ResponseEntity<ContractInquiryResponse> response = mspContractsController.inquireContract(request);
+        
+        ContractInquiryResponse contractInquiryResponse = response.getBody();
+
+		// Check the response
+        assertEquals(StatusEnum.ERROR, contractInquiryResponse.getStatus());
+        assertEquals("RPBS9145 PHN NOT FOUND", contractInquiryResponse.getMessage());
+
+        assertEquals("9159869673", contractInquiryResponse.getPhn());
+        
+        List<ContractInquiryBeneficiary> contractInquiryBeneficiaries = contractInquiryResponse.getContractInquiryBeneficiaries();
+        assertEquals(0, contractInquiryBeneficiaries.size());
+       
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+  
 	}
 	
     /**

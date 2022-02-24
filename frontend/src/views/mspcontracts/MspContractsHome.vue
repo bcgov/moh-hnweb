@@ -6,6 +6,7 @@ import SubNavTab from '../../components/template/SubNavTab.vue'
 <template>
   <TheSubNav>
     <SubNavTab routeName="GetContractPeriods" title="Get Contract Periods" />
+    <SubNavTab routeName="ContractInquiry" title="ContractInquiry" />
   </TheSubNav>
   <router-view />
 </template>

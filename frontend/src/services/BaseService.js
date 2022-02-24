@@ -22,6 +22,7 @@ export const resources = {
   },
   mspContracts: {
     getContractPeriods: '/msp-contracts/get-contract-periods',
+    inquireContract: '/msp-contracts/inquire-contract',
   },
   user: {
     permissions: '/user/permissions',
