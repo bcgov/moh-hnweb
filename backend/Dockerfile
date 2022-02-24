@@ -12,7 +12,7 @@ WORKDIR /tmp
 RUN mkdir -p keystore
 
 COPY --from=build-stage /home/app/target/*.jar /tmp/app.jar
-ENV JAVA_OPTS="-Xms1024m -Xmx2048m"
+
 
 ENTRYPOINT ["java","-jar","/tmp/app.jar"]
 
