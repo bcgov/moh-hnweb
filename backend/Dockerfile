@@ -12,6 +12,6 @@ WORKDIR /tmp
 RUN mkdir -p keystore
 
 COPY --from=build-stage /home/app/target/*.jar /tmp/app.jar
-ENTRYPOINT ["java","-Xms1024M -Xmx2048M","-jar","/tmp/app.jar"]
+ENTRYPOINT ["java","-jar","-Xms1024M -Xmx2048M","/tmp/app.jar"]
 
 EXPOSE 9090
