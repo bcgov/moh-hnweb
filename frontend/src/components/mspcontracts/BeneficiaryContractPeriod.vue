@@ -6,7 +6,7 @@
   <td>{{ beneficiaryContractPeriod.groupNumber }}</td>
   <td>{{ beneficiaryContractPeriod.effectiveDate }}</td>
   <td>{{ beneficiaryContractPeriod.cancelDate }}</td>
-  <td>{{ beneficiaryContractPeriod.cancelReason }}</td>
+  <td>{{ beneficiaryContractPeriod.cancelReason === 'E' ? 'Eligible' : '' }}</td>
 </template>
 <script>
 export default {

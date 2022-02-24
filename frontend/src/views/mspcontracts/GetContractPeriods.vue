@@ -13,7 +13,7 @@
     </form>
   </div>
   <br />
-  <div v-if="searchOk && result.beneficiaryContractPeriods.length > 0">
+  <div id="result" v-if="searchOk && result.beneficiaryContractPeriods.length > 0">
     <hr />
     <AppSimpleTable id="resultsTable">
       <thead>
