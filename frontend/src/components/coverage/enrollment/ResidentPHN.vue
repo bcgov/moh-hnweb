@@ -29,24 +29,25 @@ export default {
   data() {
     return {
       phn: '',
-      searching: false,
     }
+  },
+  props: {
+    searching: {
+      required: true,
+      type: Boolean,
+    },
   },
   methods: {
     async submitForm() {
-      this.searching = true
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
           this.$store.commit('alert/setErrorAlert')
-          this.searching = false
           return
         }
         this.$emit('update-resident', this.phn)
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
-      } finally {
-        this.searching = false
       }
     },
     resetForm() {

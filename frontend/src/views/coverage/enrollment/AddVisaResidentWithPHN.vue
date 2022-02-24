@@ -1,6 +1,6 @@
 <template>
-  <ResidentPHN v-if="isPhnSearch" @update-resident="updateResident" />
-  <ResidentDetails v-else-if="isStudentRegistration" @register-resident="registerResident" />
+  <ResidentPHN v-if="isPhnSearch" @update-resident="updateResident" :searching="searching" />
+  <ResidentDetails v-else-if="isStudentRegistration" @register-resident="registerResident" :submitting="submitting" />
   <RegistrationConfirmation v-else-if="isConfirmation" :resident="this.getPersonDetailsResult?.person" />
 </template>
 
@@ -38,6 +38,8 @@ export default {
         status: '',
         message: null,
       },
+      searching: false,
+      submitting: false,
     }
   },
   created() {
@@ -64,6 +66,7 @@ export default {
   },
   methods: {
     async updateResident(phn) {
+      this.searching = true
       try {
         const data = (await EnrollmentService.getPersonDetails({ phn: phn })).data
         this.getPersonDetailsResult = {
@@ -92,9 +95,12 @@ export default {
         this.pageAction = this.PAGE_ACTION.REGISTRATION
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
+      } finally {
+        this.searching = false
       }
     },
     async registerResident(personDetails) {
+      this.submitting = true
       try {
         this.registrationResult = (await EnrollmentService.registerResident(personDetails)).data
 
@@ -111,6 +117,8 @@ export default {
         this.$store.commit('alert/setSuccessAlert', 'Transaction Successful')
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
+      } finally {
+        this.submitting = false
       }
     },
   },
