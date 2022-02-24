@@ -11,7 +11,8 @@ WORKDIR /tmp
 #Creating new directory in tmp
 RUN mkdir -p keystore
 
+
 COPY --from=build-stage /home/app/target/*.jar /tmp/app.jar
-ENTRYPOINT ["java","-jar","-Xms1024M -Xmx2048M","/tmp/app.jar"]
+ENTRYPOINT ["java","-jar","$JAVAOPTS","/tmp/app.jar"]
 
 EXPOSE 9090
