@@ -20,7 +20,8 @@ export default {
   name: 'RegistrationConfirmation',
   props: {
     resident: {
-      phn: '',
+      required: true,
+      type: Object,
     },
   },
   computed: {

@@ -155,11 +155,8 @@ export default {
   name: 'ResidentDetailsWithoutPHN',
   props: {
     resident: {
-      givenName: '',
-      secondName: '',
-      surname: '',
-      dateOfBirth: '',
-      gender: '',
+      required: true,
+      type: Object,
     },
     submitting: {
       required: true,
