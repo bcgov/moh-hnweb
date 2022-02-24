@@ -45,8 +45,6 @@
             <router-link @click="resetAlert" :to="{ name: 'MspContracts' }">MSP Contracts</router-link>
             <div class="dropdown-content">
               <router-link @click="resetAlert" :class="menuClass($route, 'GetContractPeriods')" :to="{ name: 'GetContractPeriods' }">Get Contract Periods</router-link>
-            </div>
-            <div class="dropdown-content">
               <router-link @click="resetAlert" :class="menuClass($route, 'ContractInquiry')" :to="{ name: 'ContractInquiry' }">Contract Inquiry</router-link>
             </div>
           </div>

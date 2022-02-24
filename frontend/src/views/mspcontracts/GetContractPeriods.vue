@@ -29,7 +29,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="beneficiaryContractPeriod in result.beneficiaryContractPeriods">
+        <tr v-for="beneficiaryContractPeriod in sortedBeneficiaryContractPeriods">
           <BeneficiaryContractPeriod :beneficiaryContractPeriod="beneficiaryContractPeriod" />
         </tr>
       </tbody>
@@ -50,6 +50,19 @@ export default {
   components: {
     AppSimpleTable,
     BeneficiaryContractPeriod,
+  },
+  computed: {
+    //Compare on PHN, then Effective Date
+    sortedBeneficiaryContractPeriods: function () {
+      function compareBeneficiaryContractPeriod(a, b) {
+        if (a.phn === b.phn) {
+          return a.effectiveDate === b.effectiveDate ? 0 : a.effectiveDate < b.effectiveDate ? -1 : 1
+        }
+        return a.phn < b.phn ? -1 : 1
+      }
+
+      return this.result.beneficiaryContractPeriods.sort(compareBeneficiaryContractPeriod)
+    },
   },
   setup() {
     return {
