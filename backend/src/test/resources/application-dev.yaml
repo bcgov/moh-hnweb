@@ -10,6 +10,11 @@ server:
   
   
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          audience: MSPDIRECT-SERVICE
   datasource:
     url: jdbc:h2:mem:mspdirect;MODE=PostgreSQL;INIT=runscript from 'classpath:scripts/create.sql'
     driverClassName: org.h2.Driver

@@ -6,5 +6,6 @@ const config = (() => {
     // KEYCLOAK_URL: '',
     // SITEMINDER_LOGOUT: '',
     // SERVICE_URL: '',
+    // KEYCLOAK_CLIENT_ID:,
   }
 })()
