@@ -1,6 +1,6 @@
 import { Selector } from 'testcafe'
 
-class ContractInquiry {
+class ContractInquiryPage {
   constructor() {
     this.phnInput = Selector('#phn')
     this.groupNumberInput = Selector('#groupNumber')
@@ -15,4 +15,4 @@ class ContractInquiry {
   }
 }
 
-export default new ContractInquiry()
+export default new ContractInquiryPage()
