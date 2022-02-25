@@ -12,6 +12,7 @@ import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.GetContractPeriodsResponse;
 public class RPBSPMC0Converter extends BaseRapidConverter {
 	
 	private static final String TRAN_CODE = "RPBSPMC0";
+	private static final String ZERO_DATE = "0000-00-00"; //Downstream returns this value when no date is available
 
 	public RPBSPMC0Converter() {
 		super();
@@ -52,7 +53,7 @@ public class RPBSPMC0Converter extends BaseRapidConverter {
 				beneficiaryContractPeriod.setGroupNumber(cp.getGroupNumber());
 				beneficiaryContractPeriod.setRelationship(cp.getRelationship());
 				beneficiaryContractPeriod.setEffectiveDate(convertDate(cp.getEffectiveDate()));
-				beneficiaryContractPeriod.setCancelDate(StringUtils.equals("0000-00-00", cp.getCancelDate()) ? null : convertDate(cp.getCancelDate()));
+				beneficiaryContractPeriod.setCancelDate(StringUtils.equals(ZERO_DATE, cp.getCancelDate()) ? null : convertDate(cp.getCancelDate()));
 				beneficiaryContractPeriod.setCancelReason(StringUtils.trim(cp.getReasonCode()));
 				response.getBeneficiaryContractPeriods().add(beneficiaryContractPeriod);
 			});
