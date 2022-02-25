@@ -39,6 +39,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
 	
 	private static final String R40_ERROR_PHN_NOT_FOUND = "        RPBSPCI000000010                                ERRORMSGRPBS9145PHN NOT FOUND                                                           91598696736337109";
 	
+	private static final String R40_WARNING_MORE_THAN_20_PERSONS_FOUND = "        RPBSPCI000000010                                RESPONSERPBS0059MORE THAN 20 PERSONS. PLEASE CONTACT MSP                                93329124866243109123456   1234565951 WDSOU YF            ZT 5                     CRESTON BC                                        V4D7N75951 WDSOU YF            ZT 5                     CRESTON BC                                        V4D7N7                    2506301086                              9332912486PROTOCTIST ORDERXD                 RYAN-CARTERXM  BRANDYNXD                     1956-08-25M2020-10-012022-12-31ENC9344911827PROTOCTIST ORDERXD                 GARNETXP       HARUNAOXJ                     2001-01-24F2020-10-012022-12-31EYD9306432103PROTOCTIST ORDERXD                 LASEYXH        KENDRENXD                     2001-02-06F2020-10-012022-12-31EYD9317310617PROTOCTIST ORDERXD                 MINGXQ         BENANXF                       2001-04-21F2020-10-012022-12-31EYD9378520641PROTOCTIST ORDERXD                 AYUUBXK        HEILYNXC                      2001-04-21M2020-10-012022-12-31EYD9397105575PROTOCTIST ORDERXD                 CADBYXL        BARKAATXB                     2001-07-07F2020-10-012022-12-31EYD9399900281PROTOCTIST ORDERXD                 BASHERXO       PARMAJITXC                    2002-06-19M2020-10-012022-12-31EYD9331926919PROTOCTIST ORDERXD                 JACK-LYALLXH   MO-CHARAXI                    2002-07-05F2020-10-012022-12-31EYD9340338122PROTOCTIST ORDERXD                 SCIPIOXH       WILFRIDXP                     2002-10-19M2020-10-012022-12-31EYD9329090895PROTOCTIST ORDERXD                 YARISXN        DILLINXP                      2002-11-04F2020-10-012022-12-31EYD9325719609PROTOCTIST ORDERXD                 JOHANNXB       SOURAVXL                      2002-11-25F2020-10-012022-12-31EYD9348175493PROTOCTIST ORDERXD                 SYCAMOREXC     SIMONIDESXD                   2002-12-23F2020-10-012022-12-31EYD9382771807PROTOCTIST ORDERXD                 HEINDRIKXI     KENETHXN                      2003-01-01F2020-10-012022-12-31EYD9303292543PROTOCTIST ORDERXD                 MUSSADAQXM     ORIANOXO                      2003-02-17F2020-10-012022-12-31END9329279733PROTOCTIST ORDERXD                 ALLEYNXO       IZAMXP                        2003-05-16M2020-10-012022-12-31END9307706834PROTOCTIST ORDERXD                 KEVENXG        DULLXJ                        2003-09-01M2020-10-012022-12-31END9318721811PROTOCTIST ORDERXD                 TENNYSONXF     CHUNXH                        2003-12-06M2020-10-012022-12-31END9874345713FEJO                               ERER                                         2004-01-01F2020-10-012022-12-31END9361354265PROTOCTIST ORDERXD                 DEDENISEOLUWAXAJYXD                          2004-01-25F2020-10-012022-12-31END9319815973PROTOCTIST ORDERXD                 EVYNXM         TOBIASXK                      2004-04-02F2020-10-012022-12-31END";
+			
 	private static final String R40_ERROR_NO_COVERAGE_FOUND = "        RPBSPCI000000010                                ERRORMSGRPBS0067NO COVERAGE FOUND FOR THE PHN ENTERED. PLEASE CONTACT MSP               98736722556337109";
 	
 	protected static DateTimeFormatter dateOnlyFormatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_FORMAT_DATE_ONLY);
@@ -323,6 +325,42 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
   
+	}
+	
+	public void testContractInquiry_warning_moreThan20PersonsFound() throws InterruptedException {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R40_WARNING_MORE_THAN_20_PERSONS_FOUND)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        ContractInquiryRequest request = new ContractInquiryRequest();
+        request.setPhn("9332912486");
+        request.setGroupNumber("6243109");
+        
+        ResponseEntity<ContractInquiryResponse> response = mspContractsController.inquireContract(request, createHttpServletRequest());
+        
+        ContractInquiryResponse contractInquiryResponse= response.getBody();
+
+		// Check the response
+        assertEquals(StatusEnum.WARNING, contractInquiryResponse.getStatus());
+        assertEquals(contractInquiryResponse.getHomeAddressLine1(), "5951 WDSOU YF");
+        assertEquals(contractInquiryResponse.getHomeAddressLine2(), "ZT 5");
+        assertEquals(contractInquiryResponse.getHomeAddressLine3(), "CRESTON BC");
+        assertEquals(contractInquiryResponse.getHomeAddressLine4(), "");
+        assertEquals(contractInquiryResponse.getHomeAddressPostalCode(), "V4D7N7");
+        
+        assertEquals(contractInquiryResponse.getMailingAddressLine1(), "5951 WDSOU YF");
+        assertEquals(contractInquiryResponse.getMailingAddressLine2(), "ZT 5");
+        assertEquals(contractInquiryResponse.getMailingAddressLine3(), "CRESTON BC");
+        assertEquals(contractInquiryResponse.getMailingAddressLine4(), "");
+        assertEquals(contractInquiryResponse.getMailingAddressPostalCode(), "V4D7N7");
+        
+        assertEquals(contractInquiryResponse.getTelephone(), "250 6301086");
+        assertEquals(contractInquiryResponse.getGroupMemberNumber(), "123456");
+        assertEquals(contractInquiryResponse.getGroupMemberDepartmentNumber(), "123456");
+        
+        assertEquals(contractInquiryResponse.getContractInquiryBeneficiaries().size(), "20");
+        
+        assertEquals("RPBS0059 MORE THAN 20 PERSONS. PLEASE CONTACT MSP", contractInquiryResponse.getMessage());
 	}
 	
     /**

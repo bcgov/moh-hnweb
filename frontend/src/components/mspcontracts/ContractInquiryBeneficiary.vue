@@ -1,9 +1,9 @@
 <template>
   <td>{{ contractInquiryBeneficiary.phn }}</td>
   <td>{{ fullName }}</td>
-  <td>{{ contractInquiryBeneficiary.dateOfBirth }}</td>
+  <td>{{ contractInquiryBeneficiary.birthDate }}</td>
   <td>{{ contractInquiryBeneficiary.gender }}</td>
-  <td>{{ contractInquiryBeneficiary.relationshipCode }}</td>
+  <td>{{ relationship }}</td>
   <td>{{ contractInquiryBeneficiary.studentStatus }}</td>
   <td>{{ contractInquiryBeneficiary.effectiveDate }}</td>
   <td>{{ contractInquiryBeneficiary.cancelDate }}</td>
@@ -30,6 +30,18 @@ export default {
         name = name + ' ' + this.contractInquiryBeneficiary.thirdName
       }
       return name
+    },
+    relationship() {
+      switch (this.contractInquiryBeneficiary.relationshipCode) {
+        case 'C':
+          return 'Employee'
+        case 'D':
+          return 'Dependent'
+        case 'S':
+          return 'Spouse'
+        default:
+          return this.contractInquiryBeneficiary.relationshipCode
+      }
     },
   },
 }

@@ -20,64 +20,74 @@
   <br />
   <div v-if="searchOk && result.contractInquiryBeneficiaries.length > 0">
     <hr />
-    <AppRow>
-      <AppCol class="col3"><h2>Home Address</h2> </AppCol>
-      <AppCol class="col3"><h2>Mailing Address</h2></AppCol>
-    </AppRow>
-    <AppRow>
-      <AppCol class="col3">
-        <AppOutput label="Line1" :value="result.homeAddressLine1" />
-      </AppCol>
-      <AppCol class="col3">
-        <AppOutput label="Line1" :value="result.mailingAddressLine1" />
-      </AppCol>
-    </AppRow>
-    <AppRow>
-      <AppCol class="col3">
-        <AppOutput label="Line2" :value="result.homeAddressLine2" />
-      </AppCol>
-      <AppCol class="col3">
-        <AppOutput label="Line2" :value="result.mailingAddressLine2" />
-      </AppCol>
-    </AppRow>
-    <AppRow>
-      <AppCol class="col3">
-        <AppOutput label="Line3" :value="result.homeAddressLine3" />
-      </AppCol>
-      <AppCol class="col3">
-        <AppOutput label="Line3" :value="result.mailingAddressLine3" />
-      </AppCol>
-    </AppRow>
-    <AppRow>
-      <AppCol class="col3">
-        <AppOutput label="Postal Code" :value="result.homeAddressPostalCode" />
-      </AppCol>
-      <AppCol class="col3">
-        <AppOutput label="Postal Code" :value="result.mailingAddressPostalCode" />
-      </AppCol>
-    </AppRow>
-    <AppRow>
-      <AppCol class="col3">
-        <AppOutput label="Telephone" :value="result.telephone" />
-      </AppCol>
-    </AppRow>
-    <AppRow>
-      <AppCol class="col3">
-        <AppOutput label="Group Member Number" :value="result.groupMemberNumber" />
-      </AppCol>
-    </AppRow>
-    <AppRow>
-      <AppCol class="col3">
-        <AppOutput label="Department Number" :value="result.groupMemberDepartmentNumber" />
-      </AppCol>
-    </AppRow>
+    <div id="personInfo">
+      <AppRow>
+        <AppCol class="col3"><h2>Home Address</h2> </AppCol>
+        <AppCol class="col3"><h2>Mailing Address</h2></AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col3">
+          <AppOutput label="Line1" :value="result.homeAddressLine1" />
+        </AppCol>
+        <AppCol class="col3">
+          <AppOutput label="Line1" :value="result.mailingAddressLine1" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col3">
+          <AppOutput label="Line2" :value="result.homeAddressLine2" />
+        </AppCol>
+        <AppCol class="col3">
+          <AppOutput label="Line2" :value="result.mailingAddressLine2" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col3">
+          <AppOutput label="Line3" :value="result.homeAddressLine3" />
+        </AppCol>
+        <AppCol class="col3">
+          <AppOutput label="Line3" :value="result.mailingAddressLine3" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col3">
+          <AppOutput label="Line4" :value="result.homeAddressLine4" />
+        </AppCol>
+        <AppCol class="col3">
+          <AppOutput label="Line4" :value="result.mailingAddressLine4" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col3">
+          <AppOutput label="Postal Code" :value="result.homeAddressPostalCode" />
+        </AppCol>
+        <AppCol class="col3">
+          <AppOutput label="Postal Code" :value="result.mailingAddressPostalCode" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col3">
+          <AppOutput label="Telephone" :value="result.telephone" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col3">
+          <AppOutput label="Group Member Number" :value="result.groupMemberNumber" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col3">
+          <AppOutput label="Department Number" :value="result.groupMemberDepartmentNumber" />
+        </AppCol>
+      </AppRow>
+    </div>
     <br />
     <AppSimpleTable id="resultsTable">
       <thead>
         <tr>
           <th>PHN</th>
           <th>Name</th>
-          <th>Date of Birth</th>
+          <th>Birth Date</th>
           <th>Gender</th>
           <th>Relationship</th>
           <th>Student</th>
@@ -119,7 +129,6 @@ export default {
       groupNumber: '',
       searching: false,
       searchOk: false,
-      departmentNumber: '',
       result: {
         status: '',
         message: '',
@@ -133,6 +142,7 @@ export default {
         MailingAddressLine2: '',
         MailingAddressLine3: '',
         MailingPostalCode: '',
+        telephone: '',
         contractInquiryBeneficiaries: [],
       },
     }

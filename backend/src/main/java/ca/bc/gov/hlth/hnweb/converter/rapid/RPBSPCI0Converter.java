@@ -49,30 +49,32 @@ public class RPBSPCI0Converter extends BaseRapidConverter {
 		response.setHomeAddressLine1(ci0.getHomeAddress().getAddressLine1());
 		response.setHomeAddressLine2(ci0.getHomeAddress().getAddressLine2());
 		response.setHomeAddressLine3(ci0.getHomeAddress().getAddressLine3());
+		response.setHomeAddressLine4(ci0.getHomeAddress().getAddressLine4());
 		response.setHomeAddressPostalCode(ci0.getHomeAddress().getPostalCode());
 
 		response.setMailingAddressLine1(ci0.getMailAddress().getAddressLine1());
 		response.setMailingAddressLine2(ci0.getMailAddress().getAddressLine2());
 		response.setMailingAddressLine3(ci0.getMailAddress().getAddressLine3());
+		response.setMailingAddressLine4(ci0.getMailAddress().getAddressLine4());
 		response.setMailingAddressPostalCode(ci0.getMailAddress().getPostalCode());
 
-		response.setTelephone(ci0.getPhone().getPhoneAreaCode() + ci0.getPhone().getPhoneNumber());
+		response.setTelephone(ci0.getPhone().getPhoneAreaCode() + " " + ci0.getPhone().getPhoneNumber());
 
-		for (RPBSBeneficiary rPBSBeneficiary : ci0.getBeneficiary()) {
+		for (RPBSBeneficiary rpbsBeneficiary : ci0.getBeneficiary()) {
 			ContractInquiryBeneficiary beneficiary = new ContractInquiryBeneficiary();
-			beneficiary.setPhn(rPBSBeneficiary.getPhn());
-			beneficiary.setFamilyName(StringUtils.trim(rPBSBeneficiary.getFamilyName()));
-			beneficiary.setFirstName(StringUtils.trim(rPBSBeneficiary.getFirstName()));
-			beneficiary.setSecondName(StringUtils.trim(rPBSBeneficiary.getSecondName()));
-			beneficiary.setThirdName(StringUtils.trim(rPBSBeneficiary.getThirdName()));
+			beneficiary.setPhn(rpbsBeneficiary.getPhn());
+			beneficiary.setFamilyName(StringUtils.trim(rpbsBeneficiary.getFamilyName()));
+			beneficiary.setFirstName(StringUtils.trim(rpbsBeneficiary.getFirstName()));
+			beneficiary.setSecondName(StringUtils.trim(rpbsBeneficiary.getSecondName()));
+			beneficiary.setThirdName(StringUtils.trim(rpbsBeneficiary.getThirdName()));
 			// Convert the response Date from yyyy-MM-dd to yyyyMMdd
-			beneficiary.setBirthDate(StringUtils.remove(rPBSBeneficiary.getBirthDate(), "-"));
-			beneficiary.setEffectiveDate(StringUtils.remove(rPBSBeneficiary.getEffectiveDate(), "-"));
-			beneficiary.setCancelDate(StringUtils.remove(rPBSBeneficiary.getCancelDate(), "-"));
-			beneficiary.setGender(rPBSBeneficiary.getGender());
-			beneficiary.setCancelReason(rPBSBeneficiary.getCancelReason());
-			beneficiary.setStudentStatus(rPBSBeneficiary.getStudentStatus());
-			beneficiary.setRelationshipCode(rPBSBeneficiary.getRelationshipCode());
+			beneficiary.setBirthDate(StringUtils.remove(rpbsBeneficiary.getBirthDate(), "-"));
+			beneficiary.setEffectiveDate(StringUtils.remove(rpbsBeneficiary.getEffectiveDate(), "-"));
+			beneficiary.setCancelDate(StringUtils.remove(rpbsBeneficiary.getCancelDate(), "-"));
+			beneficiary.setGender(rpbsBeneficiary.getGender());
+			beneficiary.setCancelReason(rpbsBeneficiary.getCancelReason());
+			beneficiary.setStudentStatus(rpbsBeneficiary.getStudentStatus());
+			beneficiary.setRelationshipCode(rpbsBeneficiary.getRelationshipCode());
 			response.getContractInquiryBeneficiaries().add(beneficiary);
 		}
 

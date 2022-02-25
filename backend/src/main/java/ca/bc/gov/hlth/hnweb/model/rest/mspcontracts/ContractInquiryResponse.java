@@ -14,11 +14,13 @@ public class ContractInquiryResponse extends BaseResponse {
 	private String homeAddressLine1;
 	private String homeAddressLine2;
 	private String homeAddressLine3;
+	private String homeAddressLine4;
 	private String homeAddressPostalCode;
 
 	private String mailingAddressLine1;
 	private String mailingAddressLine2;
 	private String mailingAddressLine3;
+	private String mailingAddressLine4;
 	private String mailingAddressPostalCode;
 
 	private String telephone;
@@ -111,6 +113,22 @@ public class ContractInquiryResponse extends BaseResponse {
 
 	public void setMailingAddressLine3(String mailingAddressLine3) {
 		this.mailingAddressLine3 = mailingAddressLine3;
+	}
+
+	public String getHomeAddressLine4() {
+		return homeAddressLine4;
+	}
+
+	public void setHomeAddressLine4(String homeAddressLine4) {
+		this.homeAddressLine4 = homeAddressLine4;
+	}
+
+	public String getMailingAddressLine4() {
+		return mailingAddressLine4;
+	}
+
+	public void setMailingAddressLine4(String mailingAddressLine4) {
+		this.mailingAddressLine4 = mailingAddressLine4;
 	}
 
 	public String getMailingAddressPostalCode() {
