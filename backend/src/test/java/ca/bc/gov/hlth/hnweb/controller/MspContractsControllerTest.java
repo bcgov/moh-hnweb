@@ -264,8 +264,14 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals("S", contractInquiryBeneficiary2.getRelationshipCode());
         assertEquals("N", contractInquiryBeneficiary2.getStudentStatus());
         assertEquals("F", contractInquiryBeneficiary2.getGender());
-        assertEquals("E", contractInquiryBeneficiary2.getCancelReason());
+        assertEquals("E", contractInquiryBeneficiary2.getCancelReason()); 
         
+     // Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.CONTRACT_INQUIRY);
 	}
 	
 	@Test
@@ -295,7 +301,7 @@ public class MspContractsControllerTest extends BaseControllerTest {
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
-  
+        assertTransactionCreated(TransactionType.CONTRACT_INQUIRY);
 	}
 	
 	@Test
@@ -323,8 +329,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
-        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
-  
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE)); 
+        assertTransactionCreated(TransactionType.CONTRACT_INQUIRY);
 	}
 	
 	public void testContractInquiry_warning_moreThan20PersonsFound() throws InterruptedException {
@@ -361,6 +367,12 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(contractInquiryResponse.getContractInquiryBeneficiaries().size(), "20");
         
         assertEquals("RPBS0059 MORE THAN 20 PERSONS. PLEASE CONTACT MSP", contractInquiryResponse.getMessage());
+        
+     // Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE)); 
+        assertTransactionCreated(TransactionType.CONTRACT_INQUIRY);
 	}
 	
     /**
