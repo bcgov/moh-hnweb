@@ -67,16 +67,16 @@ const routes = [
         path: 'checkEligibility',
         name: 'CheckEligibility',
         component: CheckEligibility,
-        beforeEnter: (to, _, next) => {
-          handleAuth(to, next, 'R15')
+        meta: {
+          permission: 'CheckEligibility',
         },
       },
       {
         path: 'phnInquiry',
         name: 'PhnInquiry',
         component: PhnInquiry,
-        beforeEnter: (to, from, next) => {
-          handleAuth(to, next, 'R41')
+        meta: {
+          permission: 'PHNInquiry',
         },
       },
       {
@@ -88,8 +88,8 @@ const routes = [
         path: 'coverageStatusCheck',
         name: 'CoverageStatusCheck',
         component: CoverageStatusCheck,
-        beforeEnter: (to, from, next) => {
-          handleAuth(to, next, 'E45')
+        meta: {
+          permission: 'MSPCoverageCheck',
         },
       },
     ],
@@ -155,16 +155,6 @@ function checkPageAction(to, next) {
   next()
 }
 
-function handleAuth(to, next, permission) {
-  const hasPermission = store.getters['auth/hasPermission'](permission)
-  if (hasPermission) {
-    next()
-  } else {
-    store.commit('alert/setErrorAlert', `You are not authorized to access ${to.path}`)
-    next({ name: 'Home' })
-  }
-}
-
 const router = createRouter({
   history: createWebHistory(),
   routes,
@@ -176,12 +166,26 @@ const router = createRouter({
   },
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _, next) => {
+  // Validate that the user has permissions
   const hasAnyPermission = store.getters['auth/hasAnyPermission']
-  if (hasAnyPermission || to.name === 'Unauthorized') {
-    next()
-  } else {
+  if (!hasAnyPermission && to.name !== 'Unauthorized') {
     next({ name: 'Unauthorized' })
+    return
+  }
+
+  // Validate routes secured by permission
+  const permission = to.meta.permission
+  if (permission) {
+    const hasPermission = store.getters['auth/hasPermission'](permission)
+    if (hasPermission) {
+      next()
+    } else {
+      store.commit('alert/setErrorAlert', `You are not authorized to access ${to.path}`)
+      next({ name: 'Home' })
+    }
+  } else {
+    next()
   }
 })
 
