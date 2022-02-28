@@ -13,7 +13,7 @@ public enum TransactionType {
 	NAME_SEARCH("NameSearch"),
 	ADD_GROUP_MEMBER("AddGroupMember"),
 	ADD_DEPENDENT("AddDependent"),
-	UPDATE_NUMBER_AND_OR_DEPT("UpdateNumberAnd/OrDept"),
+	UPDATE_NUMBER_AND_OR_DEPT("UpdateNumberAndDept"),
 	CANCEL_GROUP_MEMBER("CancelGroupMember"),
 	CANCEL_DEPENDENT("CancelDependent"),
 	

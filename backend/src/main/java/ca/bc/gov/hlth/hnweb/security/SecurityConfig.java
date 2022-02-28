@@ -24,7 +24,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -55,13 +54,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         	.cors(Customizer.withDefaults())
             .authorizeRequests()
             .mvcMatchers(HttpMethod.GET, "/docs/**").permitAll()
-            .mvcMatchers(HttpMethod.POST,"/eligibility/check-msp-coverage-status").hasRole("E45")
-            .mvcMatchers(HttpMethod.POST,"/eligibility/check-eligibility").hasRole("R15")
-            .mvcMatchers(HttpMethod.POST,"/eligibility/inquire-phn").hasRole("R41")
+            .mvcMatchers(HttpMethod.POST, "/eligibility/check-msp-coverage-status").hasRole(TransactionType.MSP_COVERAGE_STATUS_CHECK.getValue())
+            .mvcMatchers(HttpMethod.POST, "/eligibility/check-eligibility").hasRole(TransactionType.CHECK_ELIGIBILITY.getValue())
+            .mvcMatchers(HttpMethod.POST, "/eligibility/inquire-phn").hasRole(TransactionType.PHN_INQUIRY.getValue())
+            .mvcMatchers(HttpMethod.POST, "/enrollment/**").fullyAuthenticated()
             .mvcMatchers(HttpMethod.POST, "/group-member/**").fullyAuthenticated()
-            .mvcMatchers(HttpMethod.POST,"/enrollment/**").fullyAuthenticated()
-            .mvcMatchers(HttpMethod.POST,"/group-member/**").fullyAuthenticated()
-            .mvcMatchers(HttpMethod.GET,"/user/**").fullyAuthenticated()
+            .mvcMatchers(HttpMethod.GET, "/user/**").fullyAuthenticated()
             .mvcMatchers("/*").denyAll()
             .and()
             .oauth2ResourceServer().jwt()

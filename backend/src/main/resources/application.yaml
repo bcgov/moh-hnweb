@@ -37,12 +37,12 @@ security:
     DUMMY:
       - Dummy
     E45:
-      - E45
+      - MSPCoverageCheck
     ELIGIBILITY:
-      - E45
-      - R15
-      - R41
+      - MSPCoverageCheck
+      - CheckEligibility
+      - PHNInquiry
     TRAININGHEALTHAUTH:
-      - E45
-      - R15
-      - R41    
+      - MSPCoverageCheck
+      - CheckEligibility
+      - PHNInquiry

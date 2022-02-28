@@ -26,7 +26,7 @@ public class SecurityUtilTest {
 		
 		List<String> permissions = SecurityUtil.loadPermissions(jwt, securityProperties.getRolePermissions());
 		assertEquals(1, permissions.size());
-		assertEquals("E45", permissions.get(0));
+		assertEquals("MSPCoverageCheck", permissions.get(0));
 	}
 	
 	@Test
@@ -35,9 +35,9 @@ public class SecurityUtilTest {
 		
 		List<String> permissions = SecurityUtil.loadPermissions(jwt, securityProperties.getRolePermissions());
 		assertEquals(3, permissions.size());
-		assertEquals("E45", permissions.get(0));
-		assertEquals("R15", permissions.get(1));
-		assertEquals("R41", permissions.get(2));
+		assertEquals("MSPCoverageCheck", permissions.get(0));
+		assertEquals("CheckEligibility", permissions.get(1));
+		assertEquals("PHNInquiry", permissions.get(2));
 	}
 	
 	@Test
@@ -46,9 +46,9 @@ public class SecurityUtilTest {
 		
 		List<String> permissions = SecurityUtil.loadPermissions(jwt, securityProperties.getRolePermissions());
 		assertEquals(3, permissions.size());
-		assertEquals("E45", permissions.get(0));
-		assertEquals("R15", permissions.get(1));
-		assertEquals("R41", permissions.get(2));
+		assertEquals("MSPCoverageCheck", permissions.get(0));
+		assertEquals("CheckEligibility", permissions.get(1));
+		assertEquals("PHNInquiry", permissions.get(2));
 	}
 	
 	private Jwt createToken(String... roles) {
