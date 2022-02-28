@@ -349,21 +349,21 @@ public class MspContractsControllerTest extends BaseControllerTest {
 
 		// Check the response
         assertEquals(StatusEnum.WARNING, contractInquiryResponse.getStatus());
-        assertEquals(contractInquiryResponse.getHomeAddressLine1(), "5951 WDSOU YF            ");
-        assertEquals(contractInquiryResponse.getHomeAddressLine2(), "ZT 5                     ");
-        assertEquals(contractInquiryResponse.getHomeAddressLine3(), "CRESTON BC               ");
-        assertEquals(contractInquiryResponse.getHomeAddressLine4(), "                         ");
-        assertEquals(contractInquiryResponse.getHomeAddressPostalCode(), "V4D7N7");
+        assertEquals("5951 WDSOU YF            ", contractInquiryResponse.getHomeAddressLine1());
+        assertEquals("ZT 5                     ", contractInquiryResponse.getHomeAddressLine2());
+        assertEquals("CRESTON BC               ", contractInquiryResponse.getHomeAddressLine3());
+        assertEquals("                         ", contractInquiryResponse.getHomeAddressLine4());
+        assertEquals("V4D7N7", contractInquiryResponse.getHomeAddressPostalCode());
         
-        assertEquals(contractInquiryResponse.getMailingAddressLine1(), "5951 WDSOU YF            ");
-        assertEquals(contractInquiryResponse.getMailingAddressLine2(), "ZT 5                     ");
-        assertEquals(contractInquiryResponse.getMailingAddressLine3(), "CRESTON BC               ");
-        assertEquals(contractInquiryResponse.getMailingAddressLine4(), "                         ");
-        assertEquals(contractInquiryResponse.getMailingAddressPostalCode(), "V4D7N7");
+        assertEquals("5951 WDSOU YF            ", contractInquiryResponse.getMailingAddressLine1());
+        assertEquals("ZT 5                     ", contractInquiryResponse.getMailingAddressLine2());
+        assertEquals("CRESTON BC               ", contractInquiryResponse.getMailingAddressLine3());
+        assertEquals("                         ", contractInquiryResponse.getMailingAddressLine4());
+        assertEquals("V4D7N7", contractInquiryResponse.getMailingAddressPostalCode());
         
-        assertEquals(contractInquiryResponse.getTelephone(), "250 6301086");
-        assertEquals(contractInquiryResponse.getGroupMemberNumber(), "123456   ");
-        assertEquals(contractInquiryResponse.getGroupMemberDepartmentNumber(), "123456");
+        assertEquals("250 6301086", contractInquiryResponse.getTelephone());
+        assertEquals("123456   ", contractInquiryResponse.getGroupMemberNumber());
+        assertEquals("123456", contractInquiryResponse.getGroupMemberDepartmentNumber());
         
         assertEquals(20, contractInquiryResponse.getContractInquiryBeneficiaries().size());
         
