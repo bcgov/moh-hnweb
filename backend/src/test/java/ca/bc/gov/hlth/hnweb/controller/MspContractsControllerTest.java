@@ -333,6 +333,7 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertTransactionCreated(TransactionType.CONTRACT_INQUIRY);
 	}
 	
+	@Test
 	public void testContractInquiry_warning_moreThan20PersonsFound() throws InterruptedException {
         mockBackEnd.enqueue(new MockResponse()
         		.setBody(R40_WARNING_MORE_THAN_20_PERSONS_FOUND)
@@ -348,23 +349,23 @@ public class MspContractsControllerTest extends BaseControllerTest {
 
 		// Check the response
         assertEquals(StatusEnum.WARNING, contractInquiryResponse.getStatus());
-        assertEquals(contractInquiryResponse.getHomeAddressLine1(), "5951 WDSOU YF");
-        assertEquals(contractInquiryResponse.getHomeAddressLine2(), "ZT 5");
-        assertEquals(contractInquiryResponse.getHomeAddressLine3(), "CRESTON BC");
-        assertEquals(contractInquiryResponse.getHomeAddressLine4(), "");
+        assertEquals(contractInquiryResponse.getHomeAddressLine1(), "5951 WDSOU YF            ");
+        assertEquals(contractInquiryResponse.getHomeAddressLine2(), "ZT 5                     ");
+        assertEquals(contractInquiryResponse.getHomeAddressLine3(), "CRESTON BC               ");
+        assertEquals(contractInquiryResponse.getHomeAddressLine4(), "                         ");
         assertEquals(contractInquiryResponse.getHomeAddressPostalCode(), "V4D7N7");
         
-        assertEquals(contractInquiryResponse.getMailingAddressLine1(), "5951 WDSOU YF");
-        assertEquals(contractInquiryResponse.getMailingAddressLine2(), "ZT 5");
-        assertEquals(contractInquiryResponse.getMailingAddressLine3(), "CRESTON BC");
-        assertEquals(contractInquiryResponse.getMailingAddressLine4(), "");
+        assertEquals(contractInquiryResponse.getMailingAddressLine1(), "5951 WDSOU YF            ");
+        assertEquals(contractInquiryResponse.getMailingAddressLine2(), "ZT 5                     ");
+        assertEquals(contractInquiryResponse.getMailingAddressLine3(), "CRESTON BC               ");
+        assertEquals(contractInquiryResponse.getMailingAddressLine4(), "                         ");
         assertEquals(contractInquiryResponse.getMailingAddressPostalCode(), "V4D7N7");
         
         assertEquals(contractInquiryResponse.getTelephone(), "250 6301086");
-        assertEquals(contractInquiryResponse.getGroupMemberNumber(), "123456");
+        assertEquals(contractInquiryResponse.getGroupMemberNumber(), "123456   ");
         assertEquals(contractInquiryResponse.getGroupMemberDepartmentNumber(), "123456");
         
-        assertEquals(contractInquiryResponse.getContractInquiryBeneficiaries().size(), "20");
+        assertEquals(20, contractInquiryResponse.getContractInquiryBeneficiaries().size());
         
         assertEquals("RPBS0059 MORE THAN 20 PERSONS. PLEASE CONTACT MSP", contractInquiryResponse.getMessage());
         
