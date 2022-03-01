@@ -10,6 +10,8 @@
   <td>{{ contractInquiryBeneficiary.cancelReason }}</td>
 </template>
 <script>
+import { decodeRelationship } from '../../util/utils'
+
 export default {
   props: {
     contractInquiryBeneficiary: Object,
@@ -32,16 +34,7 @@ export default {
       return name
     },
     relationship() {
-      switch (this.contractInquiryBeneficiary.relationshipCode) {
-        case 'C':
-          return 'Employee'
-        case 'D':
-          return 'Dependent'
-        case 'S':
-          return 'Spouse'
-        default:
-          return this.contractInquiryBeneficiary.relationshipCode
-      }
+      return decodeRelationship(this.contractInquiryBeneficiary.relationshipCode)
     },
   },
 }

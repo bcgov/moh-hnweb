@@ -2,13 +2,15 @@
   <td>{{ beneficiaryContractPeriod.phn }}</td>
   <td>{{ fullName }}</td>
   <td>{{ beneficiaryContractPeriod.contractHolder }}</td>
-  <td>{{ beneficiaryContractPeriod.relationship }}</td>
+  <td>{{ relationship }}</td>
   <td>{{ beneficiaryContractPeriod.groupNumber }}</td>
   <td>{{ beneficiaryContractPeriod.effectiveDate }}</td>
   <td>{{ beneficiaryContractPeriod.cancelDate }}</td>
   <td>{{ beneficiaryContractPeriod.cancelReason === 'E' ? 'Eligible' : '' }}</td>
 </template>
 <script>
+import { decodeRelationship } from '../../util/utils'
+
 export default {
   props: {
     beneficiaryContractPeriod: Object,
@@ -23,6 +25,9 @@ export default {
         name = name + ', ' + this.beneficiaryContractPeriod.firstName
       }
       return name
+    },
+    relationship() {
+      return decodeRelationship(this.beneficiaryContractPeriod.relationship)
     },
   },
 }

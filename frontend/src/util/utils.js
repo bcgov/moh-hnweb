@@ -13,3 +13,17 @@ export function formatPersonName(person) {
   }
   return name
 }
+
+export function decodeRelationship(relationshipCode) {
+  console.log(`Decode ${relationshipCode}`)
+  switch (relationshipCode) {
+    case 'C':
+      return 'Employee'
+    case 'D':
+      return 'Dependent'
+    case 'S':
+      return 'Spouse'
+    default:
+      return relationshipCode
+  }
+}
