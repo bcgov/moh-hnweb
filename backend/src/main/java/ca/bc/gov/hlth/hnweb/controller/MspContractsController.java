@@ -117,7 +117,7 @@ public class MspContractsController extends BaseController {
 		auditedPhns.add(getContractPeriodsResponse.getPhn());
 		
 		getContractPeriodsResponse.getBeneficiaryContractPeriods().forEach(bcp -> {
-			if(!auditedPhns.contains(bcp.getPhn())) {
+			if (!auditedPhns.contains(bcp.getPhn())) {
 				addAffectedParty(transaction, IdentifierType.PHN, bcp.getPhn());				
 				auditedPhns.add(bcp.getPhn());
 			}
@@ -147,7 +147,7 @@ public class MspContractsController extends BaseController {
 		auditedPhns.add(contractInquiryResponse.getPhn());
 		
 		contractInquiryResponse.getContractInquiryBeneficiaries().forEach(cib -> {
-			if(!auditedPhns.contains(cib.getPhn())) {
+			if (!auditedPhns.contains(cib.getPhn())) {
 				addAffectedParty(transaction, IdentifierType.PHN, cib.getPhn());				
 				auditedPhns.add(cib.getPhn());
 			}			

@@ -27,8 +27,6 @@ public class MspContractsService extends BaseService {
 
 	private static final Logger logger = LoggerFactory.getLogger(MspContractsService.class);
 
-	public static final String TRANSACTION_ID = "TransactionID";
-
 	@Value("${rapid.r32Path}")
 	private String r32Path;
 	

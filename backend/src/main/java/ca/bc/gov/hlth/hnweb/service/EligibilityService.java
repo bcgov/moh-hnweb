@@ -36,8 +36,6 @@ public class EligibilityService extends BaseService {
 
 	private static final Logger logger = LoggerFactory.getLogger(EligibilityService.class);
 
-	public static final String TRANSACTION_ID = "TransactionID";
-	
 	@Value("${hibc.e45.path}")
 	private String e45Path;
 

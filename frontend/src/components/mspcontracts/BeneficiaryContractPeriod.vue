@@ -6,7 +6,7 @@
   <td>{{ beneficiaryContractPeriod.groupNumber }}</td>
   <td>{{ beneficiaryContractPeriod.effectiveDate }}</td>
   <td>{{ beneficiaryContractPeriod.cancelDate }}</td>
-  <td>{{ beneficiaryContractPeriod.cancelReason === 'E' ? 'Eligible' : '' }}</td>
+  <td>{{ cancelReason }}</td>
 </template>
 <script>
 import { decodeRelationship } from '../../util/utils'
@@ -28,6 +28,9 @@ export default {
     },
     relationship() {
       return decodeRelationship(this.beneficiaryContractPeriod.relationship)
+    },
+    cancelReason() {
+      return this.beneficiaryContractPeriod.cancelReason === 'E' ? 'Eligible' : ''
     },
   },
 }

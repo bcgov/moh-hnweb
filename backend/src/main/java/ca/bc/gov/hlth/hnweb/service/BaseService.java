@@ -7,6 +7,8 @@ import ca.bc.gov.hlth.hnweb.persistence.entity.TransactionEventType;
 
 public class BaseService {
 
+	protected static final String TRANSACTION_ID = "TransactionID";
+
 	@Autowired
 	private AuditService auditService;
 	
