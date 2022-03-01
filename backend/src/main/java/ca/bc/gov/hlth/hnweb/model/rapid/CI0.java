@@ -22,7 +22,7 @@ public class CI0 {
 	/** 7 Phone RPBSPhone No 0...30 0..2 */
 	private RPBSPhone phone;
 	/** 8 BeneficiaryList RPBSBeneficiary No 0...124 0..20 */
-	private List<RPBSBeneficiary> beneficiary = new ArrayList<RPBSBeneficiary>();
+	private List<RPBSCI0Beneficiary> beneficiary = new ArrayList<RPBSCI0Beneficiary>();
 	/** 9 Filler String No 0...Infinite */
 	private String filler;
 
@@ -42,13 +42,13 @@ public class CI0 {
 		String beneficiariesStr = StringUtils.substring(message, 304);
 		if (StringUtils.isNotBlank(beneficiariesStr)) {
 			int count = 0;
-			String ciBeneficiary = StringUtils.substring(beneficiariesStr, 0, RPBSBeneficiary.SEGMENT_LENGTH);
+			String ciBeneficiary = StringUtils.substring(beneficiariesStr, 0, RPBSCI0Beneficiary.SEGMENT_LENGTH);
 			while (StringUtils.isNotBlank(ciBeneficiary)) {
-				RPBSBeneficiary rPBSBeneficiary = new RPBSBeneficiary(ciBeneficiary);
+				RPBSCI0Beneficiary rPBSBeneficiary = new RPBSCI0Beneficiary(ciBeneficiary);
 				beneficiary.add(rPBSBeneficiary);
 				count++;
-				ciBeneficiary = StringUtils.substring(beneficiariesStr, RPBSBeneficiary.SEGMENT_LENGTH * count,
-						RPBSBeneficiary.SEGMENT_LENGTH * (count + 1));
+				ciBeneficiary = StringUtils.substring(beneficiariesStr, RPBSCI0Beneficiary.SEGMENT_LENGTH * count,
+						RPBSCI0Beneficiary.SEGMENT_LENGTH * (count + 1));
 			}
 		}
 	}
@@ -119,11 +119,11 @@ public class CI0 {
 		this.phone = phone;
 	}
 
-	public List<RPBSBeneficiary> getBeneficiary() {
+	public List<RPBSCI0Beneficiary> getBeneficiary() {
 		return beneficiary;
 	}
 
-	public void setBeneficiary(List<RPBSBeneficiary> beneficiary) {
+	public void setBeneficiary(List<RPBSCI0Beneficiary> beneficiary) {
 		this.beneficiary = beneficiary;
 	}
 

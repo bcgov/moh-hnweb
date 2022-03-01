@@ -247,7 +247,7 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals("", contractInquiryBeneficiary1.getThirdName());
         assertEquals("20021019", contractInquiryBeneficiary1.getBirthDate());
         assertEquals("20230101", contractInquiryBeneficiary1.getEffectiveDate());
-        assertEquals("00000000", contractInquiryBeneficiary1.getCancelDate());
+        assertEquals(null, contractInquiryBeneficiary1.getCancelDate());
         assertEquals("C", contractInquiryBeneficiary1.getRelationshipCode());
         assertEquals("N", contractInquiryBeneficiary1.getStudentStatus());
         assertEquals("M", contractInquiryBeneficiary1.getGender());
@@ -347,22 +347,22 @@ public class MspContractsControllerTest extends BaseControllerTest {
         ContractInquiryResponse contractInquiryResponse= response.getBody();
 
 		// Check the response
-        assertEquals(StatusEnum.WARNING, contractInquiryResponse.getStatus());
-        assertEquals("5951 WDSOU YF            ", contractInquiryResponse.getHomeAddressLine1());
-        assertEquals("ZT 5                     ", contractInquiryResponse.getHomeAddressLine2());
-        assertEquals("CRESTON BC               ", contractInquiryResponse.getHomeAddressLine3());
-        assertEquals("                         ", contractInquiryResponse.getHomeAddressLine4());
-        assertEquals("V4D7N7", contractInquiryResponse.getHomeAddressPostalCode());
-        
-        assertEquals("5951 WDSOU YF            ", contractInquiryResponse.getMailingAddressLine1());
-        assertEquals("ZT 5                     ", contractInquiryResponse.getMailingAddressLine2());
-        assertEquals("CRESTON BC               ", contractInquiryResponse.getMailingAddressLine3());
-        assertEquals("                         ", contractInquiryResponse.getMailingAddressLine4());
-        assertEquals("V4D7N7", contractInquiryResponse.getMailingAddressPostalCode());
-        
-        assertEquals("250 6301086", contractInquiryResponse.getTelephone());
-        assertEquals("123456   ", contractInquiryResponse.getGroupMemberNumber());
-        assertEquals("123456", contractInquiryResponse.getGroupMemberDepartmentNumber());
+		assertEquals(StatusEnum.WARNING, contractInquiryResponse.getStatus());
+		assertEquals("5951 WDSOU YF", contractInquiryResponse.getHomeAddressLine1());
+		assertEquals("ZT 5", contractInquiryResponse.getHomeAddressLine2());
+		assertEquals("CRESTON BC", contractInquiryResponse.getHomeAddressLine3());
+		assertEquals("", contractInquiryResponse.getHomeAddressLine4());
+		assertEquals("V4D7N7", contractInquiryResponse.getHomeAddressPostalCode());
+
+		assertEquals("5951 WDSOU YF", contractInquiryResponse.getMailingAddressLine1());
+		assertEquals("ZT 5", contractInquiryResponse.getMailingAddressLine2());
+		assertEquals("CRESTON BC", contractInquiryResponse.getMailingAddressLine3());
+		assertEquals("", contractInquiryResponse.getMailingAddressLine4());
+		assertEquals("V4D7N7", contractInquiryResponse.getMailingAddressPostalCode());
+
+		assertEquals("250 6301086", contractInquiryResponse.getTelephone());
+		assertEquals("123456", contractInquiryResponse.getGroupMemberNumber());
+		assertEquals("123456", contractInquiryResponse.getGroupMemberDepartmentNumber());
         
         assertEquals(20, contractInquiryResponse.getContractInquiryBeneficiaries().size());
         
