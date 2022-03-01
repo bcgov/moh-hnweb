@@ -264,8 +264,14 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals("S", contractInquiryBeneficiary2.getRelationshipCode());
         assertEquals("N", contractInquiryBeneficiary2.getStudentStatus());
         assertEquals("F", contractInquiryBeneficiary2.getGender());
-        assertEquals("E", contractInquiryBeneficiary2.getCancelReason());
+        assertEquals("E", contractInquiryBeneficiary2.getCancelReason()); 
         
+     // Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.CONTRACT_INQUIRY);
 	}
 	
 	@Test
@@ -295,7 +301,7 @@ public class MspContractsControllerTest extends BaseControllerTest {
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
-  
+        assertTransactionCreated(TransactionType.CONTRACT_INQUIRY);
 	}
 	
 	@Test
@@ -323,10 +329,11 @@ public class MspContractsControllerTest extends BaseControllerTest {
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
-        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
-  
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE)); 
+        assertTransactionCreated(TransactionType.CONTRACT_INQUIRY);
 	}
 	
+	@Test
 	public void testContractInquiry_warning_moreThan20PersonsFound() throws InterruptedException {
         mockBackEnd.enqueue(new MockResponse()
         		.setBody(R40_WARNING_MORE_THAN_20_PERSONS_FOUND)
@@ -342,25 +349,31 @@ public class MspContractsControllerTest extends BaseControllerTest {
 
 		// Check the response
         assertEquals(StatusEnum.WARNING, contractInquiryResponse.getStatus());
-        assertEquals(contractInquiryResponse.getHomeAddressLine1(), "5951 WDSOU YF");
-        assertEquals(contractInquiryResponse.getHomeAddressLine2(), "ZT 5");
-        assertEquals(contractInquiryResponse.getHomeAddressLine3(), "CRESTON BC");
-        assertEquals(contractInquiryResponse.getHomeAddressLine4(), "");
-        assertEquals(contractInquiryResponse.getHomeAddressPostalCode(), "V4D7N7");
+        assertEquals("5951 WDSOU YF            ", contractInquiryResponse.getHomeAddressLine1());
+        assertEquals("ZT 5                     ", contractInquiryResponse.getHomeAddressLine2());
+        assertEquals("CRESTON BC               ", contractInquiryResponse.getHomeAddressLine3());
+        assertEquals("                         ", contractInquiryResponse.getHomeAddressLine4());
+        assertEquals("V4D7N7", contractInquiryResponse.getHomeAddressPostalCode());
         
-        assertEquals(contractInquiryResponse.getMailingAddressLine1(), "5951 WDSOU YF");
-        assertEquals(contractInquiryResponse.getMailingAddressLine2(), "ZT 5");
-        assertEquals(contractInquiryResponse.getMailingAddressLine3(), "CRESTON BC");
-        assertEquals(contractInquiryResponse.getMailingAddressLine4(), "");
-        assertEquals(contractInquiryResponse.getMailingAddressPostalCode(), "V4D7N7");
+        assertEquals("5951 WDSOU YF            ", contractInquiryResponse.getMailingAddressLine1());
+        assertEquals("ZT 5                     ", contractInquiryResponse.getMailingAddressLine2());
+        assertEquals("CRESTON BC               ", contractInquiryResponse.getMailingAddressLine3());
+        assertEquals("                         ", contractInquiryResponse.getMailingAddressLine4());
+        assertEquals("V4D7N7", contractInquiryResponse.getMailingAddressPostalCode());
         
-        assertEquals(contractInquiryResponse.getTelephone(), "250 6301086");
-        assertEquals(contractInquiryResponse.getGroupMemberNumber(), "123456");
-        assertEquals(contractInquiryResponse.getGroupMemberDepartmentNumber(), "123456");
+        assertEquals("250 6301086", contractInquiryResponse.getTelephone());
+        assertEquals("123456   ", contractInquiryResponse.getGroupMemberNumber());
+        assertEquals("123456", contractInquiryResponse.getGroupMemberDepartmentNumber());
         
-        assertEquals(contractInquiryResponse.getContractInquiryBeneficiaries().size(), "20");
+        assertEquals(20, contractInquiryResponse.getContractInquiryBeneficiaries().size());
         
         assertEquals("RPBS0059 MORE THAN 20 PERSONS. PLEASE CONTACT MSP", contractInquiryResponse.getMessage());
+        
+     // Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE)); 
+        assertTransactionCreated(TransactionType.CONTRACT_INQUIRY);
 	}
 	
     /**
