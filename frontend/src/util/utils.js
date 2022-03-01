@@ -15,7 +15,6 @@ export function formatPersonName(person) {
 }
 
 export function decodeRelationship(relationshipCode) {
-  console.log(`Decode ${relationshipCode}`)
   switch (relationshipCode) {
     case 'C':
       return 'Employee'
