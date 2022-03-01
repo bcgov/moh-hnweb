@@ -2,7 +2,7 @@ package ca.bc.gov.hlth.hnweb.model.rapid;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class RPBSBeneficiary {
+public class RPBSCI0Beneficiary {
 	public static final int SEGMENT_LENGTH = 124;
 
 	/** 1 PHN String No 0...10 .. */
@@ -30,7 +30,7 @@ public class RPBSBeneficiary {
 	/** 12 RelationshipCode String No 0...1 */
 	private String relationshipCode;
 
-	public RPBSBeneficiary(String message) {
+	public RPBSCI0Beneficiary(String message) {
 		this.phn = StringUtils.substring(message, 0, 10);
 		this.familyName = StringUtils.substring(message, 10, 45);
 		this.firstName = StringUtils.substring(message, 45, 60);

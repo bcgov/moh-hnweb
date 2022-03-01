@@ -27,34 +27,34 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppOutput label="Line1" :value="result.homeAddressLine1" />
+          <AppOutput label="Line 1" :value="result.homeAddressLine1" />
         </AppCol>
         <AppCol class="col3">
-          <AppOutput label="Line1" :value="result.mailingAddressLine1" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Line2" :value="result.homeAddressLine2" />
-        </AppCol>
-        <AppCol class="col3">
-          <AppOutput label="Line2" :value="result.mailingAddressLine2" />
+          <AppOutput label="Line 1" :value="result.mailingAddressLine1" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppOutput label="Line3" :value="result.homeAddressLine3" />
+          <AppOutput label="Line 2" :value="result.homeAddressLine2" />
         </AppCol>
         <AppCol class="col3">
-          <AppOutput label="Line3" :value="result.mailingAddressLine3" />
+          <AppOutput label="Line 2" :value="result.mailingAddressLine2" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppOutput label="Line4" :value="result.homeAddressLine4" />
+          <AppOutput label="Line 3" :value="result.homeAddressLine3" />
         </AppCol>
         <AppCol class="col3">
-          <AppOutput label="Line4" :value="result.mailingAddressLine4" />
+          <AppOutput label="Line 3" :value="result.mailingAddressLine3" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col3">
+          <AppOutput label="Line 4" :value="result.homeAddressLine4" />
+        </AppCol>
+        <AppCol class="col3">
+          <AppOutput label="Line 4" :value="result.mailingAddressLine4" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -65,6 +65,7 @@
           <AppOutput label="Postal Code" :value="result.mailingAddressPostalCode" />
         </AppCol>
       </AppRow>
+      <br />
       <AppRow>
         <AppCol class="col3">
           <AppOutput label="Telephone" :value="result.telephone" />
@@ -76,8 +77,8 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Department Number" :value="result.groupMemberDepartmentNumber" />
+        <AppCol class="col5">
+          <AppOutput label="Group Member Department Number" :value="result.groupMemberDepartmentNumber" />
         </AppCol>
       </AppRow>
     </div>
@@ -97,8 +98,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="contractInquiryBeneficiary in result.contractInquiryBeneficiaries">
-          <ContractInquiryBeneficiary :contractInquiryBeneficiary="contractInquiryBeneficiary" />
+        <tr v-for="beneficiary in result.contractInquiryBeneficiaries">
+          <ContractInquiryBeneficiary :beneficiary="beneficiary" />
         </tr>
       </tbody>
     </AppSimpleTable>
