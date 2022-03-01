@@ -1,11 +1,11 @@
 <template>
-  <td>{{ beneficiaryContractPeriod.phn }}</td>
+  <td>{{ contractPeriod.phn }}</td>
   <td>{{ fullName }}</td>
-  <td>{{ beneficiaryContractPeriod.contractHolder }}</td>
+  <td>{{ contractPeriod.contractHolder }}</td>
   <td>{{ relationship }}</td>
-  <td>{{ beneficiaryContractPeriod.groupNumber }}</td>
-  <td>{{ beneficiaryContractPeriod.effectiveDate }}</td>
-  <td>{{ beneficiaryContractPeriod.cancelDate }}</td>
+  <td>{{ contractPeriod.groupNumber }}</td>
+  <td>{{ contractPeriod.effectiveDate }}</td>
+  <td>{{ contractPeriod.cancelDate }}</td>
   <td>{{ cancelReason }}</td>
 </template>
 <script>
@@ -13,24 +13,24 @@ import { decodeRelationship } from '../../util/utils'
 
 export default {
   props: {
-    beneficiaryContractPeriod: Object,
+    contractPeriod: Object,
   },
   computed: {
     fullName() {
       let name = ''
-      if (this.beneficiaryContractPeriod.lastName) {
-        name = name + this.beneficiaryContractPeriod.lastName
+      if (this.contractPeriod.lastName) {
+        name = name + this.contractPeriod.lastName
       }
-      if (this.beneficiaryContractPeriod.firstName) {
-        name = name + ', ' + this.beneficiaryContractPeriod.firstName
+      if (this.contractPeriod.firstName) {
+        name = name + ', ' + this.contractPeriod.firstName
       }
       return name
     },
     relationship() {
-      return decodeRelationship(this.beneficiaryContractPeriod.relationship)
+      return decodeRelationship(this.contractPeriod.relationship)
     },
     cancelReason() {
-      return this.beneficiaryContractPeriod.cancelReason === 'E' ? 'Eligible' : ''
+      return this.contractPeriod.cancelReason === 'E' ? 'Eligible' : ''
     },
   },
 }

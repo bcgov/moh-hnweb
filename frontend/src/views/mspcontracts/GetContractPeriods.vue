@@ -30,7 +30,7 @@
       </thead>
       <tbody>
         <tr v-for="beneficiaryContractPeriod in sortedBeneficiaryContractPeriods">
-          <BeneficiaryContractPeriod :beneficiaryContractPeriod="beneficiaryContractPeriod" />
+          <BeneficiaryContractPeriod :contractPeriod="beneficiaryContractPeriod" />
         </tr>
       </tbody>
     </AppSimpleTable>
