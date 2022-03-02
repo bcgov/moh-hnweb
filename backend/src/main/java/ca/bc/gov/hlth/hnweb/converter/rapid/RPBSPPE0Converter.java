@@ -70,7 +70,7 @@ public class RPBSPPE0Converter extends BaseRapidConverter {
 				ipBeneficiary.setPhn(beneficiary.getPhn());
 				ipBeneficiary.setLastName(StringUtils.trim(beneficiary.getLastName()));
 				ipBeneficiary.setFirstName(StringUtils.trim(beneficiary.getFirstName()));			
-				ipBeneficiary.setDateOfBirth(convertBirthDate(beneficiary.getBirthDate()));
+				ipBeneficiary.setDateOfBirth(convertDate(beneficiary.getBirthDate()));
 				ipBeneficiary.setGender(beneficiary.getGender());
 				ipBeneficiary.setEligible(beneficiary.getEligible());
 				ipBeneficiary.setStudent(beneficiary.getStudent());
