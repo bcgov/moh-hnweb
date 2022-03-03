@@ -22,7 +22,7 @@ public class SecurityPropertiesTest {
 		
 		List<String> e45Permissions = rolePermissions.get("E45");
 		assertEquals(1, e45Permissions.size());
-		assertEquals("E45", e45Permissions.get(0));
+		assertEquals("MSPCoverageCheck", e45Permissions.get(0));
 	}
 
 }

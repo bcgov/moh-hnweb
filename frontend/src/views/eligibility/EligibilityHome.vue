@@ -5,10 +5,10 @@ import SubNavTab from '../../components/template/SubNavTab.vue'
 
 <template>
   <TheSubNav>
-    <SubNavTab routeName="CheckEligibility" title="Check Eligibility" v-if="hasPermission('R15')" />
-    <SubNavTab routeName="PhnInquiry" title="PHN Inquiry" v-if="hasPermission('R41')"/>
-    <SubNavTab routeName="PhnLookup" title="PHN Lookup"/>
-    <SubNavTab routeName="CoverageStatusCheck" title="MSP Coverage Status Check" v-if="hasPermission('E45')" />
+    <SubNavTab routeName="CheckEligibility" title="Check Eligibility" v-if="hasPermission('CheckEligibility')" />
+    <SubNavTab routeName="PhnInquiry" title="PHN Inquiry" v-if="hasPermission('PHNInquiry')" />
+    <SubNavTab routeName="PhnLookup" title="PHN Lookup" />
+    <SubNavTab routeName="CoverageStatusCheck" title="MSP Coverage Status Check" v-if="hasPermission('MSPCoverageCheck')" />
   </TheSubNav>
   <router-view />
 </template>
@@ -19,7 +19,7 @@ export default {
   methods: {
     hasPermission(permission) {
       return this.$store.getters['auth/hasPermission'](permission)
-    }
-  }
+    },
+  },
 }
 </script>

@@ -18,17 +18,21 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import router from './router'
 import store from './store'
 
-keycloak.onAuthSuccess = function () {
-
+keycloak.onAuthSuccess = async function () {
   // Retrieve the User permissions immediately after Keycloak login
   // The permissions are required by the router which may be invoked
   // before App is created
   // Once the permissions data is available, then we create the App
-  UserService.getPermissions().then(resp => {
-    store.dispatch('auth/setPermissions', resp.data)
+  // If permission retrieval fails, then still create the App and
+  // the router will handle it
+  try {
+    const data = (await UserService.getPermissions()).data
+    store.dispatch('auth/setPermissions', data)
+  } catch (err) {
+    store.commit('alert/setErrorAlert', `${err}`)
+  } finally {
     initApp()
-  })
-
+  }
 }
 
 function initApp() {
