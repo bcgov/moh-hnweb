@@ -32,8 +32,6 @@ public class GroupMemberService extends BaseService {
 
 	private static final Logger logger = LoggerFactory.getLogger(GroupMemberService.class);
 
-	public static final String TRANSACTION_ID = "TransactionID";
-
 	@Value("${rapid.r30Path}")
 	private String r30Path;
 	

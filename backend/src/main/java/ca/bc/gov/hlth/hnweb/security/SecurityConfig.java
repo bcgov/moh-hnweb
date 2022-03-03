@@ -59,6 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .mvcMatchers(HttpMethod.POST, "/eligibility/inquire-phn").hasRole(TransactionType.PHN_INQUIRY.getValue())
             .mvcMatchers(HttpMethod.POST, "/enrollment/**").fullyAuthenticated()
             .mvcMatchers(HttpMethod.POST, "/group-member/**").fullyAuthenticated()
+            .mvcMatchers(HttpMethod.POST, "/msp-contracts/**").fullyAuthenticated()
             .mvcMatchers(HttpMethod.GET, "/user/**").fullyAuthenticated()
             .mvcMatchers("/*").denyAll()
             .and()

@@ -40,6 +40,15 @@
             </div>
           </div>
         </li>
+        <li id="msp-contracts-link" :class="menuTabClass($route, '/mspContracts')">
+          <div class="dropdown" :key="mspContractsDropDownKey" v-on:click="this.refreshMspContracts">
+            <router-link @click="resetAlert" :to="{ name: 'MspContracts' }">MSP Contracts</router-link>
+            <div class="dropdown-content">
+              <router-link @click="resetAlert" :class="menuClass($route, 'GetContractPeriods')" :to="{ name: 'GetContractPeriods' }">Get Contract Periods</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'ContractInquiry')" :to="{ name: 'ContractInquiry' }">Contract Inquiry</router-link>
+            </div>
+          </div>
+        </li>
         <li id="help-link" :class="tabClass($route, 'Help')">
           <router-link @click="resetAlert" :to="{ name: 'Help' }">Help</router-link>
         </li>
@@ -56,6 +65,7 @@ export default {
       eligibilityDropdownKey: 0,
       coverageEnrollmentDropDownKey: 0,
       groupMemberDropDownKey: 0,
+      mspContractsDropDownKey: 0,
     }
   },
   methods: {
@@ -74,6 +84,9 @@ export default {
     },
     refreshGroupMember() {
       this.groupMemberDropDownKey += 1
+    },
+    refreshMspContracts() {
+      this.mspContractsDropDownKey += 1
     },
     menuClass(route, routeName) {
       return this.tabClass(route, routeName)

@@ -7,7 +7,7 @@ public enum TransactionType {
 	MSP_COVERAGE_STATUS_CHECK("MSPCoverageCheck"), // E45
 	CHECK_ELIGIBILITY("CheckEligibility"), // R15	
 	PHN_INQUIRY("PhnInquiry"), // R41
-	PHN_LOOKUP("PhnInquiry"), // R42
+	PHN_LOOKUP("PhnLookup"), // R42
 	ENROLL_SUBSCRIBER("EnrollSubscriber"), // R50
 	GET_PERSON_DETAILS("GetPersonDetails"),
 	NAME_SEARCH("NameSearch"),
@@ -16,6 +16,8 @@ public enum TransactionType {
 	UPDATE_NUMBER_AND_OR_DEPT("UpdateNumberAndDept"),
 	CANCEL_GROUP_MEMBER("CancelGroupMember"),
 	CANCEL_DEPENDENT("CancelDependent"),
+	GET_CONTRACT_PERIODS("GetContractPeriods"),
+	CONTRACT_INQUIRY("ContractInquiry"),
 	
 	UNKNOWN("Unknown");
 

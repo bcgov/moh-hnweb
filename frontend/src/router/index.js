@@ -7,13 +7,16 @@ import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResid
 import CancelDependent from '../views/groupmember/CancelDependent.vue'
 import CancelGroupMember from '../views/groupmember/CancelGroupMember.vue'
 import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
+import ContractInquiry from '../views/mspcontracts/ContractInquiry.vue'
 import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
 import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
 import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
 import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
+import GetContractPeriods from '../views/mspcontracts/GetContractPeriods.vue'
 import GroupMemberHome from '../views/groupmember/GroupMemberHome.vue'
 import Help from './../views/Help.vue'
 import Home from './../views/Home.vue'
+import MspContractsHome from '../views/mspcontracts/MspContractsHome.vue'
 import NotFound from '../views/NotFound.vue'
 import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
 import PhnLookup from '../views/eligibility/PhnLookup.vue'
@@ -126,6 +129,26 @@ const routes = [
         path: 'cancelDependent',
         name: 'CancelDependent',
         component: CancelDependent,
+      },
+    ],
+  },
+  {
+    path: '/mspContracts',
+    name: 'MspContracts',
+    component: MspContractsHome,
+    redirect: {
+      name: 'GetContractPeriods',
+    },
+    children: [
+      {
+        path: 'getContractPeriods',
+        name: 'GetContractPeriods',
+        component: GetContractPeriods,
+      },
+      {
+        path: 'contractInquiry',
+        name: 'ContractInquiry',
+        component: ContractInquiry,
       },
     ],
   },
