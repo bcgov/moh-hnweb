@@ -8,12 +8,12 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.dateOfBirth" id="dateOfBirth" label="Date Of Birth" v-model="dateOfBirth"/>          
+          <AppDateInput :e-model="v$.dateOfBirth" id="dateOfBirth" label="Date Of Birth" v-model="dateOfBirth" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.dateOfService" id ="dateOfService" label="Date Of Service" v-model="dateOfService" />          
+          <AppDateInput :e-model="v$.dateOfService" id="dateOfService" label="Date Of Service" v-model="dateOfService" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -22,9 +22,8 @@
           <p>Select by clicking one or more boxes</p>
         </AppCol>
         <AppCol>
-          <AppCheckbox :errorValue="v$.checkSubsidyInsuredService" id="checkSubsidyInsuredService" label="Check for Subsidy Insured Service" v-model="checkSubsidyInsuredService"/>
-          <AppCheckbox :errorValue="v$.checkLastEyeExam" id="checkLastEyeExam" label="Check for Last Eye Exam" v-model="checkLastEyeExam"/>
-          <AppCheckbox :errorValue="v$.checkPatientRestriction" id="checkPatientRestriction" label="Check for Patient Restriction" v-model="checkPatientRestriction"/>
+          <AppCheckbox :errorValue="v$.checkSubsidyInsuredService" id="checkSubsidyInsuredService" label="Check for Subsidy Insured Service" v-model="checkSubsidyInsuredService" />
+          <AppCheckbox :errorValue="v$.checkLastEyeExam" id="checkLastEyeExam" label="Check for Last Eye Exam" v-model="checkLastEyeExam" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -38,63 +37,57 @@
     <hr />
     <AppRow>
       <AppCol class="col3">
-        <AppOutput label="PHN" :value="result.phn"/>
+        <AppOutput label="PHN" :value="result.phn" />
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Name" :value="fullName"/>
+        <AppOutput label="Name" :value="fullName" />
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Birth Date" :value="result.dateOfBirth"/>
+        <AppOutput label="Birth Date" :value="result.dateOfBirth" />
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Gender" :value="gender"/>
+        <AppOutput label="Gender" :value="gender" />
       </AppCol>
     </AppRow>
     <AppRow>
       <AppCol class="col3">
-        <AppOutput label="Date Of Service" :value="result.dateOfService"/>
+        <AppOutput label="Date Of Service" :value="result.dateOfService" />
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Eligible on Date of Service?" :value="eligibleOnDateOfService"/>
+        <AppOutput label="Eligible on Date of Service?" :value="eligibleOnDateOfService" />
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Coverage End Date" :value="result.coverageEndDate"/>
+        <AppOutput label="Coverage End Date" :value="result.coverageEndDate" />
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Coverage End Reason" :value="coverageEndReason"/>
+        <AppOutput label="Coverage End Reason" :value="coverageEndReason" />
       </AppCol>
-    </AppRow>    
-    <br/>
+    </AppRow>
+    <br />
     <AppCard id="patientStatusRequest" v-if="isPatientStatusRequest">
-      <AppRow class="row" v-if="result.subsidyInsuredService">      
+      <AppRow class="row" v-if="result.subsidyInsuredService">
         <AppCol class="col12">
-          <p>
-            <label>Subsidy Insured Service: </label>{{ subsidyInsuredService }}
-          </p>
-        </AppCol>    
-      </AppRow>
-      <AppRow class="row" v-if="result.dateOfLastEyeExamination">  
-        <AppCol class="col12">
-          <p>
-            <label>Date of Last Eye Examination: </label>{{ dateOfLastEyeExamination }}
-          </p>
+          <p><label>Subsidy Insured Service: </label>{{ subsidyInsuredService }}</p>
         </AppCol>
       </AppRow>
-      <AppRow class="row" v-if="result.patientRestriction">      
+      <AppRow class="row" v-if="result.dateOfLastEyeExamination">
         <AppCol class="col12">
-          <p>
-            <label>Patient Restriction: </label>{{ patientRestriction }}
-          </p>
-        </AppCol>               
+          <p><label>Date of Last Eye Examination: </label>{{ dateOfLastEyeExamination }}</p>
+        </AppCol>
+      </AppRow>
+      <AppRow class="row" v-if="result.patientRestriction">
+        <AppCol class="col12">
+          <p><label>Patient Restriction: </label>{{ patientRestriction }}</p>
+        </AppCol>
       </AppRow>
     </AppCard>
 
     <AppCard id="careCardWarning" v-if="result.careCardWarning">
-      <p>{{result.careCardWarning}}</p>
+      <p>{{ result.careCardWarning }}</p>
     </AppCard>
 
     <AppCard id="clientInstructions" v-if="result.clientInstructions">
-      <p>{{result.clientInstructions}}</p>
+      <p>{{ result.clientInstructions }}</p>
     </AppCard>
   </div>
 </template>
@@ -114,7 +107,8 @@ export default {
   components: { AppCard, AppCheckbox },
   setup() {
     return {
-      v$: useVuelidate()}
+      v$: useVuelidate(),
+    }
   },
   data() {
     return {
@@ -134,7 +128,7 @@ export default {
         dateOfBirth: '',
         gender: '',
         dateOfService: '',
-        eligibleOnDateOfService: false,        
+        eligibleOnDateOfService: false,
         coverageEndDate: '',
         coverageEndReason: '',
         subsidyInsuredService: '',
@@ -144,7 +138,7 @@ export default {
         clientInstructions: '',
         status: '',
         message: '',
-      }
+      },
     }
   },
   computed: {
@@ -196,7 +190,7 @@ export default {
     dateOfLastEyeExamination() {
       switch (this.result.dateOfLastEyeExamination) {
         case 'N':
-          return 'MSP HAS NOT PAID FOR AN EYE EXAM FOR THIS PHN IN THE LAST 24 MTHS FROM TODAY\'S DATE'
+          return "MSP HAS NOT PAID FOR AN EYE EXAM FOR THIS PHN IN THE LAST 24 MTHS FROM TODAY'S DATE"
         case 'ERROR':
           return 'EYE SYSTEM UNAVAILABLE'
         default:
@@ -208,34 +202,37 @@ export default {
         case 'Y':
           return 'SEE MSP BULLETIN'
         case 'N':
-          return 'NO RESTRICTION' 
+          return 'NO RESTRICTION'
         case 'ERROR':
           return 'UNAVAILABLE - CONTACT MSP'
         default:
           return this.result.patientRestriction
       }
-    }
+    },
   },
   methods: {
     async submitForm() {
       this.result = null
       this.searching = true
       this.searchOk = false
-      this.$store.commit("alert/dismissAlert")
+      this.$store.commit('alert/dismissAlert')
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
           this.showError()
           return
         }
-        this.result = (await EligibilityService.checkCoverageStatus({
-          phn: this.phn, 
-          dateOfBirth: dayjs(this.dateOfBirth).format(API_DATE_FORMAT), 
-          dateOfService: dayjs(this.dateOfService).format(API_DATE_FORMAT), 
-          checkSubsidyInsuredService: this.checkSubsidyInsuredService,
-          checkLastEyeExam: this.checkLastEyeExam,
-          checkPatientRestriction: this.checkPatientRestriction})).data
-        
+        this.result = (
+          await EligibilityService.checkCoverageStatus({
+            phn: this.phn,
+            dateOfBirth: dayjs(this.dateOfBirth).format(API_DATE_FORMAT),
+            dateOfService: dayjs(this.dateOfService).format(API_DATE_FORMAT),
+            checkSubsidyInsuredService: this.checkSubsidyInsuredService,
+            checkLastEyeExam: this.checkLastEyeExam,
+            checkPatientRestriction: this.checkPatientRestriction,
+          })
+        ).data
+
         if (this.result.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.result.message)
           return
@@ -245,9 +242,8 @@ export default {
         if (this.result.status === 'success') {
           this.$store.commit('alert/setSuccessAlert', this.result.message || 'Transaction successful')
         } else if (this.result.status === 'warning') {
-          this.$store.commit('alert/setWarningAlert', this.result.message)  
-        }  
-
+          this.$store.commit('alert/setWarningAlert', this.result.message)
+        }
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       } finally {
@@ -268,31 +264,26 @@ export default {
       this.checkPatientRestriction = false
       this.result = null
       this.v$.$reset()
-      this.$store.commit("alert/dismissAlert")
+      this.$store.commit('alert/dismissAlert')
       this.searchOk = false
       this.searching = false
-    }
+    },
   },
   validations() {
     return {
       phn: {
         required,
-        validatePHN: helpers.withMessage(
-          VALIDATE_PHN_MESSAGE, validatePHN
-        )
+        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
       },
-      dateOfBirth: { 
+      dateOfBirth: {
         required,
-        validateDOB: helpers.withMessage(
-          VALIDATE_DOB_MESSAGE, validateDOB
-        )
+        validateDOB: helpers.withMessage(VALIDATE_DOB_MESSAGE, validateDOB),
       },
       dateOfService: { required },
       checkSubsidyInsuredService: {},
       checkLastEyeExam: {},
       checkPatientRestriction: {},
     }
-  }
+  },
 }
-
 </script>
