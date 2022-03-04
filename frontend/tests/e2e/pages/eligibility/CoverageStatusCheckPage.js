@@ -7,7 +7,6 @@ class CoverageStatusCheck {
     this.dateOfServiceInput = Selector('#dp-input-dateOfService')
     this.subsidyInsuredServiceCheckBox = Selector('#checkSubsidyInsuredService', { timeout: 1000 })
     this.dateOfLastEyeExaminationCheckBox = Selector('#checkLastEyeExam', { timeout: 1000 })
-    this.patientRestrictionCheckBox = Selector('#checkPatientRestriction', { timeout: 1000 })
     this.errorText = Selector('div').withAttribute('class', 'error-text')
 
     this.submitButton = Selector('button[type="submit"]')

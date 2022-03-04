@@ -1,36 +1,40 @@
+<script setup>
+import AppInputError from './AppInputError.vue'
+</script>
+
 <template>
   <label class="checkbox">
     {{ label }}
-    <input type="checkbox" :checked="modelValue"
-      @change="$emit('update:modelValue', $event.target.checked)" v-bind="$attrs"/>
+    <input type="checkbox" :checked="modelValue" @change="$emit('update:modelValue', $event.target.checked)" v-bind="$attrs" />
     <span class="checkmark"></span>
-    
   </label>
 
-  <div class="error-text" v-for="error in errorValue.$errors">{{ error.$message.replace('Value', label) }}</div>
+  <AppInputError :e-model="eModel" :label="label" />
 </template>
 
 <script>
 export default {
   name: 'AppCheckbox',
   props: {
-    errorValue: Object,
+    eModel: {
+      type: Object,
+      required: false,
+    },
     label: String,
     modelValue: Boolean,
   },
   computed: {
     inputClass() {
       return {
-        'text_input': true,
-        'error-input': this.errorValue.$error,
+        text_input: true,
+        'error-input': this.eModel?.$error,
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style scoped>
-
 /* Customize the label (the container) */
 .checkbox {
   display: block;
@@ -72,7 +76,7 @@ export default {
 
 /* Create the checkmark/indicator (hidden when not checked) */
 .checkmark:after {
-  content: "\2713";
+  content: '\2713';
   color: white;
   position: absolute;
   left: 50%;
@@ -86,4 +90,7 @@ export default {
   display: block;
 }
 
+.error-input {
+  border-color: #d8292f !important;
+}
 </style>
