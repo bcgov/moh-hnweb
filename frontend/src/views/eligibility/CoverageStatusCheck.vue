@@ -22,8 +22,8 @@
           <p>Select by clicking one or more boxes</p>
         </AppCol>
         <AppCol>
-          <AppCheckbox :errorValue="v$.checkSubsidyInsuredService" id="checkSubsidyInsuredService" label="Check for Subsidy Insured Service" v-model="checkSubsidyInsuredService" />
-          <AppCheckbox :errorValue="v$.checkLastEyeExam" id="checkLastEyeExam" label="Check for Last Eye Exam" v-model="checkLastEyeExam" />
+          <AppCheckbox id="checkSubsidyInsuredService" label="Check for Subsidy Insured Service" v-model="checkSubsidyInsuredService" />
+          <AppCheckbox id="checkLastEyeExam" label="Check for Last Eye Exam" v-model="checkLastEyeExam" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -117,7 +117,6 @@ export default {
       dateOfService: new Date(),
       checkSubsidyInsuredService: false,
       checkLastEyeExam: false,
-      checkPatientRestriction: false,
       searching: false,
       searchOk: false,
       result: {
@@ -229,7 +228,7 @@ export default {
             dateOfService: dayjs(this.dateOfService).format(API_DATE_FORMAT),
             checkSubsidyInsuredService: this.checkSubsidyInsuredService,
             checkLastEyeExam: this.checkLastEyeExam,
-            checkPatientRestriction: this.checkPatientRestriction,
+            checkPatientRestriction: false,
           })
         ).data
 
@@ -261,7 +260,6 @@ export default {
       this.dateOfService = new Date()
       this.checkSubsidyInsuredService = false
       this.checkLastEyeExam = false
-      this.checkPatientRestriction = false
       this.result = null
       this.v$.$reset()
       this.$store.commit('alert/dismissAlert')
@@ -280,9 +278,6 @@ export default {
         validateDOB: helpers.withMessage(VALIDATE_DOB_MESSAGE, validateDOB),
       },
       dateOfService: { required },
-      checkSubsidyInsuredService: {},
-      checkLastEyeExam: {},
-      checkPatientRestriction: {},
     }
   },
 }
