@@ -41,6 +41,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private AudienceValidator audienceValidator;
     
     @Autowired
+    private OrganizationValidator organizationValidator;
+    
+    @Autowired
     private CustomAccessDeniedHandler accessDeniedHandler;
 
     @Override
@@ -73,8 +76,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(issuerUri);
         OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withIssuer, audienceValidator);
+        OAuth2TokenValidator<Jwt> withOrganization = new DelegatingOAuth2TokenValidator<>(withAudience, organizationValidator);
 
-        jwtDecoder.setJwtValidator(withAudience);
+        jwtDecoder.setJwtValidator(withOrganization);
 
         return jwtDecoder;
     }

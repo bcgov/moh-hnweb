@@ -22,8 +22,8 @@ public class SecurityUtil {
 
 	private static final String CLAIM_RESOURCE_ACCESS = "resource_access";
 	private static final String CLAIM_SESSION_STATE = "session_state";
-	private static final String CLAIM_USERNAME = "preferred_username";
-	private static final String CLAIM_ORGANIZATION = "org_details";
+	public static final String CLAIM_USERNAME = "preferred_username";
+	public static final String CLAIM_ORGANIZATION = "org_details";
 	
 	private static final String ORGANIZATION_ID = "id";
 	
