@@ -6,8 +6,8 @@ package ca.bc.gov.hlth.hnweb.security;
 public enum TransactionType {
 	MSP_COVERAGE_STATUS_CHECK("MSPCoverageCheck"), // E45
 	CHECK_ELIGIBILITY("CheckEligibility"), // R15	
-	PHN_INQUIRY("PhnInquiry"), // R41
-	PHN_LOOKUP("PhnLookup"), // R42
+	PHN_INQUIRY("PHNInquiry"), // R41
+	PHN_LOOKUP("PHNLookup"), // R42
 	ENROLL_SUBSCRIBER("EnrollSubscriber"), // R50
 	GET_PERSON_DETAILS("GetPersonDetails"),
 	NAME_SEARCH("NameSearch"),
