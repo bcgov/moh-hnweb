@@ -24,13 +24,10 @@ import ca.bc.gov.hlth.hnweb.service.AuditService;
 public class OrganizationValidator implements OAuth2TokenValidator<Jwt> {
 
     private static final Logger logger = LoggerFactory.getLogger(OrganizationValidator.class);
-    
-    private static final String CLAIM_ORGANIZATION = "org_details";
 
-    private static final OAuth2Error error = new OAuth2Error(OAuth2ErrorCodes.INVALID_REQUEST, " User has no Organization",
+    private static final OAuth2Error error = new OAuth2Error(OAuth2ErrorCodes.INVALID_REQUEST, " User has no org_details",
             "https://tools.ietf.org/html/rfc6750#section-3.1");
 
-    
     @Autowired
     private AuditService auditService;
 
@@ -38,7 +35,7 @@ public class OrganizationValidator implements OAuth2TokenValidator<Jwt> {
     public OAuth2TokenValidatorResult validate(Jwt jwt) {
         Assert.notNull(jwt, "Token cannot be null");
         
-        String org = jwt.getClaim(CLAIM_ORGANIZATION);
+        String org = jwt.getClaim(SecurityUtil.CLAIM_ORGANIZATION);
         
         if (StringUtils.isNotEmpty(org)) {
             return OAuth2TokenValidatorResult.success();
@@ -49,7 +46,7 @@ public class OrganizationValidator implements OAuth2TokenValidator<Jwt> {
         	Transaction transaction = auditService.createTransaction(request.getRemoteAddr(), TransactionType.UNKNOWN);    	
         	auditService.createTransactionEvent(transaction, TransactionEventType.UNAUTHORIZED);
         	
-            logger.info(error.getDescription());
+            logger.warn("User {} has no org_details (Organization)", jwt.getClaim(SecurityUtil.CLAIM_USERNAME).toString());
             return OAuth2TokenValidatorResult.failure(error);
         }
     }

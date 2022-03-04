@@ -52,7 +52,7 @@ public class AudienceValidator implements OAuth2TokenValidator<Jwt> {
         	Transaction transaction = auditService.createTransaction(request.getRemoteAddr(), TransactionType.UNKNOWN);    	
         	auditService.createTransactionEvent(transaction, TransactionEventType.UNAUTHORIZED);
         	
-            logger.debug(error.getDescription());
+        	logger.warn("User {} is missing aud claim {} ", jwt.getClaim(SecurityUtil.CLAIM_USERNAME).toString(), audience);
             return OAuth2TokenValidatorResult.failure(error);
         }
     }
