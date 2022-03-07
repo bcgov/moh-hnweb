@@ -12,6 +12,6 @@ test('Check Home tab is clickable ', async (t) => {
   await t.click(HomePage.homeLink)
 })
 
-test('Check heading exist on Home page! ', async (tc) => {
-  await tc.click(HomePage.homeLink).expect(HomePage.heading.innerText).eql('Welcome to MSP Direct')
+test('Check heading exists on Home page! ', async (tc) => {
+  await tc.click(HomePage.homeLink).expect(HomePage.heading.innerText).eql('Welcome to the New MSP Direct')
 })
