@@ -72,6 +72,7 @@ export default {
     async searchForCandidates(searchCriteria) {
       try {
         this.searching = true
+        this.$store.commit('alert/dismissAlert')
         this.nameSearchResult = (await EnrollmentService.performNameSearch(searchCriteria)).data
 
         if (this.nameSearchResult?.status === 'error') {
@@ -105,6 +106,7 @@ export default {
     async registerResident(personDetails) {
       try {
         this.submitting = true
+        this.$store.commit('alert/dismissAlert')
         this.registrationResult = (await EnrollmentService.registerResident(personDetails)).data
 
         if (this.registrationResult?.status === 'error') {
