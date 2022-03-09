@@ -13,6 +13,7 @@ import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaint
 import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
 import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
 import GetContractPeriods from '../views/mspcontracts/GetContractPeriods.vue'
+import GetGroupMembersContractAddress from '../views/mspcontracts/GetGroupMembersContractAddress.vue'
 import GroupMemberHome from '../views/groupmember/GroupMemberHome.vue'
 import Help from './../views/Help.vue'
 import Home from './../views/Home.vue'
@@ -149,6 +150,11 @@ const routes = [
         path: 'contractInquiry',
         name: 'ContractInquiry',
         component: ContractInquiry,
+      },
+      {
+        path: 'getGroupMembersContractAddress',
+        name: 'GetGroupMembersContractAddress',
+        component: GetGroupMembersContractAddress,
       },
     ],
   },

@@ -75,7 +75,11 @@ public class MspContractsController extends BaseController {
 	
 	 /**
 	 * Get MSP Coverage info for a Personal Health Number (PHN) of a group Inquiry
-	 * Maps to the legacy R40.
+	 * Maps to the legacy: R40.
+	 * 
+	 * Also used by R37 as the results shown for R37 are a subset of those returned for Contract Inquiry so it can return the same results. This 
+	 * does not break overall security as currently all roles with permissions to R37(Get Group Member's Contract Address) also have permission 
+	 * for R40(Contract Inquiry).
 	 *  
 	 * @param contractInquireRequest
 	 * @return The result of the operation.
