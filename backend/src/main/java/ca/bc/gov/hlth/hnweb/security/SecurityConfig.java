@@ -61,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .mvcMatchers(HttpMethod.POST, "/eligibility/check-eligibility").hasRole("CheckEligibility")
             .mvcMatchers(HttpMethod.POST, "/eligibility/inquire-phn").hasRole("PHNInquiry")
             .mvcMatchers(HttpMethod.POST, "/eligibility/lookup-phn").hasRole("PHNLookup")
-            .mvcMatchers(HttpMethod.POST, "/enrollment/enroll-subscriber").hasAnyRole("AddPermitHolderWOPHN", "AddPermitHolderWithPHN")
+            .mvcMatchers(HttpMethod.POST, "/enrollment/enroll-subscriber").hasAnyRole("AddPermitHolderWithPHN", "AddPermitHolderWOPHN")
             .mvcMatchers(HttpMethod.POST, "/enrollment/get-person-details").hasRole("AddPermitHolderWithPHN")
             .mvcMatchers(HttpMethod.POST, "/enrollment/name-search").hasRole("AddPermitHolderWOPHN")
             .mvcMatchers(HttpMethod.POST, "/group-member/add-dependent").hasRole("AddDependent")
