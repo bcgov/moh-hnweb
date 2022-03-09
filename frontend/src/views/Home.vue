@@ -1,4 +1,5 @@
 <template>
+  <AppBulletin v-for="bulletin in bulletins" :key="bulletin.id" :content="bulletin.content"> </AppBulletin>
   <h1>Welcome to the New MSP Direct</h1>
   <p>MSP Direct has been updated to enhance user experience and to meet current Ministry of Health technology standards for web applications.</p>
   <p>MSP Direct has a new look with improved navigation functions. Users will still be able to make the required account adjustments to maintain their group members' accounts.</p>
@@ -6,7 +7,20 @@
 </template>
 
 <script>
+import AppBulletin from '../components/ui/AppBulletin.vue'
+import BulletinService from '../services/BulletinService.js'
 export default {
   name: 'home',
+  components: {
+    AppBulletin,
+  },
+  data() {
+    return {
+      bulletins: [],
+    }
+  },
+  created() {
+    this.bulletins = BulletinService.getBulletins()
+  },
 }
 </script>
