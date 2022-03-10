@@ -44,4 +44,22 @@ security:
     TRAININGHEALTHAUTH:
       - MSPCoverageCheck
       - CheckEligibility
+      - AddGroupMember
+      - AddDependent
+      - GetContractPeriods
+      - UpdateNumberAndDept
+      - CancelGroupMember
+      - CancelDependent
+      - GetContractAddress
+      - UpdateContractAddress
+      - ContractInquiry
       - PHNInquiry
+      - PHNLookup
+      - ReinstateOverAgeDependent
+      - ReinstateCancelledCoverage
+      - RenewCancelledCoverage
+      - ChangeEffectiveDate
+      - ChangeCancelDate
+      - ExtendCancelDate
+      - AddPermitHolderWOPHN
+      - AddPermitHolderWithPHN

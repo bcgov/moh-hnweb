@@ -6,12 +6,12 @@
           <router-link @click="resetAlert" :to="{ name: 'Home' }">Home</router-link>
         </li>
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
-          <div class="dropdown" :key="eligibilityDropdownKey" v-on:click="this.refreshEligibility()">
+          <div class="dropdown">
             <router-link @click="resetAlert" :to="{ name: 'Eligibility' }">Eligibility & PHN</router-link>
             <div class="dropdown-content">
               <router-link @click="resetAlert" :class="menuClass($route, 'CheckEligibility')" :to="{ name: 'CheckEligibility' }" v-if="hasPermission('CheckEligibility')">Check Eligibility</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'PhnInquiry')" :to="{ name: 'PhnInquiry' }" v-if="hasPermission('PHNInquiry')">PHN Inquiry</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'PhnLookup')" :to="{ name: 'PhnLookup' }">PHN Lookup</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'PhnLookup')" :to="{ name: 'PhnLookup' }" v-if="hasPermission('PHNLookup')">PHN Lookup</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'CoverageStatusCheck')" :to="{ name: 'CoverageStatusCheck' }" v-if="hasPermission('MSPCoverageCheck')">MSP Coverage Status Check</router-link>
             </div>
           </div>
@@ -19,17 +19,17 @@
         <li id="coverage-maintenance-link" :class="tabClass($route, 'CoverageMaintenance')">
           <router-link @click="resetAlert" :to="{ name: 'CoverageMaintenance' }">Coverage Maintenance</router-link>
         </li>
-        <li id="coverage-enrollment-link" :class="menuTabClass($route, '/coverage/enrollment')">
-          <div class="dropdown" :key="coverageEnrollmentDropDownKey" v-on:click="this.refreshCoverageEnrollment">
+        <li id="coverage-enrollment-link" :class="menuTabClass($route, '/coverage/enrollment')" v-if="hasEnrollmentPermission()">
+          <div class="dropdown">
             <router-link @click="resetAlert" :to="{ name: 'CoverageEnrollment' }">Coverage Enrollment</router-link>
             <div class="dropdown-content">
-              <router-link @click="resetCoverageEnrollment" :class="menuClass($route, 'AddVisaResidentWithoutPHN')" :to="{ name: 'AddVisaResidentWithoutPHN' }">Add Study Permit holder without PHN</router-link>
-              <router-link @click="resetCoverageEnrollment" :class="menuClass($route, 'AddVisaResidentWithPHN')" :to="{ name: 'AddVisaResidentWithPHN' }">Add Study Permit holder with PHN</router-link>
+              <router-link @click="resetCoverageEnrollment" :class="menuClass($route, 'AddVisaResidentWithoutPHN')" :to="{ name: 'AddVisaResidentWithoutPHN' }" v-if="hasPermission('AddPermitHolderWOPHN')">Add Study Permit holder without PHN</router-link>
+              <router-link @click="resetCoverageEnrollment" :class="menuClass($route, 'AddVisaResidentWithPHN')" :to="{ name: 'AddVisaResidentWithPHN' }" v-if="hasPermission('AddPermitHolderWithPHN')">Add Study Permit holder with PHN</router-link>
             </div>
           </div>
         </li>
-        <li id="group-member-link" :class="menuTabClass($route, '/groupMember')">
-          <div class="dropdown" :key="groupMemberDropDownKey" v-on:click="this.refreshGroupMember">
+        <li id="group-member-link" :class="menuTabClass($route, '/groupMember')" v-if="hasGroupMemberPermission()">
+          <div class="dropdown">
             <router-link @click="resetAlert" :to="{ name: 'GroupMember' }">Manage Group Member</router-link>
             <div class="dropdown-content">
               <router-link @click="resetAlert" :class="menuClass($route, 'AddGroupMember')" :to="{ name: 'AddGroupMember' }">Add Group Member</router-link>
@@ -40,8 +40,8 @@
             </div>
           </div>
         </li>
-        <li id="msp-contracts-link" :class="menuTabClass($route, '/mspContracts')">
-          <div class="dropdown" :key="mspContractsDropDownKey" v-on:click="this.refreshMspContracts">
+        <li id="msp-contracts-link" :class="menuTabClass($route, '/mspContracts')" v-if="hasMSPContractsPermission()">
+          <div class="dropdown">
             <router-link @click="resetAlert" :to="{ name: 'MspContracts' }">MSP Contracts</router-link>
             <div class="dropdown-content">
               <router-link @click="resetAlert" :class="menuClass($route, 'GetContractPeriods')" :to="{ name: 'GetContractPeriods' }">Get Contract Periods</router-link>
@@ -60,33 +60,13 @@
 <script>
 export default {
   name: 'TheNavBar',
-  data: function () {
-    return {
-      eligibilityDropdownKey: 0,
-      coverageEnrollmentDropDownKey: 0,
-      groupMemberDropDownKey: 0,
-      mspContractsDropDownKey: 0,
-    }
-  },
   methods: {
-    resetCoverageEnrollment: function () {
+    resetCoverageEnrollment() {
       this.$store.commit('alert/dismissAlert')
       this.$store.commit('studyPermitHolder/resetResident')
     },
-    resetAlert: function () {
+    resetAlert() {
       this.$store.commit('alert/dismissAlert')
-    },
-    refreshEligibility() {
-      this.eligibilityDropdownKey += 1
-    },
-    refreshCoverageEnrollment() {
-      this.coverageEnrollmentDropDownKey += 1
-    },
-    refreshGroupMember() {
-      this.groupMemberDropDownKey += 1
-    },
-    refreshMspContracts() {
-      this.mspContractsDropDownKey += 1
     },
     menuClass(route, routeName) {
       return this.tabClass(route, routeName)
@@ -101,8 +81,16 @@ export default {
       return this.$store.getters['auth/hasPermission'](permission)
     },
     hasEligibilityPermission() {
-      const hasPermission = this.$store.getters['auth/hasPermission']
-      return hasPermission('MSPCoverageCheck') || hasPermission('CheckEligibility') || hasPermission('PHNInquiry')
+      return this.hasPermission('MSPCoverageCheck') || this.hasPermission('CheckEligibility') || this.hasPermission('PHNInquiry') || this.hasPermission('PHNLookup')
+    },
+    hasEnrollmentPermission() {
+      return this.hasPermission('AddPermitHolderWOPHN') || this.hasPermission('AddPermitHolderWithPHN')
+    },
+    hasGroupMemberPermission() {
+      return this.hasPermission('AddGroupMember') || this.hasPermission('AddDependent') || this.hasPermission('UpdateNumberAndDept') || this.hasPermission('CancelGroupMember') || this.hasPermission('CancelDependent')
+    },
+    hasMSPContractsPermission() {
+      return this.hasPermission('GetContractPeriods') || this.hasPermission('ContractInquiry')
     },
   },
 }

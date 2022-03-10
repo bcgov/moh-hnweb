@@ -1,28 +1,28 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import AddDependent from '../views/groupmember/AddDependent.vue'
-import AddGroupMember from '../views/groupmember/AddGroupMember.vue'
-import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
-import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
-import CancelDependent from '../views/groupmember/CancelDependent.vue'
-import CancelGroupMember from '../views/groupmember/CancelGroupMember.vue'
-import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
-import ContractInquiry from '../views/mspcontracts/ContractInquiry.vue'
-import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
-import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
-import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
-import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
-import GetContractPeriods from '../views/mspcontracts/GetContractPeriods.vue'
-import GroupMemberHome from '../views/groupmember/GroupMemberHome.vue'
 import Help from './../views/Help.vue'
 import Home from './../views/Home.vue'
-import MspContractsHome from '../views/mspcontracts/MspContractsHome.vue'
+import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
+import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
+import store from '../store'
 import NotFound from '../views/NotFound.vue'
+import Unauthorized from '../views/Unauthorized.vue'
+import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
+import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
+import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
+import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
+import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
 import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
 import PhnLookup from '../views/eligibility/PhnLookup.vue'
-import Unauthorized from '../views/Unauthorized.vue'
+import AddDependent from '../views/groupmember/AddDependent.vue'
+import AddGroupMember from '../views/groupmember/AddGroupMember.vue'
+import CancelDependent from '../views/groupmember/CancelDependent.vue'
+import CancelGroupMember from '../views/groupmember/CancelGroupMember.vue'
+import GroupMemberHome from '../views/groupmember/GroupMemberHome.vue'
 import UpdateNumberAndDept from '../views/groupmember/UpdateNumberAndDept.vue'
-import store from '../store'
+import ContractInquiry from '../views/mspcontracts/ContractInquiry.vue'
+import GetContractPeriods from '../views/mspcontracts/GetContractPeriods.vue'
+import MspContractsHome from '../views/mspcontracts/MspContractsHome.vue'
 
 const routes = [
   {
@@ -47,11 +47,17 @@ const routes = [
         path: 'addStudyPermitHolderWithoutPHN',
         name: 'AddVisaResidentWithoutPHN',
         component: AddVisaResidentWithoutPHN,
+        meta: {
+          permission: 'AddPermitHolderWOPHN',
+        },
       },
       {
         path: 'addStudyPermitHolderWithPHN',
         name: 'AddVisaResidentWithPHN',
         component: AddVisaResidentWithPHN,
+        meta: {
+          permission: 'AddPermitHolderWithPHN',
+        },
         beforeEnter: (to, _, next) => {
           checkPageAction(to, next)
         },
@@ -86,6 +92,9 @@ const routes = [
         path: 'phnLookup',
         name: 'PhnLookup',
         component: PhnLookup,
+        meta: {
+          permission: 'PHNLookup',
+        },
       },
       {
         path: 'coverageStatusCheck',
@@ -109,26 +118,41 @@ const routes = [
         path: 'addGroupMember',
         name: 'AddGroupMember',
         component: AddGroupMember,
+        meta: {
+          permission: 'AddGroupMember',
+        },
       },
       {
         path: 'addDependent',
         name: 'AddDependent',
         component: AddDependent,
+        meta: {
+          permission: 'AddDependent',
+        },
       },
       {
         path: 'updateNumberAndDept',
         name: 'UpdateNumberAndDept',
         component: UpdateNumberAndDept,
+        meta: {
+          permission: 'UpdateNumberAndDept',
+        },
       },
       {
         path: 'cancelGroupMember',
         name: 'CancelGroupMember',
         component: CancelGroupMember,
+        meta: {
+          permission: 'CancelGroupMember',
+        },
       },
       {
         path: 'cancelDependent',
         name: 'CancelDependent',
         component: CancelDependent,
+        meta: {
+          permission: 'CancelDependent',
+        },
       },
     ],
   },
@@ -144,11 +168,17 @@ const routes = [
         path: 'getContractPeriods',
         name: 'GetContractPeriods',
         component: GetContractPeriods,
+        meta: {
+          permission: 'GetContractPeriods',
+        },
       },
       {
         path: 'contractInquiry',
         name: 'ContractInquiry',
         component: ContractInquiry,
+        meta: {
+          permission: 'ContractInquiry',
+        },
       },
     ],
   },
