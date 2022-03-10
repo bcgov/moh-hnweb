@@ -17,7 +17,8 @@ public enum TransactionType {
 	CANCEL_GROUP_MEMBER("CancelGroupMember"),
 	CANCEL_DEPENDENT("CancelDependent"),
 	GET_CONTRACT_PERIODS("GetContractPeriods"),
-	CONTRACT_INQUIRY("ContractInquiry"),
+	CONTRACT_INQUIRY("ContractInquiry"),	//R40
+	GET_GROUP_MEMBERS_CONTRACT_ADDRESS("GetGroupMembersContractAddress"), //R37
 	
 	UNKNOWN("Unknown");
 

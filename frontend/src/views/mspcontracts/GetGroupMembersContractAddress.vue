@@ -32,6 +32,7 @@
       </thead>
       <tbody>
         <tr>
+          <!-- Only the first row should be shown as that will be the searched on Group Member -->
           <GroupMemberContractBeneficiary :beneficiary="result.contractInquiryBeneficiaries[0]" />
         </tr>
       </tbody>
@@ -119,6 +120,21 @@ export default {
       result: {
         status: '',
         message: '',
+        phn: '',
+        groupNumber: '',
+        groupMemberNumber: '',
+        groupMemberDepartmentNumber: '',
+        homeAddressLine1: '',
+        homeAddressLine2: '',
+        homeAddressLine3: '',
+        homeAddressLine4: '',
+        homeAddressPostalCode: '',
+        mailingAddressLine1: '',
+        mailingAddressLine2: '',
+        mailingAddressLine3: '',
+        mailingAddressLine4: '',
+        mailingAddressPostalCode: '',
+        telephone: '',
         contractInquiryBeneficiaries: [],
       },
     }
@@ -137,7 +153,7 @@ export default {
         }
         /*
           This screen calls the Contract Inquiry endpoint as the results shown here are a subset of those returned for Contract Inquiry. This does not
-          break security as currently all roles with permissions for R37(Get Group Member's Contract Address) also have permission for R40(Contract Inquiry).                    
+          break security as currently all roles with permissions for R37(Get Group Member's Contract Address) also have permission for R40(Contract Inquiry).
         */
         this.result = (await MspContractsService.inquireContract({ phn: this.phn, groupNumber: this.groupNumber })).data
         if (this.result.status === 'error') {
@@ -150,6 +166,10 @@ export default {
           this.$store.commit('alert/setSuccessAlert', this.result.message || 'Transaction successful')
         } else if (this.result.status === 'warning') {
           this.$store.commit('alert/setWarningAlert', this.result.message)
+          if (this.result.message === 'RPBS0059 MORE THAN 20 PERSONS. PLEASE CONTACT MSP') {
+            // in legacy no results are shown the > 20 message is returned so clear result info
+            this.result.contractInquiryBeneficiaries = []
+          }
         }
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
