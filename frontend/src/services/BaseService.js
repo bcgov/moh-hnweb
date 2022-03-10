@@ -1,7 +1,9 @@
 import axios from 'axios'
+
 import keycloak from '../keycloak'
 
 export const resources = {
+  bulletins: '/bulletins',
   enrollment: {
     nameSearch: 'enrollment/name-search',
     getPersonDetails: 'enrollment/get-person-details',

@@ -26,7 +26,7 @@ export default {
   background-color: #38598a;
   border-radius: 4px;
   color: #ffffff;
-  margin: 5px 0 5px 0;
+  margin: 5px 0 10px 0;
   padding: 5px;
 }
 
@@ -40,6 +40,7 @@ export default {
 
 .app-bulletin p {
   color: #ffffff;
+  margin-bottom: 0px;
 }
 
 .bulletin-icon {
