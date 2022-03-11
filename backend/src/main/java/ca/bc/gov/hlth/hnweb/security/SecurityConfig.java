@@ -57,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         	.cors(Customizer.withDefaults())
             .authorizeRequests()
             .mvcMatchers(HttpMethod.GET, "/docs/**").permitAll()
-            .mvcMatchers(HttpMethod.GET, "/bulletins/**").fullyAuthenticated()           
+            .mvcMatchers(HttpMethod.GET, "/bulletins").fullyAuthenticated()           
             .mvcMatchers(HttpMethod.POST, "/eligibility/check-msp-coverage-status").hasRole("MSPCoverageCheck")
             .mvcMatchers(HttpMethod.POST, "/eligibility/check-eligibility").hasRole("CheckEligibility")
             .mvcMatchers(HttpMethod.POST, "/eligibility/inquire-phn").hasRole("PHNInquiry")

@@ -28,9 +28,9 @@ public class BulletinController {
 	private BulletinService bulletinService;
 
 	/**
-	 * Retrieves the list of current Bulletins.
+	 * Retrieves the list of current bulletins.
 	 * 
-	 * @return The list of Bulletins.
+	 * @return The list of bulletins.
 	 */
 	@GetMapping
 	public ResponseEntity<List<BulletinModel>> getBulletins() {
