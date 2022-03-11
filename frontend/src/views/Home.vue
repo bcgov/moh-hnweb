@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section id="bulletins">
     <AppBulletin v-for="bulletin in bulletins" :key="bulletin.id" :content="bulletin.content"> </AppBulletin>
   </section>
   <section>
