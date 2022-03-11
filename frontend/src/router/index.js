@@ -185,6 +185,14 @@ const routes = [
         path: 'getGroupMembersContractAddress',
         name: 'GetGroupMembersContractAddress',
         component: GetGroupMembersContractAddress,
+        meta: {
+          permission: 'GetGroupMembersContractAddress',
+        },
+      },
+      {
+        path: 'getGroupMembersContractAddress',
+        name: 'GetGroupMembersContractAddress',
+        component: GetGroupMembersContractAddress,
       },
     ],
   },
