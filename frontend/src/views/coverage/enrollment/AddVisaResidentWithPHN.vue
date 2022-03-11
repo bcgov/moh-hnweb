@@ -67,6 +67,7 @@ export default {
   methods: {
     async updateResident(phn) {
       this.searching = true
+      this.$store.commit('alert/dismissAlert')
       try {
         const data = (await EnrollmentService.getPersonDetails({ phn: phn })).data
         this.getPersonDetailsResult = {
@@ -101,6 +102,7 @@ export default {
     },
     async registerResident(personDetails) {
       this.submitting = true
+      this.$store.commit('alert/dismissAlert')
       try {
         this.registrationResult = (await EnrollmentService.registerResident(personDetails)).data
 

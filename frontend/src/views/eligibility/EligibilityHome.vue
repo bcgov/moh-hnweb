@@ -7,7 +7,7 @@ import SubNavTab from '../../components/template/SubNavTab.vue'
   <TheSubNav>
     <SubNavTab routeName="CheckEligibility" title="Check Eligibility" v-if="hasPermission('CheckEligibility')" />
     <SubNavTab routeName="PhnInquiry" title="PHN Inquiry" v-if="hasPermission('PHNInquiry')" />
-    <SubNavTab routeName="PhnLookup" title="PHN Lookup" />
+    <SubNavTab routeName="PhnLookup" title="PHN Lookup" v-if="hasPermission('PHNLookup')" />
     <SubNavTab routeName="CoverageStatusCheck" title="MSP Coverage Status Check" v-if="hasPermission('MSPCoverageCheck')" />
   </TheSubNav>
   <router-view />
