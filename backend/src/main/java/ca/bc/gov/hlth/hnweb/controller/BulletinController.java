@@ -1,8 +1,10 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +44,8 @@ public class BulletinController {
 		bulletins.forEach(bulletin -> {
 			BulletinModel model = new BulletinModel();
 			model.setId(bulletin.getBulletinId());
-			model.setStartDate(Instant.ofEpochMilli(bulletin.getStartDate().getTime()).atZone(ZoneId.systemDefault()).toLocalDate());
-			model.setEndDate(Instant.ofEpochMilli(bulletin.getEndDate().getTime()).atZone(ZoneId.systemDefault()).toLocalDate());
+			model.setStartDate(convertDate(bulletin.getStartDate()));
+			model.setEndDate(convertDate(bulletin.getEndDate()));
 			model.setContent(bulletin.getContent());
 
 			bulletinModels.add(model);
@@ -52,4 +54,8 @@ public class BulletinController {
 		return bulletinModels;
 	}
 
+	private LocalDate convertDate(Date date) {
+		return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+	}
+	
 }
