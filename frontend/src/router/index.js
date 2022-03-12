@@ -186,7 +186,7 @@ const routes = [
         name: 'GetGroupMembersContractAddress',
         component: GetGroupMembersContractAddress,
         meta: {
-          permission: 'GetGroupMembersContractAddress',
+          permission: 'GetContractAddress',
         },
       },
       {

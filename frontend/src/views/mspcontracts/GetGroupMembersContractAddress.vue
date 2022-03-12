@@ -33,7 +33,7 @@
       <tbody>
         <tr>
           <!-- Only the first row should be shown as that will be the searched on Group Member -->
-          <GroupMemberContractBeneficiary :beneficiary="result.contractInquiryBeneficiaries[0]" />
+          <GroupMemberContractBeneficiary :beneficiary="primaryContractBeneficiary" />
         </tr>
       </tbody>
     </AppSimpleTable>
@@ -138,6 +138,11 @@ export default {
         contractInquiryBeneficiaries: [],
       },
     }
+  },
+  computed: {
+    primaryContractBeneficiary() {
+      return this.result.contractInquiryBeneficiaries[0]
+    },
   },
   methods: {
     async submitForm() {
