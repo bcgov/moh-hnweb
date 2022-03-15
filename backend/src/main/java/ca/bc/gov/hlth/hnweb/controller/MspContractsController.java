@@ -76,17 +76,21 @@ public class MspContractsController extends BaseController {
 	 /**
 	 * Get MSP Coverage info for a Personal Health Number (PHN) of a group Inquiry
 	 * Maps to the legacy R40.
+	 * 
+	 * Also used by R37 as the results required for R37 are a subset of those returned for Contract Inquiry so it can return the same result. This 
+	 * does not break overall security as currently all roles with permissions for R37(Get Group Member's Contract Address) also have permission 
+	 * for R40(Contract Inquiry).
 	 *  
-	 * @param contractInquireRequest
+	 * @param contractInquiryRequest
 	 * @return The result of the operation.
 	 */
 	@PostMapping("/inquire-contract")
-	public ResponseEntity<ContractInquiryResponse> inquireContract(@Valid @RequestBody ContractInquiryRequest contractInquireRequest, HttpServletRequest request) {
+	public ResponseEntity<ContractInquiryResponse> inquireContract(@Valid @RequestBody ContractInquiryRequest contractInquiryRequest, HttpServletRequest request) {
 		
-		Transaction transaction = auditContractInquiryStart(contractInquireRequest, request);
+		Transaction transaction = auditContractInquiryStart(contractInquiryRequest, request);
 		try {
 			RPBSPCI0Converter converter = new RPBSPCI0Converter();
-			RPBSPCI0 rpbspci0Request = converter.convertRequest(contractInquireRequest);
+			RPBSPCI0 rpbspci0Request = converter.convertRequest(contractInquiryRequest);
 			RPBSPCI0 rpbspci0Response = mspContractsService.inquireContract(rpbspci0Request);
 			ContractInquiryResponse contractInquiryResponse = converter.convertResponse(rpbspci0Response);
 					

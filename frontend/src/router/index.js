@@ -1,28 +1,29 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import Help from './../views/Help.vue'
-import Home from './../views/Home.vue'
-import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
-import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
-import store from '../store'
-import NotFound from '../views/NotFound.vue'
-import Unauthorized from '../views/Unauthorized.vue'
-import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
-import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
-import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
-import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
-import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
-import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
-import PhnLookup from '../views/eligibility/PhnLookup.vue'
 import AddDependent from '../views/groupmember/AddDependent.vue'
 import AddGroupMember from '../views/groupmember/AddGroupMember.vue'
+import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
+import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
 import CancelDependent from '../views/groupmember/CancelDependent.vue'
 import CancelGroupMember from '../views/groupmember/CancelGroupMember.vue'
-import GroupMemberHome from '../views/groupmember/GroupMemberHome.vue'
-import UpdateNumberAndDept from '../views/groupmember/UpdateNumberAndDept.vue'
+import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
 import ContractInquiry from '../views/mspcontracts/ContractInquiry.vue'
+import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
+import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
+import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
+import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
 import GetContractPeriods from '../views/mspcontracts/GetContractPeriods.vue'
+import GetGroupMembersContractAddress from '../views/mspcontracts/GetGroupMembersContractAddress.vue'
+import GroupMemberHome from '../views/groupmember/GroupMemberHome.vue'
+import Help from './../views/Help.vue'
+import Home from './../views/Home.vue'
 import MspContractsHome from '../views/mspcontracts/MspContractsHome.vue'
+import NotFound from '../views/NotFound.vue'
+import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
+import PhnLookup from '../views/eligibility/PhnLookup.vue'
+import Unauthorized from '../views/Unauthorized.vue'
+import UpdateNumberAndDept from '../views/groupmember/UpdateNumberAndDept.vue'
+import store from '../store'
 
 const routes = [
   {
@@ -179,6 +180,19 @@ const routes = [
         meta: {
           permission: 'ContractInquiry',
         },
+      },
+      {
+        path: 'getGroupMembersContractAddress',
+        name: 'GetGroupMembersContractAddress',
+        component: GetGroupMembersContractAddress,
+        meta: {
+          permission: 'GetContractAddress',
+        },
+      },
+      {
+        path: 'getGroupMembersContractAddress',
+        name: 'GetGroupMembersContractAddress',
+        component: GetGroupMembersContractAddress,
       },
     ],
   },
