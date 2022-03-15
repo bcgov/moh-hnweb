@@ -8,7 +8,6 @@ public class HL7Config {
   private String senderDeviceRoot;
   private String senderDeviceExtension;
   private String senderOrgRoot;
-  private String senderOrgExtension;
 
   private String recieverDeviceRoot;
   private String recieverDeviceExtension;
@@ -27,7 +26,6 @@ public class HL7Config {
     senderDeviceRoot = "2.16.840.1.113883.3.51.1.1.5";
     senderDeviceExtension = "EWEB_PHN";
     senderOrgRoot = "2.16.840.1.113883.3.51.1.1.3";
-    senderOrgExtension = "MOH_CRS";
   }
 
   public String getHl7Version() {
@@ -84,14 +82,6 @@ public class HL7Config {
 
   public void setSenderDeviceRoot(String senderDeviceRoot) {
     this.senderDeviceRoot = senderDeviceRoot;
-  }
-
-  public String getSenderOrgExtension() {
-    return senderOrgExtension;
-  }
-
-  public void setSenderOrgExtension(String senderOrgExtension) {
-    this.senderOrgExtension = senderOrgExtension;
   }
 
   public String getSenderOrgRoot() {

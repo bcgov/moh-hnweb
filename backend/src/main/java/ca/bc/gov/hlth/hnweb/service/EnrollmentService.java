@@ -42,7 +42,7 @@ public class EnrollmentService extends BaseService {
 
 	private static final Logger logger = LoggerFactory.getLogger(EnrollmentService.class);
 	private static final String SOURCE_SYSTEM_OVERRIDE = "MOH_CRS";
-	private static final String ORGANIZATION = "MOH_CRS";
+	private static final String ORGANIZATION = "MSPD";
 
 	@Value("${hibc.r50.path}")
 	private String r50Path;
