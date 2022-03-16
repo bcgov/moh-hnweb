@@ -1,21 +1,22 @@
 import '@bcgov/bc-sans/css/BCSans.css'
 
-import { faCheckCircle, faChevronDown, faExclamationCircle, faExclamationTriangle, faInfoCircle, faQuestionCircle, faSpinner, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { createApp } from 'vue'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faBullhorn, faCheckCircle, faChevronDown, faExclamationCircle, faExclamationTriangle, faInfoCircle, faQuestionCircle, faSpinner, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import App from './App.vue'
-import AppButton from './components/ui/AppButton.vue'
 import AppCol from './components/grid/AppCol.vue'
+import AppRow from './components/grid/AppRow.vue'
+import AppButton from './components/ui/AppButton.vue'
 import AppDateInput from './components/ui/AppDateInput.vue'
 import AppInput from './components/ui/AppInput.vue'
 import AppOutput from './components/ui/AppOutput.vue'
-import AppRow from './components/grid/AppRow.vue'
 import AppSelect from './components/ui/AppSelect.vue'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import UserService from './services/UserService'
-import { createApp } from 'vue'
 import keycloak from './keycloak'
-import { library } from '@fortawesome/fontawesome-svg-core'
 import router from './router'
+import UserService from './services/UserService'
 import store from './store'
 
 keycloak.onAuthSuccess = async function () {
@@ -51,6 +52,7 @@ function initApp() {
   app.use(store)
   app.config.globalProperties.$keycloak = keycloak
 
+  library.add(faBullhorn)
   library.add(faCheckCircle)
   library.add(faChevronDown)
   library.add(faExclamationCircle)

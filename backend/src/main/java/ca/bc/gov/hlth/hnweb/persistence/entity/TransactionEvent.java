@@ -17,7 +17,7 @@ import javax.persistence.Table;
  * Audit entity TransactionEvent
  */
 @Entity
-@Table(schema = "mspdirect", name = "transaction_event")
+@Table(name = "transaction_event")
 public class TransactionEvent {
 
 	/**
