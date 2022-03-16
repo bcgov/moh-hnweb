@@ -20,7 +20,7 @@
     "keycloak-js": "^15.0.2",
     "vue": "^3.2.13",
     "vue-router": "4",
-    "vue3-date-time-picker": "2.5.0",
+    "vue3-date-time-picker": "2.8.0",
     "vuex": "next"
   },
   "devDependencies": {
