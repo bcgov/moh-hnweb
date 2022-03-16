@@ -2,7 +2,6 @@ FROM node:lts-alpine as build-stage
 ARG env=test
 WORKDIR /app
 
-
 # Copying pacakge before other code. 
 # This will cache the dependencies
 COPY package*.json  ./
