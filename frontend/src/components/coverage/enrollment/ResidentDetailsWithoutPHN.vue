@@ -145,7 +145,18 @@
 import AppSelect from '../../ui/AppSelect.vue'
 import GenderRadioButtonGroup from '../../ui/GenderRadioButtonGroup.vue'
 import useVuelidate from '@vuelidate/core'
-import { validateGroupNumber, validateGroupMemberNumber, validateDepartmentNumber, validateTelephone, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../../util/validators'
+import {
+  validateGroupNumber,
+  validateGroupMemberNumber,
+  validateDepartmentNumber,
+  validateDOB,
+  validateTelephone,
+  VALIDATE_GROUP_NUMBER_MESSAGE,
+  VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE,
+  VALIDATE_DEPARTMENT_NUMBER_MESSAGE,
+  VALIDATE_DOB_MESSAGE,
+  VALIDATE_TELEPHONE_MESSAGE,
+} from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT, IMMIGRATION_CODES, PROVINCES, PRIOR_RESIDENCES } from '../../../util/constants'
@@ -307,6 +318,7 @@ export default {
       secondName: {},
       dateOfBirth: {
         required,
+        validateDOB: helpers.withMessage(VALIDATE_DOB_MESSAGE, validateDOB),
       },
       gender: {
         required,

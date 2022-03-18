@@ -39,7 +39,8 @@ import GenderRadioButtonGroup from '../../ui/GenderRadioButtonGroup.vue'
 import useVuelidate from '@vuelidate/core'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT } from '../../../util/constants'
-import { required } from '@vuelidate/validators'
+import { validateDOB, VALIDATE_DOB_MESSAGE } from '../../../util/validators'
+import { required, helpers } from '@vuelidate/validators'
 
 export default {
   name: 'NameSearch',
@@ -107,6 +108,7 @@ export default {
       secondName: {},
       dateOfBirth: {
         required,
+        validateDOB: helpers.withMessage(VALIDATE_DOB_MESSAGE, validateDOB),
       },
       gender: {
         required,

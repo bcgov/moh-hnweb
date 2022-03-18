@@ -1,8 +1,8 @@
 import { ClientFunction, Selector } from 'testcafe'
 
-import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import CoverageStatusCheckPage from '../../pages/eligibility/CoverageStatusCheckPage'
+import { SITE_UNDER_TEST } from '../../configuration'
 import { regularAccUser } from '../../roles/roles'
 
 const ERROR_MESSAGE = 'Please correct errors before submitting'
@@ -59,11 +59,28 @@ test('Check invalid phn format validation', async (t) => {
     .contains(ERROR_MESSAGE)
 })
 
+test('Check when invalid date required fields validation still triggered', async (t) => {
+  await t
+    // Given an invalid month in the date of birth the widget should revert to being empty
+    .typeText(CoverageStatusCheckPage.phnInput, '9306448169')
+    .typeText(CoverageStatusCheckPage.dateOfBirthInput, '19903303')
+    .pressKey('tab')
+    .pressKey('tab')
+    // When I click the submit button
+    .click(CoverageStatusCheckPage.submitButton)
+    // I expect an error message stating the page had errors and individual error messages for the DOB required field
+    .expect(CoverageStatusCheckPage.errorText.nth(0).textContent)
+    .contains(DOB_REQUIRED_MESSAGE)
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+})
+
 test('Check date of birth in future validation', async (t) => {
   await t
     // Given a date of birth entered in the future
     .typeText(CoverageStatusCheckPage.phnInput, '9306448169')
     .typeText(CoverageStatusCheckPage.dateOfBirthInput, '20391103')
+    .pressKey('tab')
     .pressKey('tab')
     // When I click the submit button
     .click(CoverageStatusCheckPage.submitButton)
@@ -128,6 +145,57 @@ test('Check properly filled form passes validation for an eligible PHN', async (
     // Given the page is filled out correctly
     .typeText(CoverageStatusCheckPage.phnInput, '9347984074')
     .typeText(CoverageStatusCheckPage.dateOfBirthInput, '19850915')
+    // The date input doesn't seem to take a new value without clearing the original value
+    .selectText(CoverageStatusCheckPage.dateOfServiceInput)
+    .pressKey('delete')
+    .typeText(CoverageStatusCheckPage.dateOfServiceInput, dateOfService)
+    .pressKey('tab')
+    // When I click the submit button
+    .expect(CoverageStatusCheckPage.dateOfServiceInput.value)
+    .notEql('')
+    .click(CoverageStatusCheckPage.submitButton)
+    // I expect a success message
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(SUCCESS_MESSAGE)
+    // And the results to be populated
+    .expect(CoverageStatusCheckPage.result.exists)
+    .ok()
+    .expect(CoverageStatusCheckPage.resultRow1.exists)
+    .ok()
+    .expect(CoverageStatusCheckPage.resultRow1.child('div').nth(0).child('span').textContent)
+    .eql('9347984074')
+    .expect(CoverageStatusCheckPage.resultRow1.child('div').nth(1).child('span').textContent)
+    .eql('GENUS ACRIDOTHERESXC, MOHAMMED-ALIMXB ANJUMXI')
+    .expect(CoverageStatusCheckPage.resultRow1.child('div').nth(2).child('span').textContent)
+    .eql('19850915')
+    .expect(CoverageStatusCheckPage.resultRow1.child('div').nth(3).child('span').textContent)
+    .eql('MALE')
+
+    .expect(CoverageStatusCheckPage.resultRow2.exists)
+    .ok()
+    .expect(CoverageStatusCheckPage.resultRow2.child('div').nth(0).child('span').textContent)
+    .eql(dateOfService)
+    .expect(CoverageStatusCheckPage.resultRow2.child('div').nth(1).child('span').textContent)
+    .eql('YES')
+    .expect(CoverageStatusCheckPage.resultRow2.child('div').nth(2).child('span').textContent)
+    .eql('')
+    .expect(CoverageStatusCheckPage.resultRow2.child('div').nth(3).child('span').textContent)
+    .eql('')
+})
+
+test('Check invalid date does not overwrite previous entry', async (t) => {
+  const dateOfService = '20211201'
+  await t
+    // Given the page is filled out correctly
+    .typeText(CoverageStatusCheckPage.phnInput, '9347984074')
+    // and a valid date is entered
+    .typeText(CoverageStatusCheckPage.dateOfBirthInput, '19850915')
+    .pressKey('tab')
+    // entering an invalid date should cause it to be ignored and the previous value kept
+    .typeText(CoverageStatusCheckPage.dateOfBirthInput, '19850945')
+    .pressKey('tab')
+    .expect(CoverageStatusCheckPage.dateOfBirthInput.value)
+    .eql('19850915')
     // The date input doesn't seem to take a new value without clearing the original value
     .selectText(CoverageStatusCheckPage.dateOfServiceInput)
     .pressKey('delete')
