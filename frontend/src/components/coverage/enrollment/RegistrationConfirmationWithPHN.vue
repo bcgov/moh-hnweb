@@ -10,7 +10,7 @@
         <AppOutput label="Name" :value="fullName" />
       </AppCol>
     </AppRow>
-    <AppButton @click="goToAddVisaResidentWithoutPHN()" mode="primary" type="button">Add Another Permit Holder Without PHN</AppButton>
+    <AppButton mode="primary" @click="goToAddStudyPermitHolderWithPHN()" type="button">Add Another Permit Holder With PHN</AppButton>
   </div>
 </template>
 
@@ -18,7 +18,7 @@
 import { formatPersonName } from '../../../util/utils'
 
 export default {
-  name: 'RegistrationConfirmation',
+  name: 'RegistrationConfirmationWithPHN',
   props: {
     resident: {
       required: true,
@@ -32,8 +32,7 @@ export default {
   },
 
   methods: {
-    goToAddVisaResidentWithoutPHN() {
-      this.$router.push('/coverage/enrollment/addStudyPermitHolderWithoutPHN')
+    goToAddStudyPermitHolderWithPHN() {
       this.$router.go()
     },
   },
