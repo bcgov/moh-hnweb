@@ -1,7 +1,7 @@
 <template>
   <ResidentPHN v-if="isPhnSearch" @update-resident="updateResident" :searching="searching" />
   <ResidentDetails v-else-if="isStudentRegistration" @register-resident="registerResident" :submitting="submitting" />
-  <RegistrationConfirmationWithPHN v-else-if="isConfirmation" :resident="this.getPersonDetailsResult?.person" />
+  <RegistrationConfirmation v-else-if="isConfirmation" :resident="this.getPersonDetailsResult?.person" />
 </template>
 
 <script>
@@ -9,14 +9,14 @@ import EnrollmentService from '../../../services/EnrollmentService'
 import { formatPersonName } from '../../../util/utils'
 import ResidentPHN from '../../../components/coverage/enrollment/ResidentPHN.vue'
 import ResidentDetails from '../../../components/coverage/enrollment/ResidentDetails.vue'
-import RegistrationConfirmationWithPHN from '../../../components/coverage/enrollment/RegistrationConfirmationWithPHN.vue'
+import RegistrationConfirmation from '../../../components/coverage/enrollment/RegistrationConfirmation.vue'
 
 export default {
   name: 'AddVisaResidentWithPHN',
   components: {
     ResidentPHN,
     ResidentDetails,
-    RegistrationConfirmationWithPHN,
+    RegistrationConfirmation,
   },
   data() {
     return {

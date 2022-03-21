@@ -10,7 +10,7 @@
         <AppOutput label="Name" :value="fullName" />
       </AppCol>
     </AppRow>
-    <AppButton @click="goToAddVisaResidentWithoutPHN()" mode="primary" type="button">Add Another Permit Holder Without PHN</AppButton>
+    <AppButton @click="goToAddAnotherPermitHolder()" mode="primary" type="button">Add Another Permit Holder</AppButton>
   </div>
 </template>
 
@@ -32,9 +32,13 @@ export default {
   },
 
   methods: {
-    goToAddVisaResidentWithoutPHN() {
-      this.$router.push('/coverage/enrollment/addStudyPermitHolderWithoutPHN')
-      this.$router.go()
+    goToAddAnotherPermitHolder() {
+      if (this.$route.query.pageAction === 'REGISTRATION') {
+        this.$router.replace({ query: null })
+        this.$router.push('/coverage/enrollment/addStudyPermitHolderWithoutPHN')
+      } else {
+        this.$router.go()
+      }
     },
   },
 }
