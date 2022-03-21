@@ -40,6 +40,13 @@ public class AffectedParty {
 	private String identifierType;
 
 	/**
+	 * Specifies the direction of the the identifier in the transaction. (Inbound, Outbound)
+	 */
+	@Basic
+	@Column(name = "direction", nullable = false)
+	private String direction;
+
+	/**
 	 * Foreign key to the transaction the party is the subject of.
 	 */
 	@ManyToOne
@@ -71,6 +78,14 @@ public class AffectedParty {
 
 	public void setIdentifierType(String identifierType) {
 		this.identifierType = identifierType;
+	}
+
+	public String getDirection() {
+		return direction;
+	}
+
+	public void setDirection(String direction) {
+		this.direction = direction;
 	}
 
 	public Transaction getTransaction() {
