@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedParty;
+import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.persistence.entity.ErrorLevel;
 import ca.bc.gov.hlth.hnweb.persistence.entity.EventMessage;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
@@ -150,9 +151,10 @@ public class AuditService {
 	 * 
 	 * @param transaction The associated Transaction
 	 * @param phn The phn of the affected party
+	 * @param direction The value to indicate if the party is affected when the transaction is being sent or being received.
 	 */
-	public AffectedParty createAffectedParty(Transaction transaction, String phn) {
-		return createAffectedParty(transaction, IdentifierType.PHN, phn);
+	public AffectedParty createAffectedParty(Transaction transaction, String phn, AffectedPartyDirection direction) {
+		return createAffectedParty(transaction, IdentifierType.PHN, phn, direction);
 	}
 	
 	/**
@@ -162,10 +164,11 @@ public class AuditService {
 	 * @param identifierType The type of identifier
 	 * @param identifier The value of the identifier
 	 */
-	public AffectedParty createAffectedParty(Transaction transaction, IdentifierType identifierType, String identifier) {
+	public AffectedParty createAffectedParty(Transaction transaction, IdentifierType identifierType, String identifier, AffectedPartyDirection direction) {
 		AffectedParty affectedParty = new AffectedParty();
 		affectedParty.setIdentifier(identifier);
 		affectedParty.setIdentifierType(identifierType.getValue());
+		affectedParty.setDirection(direction.name());
 		affectedParty.setTransaction(transaction);
 		return affectedPartyRepository.save(affectedParty);
 	}

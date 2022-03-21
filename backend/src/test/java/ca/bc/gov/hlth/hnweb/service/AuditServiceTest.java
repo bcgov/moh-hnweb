@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import ca.bc.gov.hlth.hnweb.exception.ExceptionType;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedParty;
+import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.persistence.entity.ErrorLevel;
 import ca.bc.gov.hlth.hnweb.persistence.entity.EventMessage;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
@@ -105,7 +106,7 @@ public class AuditServiceTest {
 	@Test
 	public void testCreateAffectedParty() {
 		Transaction transaction = auditService.createTransaction("0:0:0:0:0:0:0:1", TransactionType.CHECK_ELIGIBILITY);
-		AffectedParty newAffectedParty = auditService.createAffectedParty(transaction, IdentifierType.GROUP_NUMBER, "6337109");
+		AffectedParty newAffectedParty = auditService.createAffectedParty(transaction, IdentifierType.GROUP_NUMBER, "6337109", AffectedPartyDirection.OUTBOUND);
 		
 		Optional<AffectedParty> optional = affectedPartyRepository.findById(newAffectedParty.getAffectedPartyId());
 		assertTrue(optional.isPresent());
