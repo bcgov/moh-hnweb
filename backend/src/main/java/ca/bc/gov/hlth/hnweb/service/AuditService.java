@@ -168,7 +168,7 @@ public class AuditService {
 		AffectedParty affectedParty = new AffectedParty();
 		affectedParty.setIdentifier(identifier);
 		affectedParty.setIdentifierType(identifierType.getValue());
-		affectedParty.setDirection(direction.name());
+		affectedParty.setDirection(direction.getValue());
 		affectedParty.setTransaction(transaction);
 		return affectedPartyRepository.save(affectedParty);
 	}

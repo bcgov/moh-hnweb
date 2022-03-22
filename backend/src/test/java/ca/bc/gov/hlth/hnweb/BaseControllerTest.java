@@ -1,8 +1,10 @@
 package ca.bc.gov.hlth.hnweb;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,10 +15,14 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.transaction.annotation.Transactional;
 
+import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedParty;
+import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
+import ca.bc.gov.hlth.hnweb.persistence.repository.AffectedPartyRepository;
 import ca.bc.gov.hlth.hnweb.persistence.repository.TransactionRepository;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
@@ -33,6 +39,9 @@ public class BaseControllerTest {
 	
 	@Autowired
 	private TransactionRepository transactionRepository;
+	
+	@Autowired
+	private AffectedPartyRepository affectedPartyRepository;
 	
 	protected static MockWebServer mockBackEnd;
 	
@@ -71,6 +80,24 @@ public class BaseControllerTest {
 		Optional<Transaction> opt = transactionRepository.findOne(Example.of(example));
 		assertTrue(opt.isPresent());
 		return opt.get();
+	}
+	
+	/**
+	 * Asserts the the Transaction is created.
+	 * @param count 
+	 * 
+	 * @param type The type of transaction.
+	 * @return The Transaction to perform further assertions on.
+	 */
+	protected int assertAffectedParyCount(AffectedPartyDirection direction, int count) {
+		AffectedParty example = new AffectedParty();
+		example.setAffectedPartyId(0);
+		example.setDirection(direction.getValue());
+		ExampleMatcher matcher = ExampleMatcher.matching()
+				.withIgnorePaths("affectedPartyId"); // Remove affectedPartyId as its value would default to 0 because it's of type long so would not be ignored as null in the default matchingAll() matcher
+		List<AffectedParty> affectedParties = affectedPartyRepository.findAll(Example.of(example, matcher));
+		assertEquals(count, affectedParties.size());
+		return affectedParties.size();
 	}
 	
 }

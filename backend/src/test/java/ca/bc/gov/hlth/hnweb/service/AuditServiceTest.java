@@ -57,13 +57,13 @@ public class AuditServiceTest {
 	private static MockedStatic<SecurityUtil> mockStatic;
 	
 	@BeforeAll
-    static void setUp() throws IOException {
+    static void setUp() {
         mockStatic = Mockito.mockStatic(SecurityUtil.class);
         mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "00000010", "hnweb-user", UUID.randomUUID().toString()));
     }
 	
     @AfterAll
-    static void tearDown() throws IOException {
+    static void tearDown() {
         mockStatic.close();
     }
 	
@@ -115,6 +115,7 @@ public class AuditServiceTest {
 		assertNotNull(affectedParty.getAffectedPartyId());
 		assertEquals("6337109", affectedParty.getIdentifier());
 		assertEquals(IdentifierType.GROUP_NUMBER.getValue(), affectedParty.getIdentifierType());
+		assertEquals(AffectedPartyDirection.OUTBOUND, affectedParty.getDirection());
 		assertEquals(transaction, affectedParty.getTransaction());
 	}
 	
