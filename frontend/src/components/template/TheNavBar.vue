@@ -23,8 +23,8 @@
           <div class="dropdown">
             <router-link @click="resetAlert" :to="{ name: 'CoverageEnrollment' }">Coverage Enrollment</router-link>
             <div class="dropdown-content">
-              <router-link @click="resetCoverageEnrollment" :class="menuClass($route, 'AddVisaResidentWithoutPHN')" :to="{ name: 'AddVisaResidentWithoutPHN' }" v-if="hasPermission('AddPermitHolderWOPHN')">Add Study Permit holder without PHN</router-link>
-              <router-link @click="resetCoverageEnrollment" :class="menuClass($route, 'AddVisaResidentWithPHN')" :to="{ name: 'AddVisaResidentWithPHN' }" v-if="hasPermission('AddPermitHolderWithPHN')">Add Study Permit holder with PHN</router-link>
+              <router-link @click="resetCoverageEnrollment" :class="menuClass($route, 'AddVisaResidentWithoutPHN')" :to="{ name: 'AddVisaResidentWithoutPHN' }" v-if="hasPermission('AddPermitHolderWOPHN')">Add Permit Holder without PHN</router-link>
+              <router-link @click="resetCoverageEnrollment" :class="menuClass($route, 'AddVisaResidentWithPHN')" :to="{ name: 'AddVisaResidentWithPHN' }" v-if="hasPermission('AddPermitHolderWithPHN')">Add Permit Holder with PHN</router-link>
             </div>
           </div>
         </li>
@@ -46,7 +46,7 @@
             <div class="dropdown-content">
               <router-link @click="resetAlert" :class="menuClass($route, 'GetContractPeriods')" :to="{ name: 'GetContractPeriods' }">Get Contract Periods</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'ContractInquiry')" :to="{ name: 'ContractInquiry' }">Contract Inquiry</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'GetGroupMembersContractAddress')" :to="{ name: 'GetGroupMembersContractAddress' }" v-if="hasPermission('GetContractAddress')">Get Group Member's Contract Address</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'GetGroupMembersContractAddress')" :to="{ name: 'GetGroupMembersContractAddress' }" v-if="hasPermission('GetContractAddress')">Get Contract Address</router-link>
             </div>
           </div>
         </li>
