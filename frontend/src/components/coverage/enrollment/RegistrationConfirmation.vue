@@ -40,7 +40,9 @@ export default {
         this.$store.commit('alert/dismissAlert')
         this.$router.replace({ query: null })
         this.$router.push('/coverage/enrollment/addStudyPermitHolderWithoutPHN')
-      } else this.$router.go()
+      } else {
+        this.$router.go()
+      }
     },
   },
 }
