@@ -10,7 +10,7 @@
         <AppOutput label="Name" :value="fullName" />
       </AppCol>
     </AppRow>
-    <AppButton @click="addAnotherPermitHolder()" mode="primary" type="button">{{ addAnotherButtonText }}</AppButton>
+    <AppButton @click="addAnotherPermitHolder()" mode="primary" type="button">Add Another Study Permit Holder</AppButton>
   </div>
 </template>
 
@@ -28,9 +28,6 @@ export default {
   computed: {
     fullName() {
       return formatPersonName(this.resident)
-    },
-    addAnotherButtonText() {
-      return this.$route.query.pageAction === 'REGISTRATION' || this.$route.name === 'AddVisaResidentWithoutPHN' ? 'Add Another Permit Holder without PHN' : 'Add Another Permit Holder with PHN'
     },
   },
 
