@@ -40,6 +40,7 @@ export const PROVINCES = [
 export const IMMIGRATION_CODES = [
   { text: 'Select', value: '' },
   { text: 'Student Authorization', value: 'S' },
+  { text: 'Employment Authorization', value: 'W' },
 ]
 
 // Prior Residence drop down options
