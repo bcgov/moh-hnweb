@@ -18,7 +18,7 @@ public enum TransactionType {
 	CANCEL_DEPENDENT("CancelDependent"),
 	GET_CONTRACT_PERIODS("GetContractPeriods"),
 	CONTRACT_INQUIRY("ContractInquiry"),	//R40
-	GET_CONTRACT_ADDRESS("GetContactAddress"), //R37
+	GET_CONTRACT_ADDRESS("GetContractAddress"), //R37
 	
 	UNKNOWN("Unknown");
 

@@ -5,8 +5,8 @@ import SubNavTab from '../../../components/template/SubNavTab.vue'
 
 <template>
   <TheSubNav>
-    <SubNavTab routeName="AddVisaResidentWithoutPHN" title="Add Study Permit holder without PHN" v-if="hasPermission('AddPermitHolderWOPHN')" />
-    <SubNavTab routeName="AddVisaResidentWithPHN" title="Add Study Permit holder with PHN" v-if="hasPermission('AddPermitHolderWithPHN')" />
+    <SubNavTab routeName="AddVisaResidentWithoutPHN" title="Add Permit Holder without PHN" v-if="hasPermission('AddPermitHolderWOPHN')" />
+    <SubNavTab routeName="AddVisaResidentWithPHN" title="Add Permit Holder with PHN" v-if="hasPermission('AddPermitHolderWithPHN')" />
   </TheSubNav>
   <router-view />
 </template>
