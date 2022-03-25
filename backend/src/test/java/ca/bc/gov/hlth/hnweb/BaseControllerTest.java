@@ -69,7 +69,7 @@ public class BaseControllerTest {
 	}
 	
 	/**
-	 * Asserts the the Transaction is created.
+	 * Asserts the Transaction is created.
 	 * 
 	 * @param type The type of transaction.
 	 * @return The Transaction to perform further assertions on.
@@ -83,11 +83,13 @@ public class BaseControllerTest {
 	}
 	
 	/**
-	 * Asserts the the Transaction is created.
+	 * Asserts correct number of AffectedParty entries has been created.
 	 * @param count 
 	 * 
-	 * @param type The type of transaction.
-	 * @return The Transaction to perform further assertions on.
+	 * @param direction the direction of the AffectedParty being logged.
+	 * @count the expected number of AffectedPartys
+	 * 
+	 * @return The number of AffectedPartys found for the specified direction.
 	 */
 	protected int assertAffectedParyCount(AffectedPartyDirection direction, int count) {
 		AffectedParty example = new AffectedParty();
