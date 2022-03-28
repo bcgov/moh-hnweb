@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import ca.bc.gov.hlth.hnweb.exception.ExceptionType;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedParty;
+import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.persistence.entity.ErrorLevel;
 import ca.bc.gov.hlth.hnweb.persistence.entity.EventMessage;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
@@ -56,13 +56,13 @@ public class AuditServiceTest {
 	private static MockedStatic<SecurityUtil> mockStatic;
 	
 	@BeforeAll
-    static void setUp() throws IOException {
+    static void setUp() {
         mockStatic = Mockito.mockStatic(SecurityUtil.class);
         mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "00000010", "hnweb-user", UUID.randomUUID().toString()));
     }
 	
     @AfterAll
-    static void tearDown() throws IOException {
+    static void tearDown() {
         mockStatic.close();
     }
 	
@@ -105,7 +105,7 @@ public class AuditServiceTest {
 	@Test
 	public void testCreateAffectedParty() {
 		Transaction transaction = auditService.createTransaction("0:0:0:0:0:0:0:1", TransactionType.CHECK_ELIGIBILITY);
-		AffectedParty newAffectedParty = auditService.createAffectedParty(transaction, IdentifierType.GROUP_NUMBER, "6337109");
+		AffectedParty newAffectedParty = auditService.createAffectedParty(transaction, IdentifierType.GROUP_NUMBER, "6337109", AffectedPartyDirection.OUTBOUND);
 		
 		Optional<AffectedParty> optional = affectedPartyRepository.findById(newAffectedParty.getAffectedPartyId());
 		assertTrue(optional.isPresent());
@@ -114,6 +114,7 @@ public class AuditServiceTest {
 		assertNotNull(affectedParty.getAffectedPartyId());
 		assertEquals("6337109", affectedParty.getIdentifier());
 		assertEquals(IdentifierType.GROUP_NUMBER.getValue(), affectedParty.getIdentifierType());
+		assertEquals(AffectedPartyDirection.OUTBOUND.getValue(), affectedParty.getDirection());
 		assertEquals(transaction, affectedParty.getTransaction());
 	}
 	

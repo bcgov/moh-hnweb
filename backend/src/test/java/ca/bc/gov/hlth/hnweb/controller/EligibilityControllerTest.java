@@ -31,6 +31,7 @@ import ca.bc.gov.hlth.hnweb.model.rest.eligibility.LookupPhnBeneficiary;
 import ca.bc.gov.hlth.hnweb.model.rest.eligibility.LookupPhnRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.eligibility.LookupPhnResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedParty;
+import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 import ca.bc.gov.hlth.hnweb.persistence.entity.TransactionEvent;
@@ -159,6 +160,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         
         assertTransactionCreated(TransactionType.CHECK_ELIGIBILITY);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
 	}
 	
 	@Test
@@ -190,6 +193,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
       
         assertTransactionCreated(TransactionType.CHECK_ELIGIBILITY);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
 	}
 
 	@Test
@@ -221,6 +226,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         
         assertTransactionCreated(TransactionType.CHECK_ELIGIBILITY);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
 	}
 
 	@Test
@@ -260,6 +267,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));		
         
         assertTransactionCreated(TransactionType.MSP_COVERAGE_STATUS_CHECK);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
 	}
 	
 	@Test
@@ -300,6 +309,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         
         assertTransactionCreated(TransactionType.MSP_COVERAGE_STATUS_CHECK);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
 	}
 	
 	@Test
@@ -338,6 +349,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         
         assertTransactionCreated(TransactionType.MSP_COVERAGE_STATUS_CHECK);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
 	}
 	
 	@Test
@@ -376,6 +389,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));	
         
         assertTransactionCreated(TransactionType.MSP_COVERAGE_STATUS_CHECK);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
 	}
 	
 	@Test
@@ -414,6 +429,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         
         assertTransactionCreated(TransactionType.PHN_INQUIRY);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
 	}
 	
 	@Test
@@ -442,6 +459,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         
         assertTransactionCreated(TransactionType.PHN_INQUIRY);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 0);
 	}
 	
 	@Test
@@ -470,6 +489,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         
         assertTransactionCreated(TransactionType.PHN_INQUIRY);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 0);
 	}
 	
 	@Test
@@ -510,6 +531,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         
         assertTransactionCreated(TransactionType.PHN_INQUIRY);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 2);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
 	}
 	
 	
@@ -554,6 +577,9 @@ public class EligibilityControllerTest extends BaseControllerTest {
 		// - 1 x Response AffectedParty
 
         Transaction transaction = assertTransactionCreated(TransactionType.PHN_LOOKUP);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 2);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
+        
 		assertEquals("00000010", transaction.getOrganization());
 		assertNotNull(transaction.getServer());
 		assertNotNull(transaction.getSessionId());
@@ -601,18 +627,21 @@ public class EligibilityControllerTest extends BaseControllerTest {
 		assertNotNull(contractNumber.getAffectedPartyId());
 		assertEquals("123456789", contractNumber.getIdentifier());
 		assertEquals(IdentifierType.CONTRACT_NUMBER.getValue(), contractNumber.getIdentifierType());
+		assertEquals(AffectedPartyDirection.OUTBOUND.getValue(), contractNumber.getDirection());
 		assertEquals(transaction, contractNumber.getTransaction());		
 		
 		AffectedParty groupNumber = affectedParties.get(1);
 		assertNotNull(groupNumber.getAffectedPartyId());
 		assertEquals("1234567", groupNumber.getIdentifier());
 		assertEquals(IdentifierType.GROUP_NUMBER.getValue(), groupNumber.getIdentifierType());
+		assertEquals(AffectedPartyDirection.OUTBOUND.getValue(), groupNumber.getDirection());
 		assertEquals(transaction, groupNumber.getTransaction());
 		
 		AffectedParty phn = affectedParties.get(2);
 		assertNotNull(phn.getAffectedPartyId());
 		assertEquals("9123456789", phn.getIdentifier());
 		assertEquals(IdentifierType.PHN.getValue(), phn.getIdentifierType());
+		assertEquals(AffectedPartyDirection.INBOUND.getValue(), phn.getDirection());
 		assertEquals(transaction, phn.getTransaction());
 	}
 
@@ -648,6 +677,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         assertEquals("M", beneficiary.getGender());
         
         assertTransactionCreated(TransactionType.PHN_LOOKUP);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 2);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 50);
 	}
 	
 	@Test
@@ -673,6 +704,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         assertEquals(0, beneficiaries.size());
         
         assertTransactionCreated(TransactionType.PHN_LOOKUP);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 2);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 0);
 	}
 	
 	@Test
@@ -698,6 +731,8 @@ public class EligibilityControllerTest extends BaseControllerTest {
         assertEquals(0, beneficiaries.size());
         
         assertTransactionCreated(TransactionType.PHN_LOOKUP);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 2);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 0);
 	}
 
     /**

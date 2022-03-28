@@ -29,6 +29,7 @@ import ca.bc.gov.hlth.hnweb.model.rest.eligibility.LookupPhnRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.eligibility.LookupPhnResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
+import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
@@ -60,7 +61,7 @@ public class EligibilityController extends BaseController {
 	@PostMapping("/check-eligibility")
 	public ResponseEntity<CheckEligibilityResponse> checkEligibility(@Valid @RequestBody CheckEligibilityRequest checkEligibilityRequest, HttpServletRequest request) {
 		Transaction transaction = transactionStart(request, TransactionType.CHECK_ELIGIBILITY);
-		addAffectedParty(transaction, IdentifierType.PHN, checkEligibilityRequest.getPhn());
+		addAffectedParty(transaction, IdentifierType.PHN, checkEligibilityRequest.getPhn(), AffectedPartyDirection.OUTBOUND);
 
 		try {
 			R15Converter converter = new R15Converter(mshDefaults);
@@ -73,7 +74,7 @@ public class EligibilityController extends BaseController {
 			logger.info("checkEligibility response: {} ", checkEligibilityResponse);
 			
 			transactionComplete(transaction);
-			addAffectedParty(transaction, IdentifierType.PHN, checkEligibilityResponse.getPhn());
+			addAffectedParty(transaction, IdentifierType.PHN, checkEligibilityResponse.getPhn(), AffectedPartyDirection.INBOUND);
 
 			return response;	
 		} catch (Exception e) {
@@ -92,7 +93,7 @@ public class EligibilityController extends BaseController {
 	@PostMapping("/inquire-phn")
 	public ResponseEntity<InquirePhnResponse> inquirePhn(@Valid @RequestBody InquirePhnRequest inquirePhnRequest, HttpServletRequest request) {
 		Transaction transaction = transactionStart(request, TransactionType.PHN_INQUIRY);
-		inquirePhnRequest.getPhns().forEach(phn -> addAffectedParty(transaction, IdentifierType.PHN, phn));		
+		inquirePhnRequest.getPhns().forEach(phn -> addAffectedParty(transaction, IdentifierType.PHN, phn, AffectedPartyDirection.OUTBOUND));		
 
 		try {
 			RPBSPPE0Converter converter = new RPBSPPE0Converter();
@@ -106,7 +107,7 @@ public class EligibilityController extends BaseController {
 			logger.info("inquirePHN response: {} ", inquirePhnResponse);
 
 			transactionComplete(transaction);
-			inquirePhnResponse.getBeneficiaries().forEach(beneficiary -> addAffectedParty(transaction, IdentifierType.PHN, beneficiary.getPhn()));
+			inquirePhnResponse.getBeneficiaries().forEach(beneficiary -> addAffectedParty(transaction, IdentifierType.PHN, beneficiary.getPhn(), AffectedPartyDirection.INBOUND));
 
 			return response;	
 		} catch (Exception e) {
@@ -125,8 +126,8 @@ public class EligibilityController extends BaseController {
 	@PostMapping("/lookup-phn")
 	public ResponseEntity<LookupPhnResponse> lookupPhn(@Valid @RequestBody LookupPhnRequest lookupPhnRequest, HttpServletRequest request) {
 		Transaction transaction = transactionStart(request, TransactionType.PHN_LOOKUP);
-		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, lookupPhnRequest.getGroupNumber());
-		addAffectedParty(transaction, IdentifierType.CONTRACT_NUMBER, lookupPhnRequest.getContractNumber());
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, lookupPhnRequest.getGroupNumber(), AffectedPartyDirection.OUTBOUND);
+		addAffectedParty(transaction, IdentifierType.CONTRACT_NUMBER, lookupPhnRequest.getContractNumber(), AffectedPartyDirection.OUTBOUND);
 
 		try {
 			RPBSPPL0Converter converter = new RPBSPPL0Converter();
@@ -140,7 +141,7 @@ public class EligibilityController extends BaseController {
 			logger.info("lookupPhn response: {} ", lookupPhnResponse);
 			
 			transactionComplete(transaction);
-			lookupPhnResponse.getBeneficiaries().forEach(beneficiary -> addAffectedParty(transaction, IdentifierType.PHN, beneficiary.getPhn()));
+			lookupPhnResponse.getBeneficiaries().forEach(beneficiary -> addAffectedParty(transaction, IdentifierType.PHN, beneficiary.getPhn(), AffectedPartyDirection.INBOUND));
 			
 			return response;	
 		} catch (Exception e) {
@@ -159,7 +160,7 @@ public class EligibilityController extends BaseController {
 	@PostMapping("/check-msp-coverage-status")
 	public ResponseEntity<CheckMspCoverageStatusResponse> checkMspCoverageStatus(@Valid @RequestBody CheckMspCoverageStatusRequest checkMspCoverageStatusRequest, HttpServletRequest request) {
 		Transaction transaction = transactionStart(request, TransactionType.MSP_COVERAGE_STATUS_CHECK);
-		addAffectedParty(transaction, IdentifierType.PHN, checkMspCoverageStatusRequest.getPhn());
+		addAffectedParty(transaction, IdentifierType.PHN, checkMspCoverageStatusRequest.getPhn(), AffectedPartyDirection.OUTBOUND);
 
 		try {
 			E45Converter converter = new E45Converter(mshDefaults);
@@ -172,7 +173,7 @@ public class EligibilityController extends BaseController {
 			logger.info("checkEligibility response: {} ", coverageResponse);
 			
 			transactionComplete(transaction);
-			addAffectedParty(transaction, IdentifierType.PHN, coverageResponse.getPhn());
+			addAffectedParty(transaction, IdentifierType.PHN, coverageResponse.getPhn(), AffectedPartyDirection.INBOUND);
 			
 			return response;	
 		} catch (Exception e) {

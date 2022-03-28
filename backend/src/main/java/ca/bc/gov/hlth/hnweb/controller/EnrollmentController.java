@@ -28,6 +28,7 @@ import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
+import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
@@ -87,7 +88,7 @@ public class EnrollmentController extends BaseController {
 		logger.info("Demographic request: {} ", personDetailsRequest.getPhn());
 
 		Transaction transaction = transactionStart(request, TransactionType.GET_PERSON_DETAILS);
-		addAffectedParty(transaction, IdentifierType.PHN, personDetailsRequest.getPhn());
+		addAffectedParty(transaction, IdentifierType.PHN, personDetailsRequest.getPhn(), AffectedPartyDirection.OUTBOUND);
 
 		try {
 			GetDemographicsConverter converter = new GetDemographicsConverter();
@@ -133,14 +134,14 @@ public class EnrollmentController extends BaseController {
 		Transaction transaction = transactionStart(request, TransactionType.ENROLL_SUBSCRIBER);		
 		//Some requests do not contain the PHN e.g R50 z05 as it is Enroll subscriber without PHN
 		if (StringUtils.isNotBlank(enrollSubscriberRequest.getPhn())) {
-			addAffectedParty(transaction, IdentifierType.PHN, enrollSubscriberRequest.getPhn());
+			addAffectedParty(transaction, IdentifierType.PHN, enrollSubscriberRequest.getPhn(), AffectedPartyDirection.OUTBOUND);
 		}
-		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, enrollSubscriberRequest.getGroupNumber());
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, enrollSubscriberRequest.getGroupNumber(), AffectedPartyDirection.OUTBOUND);
 		if (StringUtils.isNotBlank(enrollSubscriberRequest.getGroupMemberNumber())) {
-			addAffectedParty(transaction, IdentifierType.GROUP_MEMBER_NUMBER, enrollSubscriberRequest.getGroupMemberNumber());
+			addAffectedParty(transaction, IdentifierType.GROUP_MEMBER_NUMBER, enrollSubscriberRequest.getGroupMemberNumber(), AffectedPartyDirection.OUTBOUND);
 		}
 		if (StringUtils.isNotBlank(enrollSubscriberRequest.getDepartmentNumber())) {
-			addAffectedParty(transaction, IdentifierType.DEPARTMENT_NUMBER, enrollSubscriberRequest.getDepartmentNumber());
+			addAffectedParty(transaction, IdentifierType.DEPARTMENT_NUMBER, enrollSubscriberRequest.getDepartmentNumber(), AffectedPartyDirection.OUTBOUND);
 		}
 		return transaction;
 	}
@@ -150,21 +151,21 @@ public class EnrollmentController extends BaseController {
 		transactionComplete(transaction);
 		//Some responses do not contain the PHN e.g. in the case of R50 z06 it is just an ACK
 		if (StringUtils.isNotBlank(enrollSubscriberResponse.getPhn())) {
-			addAffectedParty(transaction, IdentifierType.PHN, enrollSubscriberResponse.getPhn());
+			addAffectedParty(transaction, IdentifierType.PHN, enrollSubscriberResponse.getPhn(), AffectedPartyDirection.INBOUND);
 		}
 	}
 
 	private void auditGetPersonSearchComplete(Transaction transaction, GetPersonDetailsResponse personDetailsResponse) {
 		transactionComplete(transaction);
 		if (StringUtils.isNotBlank(personDetailsResponse.getPhn())) {
-			addAffectedParty(transaction, IdentifierType.PHN, personDetailsResponse.getPhn());
+			addAffectedParty(transaction, IdentifierType.PHN, personDetailsResponse.getPhn(), AffectedPartyDirection.INBOUND);
 		}
 	}
 
 	private void auditGetNameSearchComplete(Transaction transaction, NameSearchResponse nameSearchResponse) {
 		transactionComplete(transaction);
 		if (nameSearchResponse.getCandidates() != null) {
-			nameSearchResponse.getCandidates().forEach(candidate -> addAffectedParty(transaction, IdentifierType.PHN, candidate.getPhn()));
+			nameSearchResponse.getCandidates().forEach(candidate -> addAffectedParty(transaction, IdentifierType.PHN, candidate.getPhn(), AffectedPartyDirection.INBOUND));
 		}
 	}
 
