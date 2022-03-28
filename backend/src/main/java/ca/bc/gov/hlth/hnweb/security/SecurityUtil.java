@@ -7,9 +7,11 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Utility class for working with authentication, tokens.
  */
+@Component
 public class SecurityUtil {
 	private static final Logger logger = LoggerFactory.getLogger(SecurityUtil.class);
 
@@ -27,10 +30,10 @@ public class SecurityUtil {
 	
 	private static final String ORGANIZATION_ID = "id";
 	
-	private static final String KEYCLOAK_CLIENT = "MSPDIRECT-SERVICE";
-	
 	private static final String USER_ROLES = "roles";
 
+    private static String KEYCLOAK_CLIENT;
+    
 	public static UserInfo loadUserInfo() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Jwt jwt = (Jwt)auth.getPrincipal();
@@ -92,4 +95,7 @@ public class SecurityUtil {
         return permissions;
 	}
 
-}
+    @Value("${spring.security.oauth2.resourceserver.jwt.audience}")
+    public void setKeycloakClientStatic(String keycloakClient){
+        SecurityUtil.KEYCLOAK_CLIENT = keycloakClient;
+    }}
