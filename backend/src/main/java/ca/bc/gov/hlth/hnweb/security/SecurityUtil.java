@@ -34,7 +34,12 @@ public class SecurityUtil {
 
     private static String KEYCLOAK_CLIENT;
     
-	public static UserInfo loadUserInfo() {
+    @Value("${spring.security.oauth2.resourceserver.jwt.audience}")
+    private void setKeycloakClientStatic(String keycloakClient){
+        SecurityUtil.KEYCLOAK_CLIENT = keycloakClient;
+    }
+
+    public static UserInfo loadUserInfo() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Jwt jwt = (Jwt)auth.getPrincipal();
 		
@@ -95,7 +100,4 @@ public class SecurityUtil {
         return permissions;
 	}
 
-    @Value("${spring.security.oauth2.resourceserver.jwt.audience}")
-    public void setKeycloakClientStatic(String keycloakClient){
-        SecurityUtil.KEYCLOAK_CLIENT = keycloakClient;
-    }}
+}
