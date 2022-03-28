@@ -40,6 +40,13 @@ public class AffectedParty {
 	private String identifierType;
 
 	/**
+	 * Specifies the direction of the the identifier in the transaction. (Inbound, Outbound)
+	 */
+	@Basic
+	@Column(name = "direction", nullable = false)
+	private String direction;
+
+	/**
 	 * Foreign key to the transaction the party is the subject of.
 	 */
 	@ManyToOne
@@ -73,6 +80,14 @@ public class AffectedParty {
 		this.identifierType = identifierType;
 	}
 
+	public String getDirection() {
+		return direction;
+	}
+
+	public void setDirection(String direction) {
+		this.direction = direction;
+	}
+
 	public Transaction getTransaction() {
 		return transaction;
 	}
@@ -86,6 +101,7 @@ public class AffectedParty {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (int) (affectedPartyId ^ (affectedPartyId >>> 32));
+		result = prime * result + ((direction == null) ? 0 : direction.hashCode());
 		result = prime * result + ((identifier == null) ? 0 : identifier.hashCode());
 		result = prime * result + ((identifierType == null) ? 0 : identifierType.hashCode());
 		result = prime * result + ((transaction == null) ? 0 : transaction.hashCode());
@@ -102,6 +118,11 @@ public class AffectedParty {
 			return false;
 		AffectedParty other = (AffectedParty) obj;
 		if (affectedPartyId != other.affectedPartyId)
+			return false;
+		if (direction == null) {
+			if (other.direction != null)
+				return false;
+		} else if (!direction.equals(other.direction))
 			return false;
 		if (identifier == null) {
 			if (other.identifier != null)
@@ -123,8 +144,8 @@ public class AffectedParty {
 
 	@Override
 	public String toString() {
-		return "AffectedParty [affectedPartyId=" + affectedPartyId + ", identifier=" + identifier + ", identifierType=" + identifierType
-				+ ", transaction=" + transaction + "]";
+		return "AffectedParty [affectedPartyId=" + affectedPartyId + ", identifier=" + identifier + ", identifierType="
+				+ identifierType + ", direction=" + direction + ", transaction=" + transaction + "]";
 	}
 
 }

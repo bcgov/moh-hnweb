@@ -23,6 +23,7 @@ import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.ContractInquiryRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.ContractInquiryResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.GetContractPeriodsRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.GetContractPeriodsResponse;
+import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
@@ -108,7 +109,7 @@ public class MspContractsController extends BaseController {
 
 	private Transaction auditGetContractPeriodsStart(GetContractPeriodsRequest getContractPeriodsRequest, HttpServletRequest request) {
 		Transaction transaction = transactionStart(request, TransactionType.GET_CONTRACT_PERIODS);
-		addAffectedParty(transaction, IdentifierType.PHN, getContractPeriodsRequest.getPhn());
+		addAffectedParty(transaction, IdentifierType.PHN, getContractPeriodsRequest.getPhn(), AffectedPartyDirection.OUTBOUND);
 		return transaction;
 	}
 
@@ -117,20 +118,20 @@ public class MspContractsController extends BaseController {
 		List<String> auditedGroupNumbers = new ArrayList<>();
 
 		transactionComplete(transaction);		
-		addAffectedParty(transaction, IdentifierType.PHN, getContractPeriodsResponse.getPhn());
+		addAffectedParty(transaction, IdentifierType.PHN, getContractPeriodsResponse.getPhn(), AffectedPartyDirection.INBOUND);
 		auditedPhns.add(getContractPeriodsResponse.getPhn());
 		
 		getContractPeriodsResponse.getBeneficiaryContractPeriods().forEach(bcp -> {
 			if (!auditedPhns.contains(bcp.getPhn())) {
-				addAffectedParty(transaction, IdentifierType.PHN, bcp.getPhn());				
+				addAffectedParty(transaction, IdentifierType.PHN, bcp.getPhn(), AffectedPartyDirection.INBOUND);				
 				auditedPhns.add(bcp.getPhn());
 			}
 			if(!auditedGroupNumbers.contains(bcp.getGroupNumber())) {
-				addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, bcp.getGroupNumber());
+				addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, bcp.getGroupNumber(), AffectedPartyDirection.INBOUND);
 				auditedGroupNumbers.add(bcp.getGroupNumber());
 			}
 			if(!auditedPhns.contains(bcp.getContractHolder())) {
-				addAffectedParty(transaction, IdentifierType.PHN, bcp.getContractHolder());
+				addAffectedParty(transaction, IdentifierType.PHN, bcp.getContractHolder(), AffectedPartyDirection.INBOUND);
 				auditedPhns.add(bcp.getContractHolder());
 			}
 		});
@@ -138,8 +139,8 @@ public class MspContractsController extends BaseController {
 	
 	private Transaction auditContractInquiryStart(ContractInquiryRequest contractInquiryRequest, HttpServletRequest request) {
 		Transaction transaction = transactionStart(request, TransactionType.CONTRACT_INQUIRY);
-		addAffectedParty(transaction, IdentifierType.PHN, contractInquiryRequest.getPhn());
-		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, contractInquiryRequest.getGroupNumber());
+		addAffectedParty(transaction, IdentifierType.PHN, contractInquiryRequest.getPhn(), AffectedPartyDirection.OUTBOUND);
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, contractInquiryRequest.getGroupNumber(), AffectedPartyDirection.OUTBOUND);
 		return transaction;
 	}
 
@@ -147,12 +148,12 @@ public class MspContractsController extends BaseController {
 		List<String> auditedPhns = new ArrayList<>();
 
 		transactionComplete(transaction);		
-		addAffectedParty(transaction, IdentifierType.PHN, contractInquiryResponse.getPhn());
+		addAffectedParty(transaction, IdentifierType.PHN, contractInquiryResponse.getPhn(), AffectedPartyDirection.INBOUND);
 		auditedPhns.add(contractInquiryResponse.getPhn());
 		
 		contractInquiryResponse.getContractInquiryBeneficiaries().forEach(cib -> {
 			if (!auditedPhns.contains(cib.getPhn())) {
-				addAffectedParty(transaction, IdentifierType.PHN, cib.getPhn());				
+				addAffectedParty(transaction, IdentifierType.PHN, cib.getPhn(), AffectedPartyDirection.INBOUND);				
 				auditedPhns.add(cib.getPhn());
 			}			
 		});

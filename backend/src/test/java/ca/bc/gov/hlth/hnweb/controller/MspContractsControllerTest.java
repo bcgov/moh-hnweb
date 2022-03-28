@@ -22,6 +22,7 @@ import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.ContractInquiryRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.ContractInquiryResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.GetContractPeriodsRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.GetContractPeriodsResponse;
+import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
 import okhttp3.mockwebserver.MockResponse;
@@ -141,6 +142,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         
         assertTransactionCreated(TransactionType.GET_CONTRACT_PERIODS);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 4);
 	}
 	
 	@Test
@@ -184,6 +187,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));        
         
         assertTransactionCreated(TransactionType.GET_CONTRACT_PERIODS);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 22);
 	}
 	
 	@Test
@@ -214,6 +219,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         
         assertTransactionCreated(TransactionType.GET_CONTRACT_PERIODS);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
 	}
 	
 	@Test
@@ -271,6 +278,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         
         assertTransactionCreated(TransactionType.CONTRACT_INQUIRY);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 2);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
 	}
 	
 	@Test
@@ -301,6 +310,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertTransactionCreated(TransactionType.CONTRACT_INQUIRY);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 2);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
 	}
 	
 	@Test
@@ -330,6 +341,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE)); 
         assertTransactionCreated(TransactionType.CONTRACT_INQUIRY);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 2);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
 	}
 	
 	@Test
@@ -373,6 +386,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE)); 
         assertTransactionCreated(TransactionType.CONTRACT_INQUIRY);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 2);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 20);
 	}
 	
     /**

@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClientException;
 import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
+import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.persistence.entity.ErrorLevel;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
@@ -44,8 +45,8 @@ public abstract class BaseController {
 	 * @param type The type of identifier. E.g. PHN
 	 * @param identifier The value of the identifier
 	 */
-	protected void addAffectedParty(Transaction transaction, IdentifierType type, String identifier) {
-		auditService.createAffectedParty(transaction, type, identifier);
+	protected void addAffectedParty(Transaction transaction, IdentifierType type, String identifier, AffectedPartyDirection direction) {
+		auditService.createAffectedParty(transaction, type, identifier, direction);
 	}
 	
 	/**
