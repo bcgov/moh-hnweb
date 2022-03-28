@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -115,7 +114,7 @@ public class AuditServiceTest {
 		assertNotNull(affectedParty.getAffectedPartyId());
 		assertEquals("6337109", affectedParty.getIdentifier());
 		assertEquals(IdentifierType.GROUP_NUMBER.getValue(), affectedParty.getIdentifierType());
-		assertEquals(AffectedPartyDirection.OUTBOUND, affectedParty.getDirection());
+		assertEquals(AffectedPartyDirection.OUTBOUND.getValue(), affectedParty.getDirection());
 		assertEquals(transaction, affectedParty.getTransaction());
 	}
 	
