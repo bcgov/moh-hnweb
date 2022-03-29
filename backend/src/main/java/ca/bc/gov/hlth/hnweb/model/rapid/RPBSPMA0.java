@@ -17,11 +17,7 @@ public class RPBSPMA0 {
 		rpbsHeader = new RPBSHeader(headerText);
 
 		ma0 = new MA0(bodyText);
-	}
-	
-	public String serialize() {
-		return rpbsHeader.serialize() + ma0.serialize();
-	}
+	}	
 
 	public RPBSHeader getRpbsHeader() {
 		return rpbsHeader;
@@ -38,6 +34,9 @@ public class RPBSPMA0 {
 	public void setMa0(MA0 ma0) {
 		this.ma0 = ma0;
 	}
-
+	
+	public String serialize() {
+		return rpbsHeader.serialize() + ma0.serialize();
+	}
 
 }

@@ -1,5 +1,5 @@
 <template>
-  <div id="addGroupMember" v-if="addMode">
+  <div id="updateContractAddress" v-if="updateMode">
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
@@ -68,9 +68,9 @@
     </form>
   </div>
   <br />
-  <div id="confirmation" v-if="addOk">
+  <div id="confirmation" v-if="updateOk">
     <p>PHN: {{ result?.phn }}</p>
-    <AppButton @click="resetForm" mode="primary" type="button">Add Another Group Member</AppButton>
+    <AppButton @click="resetForm" mode="primary" type="button">Update Another Contract Address</AppButton>
   </div>
 </template>
 <script>
@@ -90,8 +90,8 @@ export default {
   data() {
     return {
       submitting: false,
-      addOk: false,
-      addMode: true,
+      updateOk: false,
+      updateMode: true,
       //Update Contract Address Fields
       phn: '',
       groupNumber: '',
@@ -120,8 +120,8 @@ export default {
   methods: {
     async submitForm() {
       this.submitting = true
-      this.addOk = false
-      this.addMode = true
+      this.updateOk = false
+      this.updateMode = true
       this.$store.commit('alert/dismissAlert')
       try {
         const isValid = await this.v$.$validate()
@@ -157,8 +157,8 @@ export default {
         }
 
         if (this.result?.status === 'success') {
-          this.addMode = false
-          this.addOk = true
+          this.updateMode = false
+          this.updateOk = true
           this.$store.commit('alert/setSuccessAlert', this.result.message)
           return
         }
@@ -184,7 +184,7 @@ export default {
       this.result = null
       this.v$.$reset()
       this.$store.commit('alert/dismissAlert')
-      ;(this.submitting = false), (this.addOk = false), (this.addMode = true)
+      ;(this.submitting = false), (this.updateOk = false), (this.updateMode = true)
     },
   },
 
