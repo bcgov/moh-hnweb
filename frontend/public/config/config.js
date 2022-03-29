@@ -7,5 +7,6 @@ const config = (() => {
     // SITEMINDER_LOGOUT: '',
     // SERVICE_URL: '',
     // KEYCLOAK_CLIENT_ID:,
+    // USER_TRANSFER_URL: '',
   }
 })()

@@ -2,7 +2,10 @@
   <nav role="navigation">
     <div class="container">
       <ul>
-        <li id="home-link" :class="tabClass($route, 'Home')">
+        <li id="welcome-link" :class="menuTabClass($route, '/welcome')">
+          <router-link @click="resetAlert" :to="{ name: 'Login' }">Welcome</router-link>
+        </li>
+        <li id="home-link" :class="tabClass($route, 'Home')" v-if="isAuthenticated">
           <router-link @click="resetAlert" :to="{ name: 'Home' }">Home</router-link>
         </li>
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
@@ -92,6 +95,9 @@ export default {
     },
     hasMSPContractsPermission() {
       return this.hasPermission('GetContractPeriods') || this.hasPermission('ContractInquiry')
+    },
+    isAuthenticated() {
+      return true
     },
   },
 }

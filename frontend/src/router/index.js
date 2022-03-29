@@ -1,35 +1,66 @@
+import { nextTick } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
-import AddDependent from '../views/groupmember/AddDependent.vue'
-import AddGroupMember from '../views/groupmember/AddGroupMember.vue'
-import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
-import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
-import CancelDependent from '../views/groupmember/CancelDependent.vue'
-import CancelGroupMember from '../views/groupmember/CancelGroupMember.vue'
-import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
-import ContractInquiry from '../views/mspcontracts/ContractInquiry.vue'
-import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
-import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
-import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
-import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
-import GetContractPeriods from '../views/mspcontracts/GetContractPeriods.vue'
-import GetGroupMembersContractAddress from '../views/mspcontracts/GetGroupMembersContractAddress.vue'
-import GroupMemberHome from '../views/groupmember/GroupMemberHome.vue'
 import Help from './../views/Help.vue'
 import Home from './../views/Home.vue'
-import MspContractsHome from '../views/mspcontracts/MspContractsHome.vue'
+import Welcome from './../views/Welcome.vue'
+import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
+import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
+import store from '../store'
 import NotFound from '../views/NotFound.vue'
+import Unauthorized from '../views/Unauthorized.vue'
+import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
+import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
+import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
+import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
+import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
 import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
 import PhnLookup from '../views/eligibility/PhnLookup.vue'
-import Unauthorized from '../views/Unauthorized.vue'
+import AddDependent from '../views/groupmember/AddDependent.vue'
+import AddGroupMember from '../views/groupmember/AddGroupMember.vue'
+import CancelDependent from '../views/groupmember/CancelDependent.vue'
+import CancelGroupMember from '../views/groupmember/CancelGroupMember.vue'
+import GroupMemberHome from '../views/groupmember/GroupMemberHome.vue'
 import UpdateNumberAndDept from '../views/groupmember/UpdateNumberAndDept.vue'
-import store from '../store'
+import ContractInquiry from '../views/mspcontracts/ContractInquiry.vue'
+import GetContractPeriods from '../views/mspcontracts/GetContractPeriods.vue'
+import GetGroupMembersContractAddress from '../views/mspcontracts/GetGroupMembersContractAddress.vue'
+import MspContractsHome from '../views/mspcontracts/MspContractsHome.vue'
+import CredentialsInfo from '../views/welcome/CredentialsInfo.vue'
+import Login from '../views/welcome/Login.vue'
 
 const routes = [
   {
     path: '/',
+    name: 'Landing',
+    redirect: {
+      name: 'Login',
+    },
+  },
+  {
+    path: '/home',
     name: 'Home',
     component: Home,
+    meta: {
+      permission: 'AddPermitHolderWOPHN',
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/welcome/credentialsInfo',
+    name: 'CredentialsInfo',
+    component: CredentialsInfo,
+    meta: {
+      requiresAuth: false,
+    },
+  },
+  {
+    path: '/welcome/login',
+    name: 'Login',
+    component: Login,
+    meta: {
+      requiresAuth: false,
+    },
   },
   {
     path: '/coverage/maintenance',
@@ -50,6 +81,7 @@ const routes = [
         component: AddVisaResidentWithoutPHN,
         meta: {
           permission: 'AddPermitHolderWOPHN',
+          requiresAuth: true,
         },
       },
       {
@@ -58,6 +90,7 @@ const routes = [
         component: AddVisaResidentWithPHN,
         meta: {
           permission: 'AddPermitHolderWithPHN',
+          requiresAuth: true,
         },
         beforeEnter: (to, _, next) => {
           checkPageAction(to, next)
@@ -79,6 +112,7 @@ const routes = [
         component: CheckEligibility,
         meta: {
           permission: 'CheckEligibility',
+          requiresAuth: true,
         },
       },
       {
@@ -87,6 +121,7 @@ const routes = [
         component: PhnInquiry,
         meta: {
           permission: 'PHNInquiry',
+          requiresAuth: true,
         },
       },
       {
@@ -95,6 +130,7 @@ const routes = [
         component: PhnLookup,
         meta: {
           permission: 'PHNLookup',
+          requiresAuth: true,
         },
       },
       {
@@ -103,6 +139,7 @@ const routes = [
         component: CoverageStatusCheck,
         meta: {
           permission: 'MSPCoverageCheck',
+          requiresAuth: true,
         },
       },
     ],
@@ -121,6 +158,7 @@ const routes = [
         component: AddGroupMember,
         meta: {
           permission: 'AddGroupMember',
+          requiresAuth: true,
         },
       },
       {
@@ -129,6 +167,7 @@ const routes = [
         component: AddDependent,
         meta: {
           permission: 'AddDependent',
+          requiresAuth: true,
         },
       },
       {
@@ -137,6 +176,7 @@ const routes = [
         component: UpdateNumberAndDept,
         meta: {
           permission: 'UpdateNumberAndDept',
+          requiresAuth: true,
         },
       },
       {
@@ -145,6 +185,7 @@ const routes = [
         component: CancelGroupMember,
         meta: {
           permission: 'CancelGroupMember',
+          requiresAuth: true,
         },
       },
       {
@@ -153,6 +194,7 @@ const routes = [
         component: CancelDependent,
         meta: {
           permission: 'CancelDependent',
+          requiresAuth: true,
         },
       },
     ],
@@ -171,6 +213,7 @@ const routes = [
         component: GetContractPeriods,
         meta: {
           permission: 'GetContractPeriods',
+          requiresAuth: true,
         },
       },
       {
@@ -179,6 +222,7 @@ const routes = [
         component: ContractInquiry,
         meta: {
           permission: 'ContractInquiry',
+          requiresAuth: true,
         },
       },
       {
@@ -187,12 +231,8 @@ const routes = [
         component: GetGroupMembersContractAddress,
         meta: {
           permission: 'GetContractAddress',
+          requiresAuth: true,
         },
-      },
-      {
-        path: 'getGroupMembersContractAddress',
-        name: 'GetGroupMembersContractAddress',
-        component: GetGroupMembersContractAddress,
       },
     ],
   },
@@ -200,16 +240,25 @@ const routes = [
     path: '/help',
     name: 'Help',
     component: Help,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: '/:notFound(.*)',
     name: 'NotFound',
     component: NotFound,
+    meta: {
+      requiresAuth: false,
+    },
   },
   {
     path: '/unauthorized',
     name: 'Unauthorized',
     component: Unauthorized,
+    meta: {
+      requiresAuth: true,
+    },
   },
 ]
 
@@ -234,6 +283,15 @@ const router = createRouter({
 })
 
 router.beforeEach((to, _, next) => {
+  // Always navigate to pages that don't require auth
+  if (!to.meta.requiresAuth) {
+    console.log('auth not required')
+    next()
+    return
+  } else {
+    console.log('auth required')
+  }
+
   // Validate that the user has permissions
   const hasAnyPermission = store.getters['auth/hasAnyPermission']
   if (!hasAnyPermission && to.name !== 'Unauthorized') {
