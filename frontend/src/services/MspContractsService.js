@@ -7,4 +7,7 @@ export default {
   inquireContract(request) {
     return apiRequest().then((axiosInstance) => axiosInstance.post(resources.mspContracts.inquireContract, request))
   },
+  updateContractAddress(request) {
+    return apiRequest().then((axiosInstance) => axiosInstance.post(resources.mspContracts.updateContractAddress, request))
+  },
 }

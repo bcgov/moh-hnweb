@@ -77,7 +77,7 @@
 import useVuelidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 import { validateGroupNumber, validatePHN, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE } from '../../util/validators'
-import GroupMemberService from '../../services/GroupMemberService'
+import MspContractsService from '../../services/MspContractsService'
 
 export default {
   name: 'UpdateContractAddress',
@@ -131,7 +131,7 @@ export default {
           return
         }
         this.result = (
-          await GroupMemberService.addGroupMember({
+          await MspContractsService.updateContractAddress({
             phn: this.phn,
             groupNumber: this.groupNumber,
             homeAddress: {

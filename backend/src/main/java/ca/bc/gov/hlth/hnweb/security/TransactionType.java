@@ -19,6 +19,7 @@ public enum TransactionType {
 	GET_CONTRACT_PERIODS("GetContractPeriods"),
 	CONTRACT_INQUIRY("ContractInquiry"),	//R40
 	GET_CONTRACT_ADDRESS("GetContractAddress"), //R37
+	UPDATE_CONTRACT_ADDRESS("UpdateContractAddress"), //R38
 	
 	UNKNOWN("Unknown");
 
