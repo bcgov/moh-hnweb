@@ -124,7 +124,7 @@ public class MspContractsController extends BaseController {
 	 * @return The result of the operation
 	 */
 	@PostMapping("/update-contract-address")
-	public ResponseEntity<UpdateContractAddressResponse> updateCntractAddress(
+	public ResponseEntity<UpdateContractAddressResponse> updateContractAddress(
 			@Valid @RequestBody UpdateContractAddressRequest updateContractAddressRequest, HttpServletRequest request) {
 
 		Transaction transaction = auditUpdateContractAddressStart(updateContractAddressRequest, request);
