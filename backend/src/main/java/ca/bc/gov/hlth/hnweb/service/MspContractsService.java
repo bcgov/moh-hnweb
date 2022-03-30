@@ -21,7 +21,7 @@ import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 
 /**
  * Service for:
- *  Get Contract Periods. (R32), ContractInquiry(R40)
+ *  Get Contract Periods. (R32), ContractInquiry(R40), Update Group Memeber's Contract Address(R38)
  */
 @Service
 public class MspContractsService extends BaseService {
@@ -93,6 +93,12 @@ public class MspContractsService extends BaseService {
 		return rpbspci0Response;
 	}
 	
+	/**
+	 * Update Group Member's Contract Address for a Personal Health Number(PHN) of a group based on the R38/RPBSPMA0 request
+	 * @param rpbspma0
+	 * @return
+	 * @throws HNWebException
+	 */
 	public RPBSPMA0 updateContractAddress(RPBSPMA0 rpbspma0) throws HNWebException {
 		String rpbspma0Str = rpbspma0.serialize();
 

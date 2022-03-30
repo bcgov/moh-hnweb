@@ -18,17 +18,17 @@
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput :e-model="v$.homeAddress.addressLine2" id="addressLine2" label="Line 2 (Optional)" type="text" v-model="homeAddress.addressLine2" />
+          <AppInput id="addressLine2" label="Line 2 (Optional)" type="text" v-model="homeAddress.addressLine2" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput :e-model="v$.homeAddress.addressLine3" id="addressLine3" label="Line 3 (Optional)" type="text" v-model="homeAddress.addressLine3" />
+          <AppInput id="addressLine3" label="Line 3 (Optional)" type="text" v-model="homeAddress.addressLine3" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput :e-model="v$.homeAddress.addressLine4" id="addressLine4" label="Line 4 (Optional)" type="text" v-model="homeAddress.addressLine4" />
+          <AppInput id="addressLine4" label="Line 4 (Optional)" type="text" v-model="homeAddress.addressLine4" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -38,27 +38,27 @@
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput :e-model="v$.mailingAddress.addressLine1" id="mailingAddress1" label="Mailing Address (if different from home address)" v-model="mailingAddress.addressLine1" />
+          <AppInput id="mailingAddress1" label="Mailing Address (if different from home address)" v-model="mailingAddress.addressLine1" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput :e-model="v$.mailingAddress.addressLine2" id="mailingAddress2" label="Line 2 (Optional)" v-model="mailingAddress.addressLine2" />
+          <AppInput id="mailingAddress2" label="Line 2 (Optional)" v-model="mailingAddress.addressLine2" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput :e-model="v$.mailingAddress.addressLine3" id="mailingAddress3" label="Line 3 (Optional)" v-model="mailingAddress.addressLine3" />
+          <AppInput id="mailingAddress3" label="Line 3 (Optional)" v-model="mailingAddress.addressLine3" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput :e-model="v$.mailingAddress.addressLine4" id="mailingAddress4" label="Line 4 (Optional)" v-model="mailingAddress.addressLine4" />
+          <AppInput id="mailingAddress4" label="Line 4 (Optional)" v-model="mailingAddress.addressLine4" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.mailingAddress.postalCode" id="mailingPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddress.postalCode" />
+          <AppInput id="mailingPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddress.postalCode" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -171,20 +171,14 @@ export default {
     resetForm() {
       this.groupNumber = ''
       this.phn = ''
-      this.homeAddress.addressLine1 = ''
-      this.homeAddress.addressLine2 = ''
-      this.homeAddress.addressLine3 = ''
-      this.homeAddress.addressLine4 = ''
-      this.homeAddress.postalCode = ''
-      this.mailingAddress.addressLine1 = ''
-      this.mailingAddress.addressLine2 = ''
-      this.mailingAddress.addressLine3 = ''
-      this.mailingAddress.addressLine4 = ''
-      this.mailingAddress.postalCode = ''
+      this.homeAddress = {}
+      this.mailingAddress = {}
       this.result = null
       this.v$.$reset()
       this.$store.commit('alert/dismissAlert')
-      ;(this.submitting = false), (this.updateOk = false), (this.updateMode = true)
+      this.submitting = false
+      this.updateOk = false
+      this.updateMode = true
     },
   },
 
@@ -200,17 +194,7 @@ export default {
       },
       homeAddress: {
         addressLine1: { required },
-        addressLine2: {},
-        addressLine3: {},
-        addressLine4: {},
         postalCode: { required },
-      },
-      mailingAddress: {
-        addressLine1: {},
-        addressLine2: {},
-        addressLine3: {},
-        addressLine4: {},
-        postalCode: {},
       },
     }
   },

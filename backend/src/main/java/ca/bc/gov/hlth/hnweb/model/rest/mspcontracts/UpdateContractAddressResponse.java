@@ -2,7 +2,7 @@ package ca.bc.gov.hlth.hnweb.model.rest.mspcontracts;
 
 import ca.bc.gov.hlth.hnweb.model.rest.BaseResponse;
 
-public class UpdateContractAddressResponse extends BaseResponse{
+public class UpdateContractAddressResponse extends BaseResponse {
 	
 	private String phn;
 
