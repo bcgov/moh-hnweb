@@ -22,6 +22,7 @@ import NotFound from '../views/NotFound.vue'
 import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
 import PhnLookup from '../views/eligibility/PhnLookup.vue'
 import Unauthorized from '../views/Unauthorized.vue'
+import UpdateContractAddress from '../views/mspcontracts/UpdateContractAddress.vue'
 import UpdateNumberAndDept from '../views/groupmember/UpdateNumberAndDept.vue'
 import store from '../store'
 
@@ -193,6 +194,14 @@ const routes = [
         path: 'getGroupMembersContractAddress',
         name: 'GetGroupMembersContractAddress',
         component: GetGroupMembersContractAddress,
+      },
+      {
+        path: 'updateContractAddress',
+        name: 'UpdateContractAddress',
+        component: UpdateContractAddress,
+        meta: {
+          permission: 'UpdateContractAddress',
+        },
       },
     ],
   },

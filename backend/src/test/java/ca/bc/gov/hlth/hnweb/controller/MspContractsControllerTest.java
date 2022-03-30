@@ -16,12 +16,15 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import ca.bc.gov.hlth.hnweb.BaseControllerTest;
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.MemberAddress;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.BeneficiaryContractPeriod;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.ContractInquiryBeneficiary;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.ContractInquiryRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.ContractInquiryResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.GetContractPeriodsRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.GetContractPeriodsResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.UpdateContractAddressRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.UpdateContractAddressResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
@@ -35,6 +38,12 @@ public class MspContractsControllerTest extends BaseControllerTest {
 	private static final String R32_WARNING_MORE_THAN_20_PERSONS_FOUND = "        RPBSPMC000000010                                INFO    RPBS0086MORE THAN 20 PERSONS FOUND - NOT ALL DISPLAYED                          98736722559873672255BIGDATASNAME                       BIGDATAFNAME                                 1983-09-09M98736722550000001C2022-02-010000-00-00 98736722484044574S2022-02-012022-02-28E                                                                                                                                                                                                                                                                                                                        9873672248SPBIGDATASNAME                     SPBIGDATAFNAME                               1983-01-01F98736722550000001S2022-02-010000-00-00 98736722484044574C2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                         9873671593CHSIXTNBIGDSNAME                   CHSIXTNBIGFNAME                              2018-01-16M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671601CHFRTENBDSNAME                     CHFRTNBDFNAME                                2018-01-14M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671769CHTRTBIGDTSNAME                    CHTRTBIGDATFNAM                              2018-01-13M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671776CHTWTREBIGDTSNAME                  CHTWTREBIGDTFNA                              2018-01-23M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671783CHTWNTTWBISNAME                    CHETWNTTWEBFNAM                              2018-01-21M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671809CHTWTONBIGSNAME                    CHTWTONBIGFNAME                              2018-01-21M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671816CHTNTYBIGDTSNAME                   CHNINTYBIGDTFNA                              2018-01-20M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671823CHNINTNBIGDTSNAME                  CHNINTBIGDAFNAM                              2018-01-19F98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671848CHEITNBIGDTSNAME                   CHDITNBIDTAFNAM                              2018-01-18M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671941CHSETNBIGDTSNAME                   CHSEVTNBDTFNAME                              2018-01-17M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671959CHFIFTNBIGDTSNAME                  CHFIFTNBIGDAFNA                              2018-01-15M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671966CHTLEBIGDTSNAME                    CHTLEBIGDTFNAME                              2018-12-12M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671973CHELNBIGDASNAME                    CHELNBIGDFNAME                               2018-11-11M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873671998CHTENBIGSNAME                      CHTENBIGDFNAME                               2019-10-10M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873672001CHNINBIGDTSNAME                    CHNINBIGDATFNAM                              2019-09-09M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873672019CHETBIGDASNAME                     CHETBIGDTFNAME                               2018-08-08M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873672026CHSVNBIGDSNAME                     CHSVNBIGDFNAME                               2019-07-07M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                9873672033CHSIXBIGDTSNAME                    CHSIXBIGDTFNAME                              2018-06-06M98736722550000001D2022-02-010000-00-00                                                                                                                                                                                                                                                                                                                                                                ";
 	
 	private static final String R32_ERROR_PHN_NOT_FOUND = "        RPBSPMC000000010                                ERRORMSGRPBS9145PHN NOT FOUND                                                           9159869673		";
+	
+	private static final String R38_ERROR_PHN_NOT_FOUND = "        RPBSPMA000000010                                ERRORMSGRPBS9145PHN NOT FOUND                                                           915986967363371091551 39 street           NW                                                COLWOOD BC               V7V7V7";
+	
+	private static final String R38_SUCCESS = "        RPBSPMA000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  933291248662431095951 WDSOU YF            ZT5                      ZT5                      Armstrong                V4D7D75961 WDSOU ZF            ZT6                                               CRESTON BC               V8V8V8";
+	
+	private static final String R38_ERROR_ADDRESSESS_ALREADY_EXIST = "        RPBSPMA000000010                                ERRORMSGRPBS0102ADDRESSES ALREADY EXIST ON MSP. NO UPDATE DONE.                         93319269196337109TEST                     TEST                     TEST                     BC                       V8V8V8TEST1                    TEST1                    TEST1                    BC                       V7V7V7";
 	
 	private static final String R40_SUCCESS = "        RPBSPCI000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  93403381226337109                                                                                                                         TETS123                                                                                             V8V8V8                                                            9340338122PROTOCTIST ORDERXD                 SCIPIOXH       WILFRIDXP                     2002-10-19M2023-01-010000-00-00 NC9329090895PROTOCTIST ORDERXD                 YARISXN        DILLINXP                      2002-11-04F2023-01-012023-03-31ENS";
 	
@@ -388,6 +397,121 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertTransactionCreated(TransactionType.CONTRACT_INQUIRY);
         assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 2);
         assertAffectedParyCount(AffectedPartyDirection.INBOUND, 20);
+	}
+	
+	@Test
+	public void testUpdateContractAddress_success() throws InterruptedException {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R38_SUCCESS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        UpdateContractAddressRequest request = new UpdateContractAddressRequest();
+        request.setPhn("9332912486");
+        request.setGroupNumber("6243109");
+        MemberAddress homeAddress = new MemberAddress();
+        homeAddress.setAddressLine1("5951 WDSOU YF");
+        homeAddress.setAddressLine2("ZT5");
+        homeAddress.setAddressLine2("ZT6");
+        homeAddress.setAddressLine2("CRESTON BC");
+        request.setHomeAddress(homeAddress);
+        
+        MemberAddress mailingAddress = new MemberAddress();
+        mailingAddress.setAddressLine1("5951 WDSOU YF");
+        mailingAddress.setAddressLine2("ZT5");
+        mailingAddress.setAddressLine2("ZT6");
+        mailingAddress.setAddressLine2("CRESTON BC");
+        request.setMailingAddress(mailingAddress);
+        
+        ResponseEntity<UpdateContractAddressResponse> response = mspContractsController.updateCntractAddress(request, createHttpServletRequest());      
+        UpdateContractAddressResponse updateContractAddressResponse = response.getBody();
+
+		// Check the response
+        assertEquals(StatusEnum.SUCCESS, updateContractAddressResponse.getStatus());
+        assertEquals("TRANSACTION SUCCESSFUL", updateContractAddressResponse.getMessage());
+
+        assertEquals("9332912486", updateContractAddressResponse.getPhn());
+       
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertTransactionCreated(TransactionType.UPDATE_CONTRACT_ADDRESS);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 2);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
+	}
+	
+	@Test
+	public void testUpdateContractAddress_error_addressAlreadyExist() throws InterruptedException {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R38_ERROR_ADDRESSESS_ALREADY_EXIST)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        UpdateContractAddressRequest request = new UpdateContractAddressRequest();
+        request.setPhn("9331926919");
+        request.setGroupNumber("6337109");
+        
+        MemberAddress homeAddress = new MemberAddress();
+        homeAddress.setAddressLine1("TEST");
+        homeAddress.setAddressLine2("TEST");
+        homeAddress.setAddressLine2("TEST");
+        homeAddress.setAddressLine2("BC");
+        homeAddress.setPostalCode("V8V8V8");
+        request.setHomeAddress(homeAddress);
+        
+        MemberAddress mailingAddress = new MemberAddress();
+        mailingAddress.setAddressLine1("TEST1");
+        mailingAddress.setAddressLine2("TEST1");
+        mailingAddress.setAddressLine2("TEST1");
+        mailingAddress.setAddressLine2("BC");
+        homeAddress.setPostalCode("V7V7V7");
+        request.setMailingAddress(mailingAddress);
+        
+        ResponseEntity<UpdateContractAddressResponse> response = mspContractsController.updateCntractAddress(request, createHttpServletRequest());
+        
+        UpdateContractAddressResponse updateContractAddressResponse = response.getBody();
+
+		// Check the response
+        assertEquals(StatusEnum.ERROR, updateContractAddressResponse.getStatus());
+        assertEquals("RPBS0102 ADDRESSES ALREADY EXIST ON MSP. NO UPDATE DONE.", updateContractAddressResponse.getMessage());
+
+        assertEquals("9159869673", updateContractAddressResponse.getPhn());
+       
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertTransactionCreated(TransactionType.UPDATE_CONTRACT_ADDRESS);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 2);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
+	}
+	
+	@Test
+	public void testUpdateContractAddress_error_phnNotFound() throws InterruptedException {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R38_ERROR_PHN_NOT_FOUND)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        UpdateContractAddressRequest request = new UpdateContractAddressRequest();
+        request.setPhn("9159869673");
+        request.setGroupNumber("6337109");
+        
+        ResponseEntity<UpdateContractAddressResponse> response = mspContractsController.updateCntractAddress(request, createHttpServletRequest());
+        
+        UpdateContractAddressResponse updateContractAddressResponse = response.getBody();
+
+		// Check the response
+        assertEquals(StatusEnum.ERROR, updateContractAddressResponse.getStatus());
+        assertEquals("RPBS9145 PHN NOT FOUND", updateContractAddressResponse.getMessage());
+
+        assertEquals("9159869673", updateContractAddressResponse.getPhn());
+       
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertTransactionCreated(TransactionType.UPDATE_CONTRACT_ADDRESS);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 2);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
 	}
 	
     /**
