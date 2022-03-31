@@ -1,7 +1,7 @@
 import Keycloak from 'keycloak-js'
 
 let kcConfig = {
-  clientId: config.KEYCLOAK_CLIENT_ID ||  import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
+  clientId: config.KEYCLOAK_CLIENT_ID || import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
   realm: import.meta.env.VITE_KEYCLOAK_REALM,
   url: config.KEYCLOAK_URL || import.meta.env.VITE_KEYCLOAK_URL,
 }
@@ -13,11 +13,18 @@ let keycloak = new Keycloak(kcConfig)
 let initOptions = {
   responseMode: 'fragment',
   flow: 'standard',
-  onLoad: 'login-required',
+  onLoad: 'check-sso',
   pkceMethod: 'S256',
   checkLoginIframe: false,
 }
 
-keycloak.init(initOptions)
+keycloak.init(initOptions).then(function (authenticated) {
+  console.log('authenticated ' + authenticated)
+  console.log(keycloak)
+})
+
+keycloak.onAuthSuccess = () => {
+  console.log('onAuthSuccess')
+}
 
 export default keycloak

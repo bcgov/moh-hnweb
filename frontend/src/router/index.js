@@ -1,12 +1,10 @@
-import { nextTick } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 import Help from './../views/Help.vue'
 import Home from './../views/Home.vue'
-import Welcome from './../views/Welcome.vue'
 import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
 import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
-import store from '../store'
+import { createStore } from '../store'
 import NotFound from '../views/NotFound.vue'
 import Unauthorized from '../views/Unauthorized.vue'
 import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
@@ -266,7 +264,7 @@ function checkPageAction(to, next) {
   const pageAction = to.query.pageAction
 
   if (pageAction !== 'REGISTRATION') {
-    store.commit('studyPermitHolder/resetResident')
+    // store.commit('studyPermitHolder/resetResident')
   }
   next()
 }

@@ -14,16 +14,41 @@
       <section>
         <p>Welcome to the new-and-improved MSP Direct website. MSP Direct is an online business service, authorized by the Ministry of Health, that allows group plan administrators to do a number of adjustments to their group members account.</p>
         <p>Please log-in to the MSP Direct using one of the IDs:</p>
-        <AppButton class="btn-xxl"> <a href="https://common-logon-dev.hlth.gov.bc.ca/auth/realms/moh_applications/broker/phsa/login?client_id=MSPDIRECT-WEB">Health Authority ID</a></AppButton>
-        <AppButton class="btn-xxl">IDIR</AppButton>
+        <AppButton @click="login('phsa')" class="btn-xxl">Health Authority ID</AppButton>
+        <AppButton @click="login('idir')" class="btn-xxl">IDIR</AppButton>
+      </section>
+      <section>
+        <ul>
+          User is authenticated
+          {{
+            authenticated()
+          }}
+        </ul>
+        <ul>
+          Keycloack token
+          {{
+            token()
+          }}
+        </ul>
+        <ul>
+          Keycloak subject
+          {{
+            keycloakSubject()
+          }}
+        </ul>
       </section>
     </AppCol>
   </AppRow>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'login',
+  methods: {
+    ...mapActions('auth', ['login']),
+    ...mapGetters('auth', ['authenticated', 'subject', 'keycloakReady', 'keycloakSubject', 'token']),
+  },
 }
 </script>
 

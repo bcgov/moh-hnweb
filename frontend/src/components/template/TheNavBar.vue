@@ -2,10 +2,10 @@
   <nav role="navigation">
     <div class="container">
       <ul>
-        <li id="welcome-link" :class="menuTabClass($route, '/welcome')">
+        <li id="welcome-link" :class="menuTabClass($route, '/welcome')" v-if="!authenticated()">
           <router-link @click="resetAlert" :to="{ name: 'Login' }">Welcome</router-link>
         </li>
-        <li id="home-link" :class="tabClass($route, 'Home')" v-if="isAuthenticated">
+        <li id="home-link" :class="tabClass($route, 'Home')" v-if="authenticated()">
           <router-link @click="resetAlert" :to="{ name: 'Home' }">Home</router-link>
         </li>
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
@@ -19,7 +19,7 @@
             </div>
           </div>
         </li>
-        <li id="coverage-maintenance-link" :class="tabClass($route, 'CoverageMaintenance')">
+        <li id="coverage-maintenance-link" :class="tabClass($route, 'CoverageMaintenance')" v-if="hasMaintenancePermission()">
           <router-link @click="resetAlert" :to="{ name: 'CoverageMaintenance' }">Coverage Maintenance</router-link>
         </li>
         <li id="coverage-enrollment-link" :class="menuTabClass($route, '/coverage/enrollment')" v-if="hasEnrollmentPermission()">
@@ -53,7 +53,7 @@
             </div>
           </div>
         </li>
-        <li id="help-link" :class="tabClass($route, 'Help')">
+        <li id="help-link" :class="tabClass($route, 'Help')" v-if="authenticated()">
           <router-link @click="resetAlert" :to="{ name: 'Help' }">Help</router-link>
         </li>
       </ul>
@@ -62,6 +62,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'TheNavBar',
   methods: {
@@ -93,12 +95,16 @@ export default {
     hasGroupMemberPermission() {
       return this.hasPermission('AddGroupMember') || this.hasPermission('AddDependent') || this.hasPermission('UpdateNumberAndDept') || this.hasPermission('CancelGroupMember') || this.hasPermission('CancelDependent')
     },
+    hasMaintenancePermission() {
+      return false
+    },
     hasMSPContractsPermission() {
       return this.hasPermission('GetContractPeriods') || this.hasPermission('ContractInquiry')
     },
     isAuthenticated() {
-      return true
+      return this.$keycloak.authenticated
     },
+    ...mapGetters('auth', ['authenticated']),
   },
 }
 </script>

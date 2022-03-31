@@ -3,7 +3,7 @@
     <div class="container">
       <div>
         <ul>
-          <li>
+          <li v-if="authenticated()">
             <router-link :to="{ name: 'Home' }">Home</router-link>
           </li>
           <li>
@@ -29,12 +29,16 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'TheFooter',
   data() {
     return {
       version: import.meta.env.VITE_APP_VERSION,
     }
+  },
+  methods: {
+    ...mapGetters('auth', ['authenticated']),
   },
 }
 </script>

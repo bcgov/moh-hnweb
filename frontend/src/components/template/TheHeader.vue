@@ -10,7 +10,7 @@
           </div>
         </section>
         <section class="options user-select-off">
-          <a id="logoutLink" class="sign-out" v-on:click="logout">Sign Out</a>
+          <a id="logoutLink" class="sign-out" v-on:click="logout">Sign Out {{ keycloakSubject() }}</a>
         </section>
       </section>
     </div>
@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'TheHeader',
   data() {
@@ -31,6 +32,7 @@ export default {
         this.$keycloak.logout({ redirectUri: config.SITEMINDER_LOGOUT || import.meta.env.VITE_SITEMINDER_LOGOUT })
       }
     },
+    ...mapGetters('auth', ['authenticated', 'subject', 'keycloakReady', 'keycloakSubject', 'token']),
   },
 }
 </script>

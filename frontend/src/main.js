@@ -1,5 +1,6 @@
 import '@bcgov/bc-sans/css/BCSans.css'
 
+import VueKeycloakJs from 'keycloak-js'
 import { createApp } from 'vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -17,7 +18,9 @@ import AppSelect from './components/ui/AppSelect.vue'
 import keycloak from './keycloak'
 import router from './router'
 import UserService from './services/UserService'
-import store from './store'
+import { createStore } from './store'
+
+// import keycloak from './plugins/keycloak'
 
 keycloak.onAuthSuccess = async function () {
   // Retrieve the User permissions immediately after Keycloak login
@@ -31,39 +34,90 @@ keycloak.onAuthSuccess = async function () {
     store.dispatch('auth/setPermissions', data)
   } catch (err) {
     store.commit('alert/setErrorAlert', `${err}`)
-  } finally {
-    initApp()
   }
 }
 
-function initApp() {
-  const app = createApp(App)
+const app = createApp(App)
 
-  app.component('AppCol', AppCol)
-  app.component('AppRow', AppRow)
+app.component('AppCol', AppCol)
+app.component('AppRow', AppRow)
 
-  app.component('AppButton', AppButton)
-  app.component('AppDateInput', AppDateInput)
-  app.component('AppInput', AppInput)
-  app.component('AppOutput', AppOutput)
-  app.component('AppSelect', AppSelect)
+app.component('AppButton', AppButton)
+app.component('AppDateInput', AppDateInput)
+app.component('AppInput', AppInput)
+app.component('AppOutput', AppOutput)
+app.component('AppSelect', AppSelect)
 
-  app.use(router)
-  app.use(store)
-  app.config.globalProperties.$keycloak = keycloak
+//loadKeycloak(app, {})
 
-  library.add(faBullhorn)
-  library.add(faCheckCircle)
-  library.add(faChevronDown)
-  library.add(faExclamationCircle)
-  library.add(faExclamationTriangle)
-  library.add(faInfoCircle)
-  library.add(faSpinner)
-  library.add(faTimes)
-  library.add(faQuestionCircle)
-  library.add(faTrashAlt)
+//initKeycloak()
 
-  app.component('font-awesome-icon', FontAwesomeIcon)
+app.use(router)
+const store = createStore(app)
+app.use(store)
+app.config.globalProperties.$keycloak = keycloak
 
-  app.mount('#app')
+library.add(faBullhorn)
+library.add(faCheckCircle)
+library.add(faChevronDown)
+library.add(faExclamationCircle)
+library.add(faExclamationTriangle)
+library.add(faInfoCircle)
+library.add(faSpinner)
+library.add(faTimes)
+library.add(faQuestionCircle)
+library.add(faTrashAlt)
+
+app.component('font-awesome-icon', FontAwesomeIcon)
+
+//loadKeycloak()
+
+app.mount('#app')
+
+// export { app }
+
+// function initKeycloak() {
+//   var keycloak = new VueKeycloakJs({
+//     url: 'http://keycloak-server$',
+//     realm: 'myrealm',
+//     clientId: 'myapp',
+//   })
+//   keycloak
+//     .init()
+//     .then(function (authenticated) {
+//       alert(authenticated ? 'authenticated' : 'not authenticated')
+//     })
+//     .catch(function () {
+//       alert('failed to initialize')
+//     })
+//   keycloak.login()
+// }
+
+function loadKeycloak(app) {
+  console.log('loadKeycloak')
+
+  // Load the config
+  let kcConfig = {
+    clientId: config.KEYCLOAK_CLIENT_ID || import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
+    realm: import.meta.env.VITE_KEYCLOAK_REALM,
+    url: config.KEYCLOAK_URL || import.meta.env.VITE_KEYCLOAK_URL,
+  }
+
+  app.use(VueKeycloakJs, {
+    init: { onLoad: 'check-sso' },
+    config: {
+      clientId: kcConfig.clientId,
+      realm: kcConfig.realm,
+      url: kcConfig.serverUrl,
+    },
+    onReady: () => {
+      console.log('onerror')
+      initializeApp(true, config.basePath)
+    },
+    onInitError: (error) => {
+      console.log('error')
+      console.error('Keycloak failed to initialize') // eslint-disable-line no-console
+      console.error(error) // eslint-disable-line no-console
+    },
+  })
 }
