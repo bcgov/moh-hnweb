@@ -101,10 +101,9 @@ export default {
     hasMSPContractsPermission() {
       return this.hasPermission('GetContractPeriods') || this.hasPermission('ContractInquiry')
     },
-    isAuthenticated() {
+    authenticated() {
       return this.$keycloak.authenticated
     },
-    ...mapGetters('auth', ['authenticated']),
   },
 }
 </script>

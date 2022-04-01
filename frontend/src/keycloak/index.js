@@ -18,13 +18,6 @@ let initOptions = {
   checkLoginIframe: false,
 }
 
-keycloak.init(initOptions).then(function (authenticated) {
-  console.log('authenticated ' + authenticated)
-  console.log(keycloak)
-})
-
-keycloak.onAuthSuccess = () => {
-  console.log('onAuthSuccess')
-}
+keycloak.init(initOptions)
 
 export default keycloak

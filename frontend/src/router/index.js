@@ -1,10 +1,10 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter as createVueRouter, createWebHistory } from 'vue-router'
 
 import Help from './../views/Help.vue'
 import Home from './../views/Home.vue'
 import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
 import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
-import { createStore } from '../store'
+import store from '../store'
 import NotFound from '../views/NotFound.vue'
 import Unauthorized from '../views/Unauthorized.vue'
 import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
@@ -27,7 +27,8 @@ import MspContractsHome from '../views/mspcontracts/MspContractsHome.vue'
 import CredentialsInfo from '../views/welcome/CredentialsInfo.vue'
 import Login from '../views/welcome/Login.vue'
 
-const routes = [
+
+const createRoutes = (app) => [
   {
     path: '/',
     name: 'Landing',
@@ -91,7 +92,7 @@ const routes = [
           requiresAuth: true,
         },
         beforeEnter: (to, _, next) => {
-          checkPageAction(to, next)
+          checkPageAction(to, next, app.$store)
         },
       },
     ],
@@ -260,56 +261,67 @@ const routes = [
   },
 ]
 
-function checkPageAction(to, next) {
+function checkPageAction(to, next, store) {
   const pageAction = to.query.pageAction
 
   if (pageAction !== 'REGISTRATION') {
-    // store.commit('studyPermitHolder/resetResident')
+    store.commit('studyPermitHolder/resetResident')
   }
   next()
 }
 
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
-  scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition
-    }
-    return { left: 0, top: 0 }
-  },
-})
+export const createRouter = (app) => {
+  const router = createVueRouter({
+    history: createWebHistory(),
+    routes: createRoutes(app),
+    scrollBehavior(to, from, savedPosition) {
+      if (savedPosition) {
+        return savedPosition
+      }
+      return { left: 0, top: 0 }
+    },
+  })
+  router.beforeEach(async (to, _, next) => {
+    const authenticated = app.config.globalProperties.$keycloak.authenticated
 
-router.beforeEach((to, _, next) => {
-  // Always navigate to pages that don't require auth
-  if (!to.meta.requiresAuth) {
-    console.log('auth not required')
-    next()
-    return
-  } else {
-    console.log('auth required')
-  }
-
-  // Validate that the user has permissions
-  const hasAnyPermission = store.getters['auth/hasAnyPermission']
-  if (!hasAnyPermission && to.name !== 'Unauthorized') {
-    next({ name: 'Unauthorized' })
-    return
-  }
-
-  // Validate routes secured by permission
-  const permission = to.meta.permission
-  if (permission) {
-    const hasPermission = store.getters['auth/hasPermission'](permission)
-    if (hasPermission) {
+    // Always navigate to pages that don't require auth
+    if (!to.meta.requiresAuth) {
       next()
-    } else {
-      store.commit('alert/setErrorAlert', `You are not authorized to access ${to.path}`)
-      next({ name: 'Home' })
+      return
     }
-  } else {
-    next()
-  }
-})
 
-export default router
+    // Authenticated users should be sent to Home
+    if (authenticated && to.name === 'Login') {
+      next({ name: 'Home' })
+      return
+    }
+
+    // Home page shouldn't be available to unauthenticated users
+    if (!authenticated && to.name === 'Home') {
+      next({ name: 'Login' })
+      return
+    }
+
+    // Validate that the user has permissions
+    const hasAnyPermission = store.getters['auth/hasAnyPermission']
+    if (!hasAnyPermission && to.name !== 'Unauthorized') {
+      next({ name: 'Unauthorized' })
+      return
+    }
+
+    // Validate routes secured by permission
+    const permission = to.meta.permission
+    if (permission) {
+      const hasPermission = store.getters['auth/hasPermission'](permission)
+      if (hasPermission) {
+        next()
+      } else {
+        store.commit('alert/setErrorAlert', `You are not authorized to access ${to.path}`)
+        next({ name: 'Home' })
+      }
+    } else {
+      next()
+    }
+  })
+  return router
+}

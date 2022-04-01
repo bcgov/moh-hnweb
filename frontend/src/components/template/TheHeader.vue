@@ -10,7 +10,7 @@
           </div>
         </section>
         <section class="options user-select-off">
-          <a id="logoutLink" class="sign-out" v-on:click="logout">Sign Out {{ keycloakSubject() }}</a>
+          <a id="logoutLink" class="sign-out" v-on:click="logout" v-if="authenticated">Sign Out</a>
         </section>
       </section>
     </div>
@@ -26,13 +26,19 @@ export default {
       title: config.APP_TITLE || import.meta.env.VITE_APP_TITLE,
     }
   },
+  computed: {
+    authenticated() {
+      return this.$keycloak.authenticated
+    },
+  },
   methods: {
-    logout: function () {
+    logout() {
       if (confirm('Please confirm you want to sign out. ' + '\nThis will also end all other active Keycloak or SiteMinder sessions you have open.')) {
-        this.$keycloak.logout({ redirectUri: config.SITEMINDER_LOGOUT || import.meta.env.VITE_SITEMINDER_LOGOUT })
+        this.$keycloak.logout({
+          redirectUri: location.origin + this.$router.resolve({ name: 'Login' }).path,
+        })
       }
     },
-    ...mapGetters('auth', ['authenticated', 'subject', 'keycloakReady', 'keycloakSubject', 'token']),
   },
 }
 </script>

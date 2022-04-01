@@ -17,26 +17,6 @@
         <AppButton @click="login('phsa')" class="btn-xxl">Health Authority ID</AppButton>
         <AppButton @click="login('idir')" class="btn-xxl">IDIR</AppButton>
       </section>
-      <section>
-        <ul>
-          User is authenticated
-          {{
-            authenticated()
-          }}
-        </ul>
-        <ul>
-          Keycloack token
-          {{
-            token()
-          }}
-        </ul>
-        <ul>
-          Keycloak subject
-          {{
-            keycloakSubject()
-          }}
-        </ul>
-      </section>
     </AppCol>
   </AppRow>
 </template>
@@ -46,7 +26,13 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'login',
   methods: {
-    ...mapActions('auth', ['login']),
+    login: function (idpHint) {
+      const options = {
+        idpHint,
+        redirectUri: location.origin + this.$router.resolve({ name: 'Home' }).path,
+      }
+      this.$keycloak.login(options)
+    },
     ...mapGetters('auth', ['authenticated', 'subject', 'keycloakReady', 'keycloakSubject', 'token']),
   },
 }
