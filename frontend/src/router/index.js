@@ -27,7 +27,6 @@ import MspContractsHome from '../views/mspcontracts/MspContractsHome.vue'
 import CredentialsInfo from '../views/welcome/CredentialsInfo.vue'
 import Login from '../views/welcome/Login.vue'
 
-
 const createRoutes = (app) => [
   {
     path: '/',
@@ -92,7 +91,7 @@ const createRoutes = (app) => [
           requiresAuth: true,
         },
         beforeEnter: (to, _, next) => {
-          checkPageAction(to, next, app.$store)
+          checkPageAction(to, next)
         },
       },
     ],
@@ -261,7 +260,7 @@ const createRoutes = (app) => [
   },
 ]
 
-function checkPageAction(to, next, store) {
+function checkPageAction(to, next) {
   const pageAction = to.query.pageAction
 
   if (pageAction !== 'REGISTRATION') {
@@ -284,15 +283,15 @@ export const createRouter = (app) => {
   router.beforeEach(async (to, _, next) => {
     const authenticated = app.config.globalProperties.$keycloak.authenticated
 
-    // Always navigate to pages that don't require auth
-    if (!to.meta.requiresAuth) {
-      next()
-      return
-    }
-
     // Authenticated users should be sent to Home
     if (authenticated && to.name === 'Login') {
       next({ name: 'Home' })
+      return
+    }
+
+    // Always navigate to pages that don't require auth
+    if (!to.meta.requiresAuth) {
+      next()
       return
     }
 

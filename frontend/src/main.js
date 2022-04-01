@@ -19,13 +19,13 @@ import { createRouter } from './router'
 import UserService from './services/UserService'
 import store from './store'
 
-keycloak.onReady = async function () {
+keycloak.onReady = async function (authenticated) {
   console.log('onReady')
   // Only initialize the application after keycloak is ready
   // otherwise the router won't have the correct authentication
   // info to work with
   try {
-    if (keycloak.authenticated) {
+    if (authenticated) {
       const data = (await UserService.getPermissions()).data
       store.dispatch('auth/setPermissions', data)
     }
