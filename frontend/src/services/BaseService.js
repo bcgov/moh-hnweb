@@ -1,5 +1,4 @@
 import axios from 'axios'
-
 import keycloak from '../keycloak'
 
 export const resources = {
@@ -25,6 +24,7 @@ export const resources = {
   mspContracts: {
     getContractPeriods: '/msp-contracts/get-contract-periods',
     inquireContract: '/msp-contracts/inquire-contract',
+    updateContractAddress: '/msp-contracts/update-contract-address',
   },
   user: {
     permissions: '/user/permissions',

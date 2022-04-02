@@ -24,6 +24,7 @@ import ContractInquiry from '../views/mspcontracts/ContractInquiry.vue'
 import GetContractPeriods from '../views/mspcontracts/GetContractPeriods.vue'
 import GetGroupMembersContractAddress from '../views/mspcontracts/GetGroupMembersContractAddress.vue'
 import MspContractsHome from '../views/mspcontracts/MspContractsHome.vue'
+import UpdateContractAddress from '../views/mspcontracts/UpdateContractAddress.vue'
 import CredentialsInfo from '../views/welcome/CredentialsInfo.vue'
 import Login from '../views/welcome/Login.vue'
 
@@ -232,6 +233,15 @@ const createRoutes = (app) => [
           requiresAuth: true,
         },
       },
+      {
+        path: 'updateContractAddress',
+        name: 'UpdateContractAddress',
+        component: UpdateContractAddress,
+        meta: {
+          permission: 'UpdateContractAddress',
+          requiresAuth: true,
+        },
+      },
     ],
   },
   {
@@ -283,7 +293,8 @@ export const createRouter = (app) => {
   router.beforeEach(async (to, _, next) => {
     const authenticated = app.config.globalProperties.$keycloak.authenticated
 
-    // Authenticated users should be sent to Home
+    // Authenticated users should never see the Login screen
+    // Send them to Home instead
     if (authenticated && to.name === 'Login') {
       next({ name: 'Home' })
       return
@@ -295,8 +306,9 @@ export const createRouter = (app) => {
       return
     }
 
-    // Home page shouldn't be available to unauthenticated users
-    if (!authenticated && to.name === 'Home') {
+    // Secured pages shouldn't be available to unauthenticated users
+    if (to.meta.requiresAuth && !authenticated) {
+      store.commit('alert/setErrorAlert', `You are not authorized to access ${to.path}. Please login first.`)
       next({ name: 'Login' })
       return
     }

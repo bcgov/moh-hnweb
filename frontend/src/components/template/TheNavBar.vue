@@ -50,6 +50,7 @@
               <router-link @click="resetAlert" :class="menuClass($route, 'GetContractPeriods')" :to="{ name: 'GetContractPeriods' }">Get Contract Periods</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'ContractInquiry')" :to="{ name: 'ContractInquiry' }">Contract Inquiry</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'GetGroupMembersContractAddress')" :to="{ name: 'GetGroupMembersContractAddress' }" v-if="hasPermission('GetContractAddress')">Get Contract Address</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'UpdateContractAddress')" :to="{ name: 'UpdateContractAddress' }" v-if="hasPermission('UpdateContractAddress')">Update Contract Address</router-link>
             </div>
           </div>
         </li>
@@ -99,7 +100,7 @@ export default {
       return false
     },
     hasMSPContractsPermission() {
-      return this.hasPermission('GetContractPeriods') || this.hasPermission('ContractInquiry')
+      return this.hasPermission('GetContractPeriods') || this.hasPermission('ContractInquiry') || this.hasPermission('UpdateContractAddress')
     },
     authenticated() {
       return this.$keycloak.authenticated

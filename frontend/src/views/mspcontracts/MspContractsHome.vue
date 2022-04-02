@@ -8,6 +8,7 @@ import SubNavTab from '../../components/template/SubNavTab.vue'
     <SubNavTab routeName="GetContractPeriods" title="Get Contract Periods" v-if="hasPermission('GetContractPeriods')" />
     <SubNavTab routeName="ContractInquiry" title="Contract Inquiry" v-if="hasPermission('ContractInquiry')" />
     <SubNavTab routeName="GetGroupMembersContractAddress" title="Get Contract Address" v-if="hasPermission('GetContractAddress')" />
+    <SubNavTab routeName="UpdateContractAddress" title="Update Contract Address" v-if="hasPermission('UpdateContractAddress')" />
   </TheSubNav>
   <router-view />
 </template>
