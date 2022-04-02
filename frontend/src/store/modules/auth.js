@@ -1,5 +1,3 @@
-import UserService from '../../services/UserService'
-
 const state = {
   permissions: [],
 }

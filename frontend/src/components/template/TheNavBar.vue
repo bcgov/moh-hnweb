@@ -2,10 +2,10 @@
   <nav role="navigation">
     <div class="container">
       <ul>
-        <li id="welcome-link" :class="menuTabClass($route, '/welcome')" v-if="!authenticated()">
+        <li id="welcome-link" :class="menuTabClass($route, '/welcome')" v-if="!authenticated">
           <router-link @click="resetAlert" :to="{ name: 'Login' }">Welcome</router-link>
         </li>
-        <li id="home-link" :class="tabClass($route, 'Home')" v-if="authenticated()">
+        <li id="home-link" :class="tabClass($route, 'Home')" v-if="authenticated">
           <router-link @click="resetAlert" :to="{ name: 'Home' }">Home</router-link>
         </li>
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
@@ -54,7 +54,7 @@
             </div>
           </div>
         </li>
-        <li id="help-link" :class="tabClass($route, 'Help')" v-if="authenticated()">
+        <li id="help-link" :class="tabClass($route, 'Help')" v-if="authenticated">
           <router-link @click="resetAlert" :to="{ name: 'Help' }">Help</router-link>
         </li>
       </ul>
@@ -67,6 +67,11 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'TheNavBar',
+  computed: {
+    authenticated() {
+      return this.$keycloak.authenticated
+    },
+  },
   methods: {
     resetCoverageEnrollment() {
       this.$store.commit('alert/dismissAlert')
@@ -101,9 +106,6 @@ export default {
     },
     hasMSPContractsPermission() {
       return this.hasPermission('GetContractPeriods') || this.hasPermission('ContractInquiry') || this.hasPermission('UpdateContractAddress')
-    },
-    authenticated() {
-      return this.$keycloak.authenticated
     },
   },
 }

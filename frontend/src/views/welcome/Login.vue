@@ -16,15 +16,20 @@
         <p>Please log-in to the MSP Direct using one of the IDs:</p>
         <AppButton @click="login('phsa')" class="btn-xxl">Health Authority ID</AppButton>
         <AppButton @click="login('idir')" class="btn-xxl">IDIR</AppButton>
+        <AppButton @click="login('moh_idp')" class="btn-xxl" v-if="!production">Keycloak</AppButton>
+        <AppButton @click="login('bcsc')" class="btn-xxl" v-if="false">BC Services Card</AppButton>
+        <AppButton @click="login('bceid_business')" class="btn-xxl" v-if="false">BCeID Business</AppButton>
       </section>
     </AppCol>
   </AppRow>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'login',
+  computed: {
+    production: () => import.meta.env.MODE === 'production',
+  },
   methods: {
     login: function (idpHint) {
       const options = {
@@ -33,7 +38,6 @@ export default {
       }
       this.$keycloak.login(options)
     },
-    ...mapGetters('auth', ['authenticated', 'subject', 'keycloakReady', 'keycloakSubject', 'token']),
   },
 }
 </script>
