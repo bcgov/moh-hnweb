@@ -10,6 +10,7 @@ const GROUP_NUMBER_REQUIRED_MESSAGE = 'Group Number is required'
 const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
 const HOME_ADDRESS_REQUIRED_MESSAGE = 'Home Address Line 1 is required'
 const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
+const INVALID_POSTAL_CODE_VALIDATION_MESSAGE = 'Postal Code is invalid'
 const SUCCESS_MESSAGE = 'RPBS0103 COVERAGE CANCELLED. NO UPDATE PERMITTED.'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/mspcontracts/UpdateContractAddress'
@@ -61,7 +62,7 @@ test('Check invalid field validation', async (t) => {
     .click(UpdateContractAddress.phnInput)
     .typeText(UpdateContractAddress.phnInput, '9000444000')
     .typeText(UpdateContractAddress.address1Input, 'Test 111 ST')
-    .typeText(UpdateContractAddress.postalCodeInput, 'V8V8V8')
+    .typeText(UpdateContractAddress.postalCodeInput, 'T8V8V8')
     .typeText(UpdateContractAddress.mailingAddress1Input, 'Test 222 ST')
     .typeText(UpdateContractAddress.mailingPostalCodeInput, 'T6T6T6')
     // When I click the submit button
@@ -71,6 +72,8 @@ test('Check invalid field validation', async (t) => {
     .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(1).textContent)
     .contains(INVALID_PHN_ERROR_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(2).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
 })
 
 test('Check clear button clears the form', async (t) => {

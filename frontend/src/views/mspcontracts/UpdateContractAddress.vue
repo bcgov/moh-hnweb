@@ -76,7 +76,7 @@
 <script>
 import useVuelidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
-import { validateGroupNumber, validatePHN, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE } from '../../util/validators'
+import { validateGroupNumber, validatePHN, validatePostalCode, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_POSTAL_CODE_MESSAGE } from '../../util/validators'
 import MspContractsService from '../../services/MspContractsService'
 
 export default {
@@ -194,7 +194,10 @@ export default {
       },
       homeAddress: {
         addressLine1: { required },
-        postalCode: { required },
+        postalCode: {
+          required,
+          validatePostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validatePostalCode),
+        },
       },
     }
   },
