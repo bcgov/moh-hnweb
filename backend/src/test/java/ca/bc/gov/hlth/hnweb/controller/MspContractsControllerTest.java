@@ -422,7 +422,7 @@ public class MspContractsControllerTest extends BaseControllerTest {
         mailingAddress.setAddressLine2("CRESTON BC");
         request.setMailingAddress(mailingAddress);
         
-        ResponseEntity<UpdateContractAddressResponse> response = mspContractsController.updateCntractAddress(request, createHttpServletRequest());      
+        ResponseEntity<UpdateContractAddressResponse> response = mspContractsController.updateContractAddress(request, createHttpServletRequest());      
         UpdateContractAddressResponse updateContractAddressResponse = response.getBody();
 
 		// Check the response
@@ -466,7 +466,7 @@ public class MspContractsControllerTest extends BaseControllerTest {
         homeAddress.setPostalCode("V7V7V7");
         request.setMailingAddress(mailingAddress);
         
-        ResponseEntity<UpdateContractAddressResponse> response = mspContractsController.updateCntractAddress(request, createHttpServletRequest());
+        ResponseEntity<UpdateContractAddressResponse> response = mspContractsController.updateContractAddress(request, createHttpServletRequest());
         
         UpdateContractAddressResponse updateContractAddressResponse = response.getBody();
 
@@ -474,7 +474,7 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(StatusEnum.ERROR, updateContractAddressResponse.getStatus());
         assertEquals("RPBS0102 ADDRESSES ALREADY EXIST ON MSP. NO UPDATE DONE.", updateContractAddressResponse.getMessage());
 
-        assertEquals("9159869673", updateContractAddressResponse.getPhn());
+        assertEquals("9331926919", updateContractAddressResponse.getPhn());
        
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -495,7 +495,7 @@ public class MspContractsControllerTest extends BaseControllerTest {
         request.setPhn("9159869673");
         request.setGroupNumber("6337109");
         
-        ResponseEntity<UpdateContractAddressResponse> response = mspContractsController.updateCntractAddress(request, createHttpServletRequest());
+        ResponseEntity<UpdateContractAddressResponse> response = mspContractsController.updateContractAddress(request, createHttpServletRequest());
         
         UpdateContractAddressResponse updateContractAddressResponse = response.getBody();
 
