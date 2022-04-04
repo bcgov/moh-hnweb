@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section id="overview">
     <p>Please read the information in the table below to understand your profile and the type of ID that you can use to access MSP Direct web application.</p>
     <AppSimpleTable>
       <thead>
@@ -45,7 +45,7 @@
       </tbody>
     </AppSimpleTable>
   </section>
-  <section>
+  <section id="credentials">
     <h2>Get Credentials and Find Support</h2>
     <p>Please contact the issuing agency to request access credentials.</p>
     <h3>Business BCeID</h3>
