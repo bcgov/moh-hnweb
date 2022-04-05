@@ -54,7 +54,6 @@ export default {
       this.phn = ''
       this.v$.$reset()
       this.$store.commit('alert/dismissAlert')
-      this.searching = false
     },
   },
   validations() {

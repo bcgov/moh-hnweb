@@ -1,6 +1,6 @@
-import AddDependentPage from '../../pages/groupmember/AddDependentPage'
-import AlertPage from '../../pages/AlertPage'
 import { SITE_UNDER_TEST } from '../../configuration'
+import AlertPage from '../../pages/AlertPage'
+import AddDependentPage from '../../pages/groupmember/AddDependentPage'
 import { regularAccUser } from '../../roles/roles'
 
 const relationshipOption = AddDependentPage.relationshipSelect.find('option')
@@ -21,9 +21,9 @@ const PAGE_TO_TEST = SITE_UNDER_TEST + '/groupmember/AddDependent'
 
 fixture(`AddDependent Page`).disablePageCaching`Test AddDependent`
   .beforeEach(async (t) => {
-    await t.useRole(regularAccUser)
+    await t.useRole(regularAccUser).navigateTo(PAGE_TO_TEST)
   })
-  .page(PAGE_TO_TEST)
+  .page(SITE_UNDER_TEST)
 
 test('Check required fields validation', async (t) => {
   await t
