@@ -10,7 +10,7 @@ const GROUP_NUMBER_REQUIRED_MESSAGE = 'Group Number is required'
 const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
 const GROUP_NUMBER_DEPARTMENT_REQUIRED_MESSAGE = 'Group Member Number and/or Department Number is required'
 
-const PAGE_TO_TEST = SITE_UNDER_TEST + '/groupmember/UpdateNumberAndDept'
+const PAGE_TO_TEST = SITE_UNDER_TEST + '/groupMember/updateNumberAndDept'
 
 fixture(`UpdateNumberAndDept Page`).disablePageCaching`Test UpdateNumberAndDept`
   .beforeEach(async (t) => {
