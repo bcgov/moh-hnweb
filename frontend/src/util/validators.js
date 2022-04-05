@@ -48,23 +48,20 @@ function validatePHNFormat(phn) {
  * Validates that the Postal Code matches the accepted format.
  * This assumes the Postal Code also has a required validation.
  */
-export function validatePostalCode(postalcCode) {
-  if (!helpers.req(postalcCode)) {
+export function validatePostalCode(postalCode) {
+  if (!helpers.req(postalCode)) {
     return true
   }
-  return validatePostalCodeFormat(postalcCode)
+  return validatePostalCodeFormat(postalCode)
 }
 
 /**
  * Must be of the format ANANAN (where "A" is alpha and "N" is numeric). Must start with "V" i.e., be a British Columbia postal code
  */
-function validatePostalCodeFormat(postalcCode) {
+function validatePostalCodeFormat(postalCode) {
   var regex = new RegExp(/^[V]\d[ABCEGHJKLMNPRSTVWXYZ]\d[ABCEGHJKLMNPRSTVWXYZ]\d$/i)
-  if (regex.test(postalcCode)) {
-    return true
-  } else {
-    return false
-  }
+
+  return regex.test(postalCode)
 }
 
 /**

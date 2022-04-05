@@ -36,17 +36,17 @@
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput id="addressLine2" label="Line 2 (Optional)" type="text" v-model="homeAddress.addressLine2" />
+          <AppInput :e-model="v$.homeAddress.addressLine2" id="addressLine2" label="Line 2 (Optional)" type="text" v-model="homeAddress.addressLine2" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput id="addressLine3" label="Line 3 (Optional)" type="text" v-model="homeAddress.addressLine3" />
+          <AppInput :e-model="v$.homeAddress.addressLine3" id="addressLine3" label="Line 3 (Optional)" type="text" v-model="homeAddress.addressLine3" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput id="addressLine4" label="Line 4 (Optional)" type="text" v-model="homeAddress.addressLine4" />
+          <AppInput :e-model="v$.homeAddress.addressLine4" id="addressLine4" label="Line 4 (Optional)" type="text" v-model="homeAddress.addressLine4" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -56,27 +56,27 @@
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput id="mailingAddress1" label="Mailing Address (if different from home address)" v-model="mailingAddress.addressLine1" />
+          <AppInput :e-model="v$.mailingAddress.addressLine1" id="mailingAddress1" label="Mailing Address (if different from home address)" v-model="mailingAddress.addressLine1" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput id="mailingAddress2" label="Line 2 (Optional)" v-model="mailingAddress.addressLine2" />
+          <AppInput :e-model="v$.mailingAddress.addressLine2" id="mailingAddress2" label="Line 2 (Optional)" v-model="mailingAddress.addressLine2" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput id="mailingAddress3" label="Line 3 (Optional)" v-model="mailingAddress.addressLine3" />
+          <AppInput :e-model="v$.mailingAddress.addressLine3" id="mailingAddress3" label="Line 3 (Optional)" v-model="mailingAddress.addressLine3" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput id="mailingAddress4" label="Line 4 (Optional)" v-model="mailingAddress.addressLine4" />
+          <AppInput :e-model="v$.mailingAddress.addressLine4" id="mailingAddress4" label="Line 4 (Optional)" v-model="mailingAddress.addressLine4" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput id="mailingPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddress.postalCode" />
+          <AppInput :e-model="v$.mailingAddress.postalCode" id="mailingPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddress.postalCode" />
         </AppCol>
       </AppRow>
       <div>
@@ -253,7 +253,9 @@ export default {
       this.result = null
       this.v$.$reset()
       this.$store.commit('alert/dismissAlert')
-      ;(this.submitting = false), (this.addOk = false), (this.addMode = true)
+      this.submitting = false
+      this.addOk = false
+      this.addMode = true
     },
   },
 
@@ -275,10 +277,20 @@ export default {
       },
       homeAddress: {
         addressLine1: { required },
+        addressLine2: {},
+        addressLine3: {},
+        addressLine4: {},
         postalCode: {
           required,
           validatePostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validatePostalCode),
         },
+      },
+      mailingAddress: {
+        addressLine1: {},
+        addressLine2: {},
+        addressLine3: {},
+        addressLine4: {},
+        postalCode: {},
       },
       spousePhn: {
         validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
