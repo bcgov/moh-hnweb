@@ -79,8 +79,8 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals("/", recordedRequest.getPath());
         
         assertTransactionCreated(TransactionType.ENROLL_SUBSCRIBER);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 2);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 0);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 0);
     }
     
     @Test
@@ -104,8 +104,8 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals("/", recordedRequest.getPath());
         
         assertTransactionCreated(TransactionType.ENROLL_SUBSCRIBER);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 0);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 0);
     }
     
     @Test
@@ -132,8 +132,8 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals("/", recordedRequest.getPath());       
         
         assertTransactionCreated(TransactionType.ENROLL_SUBSCRIBER);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 2);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 0);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 0);
     }
     
     @Test
@@ -159,8 +159,8 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals("/", recordedRequest.getPath());       
         
         assertTransactionCreated(TransactionType.ENROLL_SUBSCRIBER);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
         assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     
     
@@ -187,8 +187,8 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals("/", recordedRequest.getPath());
         
         assertTransactionCreated(TransactionType.GET_PERSON_DETAILS);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
         assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     
     @Test
@@ -214,8 +214,8 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals("/", recordedRequest.getPath());
         
         assertTransactionCreated(TransactionType.GET_PERSON_DETAILS);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
         assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     
     @Test
@@ -245,8 +245,8 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals("/", recordedRequest.getPath());
         
         assertTransactionCreated(TransactionType.NAME_SEARCH);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 0);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 3);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 0);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 3);
     }
     
     
@@ -274,8 +274,8 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals("/", recordedRequest.getPath());
         
         assertTransactionCreated(TransactionType.NAME_SEARCH);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 0);
         assertAffectedParyCount(AffectedPartyDirection.INBOUND, 0);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 0);
     }
     
     /**
