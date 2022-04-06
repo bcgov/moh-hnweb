@@ -5,7 +5,6 @@ const state = {
 const mutations = {
   setPermissions(state, permissions) {
     state.permissions = permissions
-    state.permissionsLoaded = true
   },
 }
 
