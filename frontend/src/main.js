@@ -20,7 +20,6 @@ import UserService from './services/UserService'
 import store from './store'
 
 keycloak.onReady = async function (authenticated) {
-  console.log('onReady')
   // Only initialize the application after keycloak is ready
   // otherwise the router won't have the correct authentication
   // info to work with
