@@ -143,6 +143,7 @@ import {
   validateGroupMemberNumber,
   validateDepartmentNumber,
   validateTelephone,
+  validateMailingPostalCode,
   validatePostalCode,
   VALIDATE_GROUP_NUMBER_MESSAGE,
   VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE,
@@ -333,7 +334,9 @@ export default {
       mailingAddress3: {},
       mailingAddressCity: {},
       mailingAddressProvince: {},
-      mailingAddressPostalCode: {},
+      mailingAddressPostalCode: {
+        validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
+      },
       priorResidenceCode: { required },
       otherProvinceHealthcareNumber: {},
     }

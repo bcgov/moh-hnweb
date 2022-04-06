@@ -115,7 +115,7 @@
 import useVuelidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 import AddListDependent from '../../components/groupmember/AddListDependent.vue'
-import { validateGroupNumber, validateTelephone, validatePHN, validatePostalCode, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_POSTAL_CODE_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../util/validators'
+import { validateGroupNumber, validateTelephone, validatePHN, validatePostalCode, validateMailingPostalCode, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_POSTAL_CODE_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../util/validators'
 import GroupMemberService from '../../services/GroupMemberService'
 
 export default {
@@ -290,7 +290,9 @@ export default {
         addressLine2: {},
         addressLine3: {},
         addressLine4: {},
-        postalCode: {},
+        postalCode: {
+          validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
+        },
       },
       spousePhn: {
         validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),

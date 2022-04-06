@@ -64,7 +64,7 @@ test('Check invalid field validation', async (t) => {
     .typeText(UpdateContractAddress.address1Input, 'Test 111 ST')
     .typeText(UpdateContractAddress.postalCodeInput, 'T8V8V8')
     .typeText(UpdateContractAddress.mailingAddress1Input, 'Test 222 ST')
-    .typeText(UpdateContractAddress.mailingPostalCodeInput, 'T6T6T6')
+    .typeText(UpdateContractAddress.mailingPostalCodeInput, 'TTTTTT')
     // When I click the submit button
     .click(UpdateContractAddress.submitButton)
     // I expect an error message stating the page had errors and an individual error message for invalid inputs
@@ -73,6 +73,8 @@ test('Check invalid field validation', async (t) => {
     .expect(UpdateContractAddress.errorText.nth(1).textContent)
     .contains(INVALID_PHN_ERROR_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(2).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(3).textContent)
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
 })
 

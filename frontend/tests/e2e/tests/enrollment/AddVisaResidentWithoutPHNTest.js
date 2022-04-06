@@ -136,6 +136,7 @@ test('Check invalid field validation', async (t) => {
     .click(provinceOption.withText('British Columbia'))
     .typeText(AddVisaResidentWithoutPHNPage.coverageCancellationDateInput, '20221231')
     .typeText(AddVisaResidentWithoutPHNPage.postalCodeInput, 't6t6t6')
+    .typeText(AddVisaResidentWithoutPHNPage.mailingPostalCodeInput, 'tttttt')
     // When I click the submit button
     .click(AddVisaResidentWithoutPHNPage.submitButton)
     // I expect an error message stating the page had errors and an individual error message for the PHN format
@@ -148,6 +149,8 @@ test('Check invalid field validation', async (t) => {
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(7).textContent)
     .contains(PHONE_NUMBER_VALIDATION_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(8).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(9).textContent)
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)

@@ -56,6 +56,19 @@ export function validatePostalCode(postalCode) {
 }
 
 /**
+ * Validates that the Postal Code matches the accepted format.
+ * Must be of the format ANANAN (where "A" is alpha and "N" is numeric). Must start with one of the "ABCEGHJKLMNPRSTVWXYZ" i.e., be a Canada postal code
+ */
+export function validateMailingPostalCode(postalCode) {
+  if (postalCode === undefined || postalCode === '') {
+    return true
+  }
+  var regex = new RegExp(/^[ABCEGHJKLMNPRSTVWXYZ]\d[ABCEGHJKLMNPRSTVWXYZ]\d[ABCEGHJKLMNPRSTVWXYZ]\d$/i)
+
+  return regex.test(postalCode)
+}
+
+/**
  * Must be of the format ANANAN (where "A" is alpha and "N" is numeric). Must start with "V" i.e., be a British Columbia postal code
  */
 function validatePostalCodeFormat(postalCode) {
