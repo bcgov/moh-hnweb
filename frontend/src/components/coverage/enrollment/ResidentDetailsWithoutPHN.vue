@@ -152,6 +152,9 @@ import {
   validateDOB,
   validateTelephone,
   validatePostalCode,
+  VALIDATE_ADDRESS_LINE1_MESSAGE,
+  VALIDATE_ADDRESS_LINE2_MESSAGE,
+  VALIDATE_ADDRESS_LINE3_MESSAGE,
   VALIDATE_GROUP_NUMBER_MESSAGE,
   VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE,
   VALIDATE_DEPARTMENT_NUMBER_MESSAGE,
@@ -344,18 +347,31 @@ export default {
         validateTelephone: helpers.withMessage(VALIDATE_TELEPHONE_MESSAGE, validateTelephone),
       },
       coverageCancellationDate: { required },
-      address1: { required },
-      address2: {},
-      address3: {},
+      address1: {
+        required,
+        validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateAddress),
+      },
+      address2: {
+        validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
+      },
+      address3: {
+        validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateAddress),
+      },
       city: { required },
       province: { required },
       postalCode: {
         required,
         validatePostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validatePostalCode),
       },
-      mailingAddress1: {},
-      mailingAddress2: {},
-      mailingAddress3: {},
+      mailingAddress1: {
+        validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateAddress),
+      },
+      mailingAddress2: {
+        validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
+      },
+      mailingAddress3: {
+        validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateAddress),
+      },
       mailingAddressCity: {},
       mailingAddressProvince: {},
       mailingAddressPostalCode: {},

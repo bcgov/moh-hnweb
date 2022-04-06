@@ -11,6 +11,10 @@ const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
 const HOME_ADDRESS_REQUIRED_MESSAGE = 'Home Address Line 1 is required'
 const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
 const INVALID_POSTAL_CODE_VALIDATION_MESSAGE = 'Postal Code is invalid'
+const INVALID_ADDRESS_LINE1_MESSAGE = 'Address Line 1 is invalid'
+const INVALID_ADDRESS_LINE2_MESSAGE = 'Address Line 2 is invalid'
+const INVALID_ADDRESS_LINE3_MESSAGE = 'Address Line 3 is invalid'
+const INVALID_ADDRESS_LINE4_MESSAGE = 'Address Line 4 is invalid'
 const SUCCESS_MESSAGE = 'RPBS0103 COVERAGE CANCELLED. NO UPDATE PERMITTED.'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/mspcontracts/UpdateContractAddress'
@@ -46,6 +50,8 @@ test('Check properly filled form passes validation', async (t) => {
     .click(UpdateContractAddress.phnInput)
     .typeText(UpdateContractAddress.phnInput, '9882807277')
     .typeText(UpdateContractAddress.address1Input, 'Test 111 ST')
+    .typeText(UpdateContractAddress.address2Input, '[][][]')
+    .typeText(UpdateContractAddress.address3Input, '====')
     .typeText(UpdateContractAddress.postalCodeInput, 'V8V8V8')
 
     // When I click the submit button
@@ -55,15 +61,46 @@ test('Check properly filled form passes validation', async (t) => {
     .contains(SUCCESS_MESSAGE)
 })
 
+test('Check Address field length validation', async (t) => {
+  await t
+    // Given the page is filled out correctly
+    .typeText(UpdateContractAddress.groupNumberInput, '6337109')
+    .click(UpdateContractAddress.phnInput)
+    .typeText(UpdateContractAddress.phnInput, '9882807277')
+    .typeText(UpdateContractAddress.address1Input, 'Test 111 ST Address is toooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.address2Input, 'Test 222 ST Address is toooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.address3Input, 'Test 333 ST Address is toooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.address4Input, 'Test 444 ST Address is toooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.postalCodeInput, 'V8V8V8')
+
+    // When I click the submit button
+    .click(UpdateContractAddress.submitButton)
+    //  I expect an error message stating the page had errors and an individual error message for invalid inputs
+    .expect(UpdateContractAddress.errorText.nth(0).textContent)
+    .contains(INVALID_ADDRESS_LINE1_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(1).textContent)
+    .contains(INVALID_ADDRESS_LINE2_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(2).textContent)
+    .contains(INVALID_ADDRESS_LINE3_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(3).textContent)
+    .contains(INVALID_ADDRESS_LINE4_MESSAGE)
+})
+
 test('Check invalid field validation', async (t) => {
   await t
     // Given a Group Number entered with an invalid format
     .typeText(UpdateContractAddress.groupNumberInput, '9000444000')
     .click(UpdateContractAddress.phnInput)
     .typeText(UpdateContractAddress.phnInput, '9000444000')
-    .typeText(UpdateContractAddress.address1Input, 'Test 111 ST')
+    .typeText(UpdateContractAddress.address1Input, 'Test 111 ST!!!@#')
+    .typeText(UpdateContractAddress.address2Input, '(){}:")')
+    .typeText(UpdateContractAddress.address3Input, '(){}:")')
+    .typeText(UpdateContractAddress.address4Input, '(){}:")')
     .typeText(UpdateContractAddress.postalCodeInput, 'T8V8V8')
-    .typeText(UpdateContractAddress.mailingAddress1Input, 'Test 222 ST')
+    .typeText(UpdateContractAddress.mailingAddress1Input, '^&*()')
+    .typeText(UpdateContractAddress.mailingAddress2Input, '_+<>?')
+    .typeText(UpdateContractAddress.mailingAddress3Input, '{}:"<>?}')
+    .typeText(UpdateContractAddress.mailingAddress4Input, '{}:"<>?}')
     .typeText(UpdateContractAddress.mailingPostalCodeInput, 'T6T6T6')
     // When I click the submit button
     .click(UpdateContractAddress.submitButton)
@@ -73,7 +110,23 @@ test('Check invalid field validation', async (t) => {
     .expect(UpdateContractAddress.errorText.nth(1).textContent)
     .contains(INVALID_PHN_ERROR_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(2).textContent)
+    .contains(INVALID_ADDRESS_LINE1_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(3).textContent)
+    .contains(INVALID_ADDRESS_LINE2_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(4).textContent)
+    .contains(INVALID_ADDRESS_LINE3_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(5).textContent)
+    .contains(INVALID_ADDRESS_LINE4_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(6).textContent)
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(7).textContent)
+    .contains(INVALID_ADDRESS_LINE1_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(8).textContent)
+    .contains(INVALID_ADDRESS_LINE2_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(9).textContent)
+    .contains(INVALID_ADDRESS_LINE3_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(10).textContent)
+    .contains(INVALID_ADDRESS_LINE4_MESSAGE)
 })
 
 test('Check clear button clears the form', async (t) => {

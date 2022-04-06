@@ -8,17 +8,17 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.phn" id="phn" label="Group Member's PHN" type="text" v-model="phn"/>
+          <AppInput :e-model="v$.phn" id="phn" label="Group Member's PHN" type="text" v-model="phn" />
         </AppCol>
       </AppRow>
-       <AppRow>
+      <AppRow>
         <AppCol class="col3">
           <AppInput :e-model="v$.groupMemberNumber" id="groupMemberNumber" label="Group Member Number" type="text" v-model.trim="groupMemberNumber" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.departmentNumber" id="departmentNumber" label="Department Number" type="text" v-model="departmentNumber"/>
+          <AppInput :e-model="v$.departmentNumber" id="departmentNumber" label="Department Number" type="text" v-model="departmentNumber" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -29,7 +29,7 @@
   </div>
   <br />
   <div id="confirmation" v-if="updateOk">
-    <p>PHN: {{ result?.phn }}</p>  
+    <p>PHN: {{ result?.phn }}</p>
     <AppButton @click="resetForm" mode="primary" type="button">Update Another Group Member</AppButton>
   </div>
 </template>
@@ -37,7 +37,7 @@
 <script>
 import GroupMemberService from '../../services/GroupMemberService'
 import useVuelidate from '@vuelidate/core'
-import { validateGroupNumber, validatePHN, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE } from '../../util/validators'
+import { validateGroupNumber, validateGroupMemberNumber, validateDepartmentNumber, validatePHN, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE } from '../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import { DEFAULT_ERROR_MESSAGE } from '../../util/constants.js'
 
@@ -45,31 +45,32 @@ export default {
   name: 'updateNumberAndDept',
   setup() {
     return {
-      v$: useVuelidate()}
+      v$: useVuelidate(),
+    }
   },
   data() {
     return {
-      groupNumber:'',
+      groupNumber: '',
       phn: '',
       groupMemberNumber: '',
       departmentNumber: '',
-      updateOk: false, 
-      searchMode : true,
+      updateOk: false,
+      searchMode: true,
       submitting: false,
       result: {
-        phn: '', 
+        phn: '',
         status: '',
         message: '',
-      }
+      },
     }
   },
   methods: {
     async submitForm() {
-      this.result = null 
+      this.result = null
       this.submitting = true
       this.updateOk = false
       this.searchMode = true
-      this.$store.commit("alert/dismissAlert")
+      this.$store.commit('alert/dismissAlert')
       try {
         const errors = []
         const isFormValid = await this.v$.$validate()
@@ -77,7 +78,7 @@ export default {
           errors.push(DEFAULT_ERROR_MESSAGE)
         }
 
-        const isMemberNumberAndDeptValid = this.validateMemberNumberAndDeptNumber();
+        const isMemberNumberAndDeptValid = this.validateMemberNumberAndDeptNumber()
         if (!isMemberNumberAndDeptValid) {
           errors.push('Group Member Number and/or Department Number is required')
         }
@@ -85,15 +86,17 @@ export default {
         if (!isFormValid || !isMemberNumberAndDeptValid) {
           this.showError(errors)
           return
-        } 
-       
-        this.result = (await GroupMemberService.updateNumberAndDept({
-          phn: this.phn,
-          groupNumber: this.groupNumber,
-          departmentNumber: this.departmentNumber,
-          groupMemberNumber: this.groupMemberNumber,         
-        })).data  
-        
+        }
+
+        this.result = (
+          await GroupMemberService.updateNumberAndDept({
+            phn: this.phn,
+            groupNumber: this.groupNumber,
+            departmentNumber: this.departmentNumber,
+            groupMemberNumber: this.groupMemberNumber,
+          })
+        ).data
+
         if (this.result.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.result.message)
           return
@@ -105,7 +108,6 @@ export default {
           this.$store.commit('alert/setSuccessAlert', this.result.message)
           return
         }
-      
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       } finally {
@@ -130,26 +132,29 @@ export default {
       this.searchMode = true
       this.submitting = false
       this.v$.$reset()
-      this.$store.commit("alert/dismissAlert") 
+      this.$store.commit('alert/dismissAlert')
     },
     validateMemberNumberAndDeptNumber() {
       return this.groupMemberNumber !== '' || this.departmentNumber !== ''
     },
-  },  
+  },
   validations() {
     return {
       phn: {
         required,
-        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN)
+        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
       },
-      groupNumber: { 
+      groupNumber: {
         required,
-        validateGroupNumber: helpers.withMessage(VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber)
+        validateGroupNumber: helpers.withMessage(VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber),
       },
-      groupMemberNumber: {},
-      departmentNumber: {},
-   
+      groupMemberNumber: {
+        validateGroupMemberNumber: helpers.withMessage(VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, validateGroupMemberNumber),
+      },
+      departmentNumber: {
+        validateDepartmentNumber: helpers.withMessage(VALIDATE_DEPARTMENT_NUMBER_MESSAGE, validateDepartmentNumber),
+      },
     }
-  }
+  },
 }
 </script>
