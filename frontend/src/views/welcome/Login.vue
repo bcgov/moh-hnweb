@@ -16,7 +16,7 @@
         <p>Please log-in to the MSP Direct using one of the IDs:</p>
         <AppButton @click="login('phsa')" class="btn-xxl" id="phsaLogin">Health Authority ID</AppButton>
         <AppButton @click="login('idir')" class="btn-xxl" id="idirLogin">IDIR</AppButton>
-        <AppButton @click="login('moh_idp')" class="btn-xxl" id="moh_idpLogin" v-if="!production">Keycloak</AppButton>
+        <AppButton @click="login('moh_idp')" class="btn-xxl" id="moh_idpLogin" v-if="enableKcLogin">Keycloak</AppButton>
         <AppButton @click="login('bcsc')" class="btn-xxl" id="bcscLogin" v-if="false">BC Services Card</AppButton>
         <AppButton @click="login('bceid_business')" id="bceid_businessLogin" class="btn-xxl" v-if="false">BCeID Business</AppButton>
       </section>
@@ -28,7 +28,7 @@
 export default {
   name: 'login',
   computed: {
-    production: () => import.meta.env.MODE === 'production',
+    enableKcLogin: () => config.ENABLE_KC_LOGIN || import.meta.env.VITE_ENABLE_KC_LOGIN,
   },
   methods: {
     login: function (idpHint) {
