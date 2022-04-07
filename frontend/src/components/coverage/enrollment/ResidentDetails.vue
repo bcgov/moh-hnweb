@@ -138,7 +138,19 @@
 <script>
 import AppSelect from '../../ui/AppSelect.vue'
 import useVuelidate from '@vuelidate/core'
-import { validateGroupNumber, validateGroupMemberNumber, validateDepartmentNumber, validateTelephone, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../../util/validators'
+import {
+  validateGroupNumber,
+  validateGroupMemberNumber,
+  validateDepartmentNumber,
+  validateTelephone,
+  validateMailingPostalCode,
+  validatePostalCode,
+  VALIDATE_GROUP_NUMBER_MESSAGE,
+  VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE,
+  VALIDATE_DEPARTMENT_NUMBER_MESSAGE,
+  VALIDATE_TELEPHONE_MESSAGE,
+  VALIDATE_POSTAL_CODE_MESSAGE,
+} from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT, IMMIGRATION_CODES, PROVINCES, PRIOR_RESIDENCES } from '../../../util/constants'
@@ -313,13 +325,18 @@ export default {
       address3: {},
       city: { required },
       province: { required },
-      postalCode: { required },
+      postalCode: {
+        required,
+        validatePostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validatePostalCode),
+      },
       mailingAddress1: {},
       mailingAddress2: {},
       mailingAddress3: {},
       mailingAddressCity: {},
       mailingAddressProvince: {},
-      mailingAddressPostalCode: {},
+      mailingAddressPostalCode: {
+        validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
+      },
       priorResidenceCode: { required },
       otherProvinceHealthcareNumber: {},
     }

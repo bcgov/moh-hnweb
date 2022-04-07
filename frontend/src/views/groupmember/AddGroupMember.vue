@@ -115,7 +115,7 @@
 import useVuelidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 import AddListDependent from '../../components/groupmember/AddListDependent.vue'
-import { validateGroupNumber, validateTelephone, validatePHN, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../util/validators'
+import { validateGroupNumber, validateTelephone, validatePHN, validatePostalCode, validateMailingPostalCode, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_POSTAL_CODE_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../util/validators'
 import GroupMemberService from '../../services/GroupMemberService'
 
 export default {
@@ -246,22 +246,16 @@ export default {
       this.groupMemberNumber = ''
       this.departmentNumber = ''
       ;(this.coverageEffectiveDate = null), (this.telephone = '')
-      this.homeAddress.addressLine1 = ''
-      this.homeAddress.addressLine2 = ''
-      this.homeAddress.addressLine3 = ''
-      this.homeAddress.addressLine4 = ''
-      this.homeAddress.postalCode = ''
-      this.mailingAddress.addressLine1 = ''
-      this.mailingAddress.addressLine2 = ''
-      this.mailingAddress.addressLine3 = ''
-      this.mailingAddress.addressLine4 = ''
-      this.mailingAddress.postalCode = ''
+      this.homeAddress = {}
+      this.mailingAddress = {}
       this.spousePhn = ''
       this.dependents = []
       this.result = null
       this.v$.$reset()
       this.$store.commit('alert/dismissAlert')
-      ;(this.submitting = false), (this.addOk = false), (this.addMode = true)
+      this.submitting = false
+      this.addOk = false
+      this.addMode = true
     },
   },
 
@@ -286,14 +280,19 @@ export default {
         addressLine2: {},
         addressLine3: {},
         addressLine4: {},
-        postalCode: { required },
+        postalCode: {
+          required,
+          validatePostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validatePostalCode),
+        },
       },
       mailingAddress: {
         addressLine1: {},
         addressLine2: {},
         addressLine3: {},
         addressLine4: {},
-        postalCode: {},
+        postalCode: {
+          validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
+        },
       },
       spousePhn: {
         validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),

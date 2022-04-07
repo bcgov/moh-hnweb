@@ -33,15 +33,48 @@ function validatePHNFormat(phn) {
     return false
   } else {
     for (let i = 1; i < 9; i++) {
-        digit = Number(phn.charAt(i))
-        checksum += (digit * phnSigDigits[i - 1]) % 11
+      digit = Number(phn.charAt(i))
+      checksum += (digit * phnSigDigits[i - 1]) % 11
     }
-    checksum = 11 - checksum % 11
+    checksum = 11 - (checksum % 11)
     if (Number(phn.charAt(9)) != checksum) {
       return false
     }
   }
   return true
+}
+
+/**
+ * Validates that the Postal Code matches the accepted format.
+ * This assumes the Postal Code also has a required validation.
+ */
+export function validatePostalCode(postalCode) {
+  if (!helpers.req(postalCode)) {
+    return true
+  }
+  return validatePostalCodeFormat(postalCode)
+}
+
+/**
+ * Validates that the Postal Code matches the accepted format.
+ * Must be of the format ANANAN (where "A" is alpha and "N" is numeric). Must start with one of the "ABCEGHJKLMNPRSTVWXYZ" i.e., be a Canada postal code
+ */
+export function validateMailingPostalCode(postalCode) {
+  if (postalCode === undefined || postalCode === '') {
+    return true
+  }
+  var regex = new RegExp(/^[ABCEGHJKLMNPRSTVWXYZ]\d[ABCEGHJKLMNPRSTVWXYZ]\d[ABCEGHJKLMNPRSTVWXYZ]\d$/i)
+
+  return regex.test(postalCode)
+}
+
+/**
+ * Must be of the format ANANAN (where "A" is alpha and "N" is numeric). Must start with "V" i.e., be a British Columbia postal code
+ */
+function validatePostalCodeFormat(postalCode) {
+  var regex = new RegExp(/^[V]\d[ABCEGHJKLMNPRSTVWXYZ]\d[ABCEGHJKLMNPRSTVWXYZ]\d$/i)
+
+  return regex.test(postalCode)
 }
 
 /**
@@ -62,7 +95,7 @@ export function validateDOB(dateOfBirth) {
  */
 export function validateGroupMemberNumber(groupMemberNumber) {
   return validateSpecialChars(groupMemberNumber, 9)
-} 
+}
 
 /**
  * Validate Department Number. It can be up to six (6) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid.
@@ -74,17 +107,17 @@ export function validateDepartmentNumber(departmentNumber) {
 /**
  * Only numbers 0 to 9 are valid. Phone Number must be entered as seven (10) numbers in length with no space or hyphen.
  */
- export function validateTelephone(telephone) {
+export function validateTelephone(telephone) {
   if (!helpers.req(telephone)) {
     return true
   }
   return validateNumber(telephone, 10)
-} 
+}
 
 /*
  * Validates that the Contract Number is valid.
  */
- export function validateContractNumber(contractNumber) {
+export function validateContractNumber(contractNumber) {
   if (!helpers.req(contractNumber)) {
     return true
   }
@@ -94,7 +127,7 @@ export function validateDepartmentNumber(departmentNumber) {
 /**
  * Validates that the Group Number is valid.
  */
- export function validateGroupNumber(groupNumber) {
+export function validateGroupNumber(groupNumber) {
   if (!helpers.req(groupNumber)) {
     return true
   }
@@ -114,7 +147,7 @@ function validateSpecialChars(input, length) {
   if (input.length > length) {
     return false
   }
-  var invalidChars = /[\\|^\&]/;  
+  var invalidChars = /[\\|^\&]/
   if (invalidChars.test(input)) {
     return false
   }
@@ -142,38 +175,39 @@ function validateNumber(input, length) {
 }
 
 function validateMod10(input) {
-	const numDigits = input.length
-	let sum = 0
-	let tmpDigit = 0
+  const numDigits = input.length
+  let sum = 0
+  let tmpDigit = 0
 
-	if (input.length % 2 === 0) {
+  if (input.length % 2 === 0) {
     // Even number of digits in String to check
-		for (let i = 0; i < numDigits; i += 2 ) {
-			// Odd Numbers
-			tmpDigit = Number(input.charAt(i))
-			sum += tmpDigit === 9 ? 9 : (tmpDigit * 2) % 9
-			// Even Numbers
-			sum += Number(input.charAt(i + 1))
-		}
-	} else {
+    for (let i = 0; i < numDigits; i += 2) {
+      // Odd Numbers
+      tmpDigit = Number(input.charAt(i))
+      sum += tmpDigit === 9 ? 9 : (tmpDigit * 2) % 9
+      // Even Numbers
+      sum += Number(input.charAt(i + 1))
+    }
+  } else {
     //Odd Number of digits in String to check
-		for (let i = 1; i < numDigits; i += 2) {
-			// Odd Numbers
-			sum += Number(input.charAt(i - 1))
-			// Even Numbers
-			tmpDigit = Number(input.charAt(i))
-			sum += tmpDigit === 9 ? 9 : (tmpDigit * 2) % 9
-		}
-		// Last odd Number
-		sum += Number(input.charAt(numDigits - 1))
-	}
-  return (sum % 10) === 0
+    for (let i = 1; i < numDigits; i += 2) {
+      // Odd Numbers
+      sum += Number(input.charAt(i - 1))
+      // Even Numbers
+      tmpDigit = Number(input.charAt(i))
+      sum += tmpDigit === 9 ? 9 : (tmpDigit * 2) % 9
+    }
+    // Last odd Number
+    sum += Number(input.charAt(numDigits - 1))
+  }
+  return sum % 10 === 0
 }
 
-export const VALIDATE_DOB_MESSAGE = "Date of Birth must not be in the future"
-export const VALIDATE_PHN_MESSAGE = "PHN format is invalid"
-export const VALIDATE_CONTRACT_NUMBER_MESSAGE = "MSP Contract Number is invalid"
-export const VALIDATE_GROUP_NUMBER_MESSAGE = "Group Number is invalid"
-export const VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE = "Group Member Number is invalid"
-export const VALIDATE_DEPARTMENT_NUMBER_MESSAGE = "Department Number is invalid"
-export const VALIDATE_TELEPHONE_MESSAGE = "Telephone is invalid. Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen."
+export const VALIDATE_DOB_MESSAGE = 'Date of Birth must not be in the future'
+export const VALIDATE_PHN_MESSAGE = 'PHN format is invalid'
+export const VALIDATE_CONTRACT_NUMBER_MESSAGE = 'MSP Contract Number is invalid'
+export const VALIDATE_GROUP_NUMBER_MESSAGE = 'Group Number is invalid'
+export const VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE = 'Group Member Number is invalid'
+export const VALIDATE_DEPARTMENT_NUMBER_MESSAGE = 'Department Number is invalid'
+export const VALIDATE_POSTAL_CODE_MESSAGE = 'Postal Code is invalid'
+export const VALIDATE_TELEPHONE_MESSAGE = 'Telephone is invalid. Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'

@@ -11,6 +11,7 @@ const EFFECTIVE_DATE_REQUIRED_MESSAGE = 'Coverage Effective Date is required'
 const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
 const HOME_ADDRESS_REQUIRED_MESSAGE = 'Home Address Line 1 is required'
 const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
+const INVALID_POSTAL_CODE_VALIDATION_MESSAGE = 'Postal Code is invalid'
 const SUCCESS_MESSAGE = 'RPBS0031 9882807277 PHN IS INELIGIBLE. PLEASE FORWARD SOURCE DOCS TO MSP'
 const PHONE_NUMBER_VALIDATION_MESSAGE = 'Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
 
@@ -69,6 +70,9 @@ test('Check invalid field validation', async (t) => {
     .click(AddGroupMember.phnInput)
     .typeText(AddGroupMember.phnInput, '9000444000')
     .typeText(AddGroupMember.telephoneInput, '7807777')
+    .typeText(AddGroupMember.address1Input, 'Test 111 ST')
+    .typeText(AddGroupMember.postalCodeInput, 'T6T6T6')
+    .typeText(AddGroupMember.mailingPostalCodeInput, 'TTTTTT')
     // When I click the submit button
     .click(AddGroupMember.submitButton)
     // I expect an error message stating the page had errors and an individual error message for invalid inputs
@@ -78,6 +82,10 @@ test('Check invalid field validation', async (t) => {
     .contains(INVALID_PHN_ERROR_MESSAGE)
     .expect(AddGroupMember.errorText.nth(2).textContent)
     .contains(PHONE_NUMBER_VALIDATION_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(3).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(4).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
 })
@@ -106,7 +114,7 @@ test('Check invalid dependent PHN format', async (t) => {
 
 test('Check click Remove icon removes selected dependent', async (t) => {
   await t
-    // Given a Group Number entered with an invalid format
+    // Given a Group Number entered with an valid format
     .typeText(AddGroupMember.dependentPhn, '9882807277')
     //When I click Add buttton
     .click(AddGroupMember.addButton)

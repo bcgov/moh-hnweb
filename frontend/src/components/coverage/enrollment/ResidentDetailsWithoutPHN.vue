@@ -151,11 +151,14 @@ import {
   validateDepartmentNumber,
   validateDOB,
   validateTelephone,
+  validateMailingPostalCode,
+  validatePostalCode,
   VALIDATE_GROUP_NUMBER_MESSAGE,
   VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE,
   VALIDATE_DEPARTMENT_NUMBER_MESSAGE,
   VALIDATE_DOB_MESSAGE,
   VALIDATE_TELEPHONE_MESSAGE,
+  VALIDATE_POSTAL_CODE_MESSAGE,
 } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
@@ -347,13 +350,18 @@ export default {
       address3: {},
       city: { required },
       province: { required },
-      postalCode: { required },
+      postalCode: {
+        required,
+        validatePostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validatePostalCode),
+      },
       mailingAddress1: {},
       mailingAddress2: {},
       mailingAddress3: {},
       mailingAddressCity: {},
       mailingAddressProvince: {},
-      mailingAddressPostalCode: {},
+      mailingAddressPostalCode: {
+        validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
+      },
       priorResidenceCode: { required },
       otherProvinceHealthcareNumber: {},
     }

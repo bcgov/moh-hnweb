@@ -27,6 +27,7 @@ const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
 const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
 const INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE = 'Group Member Number is invalid'
 const INVALID_DEPARTMENT_NUMBER_VALIDATION_MESSAGE = 'Department Number is invalid'
+const INVALID_POSTAL_CODE_VALIDATION_MESSAGE = 'Postal Code is invalid'
 const PHONE_NUMBER_VALIDATION_MESSAGE = 'Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addStudyPermitHolderWithPHN'
@@ -88,7 +89,7 @@ test('Check properly filled form passes validation', async (t) => {
     .typeText(AddVisaResidentWithPHNPage.visaExpiryDateInput, '20221231')
     .typeText(AddVisaResidentWithPHNPage.residenceDateInput, '20191108')
     .typeText(AddVisaResidentWithPHNPage.coverageEffectiveDateInput, '20210401')
-    .typeText(AddVisaResidentWithPHNPage.coverageCancellationDateInput, '20211231')
+    .typeText(AddVisaResidentWithPHNPage.coverageCancellationDateInput, '20221231')
     .typeText(AddVisaResidentWithPHNPage.telephoneInput, '7802024022')
     .typeText(AddVisaResidentWithPHNPage.address1Input, 'Test 111 ST')
     .typeText(AddVisaResidentWithPHNPage.cityInput, 'VICTORIA')
@@ -96,7 +97,7 @@ test('Check properly filled form passes validation', async (t) => {
     .click(provinceOption.withText('British Columbia'))
     .typeText(AddVisaResidentWithPHNPage.postalCodeInput, 'V8V8V8')
     .click(AddVisaResidentWithPHNPage.priorResidenceCodeInput)
-    .click(priorResidenceCodeOption.withText('British Columbia'))
+    .click(priorResidenceCodeOption.withText('Alberta'))
 
     // When I click the submit button
     .click(AddVisaResidentWithPHNPage.submitButton)
@@ -115,6 +116,12 @@ test('Check invalid field validation', async (t) => {
     .typeText(AddVisaResidentWithPHNPage.groupMemberNumberInput, '9000444000')
     .typeText(AddVisaResidentWithPHNPage.departmentNumberInput, '9000444^^')
     .typeText(AddVisaResidentWithPHNPage.telephoneInput, '7807777')
+    .typeText(AddVisaResidentWithPHNPage.address1Input, 'Test 111 ST')
+    .typeText(AddVisaResidentWithPHNPage.cityInput, 'VICTORIA')
+    .click(AddVisaResidentWithPHNPage.provinceSelect)
+    .click(provinceOption.withText('British Columbia'))
+    .typeText(AddVisaResidentWithPHNPage.postalCodeInput, 'T8T8T8')
+    .typeText(AddVisaResidentWithPHNPage.mailingPostalCodeInput, 'tttttt')
     // When I click the submit button
     .click(AddVisaResidentWithPHNPage.submitButton)
     // I expect an error message stating the page had errors and an individual error message for the PHN format
@@ -126,6 +133,10 @@ test('Check invalid field validation', async (t) => {
     .contains(INVALID_DEPARTMENT_NUMBER_VALIDATION_MESSAGE)
     .expect(AddVisaResidentWithPHNPage.errorText.nth(7).textContent)
     .contains(PHONE_NUMBER_VALIDATION_MESSAGE)
+    .expect(AddVisaResidentWithPHNPage.errorText.nth(9).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .expect(AddVisaResidentWithPHNPage.errorText.nth(10).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
 })

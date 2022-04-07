@@ -58,7 +58,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput id="mailingPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddress.postalCode" />
+          <AppInput :e-model="v$.mailingAddress.postalCode" id="mailingPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddress.postalCode" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -76,7 +76,7 @@
 <script>
 import useVuelidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
-import { validateGroupNumber, validatePHN, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE } from '../../util/validators'
+import { validateGroupNumber, validatePHN, validatePostalCode, validateMailingPostalCode, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_POSTAL_CODE_MESSAGE } from '../../util/validators'
 import MspContractsService from '../../services/MspContractsService'
 
 export default {
@@ -194,7 +194,15 @@ export default {
       },
       homeAddress: {
         addressLine1: { required },
-        postalCode: { required },
+        postalCode: {
+          required,
+          validatePostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validatePostalCode),
+        },
+      },
+      mailingAddress: {
+        postalCode: {
+          validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
+        },
       },
     }
   },
