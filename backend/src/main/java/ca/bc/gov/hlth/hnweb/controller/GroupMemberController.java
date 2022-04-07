@@ -83,7 +83,7 @@ public class GroupMemberController extends BaseController {
 			logger.info("addDependentResponse response: {} ", addDependentResponse);
 			
 			transactionComplete(transaction);
-			addAffectedParty(transaction, IdentifierType.PHN, addDependentResponse.getPhn(), AffectedPartyDirection.INBOUND);
+			addAffectedParty(transaction, IdentifierType.PHN, addDependentResponse.getPhn(), AffectedPartyDirection.OUTBOUND);
 			
 			return response;
 		} catch (Exception e) {
@@ -136,7 +136,7 @@ public class GroupMemberController extends BaseController {
 			logger.info("updateNumberAndDept response: {} ", updateNumberAndDeptResponse);
 
 			transactionComplete(transaction);
-			addAffectedParty(transaction, IdentifierType.PHN, updateNumberAndDeptResponse.getPhn(), AffectedPartyDirection.INBOUND);
+			addAffectedParty(transaction, IdentifierType.PHN, updateNumberAndDeptResponse.getPhn(), AffectedPartyDirection.OUTBOUND);
 			
 			return response;
 		} catch (Exception e) {
@@ -169,7 +169,7 @@ public class GroupMemberController extends BaseController {
 			logger.info("addGroupMemberResponse response: {} ", addGroupMemberResponse);
 			
 			transactionComplete(transaction);
-			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberResponse.getPhn(), AffectedPartyDirection.INBOUND);
+			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberResponse.getPhn(), AffectedPartyDirection.OUTBOUND);
 
 			return response;
 		} catch (Exception e) {
@@ -202,7 +202,7 @@ public class GroupMemberController extends BaseController {
 			logger.info("cancelGroupMemberResponse response: {} ", cancelGroupMemberResponse);
 
 			transactionComplete(transaction);
-			addAffectedParty(transaction, IdentifierType.PHN, cancelGroupMemberResponse.getPhn(), AffectedPartyDirection.INBOUND);
+			addAffectedParty(transaction, IdentifierType.PHN, cancelGroupMemberResponse.getPhn(), AffectedPartyDirection.OUTBOUND);
 
 			return response;	
 		} catch (Exception e) {
@@ -235,7 +235,7 @@ public class GroupMemberController extends BaseController {
 			logger.info("CancelDependentResponse response: {} ", cancelDependentResponse);
 			
 			transactionComplete(transaction);
-			addAffectedParty(transaction, IdentifierType.PHN, cancelDependentResponse.getPhn(), AffectedPartyDirection.INBOUND);
+			addAffectedParty(transaction, IdentifierType.PHN, cancelDependentResponse.getPhn(), AffectedPartyDirection.OUTBOUND);
 
 			return response;	
 		} catch (Exception e) {
@@ -279,74 +279,74 @@ public class GroupMemberController extends BaseController {
 
 	private Transaction auditAddGroupMemberStart(AddGroupMemberRequest addGroupMemberRequest, HttpServletRequest request) {
 		Transaction transaction = transactionStart(request, TransactionType.ADD_GROUP_MEMBER);
-		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, addGroupMemberRequest.getGroupNumber(), AffectedPartyDirection.OUTBOUND);
-		addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getPhn(), AffectedPartyDirection.OUTBOUND);
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, addGroupMemberRequest.getGroupNumber(), AffectedPartyDirection.INBOUND);
+		addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getPhn(), AffectedPartyDirection.INBOUND);
 		if (StringUtils.isNotBlank(addGroupMemberRequest.getGroupMemberNumber())) {
-			addAffectedParty(transaction, IdentifierType.GROUP_MEMBER_NUMBER, addGroupMemberRequest.getGroupMemberNumber(), AffectedPartyDirection.OUTBOUND);
+			addAffectedParty(transaction, IdentifierType.GROUP_MEMBER_NUMBER, addGroupMemberRequest.getGroupMemberNumber(), AffectedPartyDirection.INBOUND);
 		}
 		if (StringUtils.isNotBlank(addGroupMemberRequest.getDepartmentNumber())) {
-			addAffectedParty(transaction, IdentifierType.DEPARTMENT_NUMBER, addGroupMemberRequest.getDepartmentNumber(), AffectedPartyDirection.OUTBOUND);
+			addAffectedParty(transaction, IdentifierType.DEPARTMENT_NUMBER, addGroupMemberRequest.getDepartmentNumber(), AffectedPartyDirection.INBOUND);
 		}
 		if (StringUtils.isNotBlank(addGroupMemberRequest.getSpousePhn())) {
-			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getSpousePhn(), AffectedPartyDirection.OUTBOUND);
+			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getSpousePhn(), AffectedPartyDirection.INBOUND);
 		}
 		if (StringUtils.isNotBlank(addGroupMemberRequest.getDependentPhn1())) {
-			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn1(), AffectedPartyDirection.OUTBOUND);
+			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn1(), AffectedPartyDirection.INBOUND);
 		}
 		if (StringUtils.isNotBlank(addGroupMemberRequest.getDependentPhn2())) {
-			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn2(), AffectedPartyDirection.OUTBOUND);
+			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn2(), AffectedPartyDirection.INBOUND);
 		}
 		if (StringUtils.isNotBlank(addGroupMemberRequest.getDependentPhn3())) {
-			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn3(), AffectedPartyDirection.OUTBOUND);
+			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn3(), AffectedPartyDirection.INBOUND);
 		}
 		if (StringUtils.isNotBlank(addGroupMemberRequest.getDependentPhn4())) {
-			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn4(), AffectedPartyDirection.OUTBOUND);
+			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn4(), AffectedPartyDirection.INBOUND);
 		}
 		if (StringUtils.isNotBlank(addGroupMemberRequest.getDependentPhn5())) {
-			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn5(), AffectedPartyDirection.OUTBOUND);
+			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn5(), AffectedPartyDirection.INBOUND);
 		}
 		if (StringUtils.isNotBlank(addGroupMemberRequest.getDependentPhn6())) {
-			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn6(), AffectedPartyDirection.OUTBOUND);
+			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn6(), AffectedPartyDirection.INBOUND);
 		}
 		if (StringUtils.isNotBlank(addGroupMemberRequest.getDependentPhn7())) {
-			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn7(), AffectedPartyDirection.OUTBOUND);
+			addAffectedParty(transaction, IdentifierType.PHN, addGroupMemberRequest.getDependentPhn7(), AffectedPartyDirection.INBOUND);
 		}
 		return transaction;
 	}
 
 	private Transaction auditAddDependentStart(AddDependentRequest addDependentRequest, HttpServletRequest request) {
 		Transaction transaction = transactionStart(request, TransactionType.ADD_DEPENDENT);
-		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, addDependentRequest.getGroupNumber(), AffectedPartyDirection.OUTBOUND);
-		addAffectedParty(transaction, IdentifierType.PHN, addDependentRequest.getPhn(), AffectedPartyDirection.OUTBOUND);
-		addAffectedParty(transaction, IdentifierType.PHN, addDependentRequest.getDependentPhn(), AffectedPartyDirection.OUTBOUND);
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, addDependentRequest.getGroupNumber(), AffectedPartyDirection.INBOUND);
+		addAffectedParty(transaction, IdentifierType.PHN, addDependentRequest.getPhn(), AffectedPartyDirection.INBOUND);
+		addAffectedParty(transaction, IdentifierType.PHN, addDependentRequest.getDependentPhn(), AffectedPartyDirection.INBOUND);
 		return transaction;
 	}
 
 	private Transaction auditUpdateNumberAndDeptStart(UpdateNumberAndDeptRequest updateNumberAndDeptRequest, HttpServletRequest request) {
 		Transaction transaction = transactionStart(request, TransactionType.UPDATE_NUMBER_AND_OR_DEPT);
-		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, updateNumberAndDeptRequest.getGroupNumber(), AffectedPartyDirection.OUTBOUND);
-		addAffectedParty(transaction, IdentifierType.PHN, updateNumberAndDeptRequest.getPhn(), AffectedPartyDirection.OUTBOUND);
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, updateNumberAndDeptRequest.getGroupNumber(), AffectedPartyDirection.INBOUND);
+		addAffectedParty(transaction, IdentifierType.PHN, updateNumberAndDeptRequest.getPhn(), AffectedPartyDirection.INBOUND);
 		if (StringUtils.isNotBlank(updateNumberAndDeptRequest.getGroupMemberNumber())) {
-			addAffectedParty(transaction, IdentifierType.GROUP_MEMBER_NUMBER, updateNumberAndDeptRequest.getGroupMemberNumber(), AffectedPartyDirection.OUTBOUND);
+			addAffectedParty(transaction, IdentifierType.GROUP_MEMBER_NUMBER, updateNumberAndDeptRequest.getGroupMemberNumber(), AffectedPartyDirection.INBOUND);
 		}
 		if (StringUtils.isNotBlank(updateNumberAndDeptRequest.getDepartmentNumber())) {
-			addAffectedParty(transaction, IdentifierType.DEPARTMENT_NUMBER, updateNumberAndDeptRequest.getDepartmentNumber(), AffectedPartyDirection.OUTBOUND);
+			addAffectedParty(transaction, IdentifierType.DEPARTMENT_NUMBER, updateNumberAndDeptRequest.getDepartmentNumber(), AffectedPartyDirection.INBOUND);
 		}
 		return transaction;
 	}
 
 	private Transaction auditCancelGroupMemberStart(CancelGroupMemberRequest cancelGroupMemberRequest, HttpServletRequest request) {
 		Transaction transaction = transactionStart(request, TransactionType.CANCEL_GROUP_MEMBER);
-		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, cancelGroupMemberRequest.getGroupNumber(), AffectedPartyDirection.OUTBOUND);
-		addAffectedParty(transaction, IdentifierType.PHN, cancelGroupMemberRequest.getPhn(), AffectedPartyDirection.OUTBOUND);
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, cancelGroupMemberRequest.getGroupNumber(), AffectedPartyDirection.INBOUND);
+		addAffectedParty(transaction, IdentifierType.PHN, cancelGroupMemberRequest.getPhn(), AffectedPartyDirection.INBOUND);
 		return transaction;
 	}
 	
 	private Transaction auditCancelDependentStart(CancelDependentRequest cancelDependentRequest, HttpServletRequest request) {
 		Transaction transaction = transactionStart(request, TransactionType.CANCEL_DEPENDENT);
-		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, cancelDependentRequest.getGroupNumber(), AffectedPartyDirection.OUTBOUND);
-		addAffectedParty(transaction, IdentifierType.PHN, cancelDependentRequest.getPhn(), AffectedPartyDirection.OUTBOUND);
-		addAffectedParty(transaction, IdentifierType.PHN, cancelDependentRequest.getDependentPhn(), AffectedPartyDirection.OUTBOUND);
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, cancelDependentRequest.getGroupNumber(), AffectedPartyDirection.INBOUND);
+		addAffectedParty(transaction, IdentifierType.PHN, cancelDependentRequest.getPhn(), AffectedPartyDirection.INBOUND);
+		addAffectedParty(transaction, IdentifierType.PHN, cancelDependentRequest.getDependentPhn(), AffectedPartyDirection.INBOUND);
 		return transaction;
 	}
 
