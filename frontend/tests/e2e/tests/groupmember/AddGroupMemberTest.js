@@ -72,6 +72,7 @@ test('Check invalid field validation', async (t) => {
     .typeText(AddGroupMember.telephoneInput, '7807777')
     .typeText(AddGroupMember.address1Input, 'Test 111 ST')
     .typeText(AddGroupMember.postalCodeInput, 'T6T6T6')
+    .typeText(AddGroupMember.mailingPostalCodeInput, 'TTTTTT')
     // When I click the submit button
     .click(AddGroupMember.submitButton)
     // I expect an error message stating the page had errors and an individual error message for invalid inputs
@@ -82,6 +83,8 @@ test('Check invalid field validation', async (t) => {
     .expect(AddGroupMember.errorText.nth(2).textContent)
     .contains(PHONE_NUMBER_VALIDATION_MESSAGE)
     .expect(AddGroupMember.errorText.nth(3).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(4).textContent)
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
