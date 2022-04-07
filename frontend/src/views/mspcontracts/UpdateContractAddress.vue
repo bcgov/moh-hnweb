@@ -18,17 +18,17 @@
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput id="addressLine2" label="Line 2 (Optional)" type="text" v-model="homeAddress.addressLine2" />
+          <AppInput :e-model="v$.homeAddress.addressLine2" id="addressLine2" label="Line 2 (Optional)" type="text" v-model="homeAddress.addressLine2" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput id="addressLine3" label="Line 3 (Optional)" type="text" v-model="homeAddress.addressLine3" />
+          <AppInput :e-model="v$.homeAddress.addressLine3" id="addressLine3" label="Line 3 (Optional)" type="text" v-model="homeAddress.addressLine3" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput id="addressLine4" label="Line 4 (Optional)" type="text" v-model="homeAddress.addressLine4" />
+          <AppInput :e-model="v$.homeAddress.addressLine4" id="addressLine4" label="Line 4 (Optional)" type="text" v-model="homeAddress.addressLine4" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -38,22 +38,22 @@
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput id="mailingAddress1" label="Mailing Address (if different from home address)" v-model="mailingAddress.addressLine1" />
+          <AppInput :e-model="v$.mailingAddress.addressLine1" id="mailingAddress1" label="Mailing Address (if different from home address)" v-model="mailingAddress.addressLine1" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput id="mailingAddress2" label="Line 2 (Optional)" v-model="mailingAddress.addressLine2" />
+          <AppInput :e-model="v$.mailingAddress.addressLine2" id="mailingAddress2" label="Line 2 (Optional)" v-model="mailingAddress.addressLine2" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput id="mailingAddress3" label="Line 3 (Optional)" v-model="mailingAddress.addressLine3" />
+          <AppInput :e-model="v$.mailingAddress.addressLine3" id="mailingAddress3" label="Line 3 (Optional)" v-model="mailingAddress.addressLine3" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <AppInput id="mailingAddress4" label="Line 4 (Optional)" v-model="mailingAddress.addressLine4" />
+          <AppInput :e-model="v$.mailingAddress.addressLine4" id="mailingAddress4" label="Line 4 (Optional)" v-model="mailingAddress.addressLine4" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -76,7 +76,20 @@
 <script>
 import useVuelidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
-import { validateGroupNumber, validatePHN, validatePostalCode, validateMailingPostalCode, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_POSTAL_CODE_MESSAGE } from '../../util/validators'
+import {
+  validateGroupNumber,
+  validatePHN,
+  validatePostalCode,
+  validateMailingPostalCode,
+  validateAddress,
+  VALIDATE_ADDRESS_LINE1_MESSAGE,
+  VALIDATE_ADDRESS_LINE2_MESSAGE,
+  VALIDATE_ADDRESS_LINE3_MESSAGE,
+  VALIDATE_ADDRESS_LINE4_MESSAGE,
+  VALIDATE_GROUP_NUMBER_MESSAGE,
+  VALIDATE_PHN_MESSAGE,
+  VALIDATE_POSTAL_CODE_MESSAGE,
+} from '../../util/validators'
 import MspContractsService from '../../services/MspContractsService'
 
 export default {
@@ -193,13 +206,37 @@ export default {
         validateGroupNumber: helpers.withMessage(VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber),
       },
       homeAddress: {
-        addressLine1: { required },
+        addressLine1: {
+          required,
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateAddress),
+        },
+        addressLine2: {
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
+        },
+        addressLine3: {
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateAddress),
+        },
+        addressLine4: {
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE4_MESSAGE, validateAddress),
+        },
         postalCode: {
           required,
           validatePostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validatePostalCode),
         },
       },
       mailingAddress: {
+        addressLine1: {
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
+        },
+        addressLine2: {
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
+        },
+        addressLine3: {
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
+        },
+        addressLine4: {
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
+        },
         postalCode: {
           validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
         },

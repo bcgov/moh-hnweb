@@ -3,12 +3,18 @@ import AlertPage from '../../pages/AlertPage'
 import { SITE_UNDER_TEST } from '../../configuration'
 import { regularAccUser } from '../../roles/roles'
 
+const INVALID_ADDRESS_LINE1_MESSAGE = 'Address Line 1 is invalid'
+const INVALID_ADDRESS_LINE2_MESSAGE = 'Address Line 2 is invalid'
+const INVALID_ADDRESS_LINE3_MESSAGE = 'Address Line 3 is invalid'
+const INVALID_ADDRESS_LINE4_MESSAGE = 'Address Line 4 is invalid'
 const ERROR_MESSAGE = 'Please correct errors before submitting'
 const PHN_REQUIRED_MESSAGE = 'PHN is required'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'
 const GROUP_NUMBER_REQUIRED_MESSAGE = 'Group Number is required'
 const EFFECTIVE_DATE_REQUIRED_MESSAGE = 'Coverage Effective Date is required'
 const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
+const INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE = 'Group Member Number is invalid'
+const INVALID_DEPARTMENT_NUMBER_ERROR_MESSAGE = 'Group Department is invalid'
 const HOME_ADDRESS_REQUIRED_MESSAGE = 'Home Address Line 1 is required'
 const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
 const INVALID_POSTAL_CODE_VALIDATION_MESSAGE = 'Postal Code is invalid'
@@ -69,8 +75,13 @@ test('Check invalid field validation', async (t) => {
     .click(AddGroupMember.divSelectedDate)
     .click(AddGroupMember.phnInput)
     .typeText(AddGroupMember.phnInput, '9000444000')
+    .typeText(AddGroupMember.groupMemberNumberInput, '!@#!@#')
+    .typeText(AddGroupMember.departmentNumberInput, '!@12345')
     .typeText(AddGroupMember.telephoneInput, '7807777')
-    .typeText(AddGroupMember.address1Input, 'Test 111 ST')
+    .typeText(AddGroupMember.address1Input, 'Test 111 ST!@#$%')
+    .typeText(AddGroupMember.address2Input, 'Test 111 ST()_+{}')
+    .typeText(AddGroupMember.address3Input, '!@#!@#')
+    .typeText(AddGroupMember.address4Input, '{}{}{}}')
     .typeText(AddGroupMember.postalCodeInput, 'T6T6T6')
     .typeText(AddGroupMember.mailingPostalCodeInput, 'TTTTTT')
     // When I click the submit button

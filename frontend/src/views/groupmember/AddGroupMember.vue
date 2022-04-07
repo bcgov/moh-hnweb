@@ -115,7 +115,22 @@
 import useVuelidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 import AddListDependent from '../../components/groupmember/AddListDependent.vue'
-import { validateGroupNumber, validateTelephone, validatePHN, validatePostalCode, validateMailingPostalCode, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_POSTAL_CODE_MESSAGE, VALIDATE_TELEPHONE_MESSAGE } from '../../util/validators'
+import {
+  validateGroupNumber,
+  validateTelephone,
+  validatePHN,
+  validatePostalCode,
+  validateMailingPostalCode,
+  validateAddress,
+  VALIDATE_ADDRESS_LINE1_MESSAGE,
+  VALIDATE_ADDRESS_LINE2_MESSAGE,
+  VALIDATE_ADDRESS_LINE3_MESSAGE,
+  VALIDATE_ADDRESS_LINE4_MESSAGE,
+  VALIDATE_GROUP_NUMBER_MESSAGE,
+  VALIDATE_PHN_MESSAGE,
+  VALIDATE_POSTAL_CODE_MESSAGE,
+  VALIDATE_TELEPHONE_MESSAGE,
+} from '../../util/validators'
 import GroupMemberService from '../../services/GroupMemberService'
 
 export default {
@@ -276,20 +291,37 @@ export default {
         validateTelephone: helpers.withMessage(VALIDATE_TELEPHONE_MESSAGE, validateTelephone),
       },
       homeAddress: {
-        addressLine1: { required },
-        addressLine2: {},
-        addressLine3: {},
-        addressLine4: {},
+        addressLine1: {
+          required,
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateAddress),
+        },
+        addressLine2: {
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
+        },
+        addressLine3: {
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateAddress),
+        },
+        addressLine4: {
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE4_MESSAGE, validateAddress),
+        },
         postalCode: {
           required,
           validatePostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validatePostalCode),
         },
       },
       mailingAddress: {
-        addressLine1: {},
-        addressLine2: {},
-        addressLine3: {},
-        addressLine4: {},
+        addressLine1: {
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
+        },
+        addressLine2: {
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
+        },
+        addressLine3: {
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
+        },
+        addressLine4: {
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
+        },
         postalCode: {
           validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
         },

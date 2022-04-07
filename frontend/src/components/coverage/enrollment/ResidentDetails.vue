@@ -145,6 +145,7 @@ import {
   validateTelephone,
   validateMailingPostalCode,
   validatePostalCode,
+  validateAddress,
   VALIDATE_ADDRESS_LINE1_MESSAGE,
   VALIDATE_ADDRESS_LINE2_MESSAGE,
   VALIDATE_ADDRESS_LINE3_MESSAGE,
