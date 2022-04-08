@@ -153,6 +153,10 @@ import {
   validateTelephone,
   validateMailingPostalCode,
   validatePostalCode,
+  validateAddress,
+  validateOptinalAddress,
+  validateMailingAddressForVisaResident,
+  VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE,
   VALIDATE_ADDRESS_LINE1_MESSAGE,
   VALIDATE_ADDRESS_LINE2_MESSAGE,
   VALIDATE_ADDRESS_LINE3_MESSAGE,
@@ -163,7 +167,7 @@ import {
   VALIDATE_TELEPHONE_MESSAGE,
   VALIDATE_POSTAL_CODE_MESSAGE,
 } from '../../../util/validators'
-import { required, helpers } from '@vuelidate/validators'
+import { required, requiredIf, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT, IMMIGRATION_CODES, PROVINCES, PRIOR_RESIDENCES } from '../../../util/constants'
 import { formatPersonName } from '../../../util/utils'
@@ -365,13 +369,14 @@ export default {
         validatePostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validatePostalCode),
       },
       mailingAddress1: {
-        validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateAddress),
+        required: helpers.withMessage(VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForVisaResident)),
+        validateOptinalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateOptinalAddress),
       },
       mailingAddress2: {
-        validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
+        validateOptinalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateOptinalAddress),
       },
       mailingAddress3: {
-        validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateAddress),
+        validateOptinalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateOptinalAddress),
       },
       mailingAddressCity: {},
       mailingAddressProvince: {},

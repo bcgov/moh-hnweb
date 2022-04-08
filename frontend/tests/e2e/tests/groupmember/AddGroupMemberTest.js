@@ -14,8 +14,9 @@ const GROUP_NUMBER_REQUIRED_MESSAGE = 'Group Number is required'
 const EFFECTIVE_DATE_REQUIRED_MESSAGE = 'Coverage Effective Date is required'
 const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
 const INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE = 'Group Member Number is invalid'
-const INVALID_DEPARTMENT_NUMBER_ERROR_MESSAGE = 'Group Department is invalid'
+const INVALID_DEPARTMENT_NUMBER_ERROR_MESSAGE = 'Department Number is invalid'
 const HOME_ADDRESS_REQUIRED_MESSAGE = 'Home Address Line 1 is required'
+const MAILING_ADDRESS_REQUIRED_MESSAGE = 'Mailing Address Line 1 is required'
 const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
 const INVALID_POSTAL_CODE_VALIDATION_MESSAGE = 'Postal Code is invalid'
 const SUCCESS_MESSAGE = 'RPBS0031 9882807277 PHN IS INELIGIBLE. PLEASE FORWARD SOURCE DOCS TO MSP'
@@ -49,6 +50,31 @@ test('Check required fields validation', async (t) => {
     .contains(POSTAL_CODE_REQUIRED_MESSAGE)
 })
 
+test('Check required Mailing Address field validation', async (t) => {
+  await t
+    // When I click the submit button
+    .click(AddGroupMember.submitButton)
+    .wait(1000)
+    .typeText(AddGroupMember.mailingAddress2Input, 'TEST ADDRESS LINE 2')
+    // I expect an error message stating the page had errors and individual error messages for each required field
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(0).textContent)
+    .contains(GROUP_NUMBER_REQUIRED_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(1).textContent)
+    .contains(EFFECTIVE_DATE_REQUIRED_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(2).textContent)
+    .contains(PHN_REQUIRED_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(3).textContent)
+    .contains(HOME_ADDRESS_REQUIRED_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(4).textContent)
+    .contains(POSTAL_CODE_REQUIRED_MESSAGE)
+
+    //Although Mailing Address Line 1 is optional, if any other mailing address line is completed, it becomes required
+    .expect(AddGroupMember.errorText.nth(5).textContent)
+    .contains(MAILING_ADDRESS_REQUIRED_MESSAGE)
+})
+
 test('Check properly filled form passes validation', async (t) => {
   await t
     // Given the page is filled out correctly
@@ -75,14 +101,18 @@ test('Check invalid field validation', async (t) => {
     .click(AddGroupMember.divSelectedDate)
     .click(AddGroupMember.phnInput)
     .typeText(AddGroupMember.phnInput, '9000444000')
-    .typeText(AddGroupMember.groupMemberNumberInput, '!@#!@#')
-    .typeText(AddGroupMember.departmentNumberInput, '!@12345')
+    .typeText(AddGroupMember.groupMemberNumberInput, '!@^^^')
+    .typeText(AddGroupMember.departmentNumberInput, '!@^^34')
     .typeText(AddGroupMember.telephoneInput, '7807777')
     .typeText(AddGroupMember.address1Input, 'Test 111 ST!@#$%')
     .typeText(AddGroupMember.address2Input, 'Test 111 ST()_+{}')
     .typeText(AddGroupMember.address3Input, '!@#!@#')
     .typeText(AddGroupMember.address4Input, '{}{}{}}')
     .typeText(AddGroupMember.postalCodeInput, 'T6T6T6')
+    .typeText(AddGroupMember.mailingAddress1Input, 'Test 111 ST!@#$%')
+    .typeText(AddGroupMember.mailingAddress2Input, 'Test 111 ST()_+{}')
+    .typeText(AddGroupMember.mailingAddress3Input, '!@#!@#')
+    .typeText(AddGroupMember.mailingAddress4Input, '{}{}{}}')
     .typeText(AddGroupMember.mailingPostalCodeInput, 'TTTTTT')
     // When I click the submit button
     .click(AddGroupMember.submitButton)
@@ -92,10 +122,30 @@ test('Check invalid field validation', async (t) => {
     .expect(AddGroupMember.errorText.nth(1).textContent)
     .contains(INVALID_PHN_ERROR_MESSAGE)
     .expect(AddGroupMember.errorText.nth(2).textContent)
-    .contains(PHONE_NUMBER_VALIDATION_MESSAGE)
+    .contains(INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE)
     .expect(AddGroupMember.errorText.nth(3).textContent)
-    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .contains(INVALID_DEPARTMENT_NUMBER_ERROR_MESSAGE)
     .expect(AddGroupMember.errorText.nth(4).textContent)
+    .contains(PHONE_NUMBER_VALIDATION_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(5).textContent)
+    .contains(INVALID_ADDRESS_LINE1_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(6).textContent)
+    .contains(INVALID_ADDRESS_LINE2_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(7).textContent)
+    .contains(INVALID_ADDRESS_LINE3_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(8).textContent)
+    .contains(INVALID_ADDRESS_LINE4_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(9).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(10).textContent)
+    .contains(INVALID_ADDRESS_LINE1_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(11).textContent)
+    .contains(INVALID_ADDRESS_LINE2_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(12).textContent)
+    .contains(INVALID_ADDRESS_LINE3_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(13).textContent)
+    .contains(INVALID_ADDRESS_LINE4_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(14).textContent)
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)

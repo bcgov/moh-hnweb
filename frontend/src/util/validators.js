@@ -143,7 +143,20 @@ export function validateGroupNumber(groupNumber) {
 /**
  * Validate that input is allowed length and that it contains no invalid characters
  */
+export function validateOptinalAddress(address) {
+  if (address === undefined || address === '') {
+    return true
+  }
+  return validateSpecialCharactersForAddress(address, 25)
+}
+
+/**
+ * Validate that input is allowed length and that it contains no invalid characters
+ */
 export function validateAddress(address) {
+  if (!helpers.req(address)) {
+    return true
+  }
   return validateSpecialCharactersForAddress(address, 25)
 }
 
@@ -159,6 +172,20 @@ function validateSpecialCharactersForAddress(input, length) {
     return false
   }
   return true
+}
+
+/**
+ * Used to validate that Mailing Address line 1 must be completed if any other Mailing Address(Line 2, Line 3, Line 4, PostalCode) is complete
+ */
+export function validateMailingAddress() {
+  return !(this.mailingAddress.addressLine2 === '') || !(this.mailingAddress.addressLine3 === '') || !(this.mailingAddress.addressLine4 === '') || !(this.mailingAddress.postalCode === '')
+}
+
+/**
+ * Used to validate that Mailing Address line 1 must be completed if any other Mailing Address(Line 2, Line 3, PostalCode) is complete
+ */
+export function validateMailingAddressForVisaResident() {
+  return !(this.mailingAddress2 === '') || !(this.mailingAddress3 === '') || !(this.mailingAddressPostalCode === '')
 }
 
 /**
@@ -223,6 +250,7 @@ function validateMod10(input) {
   }
   return sum % 10 === 0
 }
+export const VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE = 'Mailing Address Line 1 is required'
 export const VALIDATE_ADDRESS_LINE1_MESSAGE = 'Address Line 1 is invalid'
 export const VALIDATE_ADDRESS_LINE2_MESSAGE = 'Address Line 2 is invalid'
 export const VALIDATE_ADDRESS_LINE3_MESSAGE = 'Address Line 3 is invalid'

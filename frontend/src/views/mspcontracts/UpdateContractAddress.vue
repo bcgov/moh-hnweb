@@ -75,13 +75,16 @@
 </template>
 <script>
 import useVuelidate from '@vuelidate/core'
-import { required, helpers } from '@vuelidate/validators'
+import { required, requiredIf, helpers } from '@vuelidate/validators'
 import {
   validateGroupNumber,
   validatePHN,
   validatePostalCode,
   validateMailingPostalCode,
   validateAddress,
+  validateOptinalAddress,
+  validateMailingAddress,
+  VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE,
   VALIDATE_ADDRESS_LINE1_MESSAGE,
   VALIDATE_ADDRESS_LINE2_MESSAGE,
   VALIDATE_ADDRESS_LINE3_MESSAGE,
@@ -226,16 +229,17 @@ export default {
       },
       mailingAddress: {
         addressLine1: {
-          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
+          required: helpers.withMessage(VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE, requiredIf(validateMailingAddress)),
+          validateOptinalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateOptinalAddress),
         },
         addressLine2: {
-          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
+          validateOptinalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateOptinalAddress),
         },
         addressLine3: {
-          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
+          validateOptinalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateOptinalAddress),
         },
         addressLine4: {
-          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
+          validateOptinalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE4_MESSAGE, validateOptinalAddress),
         },
         postalCode: {
           validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
