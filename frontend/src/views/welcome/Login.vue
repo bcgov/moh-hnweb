@@ -1,17 +1,11 @@
 <template>
   <AppRow>
     <AppCol class="col3">
-      <section id="menu">
-        <ul>
-          <li><a href="#">What is new MSP Direct?</a></li>
-          <li><router-link :to="{ name: 'CredentialsInfo' }">What are new log-in Credentials</router-link></li>
-          <li><a href="https://www2.gov.bc.ca/gov/content/health/practitioner-professional-resources/system-access/msp-direct" target="_blank">Transactions in MSP Direct?</a></li>
-          <li><a href="https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/identity-and-authentication-services" target="_blank">Get BC Services Card or BCeID</a></li>
-        </ul>
-      </section>
+      <WelcomeNav />
     </AppCol>
     <AppCol>
       <section id="loginButtons">
+        <h1>MSP Direct Login</h1>
         <p>Welcome to the new-and-improved MSP Direct website. MSP Direct is an online business service, authorized by the Ministry of Health, that allows group plan administrators to do a number of adjustments to their group members account.</p>
         <p>Please log-in to the MSP Direct using one of the IDs:</p>
         <AppButton @click="login('phsa')" class="btn-xxl" id="phsaLogin">Health Authority ID</AppButton>
@@ -25,8 +19,10 @@
 </template>
 
 <script>
+import WelcomeNav from '../../components/welcome/WelcomeNav.vue'
 export default {
   name: 'login',
+  components: { WelcomeNav },
   computed: {
     enableKcLogin: () => config.ENABLE_KC_LOGIN || import.meta.env.VITE_ENABLE_KC_LOGIN,
   },
@@ -41,17 +37,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-#menu {
-  background-color: #ffffff;
-  border: 2px solid #38598a;
-  border-radius: 4px;
-  margin: 5px 0 5px 0;
-  padding: 5px;
-}
-
-li {
-  margin-bottom: 10px;
-}
-</style>
