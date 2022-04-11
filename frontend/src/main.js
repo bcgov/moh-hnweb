@@ -3,7 +3,7 @@ import '@bcgov/bc-sans/css/BCSans.css'
 import { createApp } from 'vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faBullhorn, faCheckCircle, faChevronDown, faExclamationCircle, faExclamationTriangle, faInfoCircle, faQuestionCircle, faSpinner, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { faBullhorn, faCheckCircle, faChevronDown, faExclamationCircle, faExclamationTriangle, faExternalLinkAlt, faInfoCircle, faQuestionCircle, faSpinner, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import App from './App.vue'
@@ -15,20 +15,19 @@ import AppInput from './components/ui/AppInput.vue'
 import AppOutput from './components/ui/AppOutput.vue'
 import AppSelect from './components/ui/AppSelect.vue'
 import keycloak from './keycloak'
-import router from './router'
+import { createRouter } from './router'
 import UserService from './services/UserService'
 import store from './store'
 
-keycloak.onAuthSuccess = async function () {
-  // Retrieve the User permissions immediately after Keycloak login
-  // The permissions are required by the router which may be invoked
-  // before App is created
-  // Once the permissions data is available, then we create the App
-  // If permission retrieval fails, then still create the App and
-  // the router will handle it
+keycloak.onReady = async function (authenticated) {
+  // Only initialize the application after keycloak is ready
+  // otherwise the router won't have the correct authentication
+  // info to work with
   try {
-    const data = (await UserService.getPermissions()).data
-    store.dispatch('auth/setPermissions', data)
+    if (authenticated) {
+      const data = (await UserService.getPermissions()).data
+      store.dispatch('auth/setPermissions', data)
+    }
   } catch (err) {
     store.commit('alert/setErrorAlert', `${err}`)
   } finally {
@@ -48,8 +47,10 @@ function initApp() {
   app.component('AppOutput', AppOutput)
   app.component('AppSelect', AppSelect)
 
+  const router = createRouter(app)
   app.use(router)
   app.use(store)
+
   app.config.globalProperties.$keycloak = keycloak
 
   library.add(faBullhorn)
@@ -57,6 +58,7 @@ function initApp() {
   library.add(faChevronDown)
   library.add(faExclamationCircle)
   library.add(faExclamationTriangle)
+  library.add(faExternalLinkAlt)
   library.add(faInfoCircle)
   library.add(faSpinner)
   library.add(faTimes)

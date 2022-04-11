@@ -1,9 +1,10 @@
-import AddVisaResidentWithPHNPage from '../../pages/enrollment/AddVisaResidentWithPHNPage'
-import AlertPage from '../../pages/AlertPage'
-import { OUTPUT_DATE_FORMAT } from '../../../../src/util/constants'
-import PersonDetails from '../../pages/enrollment/PersonDetailsPage'
-import { SITE_UNDER_TEST } from '../../configuration'
 import dayjs from 'dayjs'
+
+import { OUTPUT_DATE_FORMAT } from '../../../../src/util/constants'
+import { SITE_UNDER_TEST } from '../../configuration'
+import AlertPage from '../../pages/AlertPage'
+import AddVisaResidentWithPHNPage from '../../pages/enrollment/AddVisaResidentWithPHNPage'
+import PersonDetails from '../../pages/enrollment/PersonDetailsPage'
 import { regularAccUser } from '../../roles/roles'
 
 const immigrationCodeOption = AddVisaResidentWithPHNPage.immigrationCodeSelect.find('option')
@@ -33,9 +34,9 @@ const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addStudyPermitHolde
 
 fixture(`AddVisaResidentWithPHN Page`).disablePageCaching`Test AddVisaResidentWithPHN`
   .beforeEach(async (t) => {
-    await t.useRole(regularAccUser)
+    await t.useRole(regularAccUser).navigateTo(PAGE_TO_TEST)
   })
-  .page(PAGE_TO_TEST)
+  .page(SITE_UNDER_TEST)
 
 test('Check required fields validation', async (t) => {
   await t
