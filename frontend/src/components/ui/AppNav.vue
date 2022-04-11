@@ -26,8 +26,8 @@ export default {
   background-repeat: no-repeat;
   line-height: 20px;
   margin-top: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 :slotted(li.current) {
