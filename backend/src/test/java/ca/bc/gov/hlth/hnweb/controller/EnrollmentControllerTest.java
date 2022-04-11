@@ -70,7 +70,7 @@ public class EnrollmentControllerTest extends BaseControllerTest {
 
 		//Check the response
 		assertEquals(StatusEnum.ERROR, enrollSubscriber.getBody().getStatus());
-		assertEquals("SYSTEM ERROR", enrollSubscriber.getBody().getMessage());
+		assertEquals("NHR529E SYSTEM ERROR", enrollSubscriber.getBody().getMessage());
 		
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -95,7 +95,7 @@ public class EnrollmentControllerTest extends BaseControllerTest {
 
 		//Check the response
 		assertEquals(StatusEnum.ERROR, enrollSubscriber.getBody().getStatus());
-		assertEquals("COVERAGE MUST BE MORE THAN 2 MONTHS AFTER VISA ISSUE/RESIDENCE DATE", enrollSubscriber.getBody().getMessage());
+		assertEquals("HRPB187E COVERAGE MUST BE MORE THAN 2 MONTHS AFTER VISA ISSUE/RESIDENCE DATE", enrollSubscriber.getBody().getMessage());
 		
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -122,7 +122,7 @@ public class EnrollmentControllerTest extends BaseControllerTest {
 		//Check the response
 		assertEquals(StatusEnum.SUCCESS, enrollSubscriber.getBody().getStatus());
 		
-		assertEquals("SUCCESSFULLY COMPLETED", enrollSubscriber.getBody().getMessage());
+		assertEquals("HJMB001I SUCCESSFULLY COMPLETED", enrollSubscriber.getBody().getMessage());
 		
 		
 		//Check the client request is sent as expected
@@ -148,7 +148,7 @@ public class EnrollmentControllerTest extends BaseControllerTest {
 
 		//Check the response
 		assertEquals(StatusEnum.SUCCESS, enrollSubscriber.getBody().getStatus());
-		assertEquals("SUCCESSFULLY COMPLETED", enrollSubscriber.getBody().getMessage());
+		assertEquals("HJMB001I SUCCESSFULLY COMPLETED", enrollSubscriber.getBody().getMessage());
 		assertEquals("9873808694", enrollSubscriber.getBody().getPhn());
 		
 		
