@@ -143,7 +143,7 @@ export function validateGroupNumber(groupNumber) {
 /**
  * Validate that input is allowed length and that it contains no invalid characters
  */
-export function validateOptinalAddress(address) {
+export function validateOptionalAddress(address) {
   if (address === undefined || address === '') {
     return true
   }
@@ -178,14 +178,14 @@ function validateSpecialCharactersForAddress(input, length) {
  * Used to validate that Mailing Address line 1 must be completed if any other Mailing Address(Line 2, Line 3, Line 4, PostalCode) is complete
  */
 export function validateMailingAddress() {
-  return !(this.mailingAddress.addressLine2 === '') || !(this.mailingAddress.addressLine3 === '') || !(this.mailingAddress.addressLine4 === '') || !(this.mailingAddress.postalCode === '')
+  return this.mailingAddress.addressLine2 !== '' || this.mailingAddress.addressLine3 !== '' || this.mailingAddress.addressLine4 !== '' || this.mailingAddress.postalCode !== ''
 }
 
 /**
  * Used to validate that Mailing Address line 1 must be completed if any other Mailing Address(Line 2, Line 3, PostalCode) is complete
  */
 export function validateMailingAddressForVisaResident() {
-  return !(this.mailingAddress2 === '') || !(this.mailingAddress3 === '') || !(this.mailingAddressPostalCode === '')
+  return this.mailingAddress2 !== '' || this.mailingAddress3 !== '' || this.mailingAddressPostalCode !== ''
 }
 
 /**

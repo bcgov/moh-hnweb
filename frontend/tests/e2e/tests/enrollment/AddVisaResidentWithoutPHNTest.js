@@ -134,7 +134,6 @@ test('Check required fields validation for Mailing Address', async (t) => {
 
 test('Check properly filled form passes validation', async (t) => {
   await t
-    .setTestSpeed(0.3)
     .typeText(NameSearchPage.surnameInput, 'Test')
     .typeText(NameSearchPage.firstNameInput, 'Test')
     .typeText(NameSearchPage.dateOfBirthInput, '20001108')
