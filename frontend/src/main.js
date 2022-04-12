@@ -29,7 +29,9 @@ keycloak.onReady = async function (authenticated) {
       store.dispatch('auth/setPermissions', data)
     }
   } catch (err) {
-    store.commit('alert/setErrorAlert', `${err}`)
+    /* The error will only be thrown from the API when no role is found and in that case an appropriate unauthorized page will be shown,
+     so it does not need to be handled or displayed here.
+     */
   } finally {
     initApp()
   }
