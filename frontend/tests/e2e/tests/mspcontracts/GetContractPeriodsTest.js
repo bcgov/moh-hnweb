@@ -1,6 +1,6 @@
-import GetContractPeriodsPage from '../../pages/mspcontracts/GetContractPeriodsPage'
-import AlertPage from '../../pages/AlertPage'
 import { SITE_UNDER_TEST } from '../../configuration'
+import AlertPage from '../../pages/AlertPage'
+import GetContractPeriodsPage from '../../pages/mspcontracts/GetContractPeriodsPage'
 import { regularAccUser } from '../../roles/roles'
 
 const ERROR_MESSAGE = 'Please correct errors before submitting'
@@ -13,9 +13,9 @@ const PAGE_TO_TEST = SITE_UNDER_TEST + '/mspContracts/getContractPeriods'
 
 fixture(`GetContractPeriods Page`).disablePageCaching`Test GetContractPeriods`
   .beforeEach(async (t) => {
-    await t.useRole(regularAccUser)
+    await t.useRole(regularAccUser).navigateTo(PAGE_TO_TEST)
   })
-  .page(PAGE_TO_TEST)
+  .page(SITE_UNDER_TEST)
 
 test('Check required fields validation', async (t) => {
   await t

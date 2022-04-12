@@ -3,7 +3,7 @@
     <div class="container">
       <div>
         <ul>
-          <li>
+          <li v-if="authenticated">
             <router-link :to="{ name: 'Home' }">Home</router-link>
           </li>
           <li>
@@ -35,6 +35,11 @@ export default {
     return {
       version: import.meta.env.VITE_APP_VERSION,
     }
+  },
+  computed: {
+    authenticated() {
+      return this.$keycloak.authenticated
+    },
   },
 }
 </script>

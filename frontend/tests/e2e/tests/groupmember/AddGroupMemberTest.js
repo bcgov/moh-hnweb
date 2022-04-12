@@ -1,6 +1,6 @@
-import AddGroupMember from '../../pages/groupmember/AddGroupMember'
-import AlertPage from '../../pages/AlertPage'
 import { SITE_UNDER_TEST } from '../../configuration'
+import AlertPage from '../../pages/AlertPage'
+import AddGroupMember from '../../pages/groupmember/AddGroupMember'
 import { regularAccUser } from '../../roles/roles'
 
 const INVALID_ADDRESS_LINE1_MESSAGE = 'Address Line 1 is invalid'
@@ -26,9 +26,9 @@ const PAGE_TO_TEST = SITE_UNDER_TEST + '/groupmember/AddGroupMember'
 
 fixture(`AddGroupMember Page`).disablePageCaching`Test AddGroupMember`
   .beforeEach(async (t) => {
-    await t.useRole(regularAccUser)
+    await t.useRole(regularAccUser).navigateTo(PAGE_TO_TEST)
   })
-  .page(PAGE_TO_TEST)
+  .page(SITE_UNDER_TEST)
 
 test('Check required fields validation', async (t) => {
   await t

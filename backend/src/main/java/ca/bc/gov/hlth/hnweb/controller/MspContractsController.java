@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPCI0Converter;
-import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPMC0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPMA0Converter;
+import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPMC0Converter;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPCI0;
-import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPMC0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPMA0;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPMC0;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.ContractInquiryRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.ContractInquiryResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.GetContractPeriodsRequest;
@@ -150,7 +150,7 @@ public class MspContractsController extends BaseController {
 			HttpServletRequest request) {
 		Transaction transaction = transactionStart(request, TransactionType.GET_CONTRACT_PERIODS);
 		addAffectedParty(transaction, IdentifierType.PHN, getContractPeriodsRequest.getPhn(),
-				AffectedPartyDirection.OUTBOUND);
+				AffectedPartyDirection.INBOUND);
 		return transaction;
 	}
 
@@ -161,22 +161,22 @@ public class MspContractsController extends BaseController {
 
 		transactionComplete(transaction);
 		addAffectedParty(transaction, IdentifierType.PHN, getContractPeriodsResponse.getPhn(),
-				AffectedPartyDirection.INBOUND);
+				AffectedPartyDirection.OUTBOUND);
 		auditedPhns.add(getContractPeriodsResponse.getPhn());
 
 		getContractPeriodsResponse.getBeneficiaryContractPeriods().forEach(bcp -> {
 			if (!auditedPhns.contains(bcp.getPhn())) {
-				addAffectedParty(transaction, IdentifierType.PHN, bcp.getPhn(), AffectedPartyDirection.INBOUND);
+				addAffectedParty(transaction, IdentifierType.PHN, bcp.getPhn(), AffectedPartyDirection.OUTBOUND);
 				auditedPhns.add(bcp.getPhn());
 			}
 			if (!auditedGroupNumbers.contains(bcp.getGroupNumber())) {
 				addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, bcp.getGroupNumber(),
-						AffectedPartyDirection.INBOUND);
+						AffectedPartyDirection.OUTBOUND);
 				auditedGroupNumbers.add(bcp.getGroupNumber());
 			}
 			if (!auditedPhns.contains(bcp.getContractHolder())) {
 				addAffectedParty(transaction, IdentifierType.PHN, bcp.getContractHolder(),
-						AffectedPartyDirection.INBOUND);
+						AffectedPartyDirection.OUTBOUND);
 				auditedPhns.add(bcp.getContractHolder());
 			}
 		});
@@ -186,9 +186,9 @@ public class MspContractsController extends BaseController {
 			HttpServletRequest request) {
 		Transaction transaction = transactionStart(request, TransactionType.CONTRACT_INQUIRY);
 		addAffectedParty(transaction, IdentifierType.PHN, contractInquiryRequest.getPhn(),
-				AffectedPartyDirection.OUTBOUND);
+				AffectedPartyDirection.INBOUND);
 		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, contractInquiryRequest.getGroupNumber(),
-				AffectedPartyDirection.OUTBOUND);
+				AffectedPartyDirection.INBOUND);
 		return transaction;
 	}
 
@@ -197,12 +197,12 @@ public class MspContractsController extends BaseController {
 
 		transactionComplete(transaction);
 		addAffectedParty(transaction, IdentifierType.PHN, contractInquiryResponse.getPhn(),
-				AffectedPartyDirection.INBOUND);
+				AffectedPartyDirection.OUTBOUND);
 		auditedPhns.add(contractInquiryResponse.getPhn());
 
 		contractInquiryResponse.getContractInquiryBeneficiaries().forEach(cib -> {
 			if (!auditedPhns.contains(cib.getPhn())) {
-				addAffectedParty(transaction, IdentifierType.PHN, cib.getPhn(), AffectedPartyDirection.INBOUND);
+				addAffectedParty(transaction, IdentifierType.PHN, cib.getPhn(), AffectedPartyDirection.OUTBOUND);
 				auditedPhns.add(cib.getPhn());
 			}
 		});
@@ -212,9 +212,9 @@ public class MspContractsController extends BaseController {
 			HttpServletRequest request) {
 		Transaction transaction = transactionStart(request, TransactionType.UPDATE_CONTRACT_ADDRESS);
 		addAffectedParty(transaction, IdentifierType.PHN, updateContractAddressRequest.getPhn(),
-				AffectedPartyDirection.OUTBOUND);
+				AffectedPartyDirection.INBOUND);
 		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, updateContractAddressRequest.getGroupNumber(),
-				AffectedPartyDirection.OUTBOUND);
+				AffectedPartyDirection.INBOUND);
 		return transaction;
 	}
 
@@ -222,6 +222,6 @@ public class MspContractsController extends BaseController {
 			UpdateContractAddressResponse updateContractAddressResponse) {
 		transactionComplete(transaction);
 		addAffectedParty(transaction, IdentifierType.PHN, updateContractAddressResponse.getPhn(),
-				AffectedPartyDirection.INBOUND);
+				AffectedPartyDirection.OUTBOUND);
 	}
 }

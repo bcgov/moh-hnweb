@@ -4,8 +4,9 @@ const config = (() => {
   return {
     // APP_TITLE: '',
     // KEYCLOAK_URL: '',
-    // SITEMINDER_LOGOUT: '',
     // SERVICE_URL: '',
     // KEYCLOAK_CLIENT_ID:,
+    // USER_TRANSFER_URL: '',
+    // ENABLE_KC_LOGIN: true,
   }
 })()

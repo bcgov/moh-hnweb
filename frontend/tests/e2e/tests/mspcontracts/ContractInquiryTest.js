@@ -1,6 +1,6 @@
+import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import ContractInquiryPage from '../../pages/mspcontracts/ContractInquiryPage'
-import { SITE_UNDER_TEST } from '../../configuration'
 import { regularAccUser } from '../../roles/roles'
 
 const ERROR_MESSAGE = 'Please correct errors before submitting'
@@ -15,9 +15,9 @@ const PAGE_TO_TEST = SITE_UNDER_TEST + '/mspContracts/contractInquiry'
 
 fixture(`Contract Inquiry Page`).disablePageCaching`Test Contract Inquiry`
   .beforeEach(async (t) => {
-    await t.useRole(regularAccUser)
+    await t.useRole(regularAccUser).navigateTo(PAGE_TO_TEST)
   })
-  .page(PAGE_TO_TEST)
+  .page(SITE_UNDER_TEST)
 
 test('Check required fields validation', async (t) => {
   await t
@@ -86,9 +86,9 @@ test('Check properly filled form passes validation and validate results', async 
     .expect(ContractInquiryPage.resultsRow1.child('td').nth(6).textContent)
     .eql('20220301')
     .expect(ContractInquiryPage.resultsRow1.child('td').nth(7).textContent)
-    .eql('20220228')
+    .eql('')
     .expect(ContractInquiryPage.resultsRow1.child('td').nth(8).textContent)
-    .eql('E')
+    .eql(' ')
     // Validate the last row
     .expect(ContractInquiryPage.resultsRow3.child('td').nth(0).textContent)
     .eql('9348175493')
@@ -128,23 +128,23 @@ test('Check properly filled form passes validation and validate results when mor
     .expect(ContractInquiryPage.personInfo.nth(4).textContent)
     .contains('Line 15951 WDSOU YF')
     .expect(ContractInquiryPage.personInfo.nth(5).textContent)
-    .contains('Line 15951 WDSOU YF')
+    .contains('Line 15961 WDSOU ZF')
     .expect(ContractInquiryPage.personInfo.nth(6).textContent)
-    .contains('Line 2ZT 5')
+    .contains('Line 2ZT5')
     .expect(ContractInquiryPage.personInfo.nth(7).textContent)
-    .contains('Line 2ZT 5')
+    .contains('Line 2ZT6')
     .expect(ContractInquiryPage.personInfo.nth(8).textContent)
-    .contains('Line 3CRESTON BC')
+    .contains('Line 3ZT5')
     .expect(ContractInquiryPage.personInfo.nth(9).textContent)
     .contains('Line 3CRESTON BC')
     .expect(ContractInquiryPage.personInfo.nth(10).textContent)
-    .contains('Line 4')
+    .contains('Line 4ARMSTRONG')
     .expect(ContractInquiryPage.personInfo.nth(11).textContent)
     .contains('Line 4')
     .expect(ContractInquiryPage.personInfo.nth(12).textContent)
-    .contains('Postal CodeV4D7N7')
+    .contains('Postal CodeV4D7D7')
     .expect(ContractInquiryPage.personInfo.nth(13).textContent)
-    .contains('Postal CodeV4D7N7')
+    .contains('Postal CodeV8V8V8')
     .expect(ContractInquiryPage.personInfo.nth(14).textContent)
     .contains('Telephone250 6301086')
     .expect(ContractInquiryPage.personInfo.nth(15).textContent)
