@@ -552,7 +552,7 @@ public class EligibilityControllerTest extends BaseControllerTest {
 
 		// Check the response
         assertEquals(StatusEnum.SUCCESS, lookupPhnResponse.getStatus());
-        assertEquals("TRANSACTION SUCCESSFUL", lookupPhnResponse.getMessage());
+        assertEquals("RPBS9014 TRANSACTION SUCCESSFUL", lookupPhnResponse.getMessage());
 		
 		// Check the client request is sent as expected
         List<LookupPhnBeneficiary> beneficiaries = lookupPhnResponse.getBeneficiaries();

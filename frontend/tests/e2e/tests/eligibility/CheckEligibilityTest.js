@@ -1,10 +1,10 @@
-import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import CheckEligibilityPage from '../../pages/eligibility/CheckEligibilityPage'
+import { SITE_UNDER_TEST } from '../../configuration'
 import { regularAccUser } from '../../roles/roles'
 
 const ERROR_MESSAGE = 'Please correct errors before submitting'
-const SUCCESS_MESSAGE = 'SUCCESSFULLY COMPLETED'
+const SUCCESS_MESSAGE = 'HJMB001I SUCCESSFULLY COMPLETED'
 const PHN_REQUIRED_MESSAGE = 'PHN is required'
 const DATE_TO_CHECK_REQUIRED_MESSAGE = 'Date to Check is required'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'
@@ -58,43 +58,59 @@ test('Check properly filled form passes validation for an ineligible PHN', async
     // I expect a success message
     .expect(AlertPage.alertBannerText.textContent)
     .contains(SUCCESS_MESSAGE)
-  // And the results to be populated
-  .expect(CheckEligibilityPage.result.exists).ok()
-  .expect(CheckEligibilityPage.resultRow1.exists).ok()
-  .expect(CheckEligibilityPage.resultRow1.child('div').nth(0).child('span').textContent).eql('9395568139') 
-  .expect(CheckEligibilityPage.resultRow1.child('div').nth(1).child('span').textContent).eql('NO')
+    // And the results to be populated
+    .expect(CheckEligibilityPage.result.exists)
+    .ok()
+    .expect(CheckEligibilityPage.resultRow1.exists)
+    .ok()
+    .expect(CheckEligibilityPage.resultRow1.child('div').nth(0).child('span').textContent)
+    .eql('9395568139')
+    .expect(CheckEligibilityPage.resultRow1.child('div').nth(1).child('span').textContent)
+    .eql('NO')
 
-  .expect(CheckEligibilityPage.resultRow2.exists).ok()
-  .expect(CheckEligibilityPage.resultRow2.child('div').nth(0).child('span').textContent).eql('20190731')
-  .expect(CheckEligibilityPage.resultRow2.child('div').nth(1).child('span').textContent).eql('OUT OF PROVINCE MOVE')
-  .expect(CheckEligibilityPage.resultRow2.child('div').nth(2).child('span').textContent).eql('')
+    .expect(CheckEligibilityPage.resultRow2.exists)
+    .ok()
+    .expect(CheckEligibilityPage.resultRow2.child('div').nth(0).child('span').textContent)
+    .eql('20190731')
+    .expect(CheckEligibilityPage.resultRow2.child('div').nth(1).child('span').textContent)
+    .eql('OUT OF PROVINCE MOVE')
+    .expect(CheckEligibilityPage.resultRow2.child('div').nth(2).child('span').textContent)
+    .eql('')
 
-  .expect(CheckEligibilityPage.clientInstructions.textContent).eql('MSP\'S RECORDS INDICATE THAT THIS PERSON HAS MOVED PERMANENTLY FROM BC. PLEASE CONFIRM RESIDENCE, OBTAIN AND UPDATE ADDRESS AND TELEPHONE INFORMATION AND ADVISE PERSON TO CONTACT MSP TO RE-ESTABLISH ELIGIBILITY.')
+    .expect(CheckEligibilityPage.clientInstructions.textContent)
+    .eql("MSP'S RECORDS INDICATE THAT THIS PERSON HAS MOVED PERMANENTLY FROM BC. PLEASE CONFIRM RESIDENCE, OBTAIN AND UPDATE ADDRESS AND TELEPHONE INFORMATION AND ADVISE PERSON TO CONTACT MSP TO RE-ESTABLISH ELIGIBILITY.")
 })
 
-
 test('Check properly filled form passes validation for an eligible PHN', async (t) => {
-    await t
-      // Given the page is filled out correctly
-      .typeText(CheckEligibilityPage.phnInput, '9347984074')
-      .click(CheckEligibilityPage.eligibilityDate)
-      .pressKey('tab')
-      // When I click the submit button
-      .click(CheckEligibilityPage.submitButton)
-      // I expect a success message
-      .expect(AlertPage.alertBannerText.textContent)
-      .contains(SUCCESS_MESSAGE)
+  await t
+    // Given the page is filled out correctly
+    .typeText(CheckEligibilityPage.phnInput, '9347984074')
+    .click(CheckEligibilityPage.eligibilityDate)
+    .pressKey('tab')
+    // When I click the submit button
+    .click(CheckEligibilityPage.submitButton)
+    // I expect a success message
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(SUCCESS_MESSAGE)
     // And the results to be populated
-    .expect(CheckEligibilityPage.result.exists).ok()
-    .expect(CheckEligibilityPage.resultRow1.exists).ok()
-    .expect(CheckEligibilityPage.resultRow1.child('div').nth(0).child('span').textContent).eql('9347984074') 
-    .expect(CheckEligibilityPage.resultRow1.child('div').nth(1).child('span').textContent).eql('YES')
-  
-    .expect(CheckEligibilityPage.resultRow2.exists).ok()
-    .expect(CheckEligibilityPage.resultRow2.child('div').nth(0).child('span').textContent).eql('')
-    .expect(CheckEligibilityPage.resultRow2.child('div').nth(1).child('span').textContent).eql('')
-    .expect(CheckEligibilityPage.resultRow2.child('div').nth(2).child('span').textContent).eql('')
-  })
+    .expect(CheckEligibilityPage.result.exists)
+    .ok()
+    .expect(CheckEligibilityPage.resultRow1.exists)
+    .ok()
+    .expect(CheckEligibilityPage.resultRow1.child('div').nth(0).child('span').textContent)
+    .eql('9347984074')
+    .expect(CheckEligibilityPage.resultRow1.child('div').nth(1).child('span').textContent)
+    .eql('YES')
+
+    .expect(CheckEligibilityPage.resultRow2.exists)
+    .ok()
+    .expect(CheckEligibilityPage.resultRow2.child('div').nth(0).child('span').textContent)
+    .eql('')
+    .expect(CheckEligibilityPage.resultRow2.child('div').nth(1).child('span').textContent)
+    .eql('')
+    .expect(CheckEligibilityPage.resultRow2.child('div').nth(2).child('span').textContent)
+    .eql('')
+})
 
 test('Check clear button clears the form', async (t) => {
   await t
