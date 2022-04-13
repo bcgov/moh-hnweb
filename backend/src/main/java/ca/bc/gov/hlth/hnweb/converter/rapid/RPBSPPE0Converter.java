@@ -87,7 +87,7 @@ public class RPBSPPE0Converter extends BaseRapidConverter {
 		} else {
 			response.setStatus(StatusEnum.SUCCESS);
 			// If the entire result is a success then just return a single message
-			response.setMessage(successMessage);
+			response.setMessage(STATUS_CODE_SUCCESS + " " + successMessage);
 		}
 		
 		return response;
