@@ -12,13 +12,13 @@ const INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE = 'Group Member Number is invali
 const INVALID_DEPARTMENT_NUMBER_ERROR_MESSAGE = 'Department Number is invalid'
 const GROUP_NUMBER_DEPARTMENT_REQUIRED_MESSAGE = 'Group Member Number and/or Department Number is required'
 
-const PAGE_TO_TEST = SITE_UNDER_TEST + '/groupmember/UpdateNumberAndDept'
+const PAGE_TO_TEST = SITE_UNDER_TEST + '/groupMember/updateNumberAndDept'
 
 fixture(`UpdateNumberAndDept Page`).disablePageCaching`Test UpdateNumberAndDept`
   .beforeEach(async (t) => {
-    await t.useRole(regularAccUser)
+    await t.useRole(regularAccUser).navigateTo(PAGE_TO_TEST)
   })
-  .page(PAGE_TO_TEST)
+  .page(SITE_UNDER_TEST)
 
 test('Check required fields validation', async (t) => {
   await t

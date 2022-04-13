@@ -82,7 +82,7 @@ import {
   validatePostalCode,
   validateMailingPostalCode,
   validateAddress,
-  validateOptinalAddress,
+  validateOptionalAddress,
   validateMailingAddress,
   VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE,
   VALIDATE_ADDRESS_LINE1_MESSAGE,
@@ -230,16 +230,16 @@ export default {
       mailingAddress: {
         addressLine1: {
           required: helpers.withMessage(VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE, requiredIf(validateMailingAddress)),
-          validateOptinalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateOptinalAddress),
+          validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateOptionalAddress),
         },
         addressLine2: {
-          validateOptinalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateOptinalAddress),
+          validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateOptionalAddress),
         },
         addressLine3: {
-          validateOptinalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateOptinalAddress),
+          validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateOptionalAddress),
         },
         addressLine4: {
-          validateOptinalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE4_MESSAGE, validateOptinalAddress),
+          validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE4_MESSAGE, validateOptionalAddress),
         },
         postalCode: {
           validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),

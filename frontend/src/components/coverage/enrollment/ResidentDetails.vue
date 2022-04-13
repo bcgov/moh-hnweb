@@ -146,7 +146,7 @@ import {
   validateMailingPostalCode,
   validatePostalCode,
   validateAddress,
-  validateOptinalAddress,
+  validateOptionalAddress,
   validateMailingAddressForVisaResident,
   VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE,
   VALIDATE_ADDRESS_LINE1_MESSAGE,
@@ -345,13 +345,13 @@ export default {
       },
       mailingAddress1: {
         required: helpers.withMessage(VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForVisaResident)),
-        validateOptinalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateOptinalAddress),
+        validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateOptionalAddress),
       },
       mailingAddress2: {
-        validateOptinalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateOptinalAddress),
+        validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateOptionalAddress),
       },
       mailingAddress3: {
-        validateOptinalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateOptinalAddress),
+        validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateOptionalAddress),
       },
       mailingAddressCity: {},
       mailingAddressProvince: {},

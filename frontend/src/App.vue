@@ -10,7 +10,7 @@
 
 <template>
   <TheHeader/>
-  <TheNavBar v-if="isAuthorized"/>
+  <TheNavBar/>
   <main>
     <section class="content">
       <TheAlert/>
@@ -18,7 +18,7 @@
     </section>
     <KeycloakDevTools v-if="dev"/>
   </main>
-  <TheFooter v-if="isAuthorized"/>
+  <TheFooter/>
 </template>
 
 <script>
@@ -29,11 +29,6 @@
         dev: import.meta.env.MODE === 'development',
       }
     },
-    computed: {
-      isAuthorized() {
-        return this.$route.name !== 'Unauthorized'
-      }
-    }
   }
 </script>
 

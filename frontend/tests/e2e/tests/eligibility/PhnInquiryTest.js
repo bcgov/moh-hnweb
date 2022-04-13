@@ -6,16 +6,16 @@ import { regularAccUser } from '../../roles/roles'
 const ERROR_MESSAGE = 'Please correct errors before submitting'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'
 const PHN_REQUIRED_MESSAGE = 'At least one PHN is required'
-const SUCCESS_MESSAGE = 'RPBS9014 TRANSACTION SUCCESSFUL'
+const SUCCESS_MESSAGE = 'TRANSACTION SUCCESSFUL'
 const WARNING_MESSAGE = 'RPBS9145 PHN NOT FOUND (9879875914)'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/eligibility/phnInquiry'
 
 fixture(`PhnInquiry Page`).disablePageCaching`Test PhnInquiry`
   .beforeEach(async (t) => {
-    await t.useRole(regularAccUser)
+    await t.useRole(regularAccUser).navigateTo(PAGE_TO_TEST)
   })
-  .page(PAGE_TO_TEST)
+  .page(SITE_UNDER_TEST)
 
 test('Check required fields validation', async (t) => {
   await t

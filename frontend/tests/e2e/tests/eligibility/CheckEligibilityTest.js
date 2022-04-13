@@ -13,9 +13,9 @@ const PAGE_TO_TEST = SITE_UNDER_TEST + '/eligibility/checkEligibility'
 
 fixture(`CheckEligibility Page`).disablePageCaching`Test CheckEligibility`
   .beforeEach(async (t) => {
-    await t.useRole(regularAccUser)
+    await t.useRole(regularAccUser).navigateTo(PAGE_TO_TEST)
   })
-  .page(PAGE_TO_TEST)
+  .page(SITE_UNDER_TEST)
 
 test('Check required fields validation', async (t) => {
   await t

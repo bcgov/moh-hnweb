@@ -1,7 +1,7 @@
-import AddVisaResidentWithoutPHNPage from '../../pages/enrollment/AddVisaResidentWithoutPHNPage'
-import AlertPage from '../../pages/AlertPage'
-import NameSearchPage from '../../pages/enrollment/NameSearchPage'
 import { SITE_UNDER_TEST } from '../../configuration'
+import AlertPage from '../../pages/AlertPage'
+import AddVisaResidentWithoutPHNPage from '../../pages/enrollment/AddVisaResidentWithoutPHNPage'
+import NameSearchPage from '../../pages/enrollment/NameSearchPage'
 import { regularAccUser } from '../../roles/roles'
 
 const immigrationCodeOption = AddVisaResidentWithoutPHNPage.immigrationCodeSelect.find('option')
@@ -37,9 +37,9 @@ const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addStudyPermitHolde
 
 fixture(`AddVisaResidentWithoutPHNPage Page`).disablePageCaching`Test AddVisaResidentWithoutPHNPage`
   .beforeEach(async (t) => {
-    await t.useRole(regularAccUser)
+    await t.useRole(regularAccUser).navigateTo(PAGE_TO_TEST)
   })
-  .page(PAGE_TO_TEST)
+  .page(SITE_UNDER_TEST)
 
 test('Check required fields validation', async (t) => {
   await t
@@ -134,7 +134,6 @@ test('Check required fields validation for Mailing Address', async (t) => {
 
 test('Check properly filled form passes validation', async (t) => {
   await t
-    .setTestSpeed(0.3)
     .typeText(NameSearchPage.surnameInput, 'Test')
     .typeText(NameSearchPage.firstNameInput, 'Test')
     .typeText(NameSearchPage.dateOfBirthInput, '20001108')
