@@ -1,5 +1,5 @@
-import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
+import { SITE_UNDER_TEST } from '../../configuration'
 import UpdateContractAddress from '../../pages/mspcontracts/UpdateContractAddress'
 import { regularAccUser } from '../../roles/roles'
 
@@ -16,6 +16,7 @@ const HOME_ADDRESS_REQUIRED_MESSAGE = 'Home Address Line 1 is required'
 const MAILING_ADDRESS_REQUIRED_MESSAGE = 'Mailing Address Line 1 is required'
 const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
 const INVALID_POSTAL_CODE_VALIDATION_MESSAGE = 'Postal Code is invalid'
+const PHONE_NUMBER_VALIDATION_MESSAGE = 'Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
 const SUCCESS_MESSAGE = 'RPBS0103 COVERAGE CANCELLED. NO UPDATE PERMITTED.'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/mspcontracts/UpdateContractAddress'
@@ -74,6 +75,7 @@ test('Check properly filled form passes validation', async (t) => {
     .typeText(UpdateContractAddress.groupNumberInput, '6337109')
     .click(UpdateContractAddress.phnInput)
     .typeText(UpdateContractAddress.phnInput, '9882807277')
+    .typeText(UpdateContractAddress.telephoneInput, '7807777777')
     .typeText(UpdateContractAddress.address1Input, 'Test 111 ST')
     .typeText(UpdateContractAddress.postalCodeInput, 'V8V8V8')
 
@@ -90,6 +92,7 @@ test('Check invalid field validation', async (t) => {
     .typeText(UpdateContractAddress.groupNumberInput, '9000444000')
     .click(UpdateContractAddress.phnInput)
     .typeText(UpdateContractAddress.phnInput, '9000444000')
+    .typeText(UpdateContractAddress.telephoneInput, '780923t#11')
     .typeText(UpdateContractAddress.address1Input, 'Test 111 ST!@#$%')
     .typeText(UpdateContractAddress.address2Input, 'Test 111 ST()_+{}')
     .typeText(UpdateContractAddress.address3Input, '!@#!@#')
@@ -108,24 +111,26 @@ test('Check invalid field validation', async (t) => {
     .expect(UpdateContractAddress.errorText.nth(1).textContent)
     .contains(INVALID_PHN_ERROR_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(2).textContent)
-    .contains(INVALID_ADDRESS_LINE1_MESSAGE)
+    .contains(PHONE_NUMBER_VALIDATION_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(3).textContent)
-    .contains(INVALID_ADDRESS_LINE2_MESSAGE)
-    .expect(UpdateContractAddress.errorText.nth(4).textContent)
-    .contains(INVALID_ADDRESS_LINE3_MESSAGE)
-    .expect(UpdateContractAddress.errorText.nth(5).textContent)
-    .contains(INVALID_ADDRESS_LINE4_MESSAGE)
-    .expect(UpdateContractAddress.errorText.nth(6).textContent)
-    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
-    .expect(UpdateContractAddress.errorText.nth(7).textContent)
     .contains(INVALID_ADDRESS_LINE1_MESSAGE)
-    .expect(UpdateContractAddress.errorText.nth(8).textContent)
+    .expect(UpdateContractAddress.errorText.nth(4).textContent)
     .contains(INVALID_ADDRESS_LINE2_MESSAGE)
-    .expect(UpdateContractAddress.errorText.nth(9).textContent)
+    .expect(UpdateContractAddress.errorText.nth(5).textContent)
     .contains(INVALID_ADDRESS_LINE3_MESSAGE)
-    .expect(UpdateContractAddress.errorText.nth(10).textContent)
+    .expect(UpdateContractAddress.errorText.nth(6).textContent)
     .contains(INVALID_ADDRESS_LINE4_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(7).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(8).textContent)
+    .contains(INVALID_ADDRESS_LINE1_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(9).textContent)
+    .contains(INVALID_ADDRESS_LINE2_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(10).textContent)
+    .contains(INVALID_ADDRESS_LINE3_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(11).textContent)
+    .contains(INVALID_ADDRESS_LINE4_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(12).textContent)
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
 })
 

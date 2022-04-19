@@ -4,6 +4,7 @@ class UpdateContractAddress {
   constructor() {
     this.groupNumberInput = Selector('#groupNumber')
     this.phnInput = Selector('#phn')
+    this.telephoneInput = Selector('#telephone')
 
     this.address1Input = Selector('#addressLine1')
     this.address2Input = Selector('#addressLine2')

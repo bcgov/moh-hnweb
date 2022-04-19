@@ -5,7 +5,8 @@ import ca.bc.gov.hlth.hnweb.model.rest.groupmember.MemberAddress;
 public class UpdateContractAddressRequest {
 	
 	private String phn;	
-	private String groupNumber;	
+	private String groupNumber;
+	private String phone;
 	private MemberAddress homeAddress;
 	private MemberAddress mailingAddress;
 	
@@ -20,6 +21,12 @@ public class UpdateContractAddressRequest {
 	}
 	public void setGroupNumber(String groupNumber) {
 		this.groupNumber = groupNumber;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 	public MemberAddress getHomeAddress() {
 		return homeAddress;

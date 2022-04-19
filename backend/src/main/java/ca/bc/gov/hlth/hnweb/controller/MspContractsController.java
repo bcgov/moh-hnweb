@@ -1,11 +1,14 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +19,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPCI0Converter;
+import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPEP0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPMA0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPMC0Converter;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPCI0;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPEP0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPMA0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPMC0;
+import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.ContractInquiryRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.ContractInquiryResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.mspcontracts.GetContractPeriodsRequest;
@@ -42,6 +48,7 @@ import ca.bc.gov.hlth.hnweb.service.MspContractsService;
 public class MspContractsController extends BaseController {
 
 	private static final Logger logger = LoggerFactory.getLogger(MspContractsController.class);
+	protected static final String STATUS_CODE_SUCCESS = "RPBS9014";
 
 	@Autowired
 	private MspContractsService mspContractsService;
@@ -116,7 +123,7 @@ public class MspContractsController extends BaseController {
 	}
 
 	/**
-	 * Update Group Member's Contract Address for a Personal Health Number of a
+	 * Update Group Member's Contract Address and/or Phone number for a Personal Health Number of a
 	 * group. Maps to legacy R38
 	 * 
 	 * @param updateContractAddressRequest
@@ -129,10 +136,26 @@ public class MspContractsController extends BaseController {
 
 		Transaction transaction = auditUpdateContractAddressStart(updateContractAddressRequest, request);
 		try {
-			RPBSPMA0Converter converter = new RPBSPMA0Converter();
-			RPBSPMA0 rpbspma0Request = converter.convertRequest(updateContractAddressRequest);
-			RPBSPMA0 rpbspma0Response = mspContractsService.updateContractAddress(rpbspma0Request);
-			UpdateContractAddressResponse updateContractAddressResponse = converter.convertResponse(rpbspma0Response);
+			UpdateContractAddressResponse updateAddressResponse = new UpdateContractAddressResponse();
+			if (StringUtils.isNotBlank(updateContractAddressRequest.getHomeAddress().getAddressLine1())
+					&& StringUtils.isNotBlank(updateContractAddressRequest.getHomeAddress().getPostalCode())) {
+				RPBSPMA0Converter converter = new RPBSPMA0Converter();
+				RPBSPMA0 rpbspma0Request = converter.convertRequest(updateContractAddressRequest);
+				RPBSPMA0 rpbspma0Response = mspContractsService.updateAddress(rpbspma0Request);
+				updateAddressResponse = converter.convertResponse(rpbspma0Response);
+			}
+
+			UpdateContractAddressResponse updatePhoneResponse = new UpdateContractAddressResponse();
+			if (StringUtils.isNotBlank(updateContractAddressRequest.getPhone())) {
+				RPBSPEP0Converter ep0Converter = new RPBSPEP0Converter();
+				RPBSPEP0 rpbspep0Request = ep0Converter.convertRequest(updateContractAddressRequest);
+				RPBSPEP0 rpbspep0Response = mspContractsService.updatePhone(rpbspep0Request);
+				updatePhoneResponse = ep0Converter.convertResponse(rpbspep0Response);
+			}
+
+			// Combine the results
+			UpdateContractAddressResponse updateContractAddressResponse = handleUpdateContractAddressResponse(
+					updateAddressResponse, updatePhoneResponse);
 
 			ResponseEntity<UpdateContractAddressResponse> response = ResponseEntity.ok(updateContractAddressResponse);
 
@@ -144,6 +167,51 @@ public class MspContractsController extends BaseController {
 			handleException(transaction, e);
 			return null;
 		}
+	}
+
+	private UpdateContractAddressResponse handleUpdateContractAddressResponse(
+			UpdateContractAddressResponse updateAddressResponse, UpdateContractAddressResponse updatePhoneResponse) {
+		UpdateContractAddressResponse response = new UpdateContractAddressResponse();
+		
+		if (updateAddressResponse.getStatus() == StatusEnum.SUCCESS
+				&& updatePhoneResponse.getStatus() == StatusEnum.SUCCESS) {
+			// Just grab the message from the first populated response. We don't need two
+			// success messages
+			response.setMessage(
+					StringUtils.isNotBlank(updateAddressResponse.getMessage()) ? updateAddressResponse.getMessage()
+							: updatePhoneResponse.getMessage());
+			response.setStatus(StatusEnum.SUCCESS);
+		} else if (updateAddressResponse.getStatus() == StatusEnum.SUCCESS
+				|| updatePhoneResponse.getStatus() == StatusEnum.SUCCESS) {
+			//If any of the one response is success, set status as 'SUCCESS'
+			response.setMessage(generateSuccessErrorMessage(updateAddressResponse, updatePhoneResponse));
+			response.setStatus(StatusEnum.SUCCESS);
+		} else if (updateAddressResponse.getStatus() == StatusEnum.ERROR
+				|| updatePhoneResponse.getStatus() == StatusEnum.ERROR) {
+			response.setMessage(generateSuccessErrorMessage(updateAddressResponse, updatePhoneResponse));
+			response.setStatus(StatusEnum.ERROR);
+		} 
+
+		response.setPhn(StringUtils.isNotBlank(updateAddressResponse.getPhn()) ? updateAddressResponse.getPhn()
+				: updatePhoneResponse.getPhn());
+		return response;
+	}
+
+	private String generateSuccessErrorMessage(UpdateContractAddressResponse updateAddressResponse,
+			UpdateContractAddressResponse updatePhoneResponse) {
+		Set<String> messages = new HashSet<>();
+
+		// Include all Error and Success messages.
+		if (updateAddressResponse.getStatus() == StatusEnum.SUCCESS
+				|| updateAddressResponse.getStatus() == StatusEnum.ERROR) {
+			messages.add(updateAddressResponse.getMessage());
+		}
+		if (updatePhoneResponse.getStatus() == StatusEnum.SUCCESS
+				|| updatePhoneResponse.getStatus() == StatusEnum.ERROR) {
+			messages.add(updatePhoneResponse.getMessage());
+		}
+
+		return String.join("\n", messages);
 	}
 
 	private Transaction auditGetContractPeriodsStart(GetContractPeriodsRequest getContractPeriodsRequest,

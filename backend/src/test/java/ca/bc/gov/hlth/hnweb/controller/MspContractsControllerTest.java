@@ -43,6 +43,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
 	
 	private static final String R38_SUCCESS = "        RPBSPMA000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  933291248662431095951 WDSOU YF            ZT5                      ZT5                      Armstrong                V4D7D75961 WDSOU ZF            ZT6                                               CRESTON BC               V8V8V8";
 	
+	private static final String R38_ERROR_PHONE_ALREADY_EXISTS ="        RPBSPEP000000010                                ERRORMSGRPBS0101PHONE NUMBER ALREADY EXISTS ON MSP. NO UPDATE DONE                      93319269196337109                    7878787878";
+	
 	private static final String R38_ERROR_ADDRESSESS_ALREADY_EXIST = "        RPBSPMA000000010                                ERRORMSGRPBS0102ADDRESSES ALREADY EXIST ON MSP. NO UPDATE DONE.                         93319269196337109TEST                     TEST                     TEST                     BC                       V8V8V8TEST1                    TEST1                    TEST1                    BC                       V7V7V7";
 	
 	private static final String R40_SUCCESS = "        RPBSPCI000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  93403381226337109                                                                                                                         TETS123                                                                                             V8V8V8                                                            9340338122PROTOCTIST ORDERXD                 SCIPIOXH       WILFRIDXP                     2002-10-19M2023-01-010000-00-00 NC9329090895PROTOCTIST ORDERXD                 YARISXN        DILLINXP                      2002-11-04F2023-01-012023-03-31ENS";
@@ -400,6 +402,41 @@ public class MspContractsControllerTest extends BaseControllerTest {
 	}
 	
 	@Test
+	public void testUpdateContractAddress_error_phoneAlreadyExist() throws InterruptedException {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R38_ERROR_PHONE_ALREADY_EXISTS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        UpdateContractAddressRequest request = new UpdateContractAddressRequest();
+        request.setPhn("9331926919");
+        request.setGroupNumber("6337109");
+        request.setPhone("7878787878");
+        MemberAddress homeAddress = new MemberAddress();
+        homeAddress.setAddressLine1("5951 WDSOU YF");
+        homeAddress.setAddressLine2("ZT5");
+        homeAddress.setAddressLine2("ZT6");
+        homeAddress.setAddressLine2("CRESTON BC");
+        request.setHomeAddress(homeAddress);
+             
+        ResponseEntity<UpdateContractAddressResponse> response = mspContractsController.updateContractAddress(request, createHttpServletRequest());      
+        UpdateContractAddressResponse updateContractAddressResponse = response.getBody();
+
+		// Check the response
+        assertEquals(StatusEnum.ERROR, updateContractAddressResponse.getStatus());
+        assertEquals("RPBS0101 PHONE NUMBER ALREADY EXISTS ON MSP. NO UPDATE DONE", updateContractAddressResponse.getMessage());
+
+        assertEquals("9331926919", updateContractAddressResponse.getPhn());
+       
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertTransactionCreated(TransactionType.UPDATE_CONTRACT_ADDRESS);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+	}
+	
+	@Test
 	public void testUpdateContractAddress_success() throws InterruptedException {
         mockBackEnd.enqueue(new MockResponse()
         		.setBody(R38_SUCCESS)
@@ -411,15 +448,16 @@ public class MspContractsControllerTest extends BaseControllerTest {
         MemberAddress homeAddress = new MemberAddress();
         homeAddress.setAddressLine1("5951 WDSOU YF");
         homeAddress.setAddressLine2("ZT5");
-        homeAddress.setAddressLine2("ZT6");
-        homeAddress.setAddressLine2("CRESTON BC");
+        homeAddress.setAddressLine3("ZT6");
+        homeAddress.setAddressLine4("CRESTON BC");
+        homeAddress.setPostalCode("V8V8V8");
         request.setHomeAddress(homeAddress);
         
         MemberAddress mailingAddress = new MemberAddress();
         mailingAddress.setAddressLine1("5951 WDSOU YF");
         mailingAddress.setAddressLine2("ZT5");
-        mailingAddress.setAddressLine2("ZT6");
-        mailingAddress.setAddressLine2("CRESTON BC");
+        mailingAddress.setAddressLine3("ZT6");
+        mailingAddress.setAddressLine4("CRESTON BC");
         request.setMailingAddress(mailingAddress);
         
         ResponseEntity<UpdateContractAddressResponse> response = mspContractsController.updateContractAddress(request, createHttpServletRequest());      
@@ -494,6 +532,14 @@ public class MspContractsControllerTest extends BaseControllerTest {
         UpdateContractAddressRequest request = new UpdateContractAddressRequest();
         request.setPhn("9159869673");
         request.setGroupNumber("6337109");
+        
+        MemberAddress homeAddress = new MemberAddress();
+        homeAddress.setAddressLine1("TEST");
+        homeAddress.setAddressLine2("TEST");
+        homeAddress.setAddressLine2("TEST");
+        homeAddress.setAddressLine2("BC");
+        homeAddress.setPostalCode("V8V8V8");
+        request.setHomeAddress(homeAddress);
         
         ResponseEntity<UpdateContractAddressResponse> response = mspContractsController.updateContractAddress(request, createHttpServletRequest());
         

@@ -12,6 +12,11 @@
         </AppCol>
       </AppRow>
       <AppRow>
+        <AppCol class="col3">
+          <AppInput :e-model="v$.telephone" id="telephone" label="Telephone (Optional)" type="text" v-model.trim="telephone" placeholder="1234567890" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
         <AppCol class="col6">
           <AppInput :e-model="v$.homeAddress.addressLine1" id="addressLine1" label="Home Address Line 1" type="text" v-model="homeAddress.addressLine1" />
         </AppCol>
@@ -84,6 +89,7 @@ import {
   validateAddress,
   validateOptionalAddress,
   validateMailingAddress,
+  validateTelephone,
   VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE,
   VALIDATE_ADDRESS_LINE1_MESSAGE,
   VALIDATE_ADDRESS_LINE2_MESSAGE,
@@ -92,6 +98,7 @@ import {
   VALIDATE_GROUP_NUMBER_MESSAGE,
   VALIDATE_PHN_MESSAGE,
   VALIDATE_POSTAL_CODE_MESSAGE,
+  VALIDATE_TELEPHONE_MESSAGE,
 } from '../../util/validators'
 import MspContractsService from '../../services/MspContractsService'
 
@@ -111,6 +118,7 @@ export default {
       //Update Contract Address Fields
       phn: '',
       groupNumber: '',
+      telephone: '',
       homeAddress: {
         addressLine1: '',
         addressLine2: '',
@@ -150,6 +158,7 @@ export default {
           await MspContractsService.updateContractAddress({
             phn: this.phn,
             groupNumber: this.groupNumber,
+            phone: this.telephone,
             homeAddress: {
               addressLine1: this.homeAddress.addressLine1,
               addressLine2: this.homeAddress.addressLine2,
@@ -187,8 +196,17 @@ export default {
     resetForm() {
       this.groupNumber = ''
       this.phn = ''
-      this.homeAddress = {}
-      this.mailingAddress = {}
+      this.telephone = ''
+      this.homeAddress.addressLine1 = ''
+      this.homeAddress.addressLine2 = ''
+      this.homeAddress.addressLine3 = ''
+      this.homeAddress.addressLine4 = ''
+      this.homeAddress.postalCode = ''
+      this.mailingAddress.addressLine1 = ''
+      this.mailingAddress.addressLine2 = ''
+      this.mailingAddress.addressLine3 = ''
+      this.mailingAddress.addressLine4 = ''
+      this.mailingAddress.postalCode = ''
       this.result = null
       this.v$.$reset()
       this.$store.commit('alert/dismissAlert')
@@ -207,6 +225,9 @@ export default {
       groupNumber: {
         required,
         validateGroupNumber: helpers.withMessage(VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber),
+      },
+      telephone: {
+        validateTelephone: helpers.withMessage(VALIDATE_TELEPHONE_MESSAGE, validateTelephone),
       },
       homeAddress: {
         addressLine1: {

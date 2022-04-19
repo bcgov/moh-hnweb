@@ -267,7 +267,8 @@ export default {
       this.phn = ''
       this.groupMemberNumber = ''
       this.departmentNumber = ''
-      ;(this.coverageEffectiveDate = null), (this.telephone = '')
+      this.coverageEffectiveDate = null
+      this.telephone = ''
       this.homeAddress = {}
       this.mailingAddress = {}
       this.spousePhn = ''
