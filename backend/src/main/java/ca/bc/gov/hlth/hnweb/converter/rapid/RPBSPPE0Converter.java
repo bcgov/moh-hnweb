@@ -63,7 +63,7 @@ public class RPBSPPE0Converter extends BaseRapidConverter {
 			String statusText = StringUtils.trimToEmpty(beneficiary.getStatusText());
 
 			if (StringUtils.equals(statusCode, STATUS_CODE_SUCCESS)) {
-				successMessage = statusText;
+				successMessage = STATUS_CODE_SUCCESS + " " + statusText;
 				
 				// Map each record
 				InquirePhnBeneficiary ipBeneficiary = new InquirePhnBeneficiary();
@@ -87,7 +87,7 @@ public class RPBSPPE0Converter extends BaseRapidConverter {
 		} else {
 			response.setStatus(StatusEnum.SUCCESS);
 			// If the entire result is a success then just return a single message
-			response.setMessage(STATUS_CODE_SUCCESS + " " + successMessage);
+			response.setMessage(successMessage);
 		}
 		
 		return response;

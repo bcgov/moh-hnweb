@@ -101,8 +101,8 @@ public abstract class BaseV2Converter {
 		String statusText = terser.get("/.ERR-1-4-2");
 		
 		logger.debug("Acknowledgement code {} received in response. Status code: {}, Status message: {}", msaAcknowledgementCode, statusCode, statusText);
-		String message = String.format("%s %s", statusCode, statusText);
-		response.setMessage(message);
+		
+		response.setMessage(String.format("%s %s", statusCode, statusText));
 		response.setStatus(status);
 	}
 
