@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 
+import { DEFAULT_ERROR_MESSAGE } from '../util/constants.js'
+
 export const useAlertStore = defineStore('alert', {
   state: () => ({
     message: '',

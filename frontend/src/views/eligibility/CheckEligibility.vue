@@ -116,24 +116,20 @@ export default {
         ).data
 
         if (this.result.status === 'error') {
-          this.$store.commit('alert/setErrorAlert', this.result.message)
+          this.alertStore.setErrorAlert(this.result.message)
           return
         }
 
         this.searchOk = true
-        if (this.result.status === 'success') {
-          this.$store.commit('alert/setSuccessAlert', this.result.message || 'Transaction successful')
-        } else if (this.result.status === 'warning') {
-          this.$store.commit('alert/setWarningAlert', this.result.message)
-        }
+        this.alertStore.setAlert({ message: this.result.message, type: this.result.status })
       } catch (err) {
-        this.$store.commit('alert/setErrorAlert', `${err}`)
+        this.alertStore.setErrorAlert(err)
       } finally {
         this.searching = false
       }
     },
     showError(error) {
-      this.$store.commit('alert/setErrorAlert', error)
+      this.alertStore.setErrorAlert(error)
       this.result = {}
       this.searching = false
     },
@@ -142,7 +138,7 @@ export default {
       this.eligibilityDate = new Date()
       this.result = null
       this.v$.$reset()
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
       this.searchOk = false
       this.searching = false
     },

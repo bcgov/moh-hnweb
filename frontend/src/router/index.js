@@ -4,6 +4,7 @@ import Help from './../views/Help.vue'
 import Home from './../views/Home.vue'
 import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
 import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
+import { useAlertStore } from '../stores/alert'
 import { useAuthStore } from '../stores/auth'
 import NotFound from '../views/NotFound.vue'
 import Unauthorized from '../views/Unauthorized.vue'
@@ -41,7 +42,6 @@ const createRoutes = (app) => [
     name: 'Home',
     component: Home,
     meta: {
-      permission: 'AddPermitHolderWOPHN',
       requiresAuth: true,
     },
   },
@@ -274,7 +274,7 @@ function checkPageAction(to, next) {
   const pageAction = to.query.pageAction
 
   if (pageAction !== 'REGISTRATION') {
-    store.commit('studyPermitHolder/resetResident')
+    //store.commit('studyPermitHolder/resetResident')
   }
   next()
 }
@@ -291,7 +291,8 @@ export const createRouter = (app) => {
     },
   })
   router.beforeEach(async (to, _, next) => {
-    const auth = useAuthStore()
+    const alertStore = useAlertStore()
+    const authStore = useAuthStore()
 
     const authenticated = app.config.globalProperties.$keycloak.authenticated
 
@@ -316,7 +317,7 @@ export const createRouter = (app) => {
     }
 
     // Validate that the user has permissions
-    const hasAnyPermission = auth.hasAnyPermission
+    const hasAnyPermission = authStore.hasAnyPermission
     if (!hasAnyPermission && to.name !== 'Unauthorized') {
       next({ name: 'Unauthorized' })
       return
@@ -325,11 +326,12 @@ export const createRouter = (app) => {
     // Validate routes secured by permission
     const permission = to.meta.permission
     if (permission) {
-      const hasPermission = store.getters['auth/hasPermission'](permission)
+      const hasPermission = authStore.hasPermission(permission)
       if (hasPermission) {
         next()
       } else {
-        //store.commit('alert/setErrorAlert', `You are not authorized to access ${to.path}`)
+        console.log('why here?')
+        alertStore.setErrorAlert(`You are not authorized to access ${to.path}`)
         next({ name: 'Home' })
       }
     } else {
