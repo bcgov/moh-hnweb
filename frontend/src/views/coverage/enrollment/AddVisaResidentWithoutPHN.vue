@@ -120,7 +120,7 @@ export default {
         }
         this.registrationPerson = { ...personDetails, phn: this.registrationResult.phn }
         this.pageAction = this.PAGE_ACTION.CONFIRMATION
-        this.$store.commit('alert/setSuccessAlert', 'Transaction Successful')
+        this.$store.commit('alert/setSuccessAlert', this.registrationResult?.message)
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       } finally {
