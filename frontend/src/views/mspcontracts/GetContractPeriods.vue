@@ -44,6 +44,7 @@ import BeneficiaryContractPeriod from '../../components/mspcontracts/Beneficiary
 import useVuelidate from '@vuelidate/core'
 import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
 import { helpers, required } from '@vuelidate/validators'
+import { useAlertStore } from '../../stores/alert'
 
 export default {
   name: 'GetContractPeriods',
@@ -51,8 +52,14 @@ export default {
     AppSimpleTable,
     BeneficiaryContractPeriod,
   },
+  setup() {
+    return {
+      alertStore: useAlertStore(),
+      v$: useVuelidate(),
+    }
+  },
   computed: {
-    //Compare on PHN, then Effective Date
+    // Compare on PHN, then Effective Date
     sortedBeneficiaryContractPeriods: function () {
       function compareBeneficiaryContractPeriod(a, b) {
         if (a.phn === b.phn) {
@@ -63,11 +70,6 @@ export default {
 
       return this.result.beneficiaryContractPeriods.sort(compareBeneficiaryContractPeriod)
     },
-  },
-  setup() {
-    return {
-      v$: useVuelidate(),
-    }
   },
   data() {
     return {
@@ -86,7 +88,7 @@ export default {
       this.result = null
       this.searching = true
       this.searchOk = false
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
@@ -96,24 +98,20 @@ export default {
 
         this.result = (await MspContractsService.getContractPeriods({ phn: this.phn })).data
         if (this.result.status === 'error') {
-          this.$store.commit('alert/setErrorAlert', this.result.message)
+          this.alertStore.setErrorAlert(this.result.message)
           return
         }
 
         this.searchOk = true
-        if (this.result.status === 'success') {
-          this.$store.commit('alert/setSuccessAlert', this.result.message || 'Transaction successful')
-        } else if (this.result.status === 'warning') {
-          this.$store.commit('alert/setWarningAlert', this.result.message)
-        }
+        this.alertStore.setAlert({ message: this.result.message, type: this.result.status })
       } catch (err) {
-        this.$store.commit('alert/setErrorAlert', `${err}`)
+        this.alertStore.setErrorAlert(err)
       } finally {
         this.searching = false
       }
     },
     showError(error) {
-      this.$store.commit('alert/setErrorAlert', error)
+      this.alertStore.setErrorAlert(error)
       this.result = {}
       this.searching = false
     },
@@ -121,7 +119,7 @@ export default {
       this.phn = ''
       this.result = null
       this.v$.$reset()
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
       this.searchOk = false
       this.searching = false
     },

@@ -103,6 +103,7 @@ export default {
   methods: {
     selectCandidate() {
       this.submitting = true
+      // TODO Switch to new store
       this.$store.commit('studyPermitHolder/setResident', this.candidate)
       this.$router.push({ name: 'AddVisaResidentWithPHN', query: { pageAction: 'REGISTRATION' } })
       this.submitting = false

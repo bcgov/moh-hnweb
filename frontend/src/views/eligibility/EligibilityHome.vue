@@ -14,8 +14,8 @@ import SubNavTab from '../../components/template/SubNavTab.vue'
 import { useAuthStore } from '../../stores/auth'
 
 export default {
-  components: { SubNavTab, TheSubNav },
   name: 'EligibilityHome',
+  components: { SubNavTab, TheSubNav },
   setup() {
     const authStore = useAuthStore()
 

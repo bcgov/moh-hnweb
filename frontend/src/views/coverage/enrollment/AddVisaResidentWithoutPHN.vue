@@ -92,6 +92,7 @@ export default {
           this.pageAction = this.PAGE_ACTION.REGISTRATION
         } else if (this.nameSearchResult.candidates.length === 1) {
           //found 1 result so can auto select it for use in Register with PHN
+          // TODO Switch to new store
           this.$store.commit('studyPermitHolder/setResident', this.nameSearchResult.candidates[0])
           this.$router.push({ name: 'AddVisaResidentWithPHN', query: { pageAction: 'REGISTRATION' } })
         } else {

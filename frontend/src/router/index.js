@@ -274,6 +274,7 @@ function checkPageAction(to, next) {
   const pageAction = to.query.pageAction
 
   if (pageAction !== 'REGISTRATION') {
+    // TODO Switch to new store
     //store.commit('studyPermitHolder/resetResident')
   }
   next()

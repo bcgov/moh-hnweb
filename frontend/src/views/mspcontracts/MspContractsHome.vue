@@ -1,8 +1,3 @@
-<script setup>
-import TheSubNav from '../../components/template/TheSubNav.vue'
-import SubNavTab from '../../components/template/SubNavTab.vue'
-</script>
-
 <template>
   <TheSubNav>
     <SubNavTab routeName="GetContractPeriods" title="Get Contract Periods" v-if="hasPermission('GetContractPeriods')" />
@@ -14,11 +9,21 @@ import SubNavTab from '../../components/template/SubNavTab.vue'
 </template>
 
 <script>
+import TheSubNav from '../../components/template/TheSubNav.vue'
+import SubNavTab from '../../components/template/SubNavTab.vue'
+import { useAuthStore } from '../../stores/auth'
+
 export default {
   name: 'MspContractsHome',
+  components: { SubNavTab, TheSubNav },
+  setup() {
+    const authStore = useAuthStore()
+
+    return { authStore }
+  },
   methods: {
     hasPermission(permission) {
-      return this.$store.getters['auth/hasPermission'](permission)
+      return this.authStore.hasPermission(permission)
     },
   },
 }

@@ -54,7 +54,6 @@ import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import { API_DATE_FORMAT, COVERAGE_END_REASONS } from '../../util/constants'
 import dayjs from 'dayjs'
-
 import { useAlertStore } from '../../stores/alert'
 
 export default {
@@ -63,9 +62,8 @@ export default {
     AppCard,
   },
   setup() {
-    const alertStore = useAlertStore()
     return {
-      alertStore,
+      alertStore: useAlertStore(),
       v$: useVuelidate(),
     }
   },

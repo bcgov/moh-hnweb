@@ -7,9 +7,7 @@ import { useAlertStore } from '../../stores/alert'
 export default {
   name: 'SubNavTab',
   setup() {
-    const alertStore = useAlertStore()
-
-    return { alertStore }
+    return { alertStore: useAlertStore() }
   },
   props: {
     routeName: String,
@@ -17,7 +15,7 @@ export default {
   },
   methods: {
     resetAlert() {
-      //this.alertStore.dismissAlert()
+      this.alertStore.dismissAlert()
     },
   },
 }

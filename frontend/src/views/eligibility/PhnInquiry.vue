@@ -87,9 +87,8 @@ export default {
     PhnInquiryBeneficiary,
   },
   setup() {
-    const alertStore = useAlertStore()
     return {
-      alertStore,
+      alertStore: useAlertStore(),
       v$: useVuelidate(),
     }
   },

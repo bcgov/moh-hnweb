@@ -91,7 +91,7 @@ export default {
         if (this.getPersonDetailsResult?.status === 'warning') {
           this.$store.commit('alert/setWarningAlert', this.getPersonDetailsResult?.message)
         }
-
+        // TODO Switch to new store
         this.$store.commit('studyPermitHolder/setResident', this.getPersonDetailsResult.person)
         this.pageAction = this.PAGE_ACTION.REGISTRATION
       } catch (err) {

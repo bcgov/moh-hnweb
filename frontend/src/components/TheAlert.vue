@@ -19,9 +19,7 @@ import { useAlertStore } from '../stores/alert'
 export default {
   name: 'Alert',
   setup() {
-    const alertStore = useAlertStore()
-
-    return { alertStore }
+    return { alertStore: useAlertStore() }
   },
   computed: {
     active: {

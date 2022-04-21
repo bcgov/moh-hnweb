@@ -54,9 +54,8 @@ export default {
     PhnLookupBeneficiary,
   },
   setup() {
-    const alertStore = useAlertStore()
     return {
-      alertStore,
+      alertStore: useAlertStore(),
       v$: useVuelidate(),
     }
   },

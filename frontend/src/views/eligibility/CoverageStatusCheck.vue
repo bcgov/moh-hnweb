@@ -108,9 +108,8 @@ export default {
   name: 'CoverageStatusCheck',
   components: { AppCard, AppCheckbox },
   setup() {
-    const alertStore = useAlertStore()
     return {
-      alertStore,
+      alertStore: useAlertStore(),
       v$: useVuelidate(),
     }
   },

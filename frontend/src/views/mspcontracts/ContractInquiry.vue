@@ -112,6 +112,7 @@ import useVuelidate from '@vuelidate/core'
 import { validateOptionalPHN, validateGroupNumber, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE } from '../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import MspContractsService from '../../services/MspContractsService'
+import { useAlertStore } from '../../stores/alert'
 
 export default {
   name: 'ContractInquiry',
@@ -121,6 +122,7 @@ export default {
   },
   setup() {
     return {
+      alertStore: useAlertStore(),
       v$: useVuelidate(),
     }
   },
@@ -153,7 +155,7 @@ export default {
       this.result = null
       this.searching = true
       this.searchOk = false
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
@@ -162,24 +164,20 @@ export default {
         }
         this.result = (await MspContractsService.inquireContract({ phn: this.phn, groupNumber: this.groupNumber })).data
         if (this.result.status === 'error') {
-          this.$store.commit('alert/setErrorAlert', this.result.message)
+          this.alertStore.setErrorAlert(this.result.message)
           return
         }
 
         this.searchOk = true
-        if (this.result.status === 'success') {
-          this.$store.commit('alert/setSuccessAlert', this.result.message || 'Transaction successful')
-        } else if (this.result.status === 'warning') {
-          this.$store.commit('alert/setWarningAlert', this.result.message)
-        }
+        this.alertStore.setAlert({ message: this.result.message, type: this.result.status })
       } catch (err) {
-        this.$store.commit('alert/setErrorAlert', `${err}`)
+        this.alertStore.setErrorAlert(err)
       } finally {
         this.searching = false
       }
     },
     showError(error) {
-      this.$store.commit('alert/setErrorAlert', error)
+      this.alertStore.setErrorAlert(error)
       this.result = {}
       this.searching = false
     },
@@ -188,7 +186,7 @@ export default {
       this.groupNumber = ''
       this.result = null
       this.v$.$reset()
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
       this.searchOk = false
       this.searching = false
     },

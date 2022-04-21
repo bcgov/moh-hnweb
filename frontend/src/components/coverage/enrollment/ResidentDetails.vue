@@ -221,6 +221,7 @@ export default {
   },
   computed: {
     ...mapState('studyPermitHolder', {
+      // TODO Switch to new store
       resident: 'getResident',
     }),
     fullName() {

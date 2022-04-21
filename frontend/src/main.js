@@ -31,7 +31,6 @@ keycloak.onReady = async function (authenticated) {
     if (authenticated) {
       const data = (await UserService.getPermissions()).data
       permissions = data
-      //store.dispatch('auth/setPermissions', data)
     }
   } catch (err) {
     /* The error will only be thrown from the API when no role is found and in that case an appropriate unauthorized page will be shown,
@@ -54,14 +53,13 @@ function initApp(permissions) {
   app.component('AppOutput', AppOutput)
   app.component('AppSelect', AppSelect)
 
-  // Set up
+  // Set up Pinia with permissions
   app.use(createPinia())
   const auth = useAuthStore()
   auth.permissions = permissions
 
   const router = createRouter(app)
   app.use(router)
-  // app.use(store)
 
   app.config.globalProperties.$keycloak = keycloak
 
