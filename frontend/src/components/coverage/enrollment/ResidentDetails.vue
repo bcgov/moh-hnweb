@@ -162,7 +162,7 @@ import { required, requiredIf, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT, IMMIGRATION_CODES, PROVINCES, PRIOR_RESIDENCES } from '../../../util/constants'
 import { formatPersonName } from '../../../util/utils'
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
 
 export default {
   name: 'ResidentDetails',
@@ -220,7 +220,7 @@ export default {
     this.postalCode = this.resident.postalCode
   },
   computed: {
-    ...mapGetters('studyPermitHolder', {
+    ...mapState('studyPermitHolder', {
       resident: 'getResident',
     }),
     fullName() {

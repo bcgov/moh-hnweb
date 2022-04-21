@@ -8,7 +8,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.eligibilityDate"  id="eligibilityDate" label="Date to Check" v-model="eligibilityDate"/>
+          <AppDateInput :e-model="v$.eligibilityDate" id="eligibilityDate" label="Date to Check" v-model="eligibilityDate" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -19,24 +19,24 @@
   </div>
   <br />
   <div id="result" v-if="searchOk">
-  <hr />
+    <hr />
     <AppRow>
       <AppCol class="col3">
-        <AppOutput label="PHN" :value="result.phn"/>      
+        <AppOutput label="PHN" :value="result.phn" />
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Beneficiary on Date checked?" :value="beneficiaryOnDateChecked"/>      
+        <AppOutput label="Beneficiary on Date checked?" :value="beneficiaryOnDateChecked" />
       </AppCol>
-    </AppRow>      
+    </AppRow>
     <AppRow>
       <AppCol class="col3">
-        <AppOutput label="Coverage End Date" :value="result.coverageEndDate"/>      
+        <AppOutput label="Coverage End Date" :value="result.coverageEndDate" />
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Coverage End Reason" :value="coverageEndReason"/>      
+        <AppOutput label="Coverage End Reason" :value="coverageEndReason" />
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Exclusion Period End Date" :value="result.exclusionPeriodEndDate"/>      
+        <AppOutput label="Exclusion Period End Date" :value="result.exclusionPeriodEndDate" />
       </AppCol>
     </AppRow>
 
@@ -55,14 +55,19 @@ import { required, helpers } from '@vuelidate/validators'
 import { API_DATE_FORMAT, COVERAGE_END_REASONS } from '../../util/constants'
 import dayjs from 'dayjs'
 
+import { useAlertStore } from '../../stores/alert'
+
 export default {
   name: 'CheckEligibility',
   components: {
-    AppCard
+    AppCard,
   },
   setup() {
+    const alertStore = useAlertStore()
     return {
-      v$: useVuelidate()}
+      alertStore,
+      v$: useVuelidate(),
+    }
   },
   data() {
     return {
@@ -78,8 +83,8 @@ export default {
         exclusionPeriodEndDate: '',
         clientInstructions: '',
         status: '',
-        message: ''
-      }
+        message: '',
+      },
     }
   },
   computed: {
@@ -96,17 +101,19 @@ export default {
       this.result = null
       this.searching = true
       this.searchOk = false
-      this.$store.commit("alert/dismissAlert")
+      this.alertStore.dismissAlert()
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
           this.showError()
           return
         }
-        this.result = (await EligibilityService.checkEligibility({
-          phn: this.phn,
-          eligibilityDate: dayjs(this.eligibilityDate).format(API_DATE_FORMAT)
-        })).data
+        this.result = (
+          await EligibilityService.checkEligibility({
+            phn: this.phn,
+            eligibilityDate: dayjs(this.eligibilityDate).format(API_DATE_FORMAT),
+          })
+        ).data
 
         if (this.result.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.result.message)
@@ -117,8 +124,8 @@ export default {
         if (this.result.status === 'success') {
           this.$store.commit('alert/setSuccessAlert', this.result.message || 'Transaction successful')
         } else if (this.result.status === 'warning') {
-          this.$store.commit('alert/setWarningAlert', this.result.message)  
-        } 
+          this.$store.commit('alert/setWarningAlert', this.result.message)
+        }
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       } finally {
@@ -135,21 +142,19 @@ export default {
       this.eligibilityDate = new Date()
       this.result = null
       this.v$.$reset()
-      this.$store.commit("alert/dismissAlert")
+      this.$store.commit('alert/dismissAlert')
       this.searchOk = false
       this.searching = false
-    }
+    },
   },
   validations() {
     return {
       phn: {
         required,
-        validatePHN: helpers.withMessage(
-          VALIDATE_PHN_MESSAGE, validatePHN
-        )
+        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
       },
       eligibilityDate: { required },
     }
-  }
+  },
 }
 </script>

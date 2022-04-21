@@ -63,8 +63,16 @@
 </template>
 
 <script>
+import { useAlertStore } from '../../stores/alert'
+import { useAuthStore } from '../../stores/auth'
 export default {
   name: 'TheNavBar',
+  setup() {
+    const alertStore = useAlertStore()
+    const authStore = useAuthStore()
+
+    return { alertStore, authStore }
+  },
   computed: {
     authenticated() {
       return this.$keycloak.authenticated
@@ -72,11 +80,11 @@ export default {
   },
   methods: {
     resetCoverageEnrollment() {
-      this.$store.commit('alert/dismissAlert')
-      this.$store.commit('studyPermitHolder/resetResident')
+      this.alertStore.dismissAlert()
+      //this.$store.commit('studyPermitHolder/resetResident')
     },
     resetAlert() {
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
     },
     menuClass(route, routeName) {
       return this.tabClass(route, routeName)
@@ -88,7 +96,7 @@ export default {
       return route.path.startsWith(routePath) ? 'active' : 'inactive'
     },
     hasPermission(permission) {
-      return this.$store.getters['auth/hasPermission'](permission)
+      return this.authStore.hasPermission(permission)
     },
     hasEligibilityPermission() {
       return this.hasPermission('MSPCoverageCheck') || this.hasPermission('CheckEligibility') || this.hasPermission('PHNInquiry') || this.hasPermission('PHNLookup')
