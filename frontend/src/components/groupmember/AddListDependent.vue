@@ -38,7 +38,7 @@ export default {
   setup() {
     return {
       alertStore: useAlertStore(),
-      v$: useVuelidate(),
+      v$: useVuelidate({ $stopPropagation: true }),
     }
   },
   data() {

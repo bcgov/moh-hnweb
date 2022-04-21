@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import useVuelidate from '@vuelidate/core'
 import EnrollmentService from '../../../services/EnrollmentService'
 import { formatPersonName } from '../../../util/utils'
 import ResidentPHN from '../../../components/coverage/enrollment/ResidentPHN.vue'

@@ -225,7 +225,9 @@ export default {
     this.postalCode = this.resident.postalCode
   },
   computed: {
-    resident: () => this.studyPermitHolderStore.resident,
+    resident() {
+      return this.studyPermitHolderStore.resident
+    },
     fullName() {
       return formatPersonName(this.resident)
     },
