@@ -65,10 +65,12 @@
 <script>
 import { useAlertStore } from '../../stores/alert'
 import { useAuthStore } from '../../stores/auth'
+import { useStudyPermitHolderStore } from '../../stores/studyPermitHolder'
+
 export default {
   name: 'TheNavBar',
   setup() {
-    return { alertStore: useAlertStore(), authStore: useAuthStore() }
+    return { alertStore: useAlertStore(), authStore: useAuthStore(), studyPermitHolderStore: useStudyPermitHolderStore() }
   },
   computed: {
     authenticated() {
@@ -78,8 +80,7 @@ export default {
   methods: {
     resetCoverageEnrollment() {
       this.alertStore.dismissAlert()
-      // TODO Switch to new store
-      //this.$store.commit('studyPermitHolder/resetResident')
+      this.studyPermitHolderStore.$reset()
     },
     resetAlert() {
       this.alertStore.dismissAlert()

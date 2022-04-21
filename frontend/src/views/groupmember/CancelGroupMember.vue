@@ -8,13 +8,12 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.phn"  id="phn" label="Group Member's PHN" type="text" v-model="phn"/>
+          <AppInput :e-model="v$.phn" id="phn" label="Group Member's PHN" type="text" v-model="phn" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.cancelDate" id="cancelDate" label="Coverage Cancel Date" tooltip tooltipText="Date always defaults to last day of the month"
-                        monthPicker inputDateFormat="yyyy-MM" placeholder="YYYY-MM" v-model="cancelDate"/>
+          <AppDateInput :e-model="v$.cancelDate" id="cancelDate" label="Coverage Cancel Date" tooltip tooltipText="Date always defaults to last day of the month" monthPicker inputDateFormat="yyyy-MM" placeholder="YYYY-MM" v-model="cancelDate" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -36,23 +35,25 @@
 </template>
 
 <script>
-import useVuelidate from "@vuelidate/core"
-import { helpers, required } from "@vuelidate/validators"
-import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumber, validatePHN } from "../../util/validators"
-import GroupMemberService from "../../services/GroupMemberService"
+import useVuelidate from '@vuelidate/core'
+import { helpers, required } from '@vuelidate/validators'
+import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumber, validatePHN } from '../../util/validators'
+import GroupMemberService from '../../services/GroupMemberService'
+import { useAlertStore } from '../../stores/alert'
 
 export default {
   name: 'CancelGroupMember',
   setup() {
     return {
-      v$: useVuelidate()
+      alertStore: useAlertStore(),
+      v$: useVuelidate(),
     }
   },
   data() {
     return {
       inputFormActive: true,
       submitting: false,
-      groupNumber:'',
+      groupNumber: '',
       phn: '',
       cancelDate: null,
       cancelReason: '',
@@ -62,7 +63,7 @@ export default {
         message: '',
       },
       cancelReasons: [
-        { text: 'Employer\'s Request', value: 'K' },
+        { text: "Employer's Request", value: 'K' },
         { text: 'Out of province move', value: 'E' },
       ],
     }
@@ -75,9 +76,8 @@ export default {
   },
   methods: {
     async submitForm() {
-
       this.submitting = true
-      this.$store.commit("alert/dismissAlert")
+      this.alertStore.dismissAlert()
 
       try {
         const isValid = await this.v$.$validate()
@@ -86,31 +86,32 @@ export default {
           return
         }
 
-        this.result = (await GroupMemberService.cancelGroupMember({
-          phn: this.phn,
-          groupNumber: this.groupNumber,
-          coverageCancelDate: this.cancelDateAdjusted,
-          cancelReason: this.cancelReason,
-        })).data
+        this.result = (
+          await GroupMemberService.cancelGroupMember({
+            phn: this.phn,
+            groupNumber: this.groupNumber,
+            coverageCancelDate: this.cancelDateAdjusted,
+            cancelReason: this.cancelReason,
+          })
+        ).data
 
         if (this.result.status === 'error') {
-          this.$store.commit('alert/setErrorAlert', this.result.message)
+          this.alertStore.setErrorAlert(this.result.message)
           return
         }
 
         if (this.result?.status === 'success') {
           this.inputFormActive = false
-          this.$store.commit('alert/setSuccessAlert', 'Transaction Successful')
+          this.alertStore.setSuccessAlert(this.result.message)
         }
       } catch (err) {
-        this.$store.commit('alert/setErrorAlert', `${err}`)
+        this.alertStore.setErrorAlert(err)
       } finally {
         this.submitting = false
       }
-
     },
     showError(error) {
-      this.$store.commit('alert/setErrorAlert', error)
+      this.alertStore.setErrorAlert(error)
       this.result = {}
     },
     resetForm() {
@@ -121,30 +122,24 @@ export default {
       this.result = null
       this.inputFormActive = true
       this.v$.$reset()
-      this.$store.commit("alert/dismissAlert")
-    }
+      this.alertStore.dismissAlert()
+    },
   },
   validations() {
     return {
       phn: {
         required,
-        validatePHN: helpers.withMessage(
-            VALIDATE_PHN_MESSAGE, validatePHN
-        )
+        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
       },
       groupNumber: {
         required,
-        validateGroupNumber: helpers.withMessage(
-            VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber
-        )
+        validateGroupNumber: helpers.withMessage(VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber),
       },
       cancelDate: { required },
       cancelReason: { required },
     }
-  }
+  },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

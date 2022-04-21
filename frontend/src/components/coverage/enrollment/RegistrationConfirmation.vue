@@ -16,9 +16,15 @@
 
 <script>
 import { formatPersonName } from '../../../util/utils'
+import { useAlertStore } from '../../../stores/alert'
 
 export default {
   name: 'RegistrationConfirmation',
+  setup() {
+    return {
+      alertStore: useAlertStore(),
+    }
+  },
   props: {
     resident: {
       required: true,
@@ -34,7 +40,7 @@ export default {
   methods: {
     addAnotherPermitHolder() {
       if (this.$route.query.pageAction === 'REGISTRATION') {
-        this.$store.commit('alert/dismissAlert')
+        this.alertStore.dismissAlert()
         this.$router.replace({ query: null })
         this.$router.push('/coverage/enrollment/addStudyPermitHolderWithoutPHN')
       } else {

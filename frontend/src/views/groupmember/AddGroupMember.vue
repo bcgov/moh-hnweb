@@ -139,6 +139,7 @@ import {
   VALIDATE_TELEPHONE_MESSAGE,
 } from '../../util/validators'
 import GroupMemberService from '../../services/GroupMemberService'
+import { useAlertStore } from '../../stores/alert'
 
 export default {
   name: 'AddGroupMember',
@@ -147,6 +148,7 @@ export default {
   },
   setup() {
     return {
+      alertStore: useAlertStore(),
       v$: useVuelidate(),
     }
   },
@@ -196,12 +198,11 @@ export default {
       this.submitting = true
       this.addOk = false
       this.addMode = true
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
-          this.$store.commit('alert/setErrorAlert')
-          this.submitting = false
+          this.showError()
           return
         }
         this.result = (
@@ -240,18 +241,18 @@ export default {
         ).data
 
         if (this.result.status === 'error') {
-          this.$store.commit('alert/setErrorAlert', this.result.message)
+          this.alertStore.setErrorAlert(this.result.message)
           return
         }
 
         if (this.result?.status === 'success') {
           this.addMode = false
           this.addOk = true
-          this.$store.commit('alert/setSuccessAlert', this.result.message)
+          this.alertStore.setSuccessAlert(this.result.message)
           return
         }
       } catch (err) {
-        this.$store.commit('alert/setErrorAlert', `${err}`)
+        this.alertStore.setErrorAlert(err)
       } finally {
         this.submitting = false
       }
@@ -261,6 +262,10 @@ export default {
     },
     removeDependent(index) {
       this.dependents.splice(index, 1)
+    },
+    showError(error) {
+      this.alertStore.setErrorAlert(error)
+      this.submitting = false
     },
     resetForm() {
       this.groupNumber = ''
@@ -274,7 +279,7 @@ export default {
       this.dependents = []
       this.result = null
       this.v$.$reset()
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
       this.submitting = false
       this.addOk = false
       this.addMode = true

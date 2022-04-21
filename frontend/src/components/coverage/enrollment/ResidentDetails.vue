@@ -164,6 +164,9 @@ import { API_DATE_FORMAT, IMMIGRATION_CODES, PROVINCES, PRIOR_RESIDENCES } from 
 import { formatPersonName } from '../../../util/utils'
 import { mapState } from 'pinia'
 
+import { useAlertStore } from '../../../stores/alert'
+import { useStudyPermitHolderStore } from '../../../stores/studyPermitHolder'
+
 export default {
   name: 'ResidentDetails',
   components: {
@@ -171,6 +174,8 @@ export default {
   },
   setup() {
     return {
+      alertStore: useAlertStore(),
+      studyPermitHolderStore: useStudyPermitHolderStore(),
       v$: useVuelidate(),
     }
   },
@@ -220,10 +225,7 @@ export default {
     this.postalCode = this.resident.postalCode
   },
   computed: {
-    ...mapState('studyPermitHolder', {
-      // TODO Switch to new store
-      resident: 'getResident',
-    }),
+    resident: () => this.studyPermitHolderStore.resident,
     fullName() {
       return formatPersonName(this.resident)
     },
@@ -239,7 +241,7 @@ export default {
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
-          this.$store.commit('alert/setErrorAlert')
+          this.alertStore.setErrorAlert()
           return
         }
         this.$emit('register-resident', {
@@ -275,7 +277,7 @@ export default {
           otherProvinceHealthcareNumber: this.otherProvinceHealthcareNumber,
         })
       } catch (err) {
-        this.$store.commit('alert/setErrorAlert', `${err}`)
+        this.alertStore.setErrorAlert(err)
       }
     },
     resetForm() {
@@ -304,7 +306,7 @@ export default {
       this.priorResidenceCode = ''
       this.otherProvinceHealthcareNumber = ''
       this.v$.$reset()
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
     },
   },
   validations() {

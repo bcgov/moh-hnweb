@@ -14,9 +14,7 @@ export default {
   name: 'CoverageEnrollmentHome',
   components: { SubNavTab, TheSubNav },
   setup() {
-    const authStore = useAuthStore()
-
-    return { authStore }
+    return { authStore: useAuthStore() }
   },
   methods: {
     hasPermission(permission) {

@@ -6,6 +6,7 @@ import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
 import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
 import { useAlertStore } from '../stores/alert'
 import { useAuthStore } from '../stores/auth'
+import { useStudyPermitHolderStore } from '../stores/studyPermitHolder'
 import NotFound from '../views/NotFound.vue'
 import Unauthorized from '../views/Unauthorized.vue'
 import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
@@ -274,8 +275,8 @@ function checkPageAction(to, next) {
   const pageAction = to.query.pageAction
 
   if (pageAction !== 'REGISTRATION') {
-    // TODO Switch to new store
-    //store.commit('studyPermitHolder/resetResident')
+    const studyPermitHolderStore = useStudyPermitHolderStore()
+    studyPermitHolderStore.$reset()
   }
   next()
 }

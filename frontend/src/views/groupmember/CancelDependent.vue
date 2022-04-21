@@ -49,11 +49,13 @@ import useVuelidate from '@vuelidate/core'
 import { helpers, required } from '@vuelidate/validators'
 import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumber, validatePHN } from '../../util/validators'
 import GroupMemberService from '../../services/GroupMemberService'
+import { useAlertStore } from '../../stores/alert'
 
 export default {
   name: 'CancelDependent',
   setup() {
     return {
+      alertStore: useAlertStore(),
       v$: useVuelidate(),
     }
   },
@@ -92,7 +94,7 @@ export default {
   methods: {
     async submitForm() {
       this.submitting = true
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
 
       try {
         const isValid = await this.v$.$validate()
@@ -113,22 +115,22 @@ export default {
         ).data
 
         if (this.result.status === 'error') {
-          this.$store.commit('alert/setErrorAlert', this.result.message)
+          this.alertStore.setErrorAlert(this.result.message)
           return
         }
 
         if (this.result?.status === 'success') {
           this.inputFormActive = false
-          this.$store.commit('alert/setSuccessAlert', 'Transaction Successful')
+          this.alertStore.setSuccessAlert(this.result.message)
         }
       } catch (err) {
-        this.$store.commit('alert/setErrorAlert', `${err}`)
+        this.alertStore.setErrorAlert(err)
       } finally {
         this.submitting = false
       }
     },
     showError(error) {
-      this.$store.commit('alert/setErrorAlert', error)
+      this.alertStore.setErrorAlert(error)
       this.result = {}
     },
     resetForm() {
@@ -141,7 +143,7 @@ export default {
       this.result = null
       this.inputFormActive = true
       this.v$.$reset()
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
     },
   },
   validations() {

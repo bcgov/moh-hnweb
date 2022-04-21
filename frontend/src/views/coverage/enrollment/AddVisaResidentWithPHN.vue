@@ -10,6 +10,8 @@ import { formatPersonName } from '../../../util/utils'
 import ResidentPHN from '../../../components/coverage/enrollment/ResidentPHN.vue'
 import ResidentDetails from '../../../components/coverage/enrollment/ResidentDetails.vue'
 import RegistrationConfirmation from '../../../components/coverage/enrollment/RegistrationConfirmation.vue'
+import { useAlertStore } from '../../../stores/alert'
+import { useStudyPermitHolderStore } from '../../../stores/studyPermitHolder'
 
 export default {
   name: 'AddVisaResidentWithPHN',
@@ -17,6 +19,13 @@ export default {
     ResidentPHN,
     ResidentDetails,
     RegistrationConfirmation,
+  },
+  setup() {
+    return {
+      alertStore: useAlertStore(),
+      studyPermitHolderStore: useStudyPermitHolderStore(),
+      v$: useVuelidate(),
+    }
   },
   data() {
     return {
@@ -67,7 +76,8 @@ export default {
   methods: {
     async updateResident(phn) {
       this.searching = true
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
+
       try {
         const data = (await EnrollmentService.getPersonDetails({ phn: phn })).data
         this.getPersonDetailsResult = {
@@ -84,41 +94,38 @@ export default {
         }
 
         if (this.getPersonDetailsResult?.status === 'error') {
-          this.$store.commit('alert/setErrorAlert', this.getPersonDetailsResult?.message)
+          this.alertStore.setErrorAlert(this.getPersonDetailsResult?.message)
           return
         }
 
         if (this.getPersonDetailsResult?.status === 'warning') {
-          this.$store.commit('alert/setWarningAlert', this.getPersonDetailsResult?.message)
+          this.alertStore.setWarningAlert(this.getPersonDetailsResult?.message)
         }
-        // TODO Switch to new store
-        this.$store.commit('studyPermitHolder/setResident', this.getPersonDetailsResult.person)
+        this.studyPermitHolderStore.resident = this.getPersonDetailsResult.person
         this.pageAction = this.PAGE_ACTION.REGISTRATION
       } catch (err) {
-        this.$store.commit('alert/setErrorAlert', `${err}`)
+        this.alertStore.setErrorAlert(err)
       } finally {
         this.searching = false
       }
     },
     async registerResident(personDetails) {
       this.submitting = true
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
       try {
         this.registrationResult = (await EnrollmentService.registerResident(personDetails)).data
 
         if (this.registrationResult?.status === 'error') {
-          this.$store.commit('alert/setErrorAlert', this.registrationResult?.message)
+          this.alertStore.setErrorAlert(this.registrationResult?.message)
           return
         }
 
-        if (this.registrationResult?.status === 'warning') {
-          this.$store.commit('alert/setWarningAlert', this.registrationResult?.message)
-        }
+        this.alertStore.setAlert({ message: registrationResult?.result.message, type: registrationResult?.status })
+
         this.getPersonDetailsResult.person = { ...personDetails }
         this.pageAction = this.PAGE_ACTION.CONFIRMATION
-        this.$store.commit('alert/setSuccessAlert', 'Transaction Successful')
       } catch (err) {
-        this.$store.commit('alert/setErrorAlert', `${err}`)
+        this.alertStore.setErrorAlert(err)
       } finally {
         this.submitting = false
       }
