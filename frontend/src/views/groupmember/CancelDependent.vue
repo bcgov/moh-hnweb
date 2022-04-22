@@ -119,7 +119,7 @@ export default {
 
         if (this.result?.status === 'success') {
           this.inputFormActive = false
-          this.$store.commit('alert/setSuccessAlert', this.result.message || 'Transaction successful')
+          this.$store.commit('alert/setSuccessAlert', this.result.message)
         }
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
