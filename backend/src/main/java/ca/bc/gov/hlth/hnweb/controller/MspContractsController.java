@@ -48,7 +48,6 @@ import ca.bc.gov.hlth.hnweb.service.MspContractsService;
 public class MspContractsController extends BaseController {
 
 	private static final Logger logger = LoggerFactory.getLogger(MspContractsController.class);
-	protected static final String STATUS_CODE_SUCCESS = "RPBS9014";
 
 	@Autowired
 	private MspContractsService mspContractsService;
@@ -183,11 +182,10 @@ public class MspContractsController extends BaseController {
 			response.setStatus(StatusEnum.SUCCESS);
 		} else if (updateAddressResponse.getStatus() == StatusEnum.SUCCESS
 				|| updatePhoneResponse.getStatus() == StatusEnum.SUCCESS) {
-			//If any of the one response is success, set status as 'SUCCESS'
+			// If any of the one response is success, set status as 'SUCCESS'
 			response.setMessage(generateSuccessErrorMessage(updateAddressResponse, updatePhoneResponse));
 			response.setStatus(StatusEnum.SUCCESS);
-		} else if (updateAddressResponse.getStatus() == StatusEnum.ERROR
-				|| updatePhoneResponse.getStatus() == StatusEnum.ERROR) {
+		} else {
 			response.setMessage(generateSuccessErrorMessage(updateAddressResponse, updatePhoneResponse));
 			response.setStatus(StatusEnum.ERROR);
 		} 
