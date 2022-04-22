@@ -121,7 +121,7 @@ export default {
           return
         }
 
-        this.alertStore.setAlert({ message: registrationResult?.result.message, type: registrationResult?.status })
+        this.alertStore.setAlert({ message: this.registrationResult?.message, type: this.registrationResult?.status })
 
         this.getPersonDetailsResult.person = { ...personDetails }
         this.pageAction = this.PAGE_ACTION.CONFIRMATION
