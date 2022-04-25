@@ -38,7 +38,7 @@ public abstract class BaseRapidConverter {
 		} else if (StringUtils.equals(header.getIdentifier(), RPBSHeader.IDENTIFER_RESPONSE)) {
 			if (StringUtils.equals(statusCode, STATUS_CODE_SUCCESS)) {
 				response.setStatus(StatusEnum.SUCCESS);
-				response.setMessage(statusText);
+				response.setMessage(generateMessage(statusCode, statusText, null));
 			} else {
 				response.setStatus(StatusEnum.WARNING);
 				response.setMessage(generateMessage(statusCode, statusText, phn));

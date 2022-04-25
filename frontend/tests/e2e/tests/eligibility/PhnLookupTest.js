@@ -1,6 +1,6 @@
-import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import PhnLookupPage from '../../pages/eligibility/PhnLookupPage'
+import { SITE_UNDER_TEST } from '../../configuration'
 import { regularAccUser } from '../../roles/roles'
 
 const ERROR_MESSAGE = 'Please correct errors before submitting'
@@ -8,7 +8,7 @@ const CONTRACT_NUMBER_INVALID_MESSAGE = 'MSP Contract Number is invalid'
 const CONTRACT_NUMBER_REQUIRED_MESSAGE = 'MSP Contract Number is required'
 const GROUP_NUMBER_INVALID_MESSAGE = 'Group Number is invalid'
 const GROUP_NUMBER_REQUIRED_MESSAGE = 'Group Number is required'
-const SUCCESS_MESSAGE = 'TRANSACTION SUCCESSFUL'
+const SUCCESS_MESSAGE = 'RPBS9014 TRANSACTION SUCCESSFUL'
 const WARNING_MESSAGE = 'RPBS0070 MORE THAN 50 PERSONS. PLEASE CONTACT MSP.'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/eligibility/phnLookup'

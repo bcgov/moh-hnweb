@@ -41,26 +41,26 @@
         <AppCol class="col2">
           <AppInput :e-model="v$.phn10" id="phn10" label="10" type="text" v-model.trim="phn10" />
         </AppCol>
-      </AppRow>                        
+      </AppRow>
       <AppRow>
         <AppButton :submitting="searching" mode="primary" type="submit">Submit</AppButton>
         <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
       </AppRow>
-      </form>
+    </form>
   </div>
   <br />
   <div v-if="searchOk && result.beneficiaries.length > 0">
-  <hr />
+    <hr />
     <AppSimpleTable id="resultsTable">
       <thead>
-      <tr>
-        <th>PHN</th>
-        <th>Name</th>
-        <th>Date of Birth</th>
-        <th>Gender</th>
-        <th>Eligible</th>
-        <th>Student</th>
-      </tr>
+        <tr>
+          <th>PHN</th>
+          <th>Name</th>
+          <th>Date of Birth</th>
+          <th>Gender</th>
+          <th>Eligible</th>
+          <th>Student</th>
+        </tr>
       </thead>
       <tbody>
         <tr v-for="beneficiary in result.beneficiaries">
@@ -68,7 +68,6 @@
         </tr>
       </tbody>
     </AppSimpleTable>
-
   </div>
 </template>
 
@@ -83,11 +82,13 @@ import { helpers } from '@vuelidate/validators'
 export default {
   name: 'PhnInquiry',
   components: {
-    AppSimpleTable, PhnInquiryBeneficiary
+    AppSimpleTable,
+    PhnInquiryBeneficiary,
   },
   setup() {
     return {
-      v$: useVuelidate()}
+      v$: useVuelidate(),
+    }
   },
   data() {
     return {
@@ -115,21 +116,21 @@ export default {
       this.result = null
       this.searching = true
       this.searchOk = false
-      this.$store.commit("alert/dismissAlert")
+      this.$store.commit('alert/dismissAlert')
       try {
-        const isValid = await this.v$.$validate()      
+        const isValid = await this.v$.$validate()
         if (!isValid) {
           this.showError()
           return
         }
         const allPhns = [this.phn1, this.phn2, this.phn3, this.phn4, this.phn5, this.phn6, this.phn7, this.phn8, this.phn9, this.phn10]
-        const populatedPHNs = allPhns.filter(phn => phn != '')
+        const populatedPHNs = allPhns.filter((phn) => phn != '')
         if (populatedPHNs.length === 0) {
           this.showError('At least one PHN is required')
           return
         }
 
-        this.result = (await EligibilityService.inquirePhn({phns: populatedPHNs})).data
+        this.result = (await EligibilityService.inquirePhn({ phns: populatedPHNs })).data
         if (this.result.status === 'error') {
           this.$store.commit('alert/setErrorAlert', this.result.message)
           return
@@ -137,10 +138,10 @@ export default {
 
         this.searchOk = true
         if (this.result.status === 'success') {
-          this.$store.commit('alert/setSuccessAlert', this.result.message || 'Transaction successful')
+          this.$store.commit('alert/setSuccessAlert', this.result.message)
         } else if (this.result.status === 'warning') {
-          this.$store.commit('alert/setWarningAlert', this.result.message)  
-        }          
+          this.$store.commit('alert/setWarningAlert', this.result.message)
+        }
       } catch (err) {
         this.$store.commit('alert/setErrorAlert', `${err}`)
       } finally {
@@ -165,64 +166,44 @@ export default {
       this.phn10 = ''
       this.result = null
       this.v$.$reset()
-      this.$store.commit("alert/dismissAlert")
+      this.$store.commit('alert/dismissAlert')
       this.searchOk = false
       this.searching = false
-    }
+    },
   },
   validations() {
     return {
       phn1: {
-        validatePHN: helpers.withMessage(
-          VALIDATE_PHN_MESSAGE, validateOptionalPHN
-        )
+        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validateOptionalPHN),
       },
       phn2: {
-        validatePHN: helpers.withMessage(
-          VALIDATE_PHN_MESSAGE, validateOptionalPHN
-        )
+        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validateOptionalPHN),
       },
       phn3: {
-        validatePHN: helpers.withMessage(
-          VALIDATE_PHN_MESSAGE, validateOptionalPHN
-        )
+        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validateOptionalPHN),
       },
       phn4: {
-        validatePHN: helpers.withMessage(
-          VALIDATE_PHN_MESSAGE, validateOptionalPHN
-        )
+        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validateOptionalPHN),
       },
       phn5: {
-        validatePHN: helpers.withMessage(
-          VALIDATE_PHN_MESSAGE, validateOptionalPHN
-        )
+        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validateOptionalPHN),
       },
       phn6: {
-        validatePHN: helpers.withMessage(
-          VALIDATE_PHN_MESSAGE, validateOptionalPHN
-        )
+        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validateOptionalPHN),
       },
       phn7: {
-        validatePHN: helpers.withMessage(
-          VALIDATE_PHN_MESSAGE, validateOptionalPHN
-        )
+        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validateOptionalPHN),
       },
       phn8: {
-        validatePHN: helpers.withMessage(
-          VALIDATE_PHN_MESSAGE, validateOptionalPHN
-        )
+        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validateOptionalPHN),
       },
       phn9: {
-        validatePHN: helpers.withMessage(
-          VALIDATE_PHN_MESSAGE, validateOptionalPHN
-        )
+        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validateOptionalPHN),
       },
       phn10: {
-        validatePHN: helpers.withMessage(
-          VALIDATE_PHN_MESSAGE, validateOptionalPHN
-        )
+        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validateOptionalPHN),
       },
     }
-  }
+  },
 }
 </script>

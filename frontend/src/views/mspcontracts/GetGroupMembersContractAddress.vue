@@ -168,7 +168,7 @@ export default {
 
         this.searchOk = true
         if (this.result.status === 'success') {
-          this.$store.commit('alert/setSuccessAlert', this.result.message || 'Transaction successful')
+          this.$store.commit('alert/setSuccessAlert', this.result.message)
         } else if (this.result.status === 'warning') {
           this.$store.commit('alert/setWarningAlert', this.result.message)
           if (this.result.message === 'RPBS0059 MORE THAN 20 PERSONS. PLEASE CONTACT MSP') {

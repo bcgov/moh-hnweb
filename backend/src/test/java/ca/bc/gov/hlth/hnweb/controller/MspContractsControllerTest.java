@@ -73,7 +73,7 @@ public class MspContractsControllerTest extends BaseControllerTest {
 
 		// Check the response
         assertEquals(StatusEnum.SUCCESS, getContractPeriodsResponse.getStatus());
-        assertEquals("TRANSACTION SUCCESSFUL", getContractPeriodsResponse.getMessage());
+        assertEquals("RPBS9014 TRANSACTION SUCCESSFUL", getContractPeriodsResponse.getMessage());
 
         assertEquals("9873672248", getContractPeriodsResponse.getPhn());
         
@@ -248,7 +248,7 @@ public class MspContractsControllerTest extends BaseControllerTest {
 
 		// Check the response
         assertEquals(StatusEnum.SUCCESS, contractInquiryResponse.getStatus());
-        assertEquals("TRANSACTION SUCCESSFUL", contractInquiryResponse.getMessage());
+        assertEquals("RPBS9014 TRANSACTION SUCCESSFUL", contractInquiryResponse.getMessage());
 
         assertEquals("9340338122", contractInquiryResponse.getPhn());
         List<ContractInquiryBeneficiary> contractInquiryBeneficiaries = contractInquiryResponse.getContractInquiryBeneficiaries();
@@ -427,7 +427,7 @@ public class MspContractsControllerTest extends BaseControllerTest {
 
 		// Check the response
         assertEquals(StatusEnum.SUCCESS, updateContractAddressResponse.getStatus());
-        assertEquals("TRANSACTION SUCCESSFUL", updateContractAddressResponse.getMessage());
+        assertEquals("RPBS9014 TRANSACTION SUCCESSFUL", updateContractAddressResponse.getMessage());
 
         assertEquals("9332912486", updateContractAddressResponse.getPhn());
        
