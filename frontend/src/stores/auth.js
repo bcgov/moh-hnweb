@@ -10,9 +10,4 @@ export const useAuthStore = defineStore('auth', {
     },
     hasAnyPermission: (state) => state.permissions.length > 0,
   },
-  actions: {
-    setPermissions(permissions) {
-      this.permissions = permissions
-    },
-  },
 })

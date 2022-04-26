@@ -313,7 +313,7 @@ export const createRouter = (app) => {
 
     // Secured pages shouldn't be available to unauthenticated users
     if (to.meta.requiresAuth && !authenticated) {
-      //store.commit('alert/setErrorAlert', `You are not authorized to access ${to.path}. Please login first.`)
+      alertStore.setErrorAlert(`You are not authorized to access ${to.path}. Please login first.`)
       next({ name: 'Login' })
       return
     }
@@ -332,7 +332,6 @@ export const createRouter = (app) => {
       if (hasPermission) {
         next()
       } else {
-        console.log('why here?')
         alertStore.setErrorAlert(`You are not authorized to access ${to.path}`)
         next({ name: 'Home' })
       }
