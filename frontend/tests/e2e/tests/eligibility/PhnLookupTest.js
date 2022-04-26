@@ -88,7 +88,8 @@ test('Check properly filled form passes validation and returns a warning message
     .typeText(PhnLookupPage.contractNumberInput, '611035841')
     // When I click the submit button
     .click(PhnLookupPage.submitButton)
-    // I expect a success message
+    .wait(5000)
+    // I expect a warning message
     .expect(AlertPage.alertBannerText.textContent)
     .contains(WARNING_MESSAGE)
     // And a table with 50 results

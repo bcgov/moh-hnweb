@@ -11,6 +11,8 @@ import NameSearch from '../../../components/coverage/enrollment/NameSearch.vue'
 import NameSearchResults from '../../../components/coverage/enrollment/NameSearchResults.vue'
 import ResidentDetailsWithoutPHN from '../../../components/coverage/enrollment/ResidentDetailsWithoutPHN.vue'
 import RegistrationConfirmation from '../../../components/coverage/enrollment/RegistrationConfirmation.vue'
+import { useAlertStore } from '../../../stores/alert'
+import { useStudyPermitHolderStore } from '../../../stores/studyPermitHolder'
 
 export default {
   name: 'AddVisaResidentWithoutPHN',
@@ -19,6 +21,12 @@ export default {
     NameSearchResults,
     ResidentDetailsWithoutPHN,
     RegistrationConfirmation,
+  },
+  setup() {
+    return {
+      alertStore: useAlertStore(),
+      studyPermitHolderStore: useStudyPermitHolderStore(),
+    }
   },
   data() {
     return {
@@ -72,33 +80,34 @@ export default {
     async searchForCandidates(searchCriteria) {
       try {
         this.searching = true
-        this.$store.commit('alert/dismissAlert')
+        this.alertStore.dismissAlert()
+
         this.nameSearchResult = (await EnrollmentService.performNameSearch(searchCriteria)).data
 
         if (this.nameSearchResult?.status === 'error') {
-          this.$store.commit('alert/setErrorAlert', this.nameSearchResult?.message)
+          this.alertStore.setErrorAlert(this.nameSearchResult?.message)
           return
         }
 
         if (this.nameSearchResult?.status === 'warning') {
-          this.$store.commit('alert/setWarningAlert', this.nameSearchResult?.message)
+          this.alertStore.setWarningAlert(this.nameSearchResult?.message)
         }
 
         if (!this.nameSearchResult.candidates || this.nameSearchResult.candidates.length == 0) {
           //found no result so need to register and enroll without a PHN
 
           this.registrationPerson = { ...searchCriteria }
-          this.$store.commit('alert/setInfoAlert', 'No results were returned. Please ensure you have entered the correct information.')
+          this.alertStore.setInfoAlert('No results were returned. Please ensure you have entered the correct information.')
           this.pageAction = this.PAGE_ACTION.REGISTRATION
         } else if (this.nameSearchResult.candidates.length === 1) {
           //found 1 result so can auto select it for use in Register with PHN
-          this.$store.commit('studyPermitHolder/setResident', this.nameSearchResult.candidates[0])
+          this.studyPermitHolderStore.resident = this.nameSearchResult.candidates[0]
           this.$router.push({ name: 'AddVisaResidentWithPHN', query: { pageAction: 'REGISTRATION' } })
         } else {
           this.pageAction = this.PAGE_ACTION.NAME_SEARCH_RESULTS
         }
       } catch (err) {
-        this.$store.commit('alert/setErrorAlert', `${err}`)
+        this.alertStore.setErrorAlert(err)
       } finally {
         this.searching = false
       }
@@ -106,23 +115,21 @@ export default {
     async registerResident(personDetails) {
       try {
         this.submitting = true
-        this.$store.commit('alert/dismissAlert')
+        this.alertStore.dismissAlert()
         this.registrationResult = (await EnrollmentService.registerResident(personDetails)).data
 
         if (this.registrationResult?.status === 'error') {
-          this.$store.commit('alert/setErrorAlert', this.registrationResult?.message)
+          this.alertStore.setErrorAlert(this.registrationResult?.message)
           this.submitting = false
           return
         }
 
-        if (this.registrationResult?.status === 'warning') {
-          this.$store.commit('alert/setWarningAlert', this.registrationResult?.message)
-        }
+        this.alertStore.setAlert({ message: this.registrationResult?.message, type: this.registrationResult?.status })
+
         this.registrationPerson = { ...personDetails, phn: this.registrationResult.phn }
         this.pageAction = this.PAGE_ACTION.CONFIRMATION
-        this.$store.commit('alert/setSuccessAlert', this.registrationResult?.message)
       } catch (err) {
-        this.$store.commit('alert/setErrorAlert', `${err}`)
+        this.alertStore.setErrorAlert(err)
       } finally {
         this.submitting = false
       }

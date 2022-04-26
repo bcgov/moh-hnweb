@@ -40,11 +40,13 @@ import useVuelidate from '@vuelidate/core'
 import { validateGroupNumber, validateGroupMemberNumber, validateDepartmentNumber, validatePHN, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE } from '../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import { DEFAULT_ERROR_MESSAGE } from '../../util/constants.js'
+import { useAlertStore } from '../../stores/alert'
 
 export default {
   name: 'updateNumberAndDept',
   setup() {
     return {
+      alertStore: useAlertStore(),
       v$: useVuelidate(),
     }
   },
@@ -70,7 +72,7 @@ export default {
       this.submitting = true
       this.updateOk = false
       this.searchMode = true
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
       try {
         const errors = []
         const isFormValid = await this.v$.$validate()
@@ -98,18 +100,18 @@ export default {
         ).data
 
         if (this.result.status === 'error') {
-          this.$store.commit('alert/setErrorAlert', this.result.message)
+          this.alertStore.setErrorAlert(this.result.message)
           return
         }
 
         if (this.result?.status === 'success') {
           this.searchMode = false
           this.updateOk = true
-          this.$store.commit('alert/setSuccessAlert', this.result.message)
+          this.alertStore.setSuccessAlert(this.result.message)
           return
         }
       } catch (err) {
-        this.$store.commit('alert/setErrorAlert', `${err}`)
+        this.alertStore.setErrorAlert(err)
       } finally {
         this.submitting = false
       }
@@ -118,7 +120,7 @@ export default {
       this.$router.go()
     },
     showError(errors) {
-      this.$store.commit('alert/setErrorAlerts', errors)
+      this.alertStore.setErrorAlerts(errors)
       this.result = {}
       this.submitting = false
     },
@@ -132,7 +134,7 @@ export default {
       this.searchMode = true
       this.submitting = false
       this.v$.$reset()
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
     },
     validateMemberNumberAndDeptNumber() {
       return this.groupMemberNumber !== '' || this.departmentNumber !== ''

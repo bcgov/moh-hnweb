@@ -162,7 +162,10 @@ import { required, requiredIf, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT, IMMIGRATION_CODES, PROVINCES, PRIOR_RESIDENCES } from '../../../util/constants'
 import { formatPersonName } from '../../../util/utils'
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
+
+import { useAlertStore } from '../../../stores/alert'
+import { useStudyPermitHolderStore } from '../../../stores/studyPermitHolder'
 
 export default {
   name: 'ResidentDetails',
@@ -171,6 +174,8 @@ export default {
   },
   setup() {
     return {
+      alertStore: useAlertStore(),
+      studyPermitHolderStore: useStudyPermitHolderStore(),
       v$: useVuelidate(),
     }
   },
@@ -220,9 +225,9 @@ export default {
     this.postalCode = this.resident.postalCode
   },
   computed: {
-    ...mapGetters('studyPermitHolder', {
-      resident: 'getResident',
-    }),
+    resident() {
+      return this.studyPermitHolderStore.resident
+    },
     fullName() {
       return formatPersonName(this.resident)
     },
@@ -238,7 +243,7 @@ export default {
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
-          this.$store.commit('alert/setErrorAlert')
+          this.alertStore.setErrorAlert()
           return
         }
         this.$emit('register-resident', {
@@ -274,7 +279,7 @@ export default {
           otherProvinceHealthcareNumber: this.otherProvinceHealthcareNumber,
         })
       } catch (err) {
-        this.$store.commit('alert/setErrorAlert', `${err}`)
+        this.alertStore.setErrorAlert(err)
       }
     },
     resetForm() {
@@ -303,7 +308,7 @@ export default {
       this.priorResidenceCode = ''
       this.otherProvinceHealthcareNumber = ''
       this.v$.$reset()
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
     },
   },
   validations() {
