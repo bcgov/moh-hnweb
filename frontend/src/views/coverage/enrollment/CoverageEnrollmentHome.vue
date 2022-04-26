@@ -1,8 +1,3 @@
-<script setup>
-import TheSubNav from '../../../components/template/TheSubNav.vue'
-import SubNavTab from '../../../components/template/SubNavTab.vue'
-</script>
-
 <template>
   <TheSubNav>
     <SubNavTab routeName="AddVisaResidentWithoutPHN" title="Add Permit Holder without PHN" v-if="hasPermission('AddPermitHolderWOPHN')" />
@@ -12,11 +7,18 @@ import SubNavTab from '../../../components/template/SubNavTab.vue'
 </template>
 
 <script>
+import TheSubNav from '../../../components/template/TheSubNav.vue'
+import SubNavTab from '../../../components/template/SubNavTab.vue'
+import { useAuthStore } from '../../../stores/auth'
 export default {
   name: 'CoverageEnrollmentHome',
+  components: { SubNavTab, TheSubNav },
+  setup() {
+    return { authStore: useAuthStore() }
+  },
   methods: {
     hasPermission(permission) {
-      return this.$store.getters['auth/hasPermission'](permission)
+      return this.authStore.hasPermission(permission)
     },
   },
 }

@@ -1,8 +1,3 @@
-<script setup>
-import TheSubNav from '../../components/template/TheSubNav.vue'
-import SubNavTab from '../../components/template/SubNavTab.vue'
-</script>
-
 <template>
   <TheSubNav>
     <SubNavTab routeName="AddGroupMember" title="Add Group Member" v-if="hasPermission('AddGroupMember')" />
@@ -15,11 +10,19 @@ import SubNavTab from '../../components/template/SubNavTab.vue'
 </template>
 
 <script>
+import TheSubNav from '../../components/template/TheSubNav.vue'
+import SubNavTab from '../../components/template/SubNavTab.vue'
+import { useAuthStore } from '../../stores/auth'
+
 export default {
   name: 'GroupMemberHome',
+  components: { SubNavTab, TheSubNav },
+  setup() {
+    return { authStore: useAuthStore() }
+  },
   methods: {
     hasPermission(permission) {
-      return this.$store.getters['auth/hasPermission'](permission)
+      return this.authStore.hasPermission(permission)
     },
   },
 }

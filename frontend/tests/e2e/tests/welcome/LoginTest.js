@@ -10,7 +10,7 @@ test('Check Welcome menu is clickable ', async (t) => {
 })
 
 test('Check that the page content is correct', async (t) => {
-  await t.expect(LoginPage.menu.exists).ok().expect(LoginPage.menuLinks.count).eql(4).expect(LoginPage.loginButtons.exists).ok()
+  await t.expect(LoginPage.menu.exists).ok().expect(LoginPage.menuLinks.count).eql(5).expect(LoginPage.loginButtons.exists).ok()
 })
 
 test('Check the Health Authority login is correct', async (t) => {

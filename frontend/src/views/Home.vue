@@ -13,10 +13,17 @@
 <script>
 import AppBulletin from '../components/ui/AppBulletin.vue'
 import BulletinService from '../services/BulletinService.js'
+import { useAlertStore } from '../stores/alert'
+
 export default {
   name: 'home',
   components: {
     AppBulletin,
+  },
+  setup() {
+    return {
+      alertStore: useAlertStore(),
+    }
   },
   data() {
     return {
@@ -27,7 +34,7 @@ export default {
     try {
       this.bulletins = (await BulletinService.getBulletins()).data
     } catch (err) {
-      this.$store.commit('alert/setErrorAlert', `${err}`)
+      this.alertStore.setErrorAlert(err)
     }
   },
 }

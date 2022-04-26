@@ -3,15 +3,19 @@
 </template>
 
 <script>
+import { useAlertStore } from '../../stores/alert'
 export default {
   name: 'SubNavTab',
+  setup() {
+    return { alertStore: useAlertStore() }
+  },
   props: {
     routeName: String,
     title: String,
   },
   methods: {
     resetAlert() {
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
     },
   },
 }

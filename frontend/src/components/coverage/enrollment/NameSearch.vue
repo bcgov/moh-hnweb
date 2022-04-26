@@ -41,6 +41,7 @@ import dayjs from 'dayjs'
 import { API_DATE_FORMAT } from '../../../util/constants'
 import { validateDOB, VALIDATE_DOB_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
+import { useAlertStore } from '../../../stores/alert'
 
 export default {
   name: 'NameSearch',
@@ -49,6 +50,7 @@ export default {
   },
   setup() {
     return {
+      alertStore: useAlertStore(),
       v$: useVuelidate(),
     }
   },
@@ -69,11 +71,11 @@ export default {
   },
   methods: {
     async submitForm() {
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
-          this.$store.commit('alert/setErrorAlert')
+          this.alertStore.setErrorAlert()
           return
         }
         this.$emit('search-for-candidates', {
@@ -84,7 +86,7 @@ export default {
           gender: this.gender,
         })
       } catch (err) {
-        this.$store.commit('alert/setErrorAlert', `${err}`)
+        this.alertStore.setErrorAlert(err)
       }
     },
     resetForm() {
@@ -94,7 +96,7 @@ export default {
       this.dateOfBirth = null
       this.gender = null
       this.v$.$reset()
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
     },
   },
   validations() {

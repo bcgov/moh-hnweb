@@ -4,7 +4,9 @@ import Help from './../views/Help.vue'
 import Home from './../views/Home.vue'
 import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
 import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
-import store from '../store'
+import { useAlertStore } from '../stores/alert'
+import { useAuthStore } from '../stores/auth'
+import { useStudyPermitHolderStore } from '../stores/studyPermitHolder'
 import NotFound from '../views/NotFound.vue'
 import Unauthorized from '../views/Unauthorized.vue'
 import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
@@ -273,7 +275,8 @@ function checkPageAction(to, next) {
   const pageAction = to.query.pageAction
 
   if (pageAction !== 'REGISTRATION') {
-    store.commit('studyPermitHolder/resetResident')
+    const studyPermitHolderStore = useStudyPermitHolderStore()
+    studyPermitHolderStore.$reset()
   }
   next()
 }
@@ -290,6 +293,9 @@ export const createRouter = (app) => {
     },
   })
   router.beforeEach(async (to, _, next) => {
+    const alertStore = useAlertStore()
+    const authStore = useAuthStore()
+
     const authenticated = app.config.globalProperties.$keycloak.authenticated
 
     // Authenticated users should never see the Login screen
@@ -307,13 +313,13 @@ export const createRouter = (app) => {
 
     // Secured pages shouldn't be available to unauthenticated users
     if (to.meta.requiresAuth && !authenticated) {
-      store.commit('alert/setErrorAlert', `You are not authorized to access ${to.path}. Please login first.`)
+      alertStore.setErrorAlert(`You are not authorized to access ${to.path}. Please login first.`)
       next({ name: 'Login' })
       return
     }
 
     // Validate that the user has permissions
-    const hasAnyPermission = store.getters['auth/hasAnyPermission']
+    const hasAnyPermission = authStore.hasAnyPermission
     if (!hasAnyPermission && to.name !== 'Unauthorized') {
       next({ name: 'Unauthorized' })
       return
@@ -322,11 +328,11 @@ export const createRouter = (app) => {
     // Validate routes secured by permission
     const permission = to.meta.permission
     if (permission) {
-      const hasPermission = store.getters['auth/hasPermission'](permission)
+      const hasPermission = authStore.hasPermission(permission)
       if (hasPermission) {
         next()
       } else {
-        store.commit('alert/setErrorAlert', `You are not authorized to access ${to.path}`)
+        alertStore.setErrorAlert(`You are not authorized to access ${to.path}`)
         next({ name: 'Home' })
       }
     } else {

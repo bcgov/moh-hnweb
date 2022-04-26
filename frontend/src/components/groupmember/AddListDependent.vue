@@ -28,6 +28,7 @@ import useVuelidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 import AppLabel from '../ui/AppLabel.vue'
 import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
+import { useAlertStore } from '../../stores/alert'
 
 export default {
   name: 'AddDependent',
@@ -36,6 +37,7 @@ export default {
   },
   setup() {
     return {
+      alertStore: useAlertStore(),
       v$: useVuelidate({ $stopPropagation: true }),
     }
   },
@@ -55,7 +57,7 @@ export default {
     async addDependent() {
       const isValid = await this.v$.$validate()
       if (!isValid) {
-        this.$store.commit('alert/setErrorAlert')
+        this.alertStore.setErrorAlert()
         return
       }
 

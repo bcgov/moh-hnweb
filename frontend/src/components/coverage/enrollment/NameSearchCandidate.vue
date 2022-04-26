@@ -10,14 +10,21 @@
         <span>{{ formatDetailsLine3 }}</span>
       </AppCol>
       <AppCol class="col1">
-        <AppButton :submitting="submitting" mode="primary" @click="selectCandidate" type="button">Add</AppButton>
+        <AppButton class="btn-sm" :submitting="submitting" mode="primary" @click="selectCandidate" type="button">Add</AppButton>
       </AppCol>
     </AppRow>
   </div>
 </template>
 <script>
+import { useStudyPermitHolderStore } from '../../../stores/studyPermitHolder'
+
 export default {
   name: 'NameSearchCandidate',
+  setup() {
+    return {
+      studyPermitHolderStore: useStudyPermitHolderStore(),
+    }
+  },
   props: {
     candidate: {
       type: Object,
@@ -103,7 +110,7 @@ export default {
   methods: {
     selectCandidate() {
       this.submitting = true
-      this.$store.commit('studyPermitHolder/setResident', this.candidate)
+      this.studyPermitHolderStore.resident = this.candidate
       this.$router.push({ name: 'AddVisaResidentWithPHN', query: { pageAction: 'REGISTRATION' } })
       this.submitting = false
     },
