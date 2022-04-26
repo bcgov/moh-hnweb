@@ -22,6 +22,7 @@ import ca.bc.gov.hlth.hnweb.util.V3MessageUtil;
 public class GetDemographicsConverter {
 
 	private static final String WARNING = "Warning";
+	private static final String ERROR = "Error";
 	private static final Logger logger = LoggerFactory.getLogger(GetDemographicsConverter.class);
 	private static final String MRN_SOURCE = "MOH_CRS";
 
@@ -35,7 +36,7 @@ public class GetDemographicsConverter {
 		GetDemographicsRequest demographicsRequest = new GetDemographicsRequest();
 		demographicsRequest.setPhn(phn);
 		demographicsRequest.setMrnSource(MRN_SOURCE);
-		
+
 		return demographicsRequest;
 
 	}
@@ -57,52 +58,62 @@ public class GetDemographicsConverter {
 	private GetPersonDetailsResponse buildGetPersonDetailsResponse(GetDemographicsResponse demographicsResponse) {
 		GetPersonDetailsResponse getPersonDetailsResponse = new GetPersonDetailsResponse();
 
+		// BCHCIM.GD.0.0018 | No results were returned. Please refine your search
+		// criteria, and try again.
+		
+		// BCHCIM.GD.1.0015 | Warning: The identifier you used in the query has been
+		// merged. The surviving identifier was returned.
+		
+		// BCHCIM.GD.2.0004 | Error: The EMPI is unavailable. Please report the problem
+		// to the helpdesk.
+
 		String messageDetails = demographicsResponse.getMessage().getDetails();
 		String messageText[] = messageDetails.split("\\|");
 		String message = "";
 		if (messageText.length > 1) {
 			message = messageText[1];
 		}
-		if (demographicsResponse.getResultCount() == 0) {
-			logger.debug("No result found for the Phn [{}]", demographicsResponse.getPerson().getPhn());
+		getPersonDetailsResponse.setMessage(message);
+		String[] messageStr = message.split(":");
+		String status = messageStr[0].trim();
 
-			if (messageText.length > 0) {
-				getPersonDetailsResponse.setStatus(StatusEnum.ERROR);
-				getPersonDetailsResponse.setMessage(message);
-			}
-		} else {
+		if (status.contentEquals(WARNING)) {
+			getPersonDetailsResponse.setStatus(StatusEnum.WARNING);
+			getPersonDetailsResponse.setMessage(messageStr[1]);
+		} else if (status.contentEquals(ERROR)) {
+			getPersonDetailsResponse.setStatus(StatusEnum.ERROR);
+			getPersonDetailsResponse.setMessage(messageStr[1]);
+		} else
+			getPersonDetailsResponse.setStatus(StatusEnum.SUCCESS);
+
+		if (demographicsResponse.getPerson() != null) {
 			buildPersonDetails(demographicsResponse, getPersonDetailsResponse);
-			if (messageText.length > 0) {
-				if (message.contains(WARNING)) {
-					getPersonDetailsResponse.setStatus(StatusEnum.WARNING);
-					getPersonDetailsResponse.setMessage(messageText[1]);
-				} else {
-					getPersonDetailsResponse.setStatus(StatusEnum.SUCCESS);
-				}
-			}
 
-			logger.debug("Response message received for phn: {}", getPersonDetailsResponse.getPhn());
 		}
+
+		logger.debug("Response message received for phn: {}", getPersonDetailsResponse.getPhn());
 
 		return getPersonDetailsResponse;
 
 	}
 
 	private void buildPersonDetails(GetDemographicsResponse demographicsResponse,
-			GetPersonDetailsResponse personDetailsResponse) {				
-		Name nameObj = demographicsResponse.getPerson().getDeclaredName();		
+			GetPersonDetailsResponse personDetailsResponse) {
+		Name nameObj = demographicsResponse.getPerson().getDeclaredName();
 		if (nameObj == null) {
 			nameObj = demographicsResponse.getPerson().getDocumentedName();
 		}
 
-		personDetailsResponse.setPhn(demographicsResponse.getPerson().getPhn());
-		personDetailsResponse.setGivenName(nameObj.getFirstGivenName());
-		personDetailsResponse.setSecondName(nameObj.getSecondGivenName());
-		personDetailsResponse.setSurname(nameObj.getSurname());
+		if (nameObj != null) {
+			personDetailsResponse.setPhn(demographicsResponse.getPerson().getPhn());
+			personDetailsResponse.setGivenName(nameObj.getFirstGivenName());
+			personDetailsResponse.setSecondName(nameObj.getSecondGivenName());
+			personDetailsResponse.setSurname(nameObj.getSurname());
 
-		String birthDate = V3MessageUtil.convertDateToString(demographicsResponse.getPerson().getBirthDate());
-		personDetailsResponse.setDateOfBirth(birthDate);
-		personDetailsResponse.setGender(demographicsResponse.getPerson().getGender());
+			String birthDate = V3MessageUtil.convertDateToString(demographicsResponse.getPerson().getBirthDate());
+			personDetailsResponse.setDateOfBirth(birthDate);
+			personDetailsResponse.setGender(demographicsResponse.getPerson().getGender());
+		}
 	}
 
 }

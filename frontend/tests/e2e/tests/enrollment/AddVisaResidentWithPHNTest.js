@@ -1,10 +1,9 @@
-import dayjs from 'dayjs'
-
-import { OUTPUT_DATE_FORMAT } from '../../../../src/util/constants'
-import { SITE_UNDER_TEST } from '../../configuration'
-import AlertPage from '../../pages/AlertPage'
 import AddVisaResidentWithPHNPage from '../../pages/enrollment/AddVisaResidentWithPHNPage'
+import AlertPage from '../../pages/AlertPage'
+import { OUTPUT_DATE_FORMAT } from '../../../../src/util/constants'
 import PersonDetails from '../../pages/enrollment/PersonDetailsPage'
+import { SITE_UNDER_TEST } from '../../configuration'
+import dayjs from 'dayjs'
 import { regularAccUser } from '../../roles/roles'
 
 const immigrationCodeOption = AddVisaResidentWithPHNPage.immigrationCodeSelect.find('option')
@@ -51,7 +50,7 @@ test('Check required fields validation', async (t) => {
 
     // When I click the submit button
     .click(AddVisaResidentWithPHNPage.submitButton)
-    .wait(1000)
+    .wait(5000)
     // I expect an error message stating the page had errors and individual error messages for each required field
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)

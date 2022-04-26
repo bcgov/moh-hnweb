@@ -1,9 +1,10 @@
-import { SITE_UNDER_TEST } from '../../configuration'
-import AlertPage from '../../pages/AlertPage'
 import AddVisaResidentWithoutPHNPage from '../../pages/enrollment/AddVisaResidentWithoutPHNPage'
+import AlertPage from '../../pages/AlertPage'
 import NameSearchPage from '../../pages/enrollment/NameSearchPage'
+import { SITE_UNDER_TEST } from '../../configuration'
 import { regularAccUser } from '../../roles/roles'
 
+const WARNING_MESSAGE = ' The maximum number of results were returned, and more may be available. Please refine your search criteria and try again.'
 const ERROR_MESSAGE = 'Please correct errors before submitting'
 const SURNAME_REQUIRED_MESSAGE = 'Surname is required'
 const FIRSTNAME_REQUIRED_MESSAGE = 'First Name is required'
@@ -49,6 +50,22 @@ test('Check properly filled form passes validation', async (t) => {
     // I expect the AddVisaResident page to be loaded
     .expect(AddVisaResidentWithoutPHNPage.groupNumberInput.exists)
     .ok()
+})
+
+test('Check Name Serach Result contains warning message', async (t) => {
+  await t
+    // Given I have a form filled out with data
+    .typeText(NameSearchPage.surnameInput, 'dumpty')
+    .typeText(NameSearchPage.firstNameInput, 'humpty')
+    .typeText(NameSearchPage.secondNameInput, 'eggo')
+    .typeText(NameSearchPage.dateOfBirthInput, '19700101')
+    .click(NameSearchPage.radioButton)
+    .wait(1000)
+    // When I click the submit button
+    .click(NameSearchPage.submitButton)
+    // I expect the Name Search Result page with Warning message
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(WARNING_MESSAGE)
 })
 
 test('Check Add Visa Resident is loaded when no matching records found', async (t) => {
