@@ -60,10 +60,10 @@ public class GetDemographicsConverter {
 
 		// BCHCIM.GD.0.0018 | No results were returned. Please refine your search
 		// criteria, and try again.
-		
+
 		// BCHCIM.GD.1.0015 | Warning: The identifier you used in the query has been
 		// merged. The surviving identifier was returned.
-		
+
 		// BCHCIM.GD.2.0004 | Error: The EMPI is unavailable. Please report the problem
 		// to the helpdesk.
 
@@ -86,11 +86,10 @@ public class GetDemographicsConverter {
 		} else
 			getPersonDetailsResponse.setStatus(StatusEnum.SUCCESS);
 
-		if (demographicsResponse.getPerson() != null) {
+		if (demographicsResponse.getResultCount() > 0 && demographicsResponse.getPerson() != null) {
 			buildPersonDetails(demographicsResponse, getPersonDetailsResponse);
 
 		}
-
 		logger.debug("Response message received for phn: {}", getPersonDetailsResponse.getPhn());
 
 		return getPersonDetailsResponse;
