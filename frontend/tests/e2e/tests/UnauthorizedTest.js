@@ -15,8 +15,7 @@ test('Check Page content ', async (t) => {
 })
 
 test('Check Transfer button ', async (tc) => {
-  // TODO Update this with the actual text from User Transfer
-  await tc.click(UnauthorizedPage.transferButton).expect(UnauthorizedPage.userTransferTitle.innerText).eql('User Transfer')
+  await tc.click(UnauthorizedPage.transferButton).expect(UnauthorizedPage.userTransferTitle.innerText).eql('Welcome to the MSP Direct Account Transfer')
 })
 
 test('Check More Info button ', async (tc) => {

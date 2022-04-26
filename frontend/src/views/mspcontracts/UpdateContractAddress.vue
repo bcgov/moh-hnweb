@@ -101,12 +101,13 @@ import {
   VALIDATE_TELEPHONE_MESSAGE,
 } from '../../util/validators'
 import MspContractsService from '../../services/MspContractsService'
+import { useAlertStore } from '../../stores/alert'
 
 export default {
   name: 'UpdateContractAddress',
-
   setup() {
     return {
+      alertStore: useAlertStore(),
       v$: useVuelidate(),
     }
   },
@@ -146,12 +147,11 @@ export default {
       this.submitting = true
       this.updateOk = false
       this.updateMode = true
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
-          this.$store.commit('alert/setErrorAlert')
-          this.submitting = false
+          this.showError()
           return
         }
         this.result = (
@@ -177,21 +177,25 @@ export default {
         ).data
 
         if (this.result.status === 'error') {
-          this.$store.commit('alert/setErrorAlert', this.result.message)
+          this.alertStore.setErrorAlert(this.result.message)
           return
         }
 
         if (this.result?.status === 'success') {
           this.updateMode = false
           this.updateOk = true
-          this.$store.commit('alert/setSuccessAlert', this.result.message)
+          this.alertStore.setSuccessAlert(this.result.message)
           return
         }
       } catch (err) {
-        this.$store.commit('alert/setErrorAlert', `${err}`)
+        this.alertStore.setErrorAlert(err)
       } finally {
         this.submitting = false
       }
+    },
+    showError(error) {
+      this.alertStore.setErrorAlert(error)
+      this.searching = false
     },
     resetForm() {
       this.groupNumber = ''
@@ -209,7 +213,7 @@ export default {
       this.mailingAddress.postalCode = ''
       this.result = null
       this.v$.$reset()
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
       this.submitting = false
       this.updateOk = false
       this.updateMode = true

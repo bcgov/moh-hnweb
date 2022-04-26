@@ -3,8 +3,8 @@ import { Selector } from 'testcafe'
 class LoginPage {
   constructor() {
     this.welcomeLink = Selector('#welcome-link')
-    this.menu = Selector('#menu')
-    this.menuLinks = Selector('#menu > ul > li')
+    this.menu = Selector('ul.leftNav')
+    this.menuLinks = Selector('ul.leftNav > li')
     this.loginButtons = Selector('#loginButtons')
     this.healthAuthorityIDButton = Selector('#phsaLogin')
     this.idirButton = Selector('#idirLogin')

@@ -18,11 +18,13 @@
 import useVuelidate from '@vuelidate/core'
 import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
+import { useAlertStore } from '../../../stores/alert'
 
 export default {
   name: 'ResidentPHN',
   setup() {
     return {
+      alertStore: useAlertStore(),
       v$: useVuelidate(),
     }
   },
@@ -42,18 +44,18 @@ export default {
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
-          this.$store.commit('alert/setErrorAlert')
+          this.alertStore.setErrorAlert()
           return
         }
         this.$emit('update-resident', this.phn)
       } catch (err) {
-        this.$store.commit('alert/setErrorAlert', `${err}`)
+        this.alertStore.setErrorAlert(err)
       }
     },
     resetForm() {
       this.phn = ''
       this.v$.$reset()
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
     },
   },
   validations() {

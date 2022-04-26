@@ -78,6 +78,7 @@ import PhnInquiryBeneficiary from '../../components/eligibility/PhnInquiryBenefi
 import useVuelidate from '@vuelidate/core'
 import { validateOptionalPHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
 import { helpers } from '@vuelidate/validators'
+import { useAlertStore } from '../../stores/alert.js'
 
 export default {
   name: 'PhnInquiry',
@@ -87,6 +88,7 @@ export default {
   },
   setup() {
     return {
+      alertStore: useAlertStore(),
       v$: useVuelidate(),
     }
   },
@@ -116,7 +118,7 @@ export default {
       this.result = null
       this.searching = true
       this.searchOk = false
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
@@ -132,24 +134,20 @@ export default {
 
         this.result = (await EligibilityService.inquirePhn({ phns: populatedPHNs })).data
         if (this.result.status === 'error') {
-          this.$store.commit('alert/setErrorAlert', this.result.message)
+          this.alertStore.setErrorAlert(this.result.message)
           return
         }
 
         this.searchOk = true
-        if (this.result.status === 'success') {
-          this.$store.commit('alert/setSuccessAlert', this.result.message)
-        } else if (this.result.status === 'warning') {
-          this.$store.commit('alert/setWarningAlert', this.result.message)
-        }
+        this.alertStore.setAlert({ message: this.result.message, type: this.result.status })
       } catch (err) {
-        this.$store.commit('alert/setErrorAlert', `${err}`)
+        this.alertStore.setErrorAlert(err)
       } finally {
         this.searching = false
       }
     },
     showError(error) {
-      this.$store.commit('alert/setErrorAlert', error)
+      this.alertStore.setErrorAlert(error)
       this.result = {}
       this.searching = false
     },
@@ -166,7 +164,7 @@ export default {
       this.phn10 = ''
       this.result = null
       this.v$.$reset()
-      this.$store.commit('alert/dismissAlert')
+      this.alertStore.dismissAlert()
       this.searchOk = false
       this.searching = false
     },
