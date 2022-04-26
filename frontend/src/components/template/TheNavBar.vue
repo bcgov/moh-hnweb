@@ -11,7 +11,6 @@
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
           <div class="dropdown">
             <span>Eligibility & PHN</span>
-            <!-- <router-link @click="resetAlert" :to="{ name: 'Eligibility' }">Eligibility & PHN</router-link> -->
             <div class="dropdown-content">
               <router-link @click="resetAlert" :class="menuClass($route, 'CheckEligibility')" :to="{ name: 'CheckEligibility' }" v-if="hasPermission('CheckEligibility')">Check Eligibility</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'PhnInquiry')" :to="{ name: 'PhnInquiry' }" v-if="hasPermission('PHNInquiry')">PHN Inquiry</router-link>
