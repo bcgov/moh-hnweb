@@ -41,7 +41,6 @@ const createRoutes = (app) => [
     name: 'Home',
     component: Home,
     meta: {
-      permission: 'AddPermitHolderWOPHN',
       requiresAuth: true,
     },
   },
