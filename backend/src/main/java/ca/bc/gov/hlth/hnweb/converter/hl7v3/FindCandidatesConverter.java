@@ -22,21 +22,22 @@ import ca.bc.gov.hlth.hnweb.util.V3MessageUtil;
 
 public class FindCandidatesConverter {
 
-	private static final String WARNING = "Warning";
-	private static final String ERROR = "Error";
 	private static final String IDENTIFIER_TYPE_CODE = "PH";
 	private static final String ASSIGNING_AUTHORITY = "BC";
 	private static final Logger logger = LoggerFactory.getLogger(FindCandidatesConverter.class);
 
 	public FindCandidatesRequest convertRequest(NameSearchRequest nameSearchRequest) {
-		logger.debug("Find Candidates for Name: [{}] DOB: [{}]",
-				nameSearchRequest.getSurname() + nameSearchRequest.getGivenName(), nameSearchRequest.getDateOfBirth());
+		String surname = nameSearchRequest.getSurname();
+		String givenName = nameSearchRequest.getGivenName();
+		
+		logger.debug("Find Candidates for Name: [{} {}] DOB: [{}]",
+				surname, givenName, nameSearchRequest.getDateOfBirth());
 
 		FindCandidatesRequest findCandidatesRequest = new FindCandidatesRequest();
 
 		Name name = new Name();
-		name.setSurname(nameSearchRequest.getSurname());
-		name.setFirstGivenName(nameSearchRequest.getGivenName());
+		name.setSurname(surname);
+		name.setFirstGivenName(givenName);
 		name.setSecondGivenName(nameSearchRequest.getSecondName());
 
 		findCandidatesRequest.setName(name);
@@ -64,21 +65,26 @@ public class FindCandidatesConverter {
 
 		String messageText[] = messageDetails.split("\\|");
 		String message = "";
+		String statusCode = "";
 		if (messageText.length > 1) {
+			statusCode = messageText[0];
 			message = messageText[1];
 		}
-		nameSearchResponse.setMessage(message);
+		
 		String[] messageStr = message.split(":");
-		String status = messageStr[0].trim();
+		String status = messageStr[0].trim();		
 
-		if (status.contentEquals(WARNING)) {
-			nameSearchResponse.setStatus(StatusEnum.WARNING);
-			nameSearchResponse.setMessage(messageStr[1]);
-		} else if (status.contentEquals(ERROR)) {
+		if (status.equalsIgnoreCase(StatusEnum.WARNING.name())) {
+			message =  messageStr[1];
+			nameSearchResponse.setStatus(StatusEnum.WARNING);			
+		} else if (status.equalsIgnoreCase(StatusEnum.ERROR.name())) {
+			message =  messageStr[1];
 			nameSearchResponse.setStatus(StatusEnum.ERROR);
-			nameSearchResponse.setMessage(messageStr[1]);
-		} else
+		} else {
 			nameSearchResponse.setStatus(StatusEnum.SUCCESS);
+		}
+		
+		nameSearchResponse.setMessage(String.format("%s%s", statusCode, message));
 
 		if (findCandidatesResponse.getResultCount() > 0) {
 

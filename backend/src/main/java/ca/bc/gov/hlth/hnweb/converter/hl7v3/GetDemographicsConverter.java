@@ -21,8 +21,6 @@ import ca.bc.gov.hlth.hnweb.util.V3MessageUtil;
 
 public class GetDemographicsConverter {
 
-	private static final String WARNING = "Warning";
-	private static final String ERROR = "Error";
 	private static final Logger logger = LoggerFactory.getLogger(GetDemographicsConverter.class);
 	private static final String MRN_SOURCE = "MOH_CRS";
 
@@ -70,28 +68,29 @@ public class GetDemographicsConverter {
 		String messageDetails = demographicsResponse.getMessage().getDetails();
 		String messageText[] = messageDetails.split("\\|");
 		String message = "";
+		String statusCode = "";
 		if (messageText.length > 1) {
+			statusCode = messageText[0];
 			message = messageText[1];
 		}
-		getPersonDetailsResponse.setMessage(message);
 		String[] messageStr = message.split(":");
 		String status = messageStr[0].trim();
 
-		if (status.contentEquals(WARNING)) {
+		if (status.equalsIgnoreCase(StatusEnum.WARNING.name())) {
+			message = messageStr[1];
 			getPersonDetailsResponse.setStatus(StatusEnum.WARNING);
-			getPersonDetailsResponse.setMessage(messageStr[1]);
-		} else if (status.contentEquals(ERROR)) {
+		} else if (status.equalsIgnoreCase(StatusEnum.ERROR.name())) {
+			message = messageStr[1];
 			getPersonDetailsResponse.setStatus(StatusEnum.ERROR);
-			getPersonDetailsResponse.setMessage(messageStr[1]);
-		} else
+		} else {
 			getPersonDetailsResponse.setStatus(StatusEnum.SUCCESS);
+		}
+		getPersonDetailsResponse.setMessage(String.format("%s%s", statusCode, message));
 
 		if (demographicsResponse.getResultCount() > 0 && demographicsResponse.getPerson() != null) {
 			buildPersonDetails(demographicsResponse, getPersonDetailsResponse);
-
 		}
 		logger.debug("Response message received for phn: {}", getPersonDetailsResponse.getPhn());
-
 		return getPersonDetailsResponse;
 
 	}

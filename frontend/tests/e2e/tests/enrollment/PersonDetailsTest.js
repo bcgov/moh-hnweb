@@ -1,13 +1,13 @@
-import AddVisaResidentWithPHNPage from '../../pages/enrollment/AddVisaResidentWithPHNPage'
-import AlertPage from '../../pages/AlertPage'
-import PersonDetailsPage from '../../pages/enrollment/PersonDetailsPage'
 import { SITE_UNDER_TEST } from '../../configuration'
+import AlertPage from '../../pages/AlertPage'
+import AddVisaResidentWithPHNPage from '../../pages/enrollment/AddVisaResidentWithPHNPage'
+import PersonDetailsPage from '../../pages/enrollment/PersonDetailsPage'
 import { regularAccUser } from '../../roles/roles'
 
 const ERROR_MESSAGE = 'Please correct errors before submitting'
 const PHN_REQUIRED_MESSAGE = 'PHN is required'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'
-const ERROR_MESSAGE_PHN_DOES_NOT_EXIST = 'The identifier you used in the Get Demographics transaction does not exist in the EMPI.'
+const ERROR_MESSAGE_PHN_DOES_NOT_EXIST = 'BCHCIM.GD.2.0018  The identifier you used in the Get Demographics transaction does not exist in the EMPI.'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addStudyPermitHolderWithPHN'
 
