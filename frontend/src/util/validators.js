@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+
 import { helpers } from '@vuelidate/validators'
 
 /**
@@ -165,7 +166,7 @@ export function validateAddress(address) {
  */
 function validateSpecialCharactersForAddress(input, length) {
   if (input.length > length) {
-    return false
+    return true
   }
   var invalidChars = /[,<>;:{}()*&^%$#@!~\\|\?_]/
   if (invalidChars.test(input)) {
@@ -255,6 +256,7 @@ export const VALIDATE_ADDRESS_LINE1_MESSAGE = 'Address Line 1 is invalid'
 export const VALIDATE_ADDRESS_LINE2_MESSAGE = 'Address Line 2 is invalid'
 export const VALIDATE_ADDRESS_LINE3_MESSAGE = 'Address Line 3 is invalid'
 export const VALIDATE_ADDRESS_LINE4_MESSAGE = 'Address Line 4 is invalid'
+export const VALIDATE_CITY_MESSAGE = 'City is invalid'
 export const VALIDATE_DOB_MESSAGE = 'Date of Birth must not be in the future'
 export const VALIDATE_PHN_MESSAGE = 'PHN format is invalid'
 export const VALIDATE_CONTRACT_NUMBER_MESSAGE = 'MSP Contract Number is invalid'

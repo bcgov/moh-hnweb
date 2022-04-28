@@ -160,6 +160,7 @@ import {
   VALIDATE_ADDRESS_LINE1_MESSAGE,
   VALIDATE_ADDRESS_LINE2_MESSAGE,
   VALIDATE_ADDRESS_LINE3_MESSAGE,
+  VALIDATE_CITY_MESSAGE,
   VALIDATE_GROUP_NUMBER_MESSAGE,
   VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE,
   VALIDATE_DEPARTMENT_NUMBER_MESSAGE,
@@ -167,7 +168,7 @@ import {
   VALIDATE_TELEPHONE_MESSAGE,
   VALIDATE_POSTAL_CODE_MESSAGE,
 } from '../../../util/validators'
-import { required, requiredIf, helpers } from '@vuelidate/validators'
+import { required, requiredIf, helpers, maxLength } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT, IMMIGRATION_CODES, PROVINCES, PRIOR_RESIDENCES } from '../../../util/constants'
 import { formatPersonName } from '../../../util/utils'
@@ -356,15 +357,22 @@ export default {
       coverageCancellationDate: { required },
       address1: {
         required,
+        maxLength: maxLength(25),
         validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateAddress),
       },
       address2: {
+        maxLength: maxLength(25),
         validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
       },
       address3: {
+        maxLength: maxLength(25),
         validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateAddress),
       },
-      city: { required },
+      city: {
+        required,
+        validateAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateAddress),
+        maxLength: maxLength(25),
+      },
       province: { required },
       postalCode: {
         required,
@@ -372,17 +380,23 @@ export default {
       },
       mailingAddress1: {
         required: helpers.withMessage(VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForVisaResident)),
+        maxLength: maxLength(25),
         validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateOptionalAddress),
       },
       mailingAddress2: {
+        maxLength: maxLength(25),
         validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateOptionalAddress),
       },
       mailingAddress3: {
+        maxLength: maxLength(25),
         validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateOptionalAddress),
       },
-      mailingAddressCity: {},
+      mailingAddressCity: {
+        validateOptionalAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateOptionalAddress),
+      },
       mailingAddressProvince: {},
       mailingAddressPostalCode: {
+        maxLength: maxLength(25),
         validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
       },
       priorResidenceCode: { required },
