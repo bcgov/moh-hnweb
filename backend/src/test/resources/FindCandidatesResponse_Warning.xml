@@ -1,0 +1,373 @@
+<HCIM_IN_FindCandidatesResponse
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="urn:hl7-org:v3">
+	<id root="2.16.840.1.113883.3.51.1.1.1" extension="c656791a-8d24-4b56-b789-e6b490f1654b" />
+	<creationTime value="20220425204640" />
+	<versionCode code="V3PR1" />
+	<interactionId root="2.16.840.1.113883.3.51.1.1.2" extension="HCIM_IN_FindCandidatesResponse" />
+	<processingCode code="P" />
+	<processingModeCode code="T" />
+	<acceptAckCode code="NE" />
+	<receiver typeCode="RCV">
+		<device classCode="DEV" determinerCode="INSTANCE">
+			<id root="2.16.840.1.113883.3.51.1.1.5" extension="MOH_CRS" />
+			<asAgent classCode="AGNT">
+				<representedOrganization classCode="ORG" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.51.1.1.3" extension="MSPD" />
+				</representedOrganization>
+			</asAgent>
+		</device>
+	</receiver>
+	<sender typeCode="SND">
+		<device classCode="DEV" determinerCode="INSTANCE">
+			<id root="2.16.840.1.113883.3.51.1.1.4" extension="192.168.0.1" />
+			<asAgent classCode="AGNT">
+				<representedOrganization classCode="ORG" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.51.1.1.3" extension="HCIM" />
+				</representedOrganization>
+			</asAgent>
+		</device>
+	</sender>
+	<controlActProcess classCode="ACCM" moodCode="EVN">
+		<subject typeCode="SUBJ">
+			<target classCode="IDENT">
+				<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9878259011" assigningAuthorityName="MOH_CRS" displayable="true" />
+				<addr use="PHYS">
+					<postalCode>V6K8K3</postalCode>
+					<streetAddressLine>5932 TORONTO AVE</streetAddressLine>
+					<city>VICTORIA</city>
+					<state>BC</state>
+					<country>CA</country>
+				</addr>
+				<addr use="PST">
+					<postalCode>V6K8K3</postalCode>
+					<streetAddressLine>5932 TORONTO AVE</streetAddressLine>
+					<city>VICTORIA</city>
+					<state>BC</state>
+					<country>CA</country>
+				</addr>
+				<telecom value="tel:604-889-6232" use="H" />
+				<identifiedPerson classCode="PERSON" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9878259011" assigningAuthorityName="MOH_CRS" />
+					<name use="L">
+						<given>HUMPTY</given>
+						<family>DUMPTY</family>
+					</name>
+					<administrativeGenderCode code="M" />
+					<birthTime value="19610315" />
+				</identifiedPerson>
+				<subjectOf>
+					<observationEvent>
+						<code code="SCORE" />
+						<value value="44" />
+					</observationEvent>
+				</subjectOf>
+			</target>
+		</subject>
+		<subject typeCode="SUBJ">
+			<target classCode="IDENT">
+				<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9874098763" assigningAuthorityName="MOH_CRS" displayable="true" />
+				<addr use="PHYS">
+					<postalCode>V9B 4R5</postalCode>
+					<streetAddressLine>4-587 2ND ST</streetAddressLine>
+					<city>VICTORIA</city>
+					<state>BC</state>
+					<country>CA</country>
+				</addr>
+				<addr use="PST VER">
+					<postalCode>V8W 1H8</postalCode>
+					<streetAddressLine>818 FORT ST</streetAddressLine>
+					<city>VICTORIA</city>
+					<state>BC</state>
+					<country>CA</country>
+				</addr>
+				<identifiedPerson classCode="PERSON" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9874098763" assigningAuthorityName="MOH_CRS" />
+					<name use="L">
+						<given>HUMPTY</given>
+						<given>EGGO</given>
+						<family>DUMPTY</family>
+					</name>
+					<administrativeGenderCode code="M" />
+					<birthTime value="20001019" />
+				</identifiedPerson>
+				<subjectOf>
+					<observationEvent>
+						<code code="SCORE" />
+						<value value="44" />
+					</observationEvent>
+				</subjectOf>
+			</target>
+		</subject>
+		<subject typeCode="SUBJ">
+			<target classCode="IDENT">
+				<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9878104771" assigningAuthorityName="MOH_CRS" displayable="true" />
+				<addr use="PHYS">
+					<postalCode>V5R3D4</postalCode>
+					<streetAddressLine>956 BARN RD</streetAddressLine>
+					<city>VICTORIA</city>
+					<state>BC</state>
+					<country>CA</country>
+				</addr>
+				<identifiedPerson classCode="PERSON" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9878104771" assigningAuthorityName="MOH_CRS" />
+					<name use="L">
+						<given>HUMPTY</given>
+						<family>DUMPTY</family>
+					</name>
+					<administrativeGenderCode code="M" />
+					<birthTime value="19920320" />
+				</identifiedPerson>
+				<subjectOf>
+					<observationEvent>
+						<code code="SCORE" />
+						<value value="44" />
+					</observationEvent>
+				</subjectOf>
+			</target>
+		</subject>
+		<subject typeCode="SUBJ">
+			<target classCode="IDENT">
+				<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9875410727" assigningAuthorityName="MOH_CRS" displayable="true" />
+				<identifiedPerson classCode="PERSON" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9875410727" assigningAuthorityName="MOH_CRS" />
+					<name use="L">
+						<given>HUMPTY</given>
+						<family>DUMPTY</family>
+					</name>
+					<administrativeGenderCode code="M" />
+					<birthTime value="19800504" />
+				</identifiedPerson>
+				<subjectOf>
+					<observationEvent>
+						<code code="SCORE" />
+						<value value="44" />
+					</observationEvent>
+				</subjectOf>
+			</target>
+		</subject>
+		<subject typeCode="SUBJ">
+			<target classCode="IDENT">
+				<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9878259265" assigningAuthorityName="MOH_CRS" displayable="true" />
+				<addr use="PHYS">
+					<postalCode>V5G0K7</postalCode>
+					<streetAddressLine>1157 PANDORA ST</streetAddressLine>
+					<city>VICTORIA</city>
+					<state>BC</state>
+					<country>CA</country>
+				</addr>
+				<addr use="PST">
+					<postalCode>V7Y5T4</postalCode>
+					<streetAddressLine>125 PANDORA ST</streetAddressLine>
+					<city>VICTORIA</city>
+					<state>BC</state>
+					<country>CA</country>
+				</addr>
+				<identifiedPerson classCode="PERSON" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9878259265" assigningAuthorityName="MOH_CRS" />
+					<name use="L">
+						<given>HUMPTY</given>
+						<family>DUMPTY</family>
+					</name>
+					<administrativeGenderCode code="M" />
+					<birthTime value="19920424" />
+					<deceasedInd value="true" />
+					<deceasedTime value="20050505" />
+					<playedOtherIDs classCode="ROL">
+						<id root="2.16.840.1.113883.3.51.1.1.6.2" extension="5645646" assigningAuthorityName="ABPHN" />
+					</playedOtherIDs>
+				</identifiedPerson>
+				<subjectOf>
+					<observationEvent>
+						<code code="SCORE" />
+						<value value="44" />
+					</observationEvent>
+				</subjectOf>
+			</target>
+		</subject>
+		<subject typeCode="SUBJ">
+			<target classCode="IDENT">
+				<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="4921787724910192707" assigningAuthorityName="MOH_CRS" displayable="true" />
+				<addr use="PHYS">
+					<postalCode>C2E 5B4</postalCode>
+					<streetAddressLine>879 CROSLEY QUAY</streetAddressLine>
+					<city>YMIR</city>
+					<state>AB</state>
+					<country>CA</country>
+				</addr>
+				<addr use="PST">
+					<postalCode>Z6A 5B4</postalCode>
+					<streetAddressLine>859 DUFAULT APPROACH</streetAddressLine>
+					<city>HEDLEY</city>
+					<state>BC</state>
+					<country>CA</country>
+				</addr>
+				<telecom value="tel:362-867-3748" use="H" />
+				<telecom value="tel:370-817-3630" use="WP" />
+				<telecom value="tel:791-606-4908" use="MC" />
+				<telecom value="mailto:PRILL7602@CULS-DE-SAC.COM" use="H" />
+				<telecom value="mailto:SHADDIX1413@SQUARE.COM" use="WP" />
+				<telecom value="mailto:BAUER5139@DELL.COM" use="MC" />
+				<identifiedPerson classCode="PERSON" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="4921787724910192707" assigningAuthorityName="MOH_CRS" />
+					<name use="L">
+						<given>HUMPTY</given>
+						<given>WALL FALLER</given>
+						<family>DUMPTY</family>
+					</name>
+					<administrativeGenderCode code="M" />
+					<birthTime value="19790613" />
+				</identifiedPerson>
+				<subjectOf>
+					<observationEvent>
+						<code code="SCORE" />
+						<value value="44" />
+					</observationEvent>
+				</subjectOf>
+			</target>
+		</subject>
+		<subject typeCode="SUBJ">
+			<target classCode="IDENT">
+				<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9890615536" assigningAuthorityName="MOH_CRS" displayable="true" />
+				<addr use="PHYS">
+					<postalCode>V7V7I5</postalCode>
+					<streetAddressLine>1456 KINGSMEN CRES</streetAddressLine>
+					<city>PRINCE RUPERT</city>
+					<state>BC</state>
+				</addr>
+				<telecom value="tel:2505555555" use="H" />
+				<identifiedPerson classCode="PERSON" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9890615536" assigningAuthorityName="MOH_CRS" />
+					<name use="L">
+						<given>DUMPTY</given>
+						<given>WALL FALLER</given>
+						<family>HUMPTY</family>
+					</name>
+					<administrativeGenderCode code="M" />
+					<birthTime value="19710607" />
+				</identifiedPerson>
+				<subjectOf>
+					<observationEvent>
+						<code code="SCORE" />
+						<value value="42" />
+					</observationEvent>
+				</subjectOf>
+			</target>
+		</subject>
+		<subject typeCode="SUBJ">
+			<target classCode="IDENT">
+				<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9874102587" assigningAuthorityName="MOH_CRS" displayable="true" />
+				<addr use="PHYS VER">
+					<postalCode>V1L 1A1</postalCode>
+					<streetAddressLine>1300 CREASE AVE</streetAddressLine>
+					<city>NELSON</city>
+					<state>BC</state>
+					<country>CA</country>
+				</addr>
+				<identifiedPerson classCode="PERSON" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9874102587" assigningAuthorityName="MOH_CRS" />
+					<name use="L">
+						<given>DUMPTY</given>
+						<family>HUMPTY</family>
+					</name>
+					<administrativeGenderCode code="M" />
+					<birthTime value="19410604" />
+				</identifiedPerson>
+				<subjectOf>
+					<observationEvent>
+						<code code="SCORE" />
+						<value value="42" />
+					</observationEvent>
+				</subjectOf>
+			</target>
+		</subject>
+		<subject typeCode="SUBJ">
+			<target classCode="IDENT">
+				<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9879476494" assigningAuthorityName="MOH_CRS" displayable="true" />
+				<addr use="PHYS">
+					<postalCode>E6M 5Y0</postalCode>
+					<streetAddressLine>639 BAHR PARKWAY</streetAddressLine>
+					<city>PORT MOODY</city>
+					<state>BC</state>
+					<country>CA</country>
+				</addr>
+				<addr use="PST">
+					<postalCode>H0R 9X1</postalCode>
+					<streetAddressLine>855 Wheat Gate</streetAddressLine>
+					<city>Crawford Bay</city>
+					<state>AB</state>
+					<country>CA</country>
+				</addr>
+				<telecom value="tel:822-994-2103" use="H" />
+				<telecom value="tel:518-947-5025" use="WP" />
+				<telecom value="tel:281-861-3464" use="MC" />
+				<telecom value="mailto:wilk6956@nene.com" use="H" />
+				<telecom value="mailto:GLESSNER5688@CULS-DE-SAC.COM" use="WP" />
+				<telecom value="mailto:kornegay7253@canyon.com" use="MC" />
+				<identifiedPerson classCode="PERSON" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9879476494" assigningAuthorityName="MOH_CRS" />
+					<name use="L">
+						<given>HUMPTY</given>
+						<given>DUMPTY</given>
+						<family>WALL</family>
+					</name>
+					<administrativeGenderCode code="M" />
+					<birthTime value="19450525" />
+				</identifiedPerson>
+				<subjectOf>
+					<observationEvent>
+						<code code="SCORE" />
+						<value value="42" />
+					</observationEvent>
+				</subjectOf>
+			</target>
+		</subject>
+		<subject typeCode="SUBJ">
+			<target classCode="IDENT">
+				<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9879029185" assigningAuthorityName="MOH_CRS" displayable="true" />
+				<addr use="PHYS">
+					<postalCode>V7N9K3</postalCode>
+					<streetAddressLine>4521 Skinner way</streetAddressLine>
+					<city>Victoria</city>
+					<state>BC</state>
+					<country>CA</country>
+				</addr>
+				<telecom value="tel:7785664744" use="H" />
+				<identifiedPerson classCode="PERSON" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.51.1.1.6.1" extension="9879029185" assigningAuthorityName="MOH_CRS" />
+					<name use="L">
+						<given>DUMPTY</given>
+						<family>HUMPTY</family>
+					</name>
+					<administrativeGenderCode code="M" />
+					<birthTime value="19920423" />
+				</identifiedPerson>
+				<subjectOf>
+					<observationEvent>
+						<code code="SCORE" />
+						<value value="42" />
+					</observationEvent>
+				</subjectOf>
+			</target>
+		</subject>
+		<queryAck>
+			<queryResponseCode code="BCHCIM.FC.0.0017 | Warning: The maximum number of results were returned, and more may be available. Please refine your search criteria and try again." />
+			<resultTotalQuantity value="10" />
+		</queryAck>
+		<queryByParameterPayload>
+			<person.administrativeGender>
+				<value code="M" />
+			</person.administrativeGender>
+			<person.birthTime>
+				<value value="19700101" />
+			</person.birthTime>
+			<person.name>
+				<value use="L C">
+					<given>humpty</given>
+					<family>dumpty</family>
+				</value>
+			</person.name>
+		</queryByParameterPayload>
+	</controlActProcess>
+</HCIM_IN_FindCandidatesResponse>

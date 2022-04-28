@@ -10,7 +10,7 @@ const priorResidenceCodeOption = AddVisaResidentWithoutPHNPage.priorResidenceCod
 
 const ERROR_MESSAGE = 'Please correct errors before submitting'
 const SUCCESS_MESSAGE = 'COVERAGE CANCEL DATE MUST BE AFTER COVERAGE EFFECTIVE DATE'
-const NO_SEARCH_RESULT = 'No results were returned. Please ensure you have entered the correct information.'
+const NO_SEARCH_RESULT = 'BCHCIM.FC.0.0018  No results were returned. Please refine your search criteria, and try again.'
 
 const INVALID_ADDRESS_LINE1_MESSAGE = 'Address Line 1 is invalid'
 const INVALID_ADDRESS_LINE2_MESSAGE = 'Address Line 2 is invalid'

@@ -52,7 +52,15 @@ public class EnrollmentControllerTest extends BaseControllerTest {
 			"MSA|AE|20211220160240|HRPB187ECOVERAGE MUST BE MORE THAN 2 MONTHS AFTER VISA ISSUE/RESIDENCE DATE\r\n" +
 			"ERR|^^^HRPB187E&COVERAGE MUST BE MORE THAN 2 MONTHS AFTER VISA ISSUE/RESIDENCE DATE";
 	
-	private static final String NO_RECORD_MESSAGE = " No results were returned. Please refine your search criteria, and try again.";
+	private static final String NO_RECORD_MESSAGE = "BCHCIM.FC.0.0018.0  No results were returned. Please refine your search criteria, and try again.";
+	
+	private static final String FC_WARNING_MESSAGE = "BCHCIM.FC.0.0017  The maximum number of results were returned, and more may be available. Please refine your search criteria and try again.";
+	
+	private static final String FC_ERROR_MESSAGE = "BCHCIM.FC.2.0006 The HL7 message is invalid. Please correct the HL7 message, and resubmit it.Results from Schematron validation";
+	
+	private static final String GD_ERROR_MESSAGE = "BCHCIM.GD.2.0006 The HL7 message is invalid. Please correct the HL7 message, and resubmit it.Results from Schematron validation";
+	
+	private static final String GD_WARNING_MESSAGE = "BCHCIM.GD.0.0015  The identifier you used in the query has been merged. The surviving identifier was returned.";
 	
 	@Autowired
 	private EnrollmentController enrollmentController;
@@ -192,9 +200,7 @@ public class EnrollmentControllerTest extends BaseControllerTest {
     }
     
     @Test
-    void testGetDemographicsDetails_Warning() throws Exception { 
-    	String expectedMessageText = " Warning: The identifier you used in the query has been merged. The surviving identifier was returned.";
-        
+    void testGetDemographicsDetails_Warning() throws Exception {      
         mockBackEnd.enqueue(new MockResponse()
         		.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_NonSurvivor.xml"))
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
@@ -205,7 +211,7 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         ResponseEntity<GetPersonDetailsResponse> response = enrollmentController.getPersonDetails(getPersonQuery, createHttpServletRequest());
         GetPersonDetailsResponse getPersonDetailsResponse = response.getBody();
         assertEquals(StatusEnum.WARNING, getPersonDetailsResponse.getStatus());
-        assertEquals(expectedMessageText, getPersonDetailsResponse.getMessage());
+        assertEquals(GD_WARNING_MESSAGE, getPersonDetailsResponse.getMessage());
 		
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -216,6 +222,35 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertTransactionCreated(TransactionType.GET_PERSON_DETAILS);
         assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
         assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+    }
+    
+    @Test
+    void testGetDemographicsDetails_Error() throws Exception { 	
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_Error.xml"))
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+
+        GetPersonDetailsRequest getPersonQuery = new GetPersonDetailsRequest();
+        getPersonQuery.setPhn("9862716574");
+        
+        ResponseEntity<GetPersonDetailsResponse> response = enrollmentController.getPersonDetails(getPersonQuery, createHttpServletRequest());
+        GetPersonDetailsResponse getPersonDetailsResponse = response.getBody();
+        assertEquals(StatusEnum.ERROR, getPersonDetailsResponse.getStatus());
+        assertEquals(GD_ERROR_MESSAGE, getPersonDetailsResponse.getMessage());
+        assertEquals(null, getPersonDetailsResponse.getGivenName());
+        assertEquals(null, getPersonDetailsResponse.getSurname());
+        assertEquals(null, getPersonDetailsResponse.getDateOfBirth());
+        assertEquals(null, getPersonDetailsResponse.getGender());
+		
+		//Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.GET_PERSON_DETAILS);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 0);
     }
     
     @Test
@@ -266,6 +301,64 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         ResponseEntity<NameSearchResponse> response = enrollmentController.getNameSearch(nameSearchRequest, createHttpServletRequest());
         NameSearchResponse nameSearchResponse = response.getBody();
         assertEquals(NO_RECORD_MESSAGE, nameSearchResponse.getMessage());
+    			
+		//Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.NAME_SEARCH);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 0);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 0);
+    }
+    
+    @Test
+    void testGetNameSearch_Warnings() throws Exception {    	
+        
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/FindCandidatesResponse_Warning.xml"))
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+        
+        NameSearchRequest nameSearchRequest = new NameSearchRequest();
+        nameSearchRequest.setGivenName("HUMPTY");
+        nameSearchRequest.setSurname("DUMPTY");
+        nameSearchRequest.setGender("M");
+        nameSearchRequest.setDateOfBirth(LocalDate.of(1973, 8, 11));
+        	       
+        ResponseEntity<NameSearchResponse> response = enrollmentController.getNameSearch(nameSearchRequest, createHttpServletRequest());
+        NameSearchResponse nameSearchResponse = response.getBody();
+        assertEquals(FC_WARNING_MESSAGE, nameSearchResponse.getMessage());
+        assertEquals(StatusEnum.WARNING,nameSearchResponse.getStatus());
+        assertEquals(10, nameSearchResponse.getCandidates().size());
+    			
+		//Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.NAME_SEARCH);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 0);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 10);
+    }
+    
+    @Test
+    void testGetNameSearch_Error() throws Exception {    	
+        
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/FindCandidatesResponse_Error.xml"))
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+        
+        NameSearchRequest nameSearchRequest = new NameSearchRequest();
+        nameSearchRequest.setGender("M");
+        nameSearchRequest.setDateOfBirth(LocalDate.of(1973, 8, 11));
+        	       
+        ResponseEntity<NameSearchResponse> response = enrollmentController.getNameSearch(nameSearchRequest, createHttpServletRequest());
+        NameSearchResponse nameSearchResponse = response.getBody();
+        assertEquals(FC_ERROR_MESSAGE, nameSearchResponse.getMessage());
+        assertEquals(StatusEnum.ERROR,nameSearchResponse.getStatus());
+        assertEquals(null, nameSearchResponse.getCandidates());
     			
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        

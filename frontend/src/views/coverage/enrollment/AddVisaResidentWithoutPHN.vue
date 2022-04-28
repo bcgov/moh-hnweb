@@ -97,7 +97,7 @@ export default {
           //found no result so need to register and enroll without a PHN
 
           this.registrationPerson = { ...searchCriteria }
-          this.alertStore.setInfoAlert('No results were returned. Please ensure you have entered the correct information.')
+          this.alertStore.setInfoAlert(this.nameSearchResult?.message)
           this.pageAction = this.PAGE_ACTION.REGISTRATION
         } else if (this.nameSearchResult.candidates.length === 1) {
           //found 1 result so can auto select it for use in Register with PHN

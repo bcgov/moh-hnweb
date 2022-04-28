@@ -27,20 +27,21 @@ public class FindCandidatesConverter {
 	private static final Logger logger = LoggerFactory.getLogger(FindCandidatesConverter.class);
 
 	public FindCandidatesRequest convertRequest(NameSearchRequest nameSearchRequest) {
-		logger.debug("Find Candidates for Name: [{}] DOB: [{}]",
-				nameSearchRequest.getSurname() + nameSearchRequest.getGivenName(),
-				nameSearchRequest.getDateOfBirth());
+		String surname = nameSearchRequest.getSurname();
+		String givenName = nameSearchRequest.getGivenName();
+		
+		logger.debug("Find Candidates for Name: [{} {}] DOB: [{}]",
+				surname, givenName, nameSearchRequest.getDateOfBirth());
 
 		FindCandidatesRequest findCandidatesRequest = new FindCandidatesRequest();
 
 		Name name = new Name();
-		name.setSurname(nameSearchRequest.getSurname());
-		name.setFirstGivenName(nameSearchRequest.getGivenName());
+		name.setSurname(surname);
+		name.setFirstGivenName(givenName);
 		name.setSecondGivenName(nameSearchRequest.getSecondName());
 
 		findCandidatesRequest.setName(name);
-		findCandidatesRequest
-				.setBirthDate(V3MessageUtil.dateOnlyFormatter.format(nameSearchRequest.getDateOfBirth()));
+		findCandidatesRequest.setBirthDate(V3MessageUtil.dateOnlyFormatter.format(nameSearchRequest.getDateOfBirth()));
 		findCandidatesRequest.setGender(nameSearchRequest.getGender());
 
 		return findCandidatesRequest;
@@ -51,15 +52,39 @@ public class FindCandidatesConverter {
 		logger.debug("Find Candidates response : {} ", findCandidatesResponse.toString());
 
 		NameSearchResponse nameSearchResponse = new NameSearchResponse();
-		
+
 		String messageDetails = findCandidatesResponse.getMessage().getDetails();
+
+		// BCHCIM.FC.0.0017 | Warning: The maximum number of results were returned, and
+		// more may be available. Please refine your search criteria and try again.
+		
+		// BCHCIM.FC.0.0018 | No candidates found. Please refine your search.
+		
+		// BCHCIM.FC.2.0004 | Error: The EMPI is unavailable. Please report the problem
+		// to the helpdesk.
+
 		String messageText[] = messageDetails.split("\\|");
 		String message = "";
+		String statusCode = "";
 		if (messageText.length > 1) {
+			statusCode = messageText[0];
 			message = messageText[1];
 		}
-		nameSearchResponse.setMessage(message);
-		nameSearchResponse.setStatus(StatusEnum.SUCCESS);
+		
+		String[] messageStr = message.split(":");
+		String status = messageStr[0].trim();		
+
+		if (status.equalsIgnoreCase(StatusEnum.WARNING.name())) {
+			message =  messageStr[1];
+			nameSearchResponse.setStatus(StatusEnum.WARNING);			
+		} else if (status.equalsIgnoreCase(StatusEnum.ERROR.name())) {
+			message =  messageStr[1];
+			nameSearchResponse.setStatus(StatusEnum.ERROR);
+		} else {
+			nameSearchResponse.setStatus(StatusEnum.SUCCESS);
+		}
+		
+		nameSearchResponse.setMessage(String.format("%s%s", statusCode, message));
 
 		if (findCandidatesResponse.getResultCount() > 0) {
 
@@ -67,13 +92,12 @@ public class FindCandidatesConverter {
 			nameSearchResponse.setCandidates(results);
 			logger.debug("Converted Name Search Response : {} ", nameSearchResponse);
 		}
-				
+
 		return nameSearchResponse;
 
 	}
 
-	private List<NameSearchResult> buildNameSearch(FindCandidatesResponse findCandidatesResponse)
-	{
+	private List<NameSearchResult> buildNameSearch(FindCandidatesResponse findCandidatesResponse) {
 		List<NameSearchResult> nameSearchList = new ArrayList<NameSearchResult>();
 
 		List<FindCandidatesResult> candidatesResult = findCandidatesResponse.getResults();
@@ -92,37 +116,40 @@ public class FindCandidatesConverter {
 			if (nameObj == null) {
 				nameObj = ns.getPerson().getDocumentedName();
 			}
-			nameSearchResult.setGender(ns.getPerson().getGender());
-			nameSearchResult.setGivenName(nameObj.getFirstGivenName());
-			nameSearchResult.setSecondName(Optional.ofNullable(nameObj.getSecondGivenName()).orElse(""));
-			nameSearchResult.setSurname(nameObj.getSurname());
-			nameSearchResult.setNameTypeCode(nameObj.getType());
 
-			String birthDate = V3MessageUtil.convertDateToString(ns.getPerson().getBirthDate());
-			nameSearchResult.setDateOfBirth(birthDate);
+			if (nameObj != null) {
+				nameSearchResult.setGivenName(Optional.ofNullable(nameObj.getFirstGivenName()).orElse(""));
+				nameSearchResult.setSecondName(Optional.ofNullable(nameObj.getSecondGivenName()).orElse(""));
+				nameSearchResult.setSurname(Optional.ofNullable(nameObj.getSurname()).orElse(""));
+				nameSearchResult.setNameTypeCode(Optional.ofNullable(nameObj.getType()).orElse(""));
 
-			Address address = ns.getPerson().getPhysicalAddress();
-			if (address != null) {
-				nameSearchResult.setAddress1(ns.getPerson().getPhysicalAddress().getAddressLine1());
-				nameSearchResult.setAddress2(ns.getPerson().getPhysicalAddress().getAddressLine2());
-				nameSearchResult.setAddress3(ns.getPerson().getPhysicalAddress().getAddressLine3());
-				nameSearchResult.setCity(ns.getPerson().getPhysicalAddress().getCity());
-				nameSearchResult.setProvince(ns.getPerson().getPhysicalAddress().getProvince());
-				nameSearchResult.setPostalCode(ns.getPerson().getPhysicalAddress().getPostalCode());
+				String birthDate = V3MessageUtil.convertDateToString(ns.getPerson().getBirthDate());
+				nameSearchResult.setDateOfBirth(birthDate);
+				nameSearchResult.setGender(ns.getPerson().getGender());
+
+				Address address = ns.getPerson().getPhysicalAddress();
+				if (address != null) {
+					nameSearchResult.setAddress1(ns.getPerson().getPhysicalAddress().getAddressLine1());
+					nameSearchResult.setAddress2(ns.getPerson().getPhysicalAddress().getAddressLine2());
+					nameSearchResult.setAddress3(ns.getPerson().getPhysicalAddress().getAddressLine3());
+					nameSearchResult.setCity(ns.getPerson().getPhysicalAddress().getCity());
+					nameSearchResult.setProvince(ns.getPerson().getPhysicalAddress().getProvince());
+					nameSearchResult.setPostalCode(ns.getPerson().getPhysicalAddress().getPostalCode());
+				}
+
+				Address mailingAddress = ns.getPerson().getMailingAddress();
+				if (mailingAddress != null) {
+					nameSearchResult.setAddress1(ns.getPerson().getMailingAddress().getAddressLine1());
+					nameSearchResult.setAddress2(ns.getPerson().getMailingAddress().getAddressLine2());
+					nameSearchResult.setAddress3(ns.getPerson().getMailingAddress().getAddressLine3());
+					nameSearchResult.setCity(ns.getPerson().getMailingAddress().getCity());
+					nameSearchResult.setProvince(ns.getPerson().getMailingAddress().getProvince());
+					nameSearchResult.setPostalCode(ns.getPerson().getMailingAddress().getPostalCode());
+				}
+
+				nameSearchResult.setScore(ns.getScore());
+				nameSearchList.add(nameSearchResult);
 			}
-
-			Address mailingAddress = ns.getPerson().getMailingAddress();
-			if (mailingAddress != null) {
-				nameSearchResult.setAddress1(ns.getPerson().getMailingAddress().getAddressLine1());
-				nameSearchResult.setAddress2(ns.getPerson().getMailingAddress().getAddressLine2());						
-				nameSearchResult.setAddress3(ns.getPerson().getMailingAddress().getAddressLine3());
-				nameSearchResult.setCity(ns.getPerson().getMailingAddress().getCity());
-				nameSearchResult.setProvince(ns.getPerson().getMailingAddress().getProvince());
-				nameSearchResult.setPostalCode(ns.getPerson().getMailingAddress().getPostalCode());
-			}
-
-			nameSearchResult.setScore(ns.getScore());
-			nameSearchList.add(nameSearchResult);
 
 		});
 
