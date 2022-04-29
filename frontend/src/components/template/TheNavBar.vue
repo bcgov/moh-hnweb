@@ -10,7 +10,7 @@
         </li>
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
           <div class="dropdown">
-            <router-link @click="resetAlert" :to="{ name: 'Eligibility' }">Eligibility & PHN</router-link>
+            <span>Eligibility & PHN</span>
             <div class="dropdown-content">
               <router-link @click="resetAlert" :class="menuClass($route, 'CheckEligibility')" :to="{ name: 'CheckEligibility' }" v-if="hasPermission('CheckEligibility')">Check Eligibility</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'PhnInquiry')" :to="{ name: 'PhnInquiry' }" v-if="hasPermission('PHNInquiry')">PHN Inquiry</router-link>
@@ -20,11 +20,13 @@
           </div>
         </li>
         <li id="coverage-maintenance-link" :class="tabClass($route, 'CoverageMaintenance')" v-if="hasMaintenancePermission()">
-          <router-link @click="resetAlert" :to="{ name: 'CoverageMaintenance' }">Coverage Maintenance</router-link>
+          <div class="dropdown">
+            <span>Coverage Maintenance</span>
+          </div>
         </li>
         <li id="coverage-enrollment-link" :class="menuTabClass($route, '/coverage/enrollment')" v-if="hasEnrollmentPermission()">
           <div class="dropdown">
-            <router-link @click="resetAlert" :to="{ name: 'CoverageEnrollment' }">Coverage Enrollment</router-link>
+            <span>Coverage Enrollment</span>
             <div class="dropdown-content">
               <router-link @click="resetCoverageEnrollment" :class="menuClass($route, 'AddVisaResidentWithoutPHN')" :to="{ name: 'AddVisaResidentWithoutPHN' }" v-if="hasPermission('AddPermitHolderWOPHN')">Add Permit Holder without PHN</router-link>
               <router-link @click="resetCoverageEnrollment" :class="menuClass($route, 'AddVisaResidentWithPHN')" :to="{ name: 'AddVisaResidentWithPHN' }" v-if="hasPermission('AddPermitHolderWithPHN')">Add Permit Holder with PHN</router-link>
@@ -33,7 +35,7 @@
         </li>
         <li id="group-member-link" :class="menuTabClass($route, '/groupMember')" v-if="hasGroupMemberPermission()">
           <div class="dropdown">
-            <router-link @click="resetAlert" :to="{ name: 'GroupMember' }">Manage Group Member</router-link>
+            <span>Manage Group Member</span>
             <div class="dropdown-content">
               <router-link @click="resetAlert" :class="menuClass($route, 'AddGroupMember')" :to="{ name: 'AddGroupMember' }">Add Group Member</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'AddDependent')" :to="{ name: 'AddDependent' }">Add Dependent</router-link>
@@ -45,7 +47,7 @@
         </li>
         <li id="msp-contracts-link" :class="menuTabClass($route, '/mspContracts')" v-if="hasMSPContractsPermission()">
           <div class="dropdown">
-            <router-link @click="resetAlert" :to="{ name: 'MspContracts' }">MSP Contracts</router-link>
+            <span>MSP Contracts</span>
             <div class="dropdown-content">
               <router-link @click="resetAlert" :class="menuClass($route, 'GetContractPeriods')" :to="{ name: 'GetContractPeriods' }">Get Contract Periods</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'ContractInquiry')" :to="{ name: 'ContractInquiry' }">Contract Inquiry</router-link>
@@ -157,6 +159,17 @@ nav .container ul li a {
   text-decoration: none;
   height: 40px;
   padding: 0 20px;
+}
+
+nav .container ul li span {
+  display: block;
+  font-size: 1rem;
+  line-height: 40px;
+  color: #ffffff;
+  text-decoration: none;
+  height: 40px;
+  padding: 0 20px;
+  cursor: auto;
 }
 nav .container ul li a:focus {
   background-color: #496da2;
