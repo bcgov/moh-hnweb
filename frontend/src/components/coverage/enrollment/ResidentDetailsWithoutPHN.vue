@@ -392,11 +392,11 @@ export default {
         validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateOptionalAddress),
       },
       mailingAddressCity: {
+        maxLength: maxLength(25),
         validateOptionalAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateOptionalAddress),
       },
       mailingAddressProvince: {},
       mailingAddressPostalCode: {
-        maxLength: maxLength(25),
         validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
       },
       priorResidenceCode: { required },

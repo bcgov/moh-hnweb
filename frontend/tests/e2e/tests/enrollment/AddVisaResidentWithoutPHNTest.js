@@ -15,6 +15,8 @@ const NO_SEARCH_RESULT = 'BCHCIM.FC.0.0018  No results were returned. Please ref
 const INVALID_ADDRESS_LINE1_MESSAGE = 'Address Line 1 is invalid'
 const INVALID_ADDRESS_LINE2_MESSAGE = 'Address Line 2 is invalid'
 const INVALID_ADDRESS_LINE3_MESSAGE = 'Address Line 3 is invalid'
+const MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE = 'The maximum length allowed is 25'
+const INVALID_City_MESSAGE = 'City is invalid'
 const GROUPNUMBER_REQUIRED_MESSAGE = 'Group Number is required'
 const IMMIGRATION_CODE_REQUIRED_MESSAGE = 'Immigration Code is required'
 const PERMIT_ISSUE_DATE_REQUIRED_MESSAGE = 'Permit Issue Date is required'
@@ -55,7 +57,7 @@ test('Check required fields validation', async (t) => {
     // When I click the submit button
     // .click(AddVisaResidentWithoutPHNPage.clearButton)
     .click(AddVisaResidentWithoutPHNPage.submitButton)
-    .wait(1000)
+    .wait(5000)
     // I expect an error message stating the page had errors and individual error messages for each required field
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
@@ -171,7 +173,7 @@ test('Check properly filled form passes validation', async (t) => {
     .contains(SUCCESS_MESSAGE)
 })
 
-test('Check invalid field validation', async (t) => {
+test('Check invalid input field characters validation', async (t) => {
   await t
     .typeText(NameSearchPage.surnameInput, 'Test')
     .typeText(NameSearchPage.firstNameInput, 'Test')
@@ -179,26 +181,27 @@ test('Check invalid field validation', async (t) => {
     .click(NameSearchPage.radioButton)
     .click(NameSearchPage.submitButton)
     .wait(1000)
-    // Given a Group Number entered with an invalid format
-    .typeText(AddVisaResidentWithoutPHNPage.groupNumberInput, '9000444000')
-    .typeText(AddVisaResidentWithoutPHNPage.groupMemberNumberInput, '9000444000')
+    // Given all input fileds are entered with an invalid character
+    .typeText(AddVisaResidentWithoutPHNPage.groupNumberInput, '$%^%^&**')
+    .typeText(AddVisaResidentWithoutPHNPage.groupMemberNumberInput, '$%^#$%^')
     .typeText(AddVisaResidentWithoutPHNPage.departmentNumberInput, '9000444^^')
-    .typeText(AddVisaResidentWithoutPHNPage.telephoneInput, '7807777')
-    .typeText(AddVisaResidentWithoutPHNPage.address1Input, 'Test 111 ST is tooooooooooooooooooooooooooooo long')
+    .typeText(AddVisaResidentWithoutPHNPage.telephoneInput, '*<>?+_*&^')
+    .typeText(AddVisaResidentWithoutPHNPage.address1Input, 'Test 111 ST ^^^^')
     .typeText(AddVisaResidentWithoutPHNPage.address2Input, 'Test 111 ST @@@@@')
     .typeText(AddVisaResidentWithoutPHNPage.address3Input, '!@#$%^*(9')
-    .typeText(AddVisaResidentWithoutPHNPage.cityInput, 'VICTORIA')
+    .typeText(AddVisaResidentWithoutPHNPage.cityInput, 'VICT#$%')
     .click(AddVisaResidentWithoutPHNPage.provinceSelect)
     .click(provinceOption.withText('British Columbia'))
     .typeText(AddVisaResidentWithoutPHNPage.coverageCancellationDateInput, '20221231')
     .typeText(AddVisaResidentWithoutPHNPage.postalCodeInput, 't6t6t6')
-    .typeText(AddVisaResidentWithoutPHNPage.mailingAddress1Input, 'Test 111 ST is tooooooooooooooooooooooooooooo long')
+    .typeText(AddVisaResidentWithoutPHNPage.mailingAddress1Input, 'Test 111 @#$%^')
     .typeText(AddVisaResidentWithoutPHNPage.mailingAddress2Input, 'Test 111 ST @@@@@')
     .typeText(AddVisaResidentWithoutPHNPage.mailingAddress3Input, '!@#$%^*(9')
-    .typeText(AddVisaResidentWithoutPHNPage.mailingPostalCodeInput, 'tttttt')
+    .typeText(AddVisaResidentWithoutPHNPage.mailingPostalCodeInput, '{}*(){')
+    .typeText(AddVisaResidentWithoutPHNPage.mailingCityInput, 'VICT#$%')
     // When I click the submit button
     .click(AddVisaResidentWithoutPHNPage.submitButton)
-    // I expect an error message stating the page had errors and an individual error message for the PHN format
+    // I expect an error message stating the page had errors and an individual error message for all the input fields having invalid characters
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(0).textContent)
     .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(2).textContent)
@@ -214,19 +217,83 @@ test('Check invalid field validation', async (t) => {
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(10).textContent)
     .contains(INVALID_ADDRESS_LINE3_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(11).textContent)
-    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .contains(INVALID_City_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(12).textContent)
-    .contains(INVALID_ADDRESS_LINE1_MESSAGE)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(13).textContent)
-    .contains(INVALID_ADDRESS_LINE2_MESSAGE)
+    .contains(INVALID_ADDRESS_LINE1_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(14).textContent)
-    .contains(INVALID_ADDRESS_LINE3_MESSAGE)
+    .contains(INVALID_ADDRESS_LINE2_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(15).textContent)
+    .contains(INVALID_ADDRESS_LINE3_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(16).textContent)
+    .contains(INVALID_City_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(17).textContent)
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
 })
 
+test('Check invalid field length validation', async (t) => {
+  await t
+    .typeText(NameSearchPage.surnameInput, 'Test')
+    .typeText(NameSearchPage.firstNameInput, 'Test')
+    .typeText(NameSearchPage.dateOfBirthInput, '20211108')
+    .click(NameSearchPage.radioButton)
+    .click(NameSearchPage.submitButton)
+    .wait(1000)
+    // Given a Group Number entered with an invalid format
+    .typeText(AddVisaResidentWithoutPHNPage.groupNumberInput, '9000444000')
+    .typeText(AddVisaResidentWithoutPHNPage.groupMemberNumberInput, '9000444000')
+    .typeText(AddVisaResidentWithoutPHNPage.departmentNumberInput, '11111111111')
+    .typeText(AddVisaResidentWithoutPHNPage.telephoneInput, '11111111111')
+    .typeText(AddVisaResidentWithoutPHNPage.address1Input, 'Address Line 1 is toooooooooooooooooooooooooooooooooooooo long')
+    .typeText(AddVisaResidentWithoutPHNPage.address2Input, 'Address Line 2 is toooooooooooooooooooooooooooooooooooooo long')
+    .typeText(AddVisaResidentWithoutPHNPage.address3Input, 'Address Line 1 is toooooooooooooooooooooooooooooooooooooo long')
+    .typeText(AddVisaResidentWithoutPHNPage.cityInput, 'Victotraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+    .click(AddVisaResidentWithoutPHNPage.provinceSelect)
+    .click(provinceOption.withText('British Columbia'))
+    .typeText(AddVisaResidentWithoutPHNPage.coverageCancellationDateInput, '20221231')
+    .typeText(AddVisaResidentWithoutPHNPage.postalCodeInput, 't6t6t6')
+    .typeText(AddVisaResidentWithoutPHNPage.mailingAddress1Input, 'Mailing Address Line 1 is toooooooooooooooooooooooooooooooooooooo long')
+    .typeText(AddVisaResidentWithoutPHNPage.mailingAddress2Input, 'Mailing Address Line 2 is toooooooooooooooooooooooooooooooooooooo long')
+    .typeText(AddVisaResidentWithoutPHNPage.mailingAddress3Input, 'Mailing Address Line 1 is toooooooooooooooooooooooooooooooooooooo long')
+    .typeText(AddVisaResidentWithoutPHNPage.mailingCityInput, 'Victotraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+    .typeText(AddVisaResidentWithoutPHNPage.mailingPostalCodeInput, 'v8v 8v8')
+    // When I click the submit button
+    .click(AddVisaResidentWithoutPHNPage.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the PHN format
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(2).textContent)
+    .contains(INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(4).textContent)
+    .contains(INVALID_DEPARTMENT_NUMBER_VALIDATION_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(7).textContent)
+    .contains(PHONE_NUMBER_VALIDATION_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(8).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(9).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(10).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(11).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(12).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(13).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(14).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(15).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(16).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(17).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+})
 test('Check clear button clears the form', async (t) => {
   await t
     .typeText(NameSearchPage.surnameInput, 'Test')

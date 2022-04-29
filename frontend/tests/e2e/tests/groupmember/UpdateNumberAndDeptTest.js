@@ -1,5 +1,5 @@
-import AlertPage from '../../pages/AlertPage'
 import { SITE_UNDER_TEST } from '../../configuration'
+import AlertPage from '../../pages/AlertPage'
 import UpdateNumberAndDept from '../../pages/groupmember/UpdateNumberAndDept'
 import { regularAccUser } from '../../roles/roles'
 
@@ -36,16 +36,58 @@ test('Check required fields validation', async (t) => {
     .contains(PHN_REQUIRED_MESSAGE)
 })
 
-test('Check invalid field validation', async (t) => {
+test('Check invalid PHN, format GroupMember validation', async (t) => {
   await t
     // Given a PHN entered with an invalid format
-    .typeText(UpdateNumberAndDept.phnInput, '9000448000')
-    .typeText(UpdateNumberAndDept.groupMemberInput, '123')
+    .typeText(UpdateNumberAndDept.phnInput, '900044800')
+    .typeText(UpdateNumberAndDept.groupMemberInput, '12345')
+    .typeText(UpdateNumberAndDept.groupMemberNumberInput, '123')
+    .typeText(UpdateNumberAndDept.departmentNumberInput, '123')
+    // When I click the submit button
+    .click(UpdateNumberAndDept.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the PHN and Group numberformat
+    .expect(UpdateNumberAndDept.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(UpdateNumberAndDept.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+})
+
+test('Check invalid character validation', async (t) => {
+  await t
+    // Given a PHN entered with an invalid format
+    .typeText(UpdateNumberAndDept.phnInput, '90004@@@@')
+    .typeText(UpdateNumberAndDept.groupMemberInput, '123%^&*')
     .typeText(UpdateNumberAndDept.groupMemberNumberInput, '123^^^')
     .typeText(UpdateNumberAndDept.departmentNumberInput, '123@#@@@@@@')
     // When I click the submit button
     .click(UpdateNumberAndDept.submitButton)
-    // I expect an error message stating the page had errors and an individual error message for the PHN and Group numberformat
+    // I expect an error message stating the page had errors and an individual error message for all the input fields having invalid characters
+    .expect(UpdateNumberAndDept.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(UpdateNumberAndDept.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+    .expect(UpdateNumberAndDept.errorText.nth(2).textContent)
+    .contains(INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE)
+    .expect(UpdateNumberAndDept.errorText.nth(3).textContent)
+    .contains(INVALID_DEPARTMENT_NUMBER_ERROR_MESSAGE)
+
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+})
+
+test('Check invalid field length validation', async (t) => {
+  await t
+    // Given input field value exceeds allowed length
+    .typeText(UpdateNumberAndDept.phnInput, '90004480000')
+    .typeText(UpdateNumberAndDept.groupMemberInput, '60000000003109')
+    .typeText(UpdateNumberAndDept.groupMemberNumberInput, '123111111111')
+    .typeText(UpdateNumberAndDept.departmentNumberInput, '1231111111')
+    // When I click the submit button
+    .click(UpdateNumberAndDept.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for all the input fields which exceeded length
     .expect(UpdateNumberAndDept.errorText.nth(0).textContent)
     .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
     .expect(UpdateNumberAndDept.errorText.nth(1).textContent)
