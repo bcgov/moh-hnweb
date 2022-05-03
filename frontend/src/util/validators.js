@@ -203,11 +203,11 @@ function validateSpecialChars(input, length) {
   return true
 }
 
-export function validateSurName(surName) {
-  if (!helpers.req(surName)) {
+export function validateSurname(surname) {
+  if (!helpers.req(surname)) {
     return true
   }
-  return validateAlpha(surName, 35)
+  return validateAlpha(surname, 35)
 }
 
 export function validateFirstName(firstName) {

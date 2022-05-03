@@ -39,7 +39,7 @@ import GenderRadioButtonGroup from '../../ui/GenderRadioButtonGroup.vue'
 import useVuelidate from '@vuelidate/core'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT } from '../../../util/constants'
-import { validateDOB, validateFirstName, validateSecondName, validateSurName, VALIDATE_DOB_MESSAGE, VALIDATE_FIRST_NAME_MESSAGE, VALIDATE_SECOND_NAME_MESSAGE, VALIDATE_SURNAME_MESSAGE } from '../../../util/validators'
+import { validateDOB, validateFirstName, validateSecondName, validateSurname, VALIDATE_DOB_MESSAGE, VALIDATE_FIRST_NAME_MESSAGE, VALIDATE_SECOND_NAME_MESSAGE, VALIDATE_SURNAME_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import { useAlertStore } from '../../../stores/alert'
 
@@ -103,7 +103,7 @@ export default {
     return {
       surname: {
         required,
-        validateSurName: helpers.withMessage(VALIDATE_SURNAME_MESSAGE, validateSurName),
+        validateSurname: helpers.withMessage(VALIDATE_SURNAME_MESSAGE, validateSurname),
       },
       firstName: {
         required,
