@@ -203,6 +203,37 @@ function validateSpecialChars(input, length) {
   return true
 }
 
+export function validateSurName(surName) {
+  if (!helpers.req(surName)) {
+    return true
+  }
+  return validateAlpha(surName, 35)
+}
+
+export function validateFirstName(firstName) {
+  if (!helpers.req(firstName)) {
+    return true
+  }
+  return validateAlpha(firstName, 15)
+}
+
+export function validateSecondName(secondName) {
+  if (secondName === undefined || secondName === '') {
+    return true
+  }
+  return validateAlpha(secondName, 15)
+}
+
+/**
+ * Validate that input is allowed length and that it contains only alphabets
+ */
+function validateAlpha(input, length) {
+  if (input.length > length) {
+    return false
+  }
+  return !/[^a-zA-Z]/.test(input)
+}
+
 /**
  * Validates that the input is an integer number of the specified length.
  */
@@ -256,6 +287,9 @@ export const VALIDATE_ADDRESS_LINE1_MESSAGE = 'Address Line 1 is invalid'
 export const VALIDATE_ADDRESS_LINE2_MESSAGE = 'Address Line 2 is invalid'
 export const VALIDATE_ADDRESS_LINE3_MESSAGE = 'Address Line 3 is invalid'
 export const VALIDATE_ADDRESS_LINE4_MESSAGE = 'Address Line 4 is invalid'
+export const VALIDATE_SURNAME_MESSAGE = 'Surname is invalid'
+export const VALIDATE_FIRST_NAME_MESSAGE = 'First Name is invalid'
+export const VALIDATE_SECOND_NAME_MESSAGE = 'Second Name is invalid'
 export const VALIDATE_CITY_MESSAGE = 'City is invalid'
 export const VALIDATE_DOB_MESSAGE = 'Date of Birth must not be in the future'
 export const VALIDATE_PHN_MESSAGE = 'PHN format is invalid'
