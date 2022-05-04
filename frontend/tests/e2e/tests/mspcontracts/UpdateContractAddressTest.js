@@ -1,5 +1,5 @@
-import AlertPage from '../../pages/AlertPage'
 import { SITE_UNDER_TEST } from '../../configuration'
+import AlertPage from '../../pages/AlertPage'
 import UpdateContractAddress from '../../pages/mspcontracts/UpdateContractAddress'
 import { regularAccUser } from '../../roles/roles'
 
@@ -8,6 +8,7 @@ const INVALID_ADDRESS_LINE1_MESSAGE = 'Address Line 1 is invalid'
 const INVALID_ADDRESS_LINE2_MESSAGE = 'Address Line 2 is invalid'
 const INVALID_ADDRESS_LINE3_MESSAGE = 'Address Line 3 is invalid'
 const INVALID_ADDRESS_LINE4_MESSAGE = 'Address Line 4 is invalid'
+const MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE = 'The maximum length allowed is 25'
 const PHN_REQUIRED_MESSAGE = 'PHN is required'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'
 const GROUP_NUMBER_REQUIRED_MESSAGE = 'Group Number is required'
@@ -86,23 +87,42 @@ test('Check properly filled form passes validation', async (t) => {
     .contains(SUCCESS_MESSAGE)
 })
 
-test('Check invalid field validation', async (t) => {
+test('Check PHN, Group Number format validation', async (t) => {
   await t
-    // Given a Group Number entered with an invalid format
-    .typeText(UpdateContractAddress.groupNumberInput, '9000444000')
+    // Given the page is filled out correctly
+    .typeText(UpdateContractAddress.groupNumberInput, '6007109')
     .click(UpdateContractAddress.phnInput)
-    .typeText(UpdateContractAddress.phnInput, '9000444000')
+    .typeText(UpdateContractAddress.phnInput, '9002807277')
+    .typeText(UpdateContractAddress.telephoneInput, '7807777777')
+    .typeText(UpdateContractAddress.address1Input, 'Test 111 ST')
+    .typeText(UpdateContractAddress.postalCodeInput, 'V8V8V8')
+
+    // When I click the submit button
+    .click(UpdateContractAddress.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for invalid input format
+    .expect(UpdateContractAddress.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+})
+
+test('Check invalid character validation', async (t) => {
+  await t
+    // Given input fields are entered with an invalid character
+    .typeText(UpdateContractAddress.groupNumberInput, '&^*%^$')
+    .click(UpdateContractAddress.phnInput)
+    .typeText(UpdateContractAddress.phnInput, '!@#$%^&*(')
     .typeText(UpdateContractAddress.telephoneInput, '780923t#11')
     .typeText(UpdateContractAddress.address1Input, 'Test 111 ST!@#$%')
     .typeText(UpdateContractAddress.address2Input, 'Test 111 ST()_+{}')
     .typeText(UpdateContractAddress.address3Input, '!@#!@#')
     .typeText(UpdateContractAddress.address4Input, '{}{}{}}')
-    .typeText(UpdateContractAddress.postalCodeInput, 'T6T6T6')
+    .typeText(UpdateContractAddress.postalCodeInput, '#$%@#')
     .typeText(UpdateContractAddress.mailingAddress1Input, 'Test 111 ST!@#$%')
     .typeText(UpdateContractAddress.mailingAddress2Input, 'Test 111 ST()_+{}')
     .typeText(UpdateContractAddress.mailingAddress3Input, '!@#!@#')
     .typeText(UpdateContractAddress.mailingAddress4Input, '{}{}{}}')
-    .typeText(UpdateContractAddress.mailingPostalCodeInput, 'TTTTTT')
+    .typeText(UpdateContractAddress.mailingPostalCodeInput, '@#$%^&')
     // When I click the submit button
     .click(UpdateContractAddress.submitButton)
     // I expect an error message stating the page had errors and an individual error message for invalid inputs
@@ -130,6 +150,54 @@ test('Check invalid field validation', async (t) => {
     .contains(INVALID_ADDRESS_LINE3_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(11).textContent)
     .contains(INVALID_ADDRESS_LINE4_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(12).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+})
+
+test('Check invalid character validation', async (t) => {
+  await t
+    // Given a Group Number entered with an invalid format
+    .typeText(UpdateContractAddress.groupNumberInput, '63371099')
+    .click(UpdateContractAddress.phnInput)
+    .typeText(UpdateContractAddress.phnInput, '9332912486888')
+    .typeText(UpdateContractAddress.telephoneInput, '7809231111111')
+    .typeText(UpdateContractAddress.address1Input, 'Address Line 1 is tooooooooooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.address2Input, 'Address Line 2 is tooooooooooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.address3Input, 'Address Line 3 is tooooooooooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.address4Input, 'Address Line 4 is tooooooooooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.postalCodeInput, 'V8V 8V8')
+    .typeText(UpdateContractAddress.mailingAddress1Input, 'Mailing Address Line 1 is tooooooooooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.mailingAddress2Input, 'Mailing Address Line 2 is tooooooooooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.mailingAddress3Input, 'Mailing Address Line 3 is tooooooooooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.mailingAddress4Input, 'Mailing Address Line 4 is tooooooooooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.mailingPostalCodeInput, 'T6T 6T6')
+    // When I click the submit button
+    .click(UpdateContractAddress.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for invalid inputs
+    .expect(UpdateContractAddress.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(2).textContent)
+    .contains(PHONE_NUMBER_VALIDATION_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(3).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(4).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(5).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(6).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(7).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(8).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(9).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(10).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(11).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(12).textContent)
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
 })

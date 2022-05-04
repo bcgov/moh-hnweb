@@ -80,7 +80,7 @@
 </template>
 <script>
 import useVuelidate from '@vuelidate/core'
-import { required, requiredIf, helpers } from '@vuelidate/validators'
+import { required, requiredIf, helpers, maxLength } from '@vuelidate/validators'
 import {
   validateGroupNumber,
   validatePHN,
@@ -236,15 +236,19 @@ export default {
       homeAddress: {
         addressLine1: {
           required,
+          maxLength: maxLength(25),
           validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateAddress),
         },
         addressLine2: {
+          maxLength: maxLength(25),
           validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
         },
         addressLine3: {
+          maxLength: maxLength(25),
           validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateAddress),
         },
         addressLine4: {
+          maxLength: maxLength(25),
           validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE4_MESSAGE, validateAddress),
         },
         postalCode: {
@@ -255,15 +259,19 @@ export default {
       mailingAddress: {
         addressLine1: {
           required: helpers.withMessage(VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE, requiredIf(validateMailingAddress)),
+          maxLength: maxLength(25),
           validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateOptionalAddress),
         },
         addressLine2: {
+          maxLength: maxLength(25),
           validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateOptionalAddress),
         },
         addressLine3: {
+          maxLength: maxLength(25),
           validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateOptionalAddress),
         },
         addressLine4: {
+          maxLength: maxLength(25),
           validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE4_MESSAGE, validateOptionalAddress),
         },
         postalCode: {

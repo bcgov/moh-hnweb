@@ -4,12 +4,17 @@ import AddVisaResidentWithoutPHNPage from '../../pages/enrollment/AddVisaResiden
 import NameSearchPage from '../../pages/enrollment/NameSearchPage'
 import { regularAccUser } from '../../roles/roles'
 
-const WARNING_MESSAGE = 'BCHCIM.FC.0.0017 The maximum number of results were returned, and more may be available. Please refine your search criteria and try again.'
+const WARNING_MESSAGE = 'BCHCIM.FC.0.0017  The maximum number of results were returned, and more may be available. Please refine your search criteria and try again.'
 const ERROR_MESSAGE = 'Please correct errors before submitting'
 const SURNAME_REQUIRED_MESSAGE = 'Surname is required'
 const FIRSTNAME_REQUIRED_MESSAGE = 'First Name is required'
 const DOB_REQUIRED_MESSAGE = 'Date of Birth is required'
 const GENDER_REQUIRED_MESSAGE = 'Gender is required'
+const INVALID_FIRST_NAME_MESSAGE = 'First Name is invalid'
+const INVALID_SECOND_NAME_MESSAGE = 'Second Name is invalid'
+const INVALID_SURNMAE_NAME_MESSAGE = 'Surname is invalid'
+const MAX_LENGTH_NAME_MESSAGE = 'The maximum length allowed is 15'
+const MAX_LENGTH_SURNAME_MESSAGE = 'The maximum length allowed is 35'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addStudyPermitHolderWithoutPHN'
 
@@ -50,6 +55,48 @@ test('Check properly filled form passes validation', async (t) => {
     // I expect the AddVisaResident page to be loaded
     .expect(AddVisaResidentWithoutPHNPage.groupNumberInput.exists)
     .ok()
+})
+
+test('Check alpha validation for Name', async (t) => {
+  await t
+    // Given I have a form filled out with data
+    .typeText(NameSearchPage.surnameInput, 'Test123')
+    .typeText(NameSearchPage.firstNameInput, 'Test123')
+    .typeText(NameSearchPage.secondNameInput, 'Test123')
+    .typeText(NameSearchPage.dateOfBirthInput, '20211108')
+    .click(NameSearchPage.radioButton)
+    // When I click the submit button
+    .click(NameSearchPage.submitButton)
+    // I expect an error message stating the page had errors and individual error messages for each field
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+    .expect(NameSearchPage.errorText.nth(0).textContent)
+    .contains(INVALID_SURNMAE_NAME_MESSAGE)
+    .expect(NameSearchPage.errorText.nth(1).textContent)
+    .contains(INVALID_FIRST_NAME_MESSAGE)
+    .expect(NameSearchPage.errorText.nth(2).textContent)
+    .contains(INVALID_SECOND_NAME_MESSAGE)
+})
+
+test('Check length validation for Name', async (t) => {
+  await t
+    // Given I have a form filled out with data
+    .typeText(NameSearchPage.surnameInput, 'MySurnameistooooooooooooooooooooooooooooooooooooooooooooLong')
+    .typeText(NameSearchPage.firstNameInput, 'MyFirstnameistoooooooooooooooooLong')
+    .typeText(NameSearchPage.secondNameInput, 'MySecondnameistoooooooooooooooooLong')
+    .typeText(NameSearchPage.dateOfBirthInput, '20211108')
+    .click(NameSearchPage.radioButton)
+    // When I click the submit button
+    .click(NameSearchPage.submitButton)
+    // I expect an error message stating the page had errors and individual error messages for each name field
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+    .expect(NameSearchPage.errorText.nth(0).textContent)
+    .contains(MAX_LENGTH_SURNAME_MESSAGE)
+    .expect(NameSearchPage.errorText.nth(1).textContent)
+    .contains(MAX_LENGTH_NAME_MESSAGE)
+    .expect(NameSearchPage.errorText.nth(2).textContent)
+    .contains(MAX_LENGTH_NAME_MESSAGE)
 })
 
 test('Check Name Serach Result contains warning message', async (t) => {

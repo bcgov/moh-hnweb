@@ -155,11 +155,18 @@ import {
   validatePostalCode,
   validateAddress,
   validateOptionalAddress,
+  validateFirstName,
+  validateSecondName,
+  validateSurname,
   validateMailingAddressForVisaResident,
+  VALIDATE_FIRST_NAME_MESSAGE,
+  VALIDATE_SECOND_NAME_MESSAGE,
+  VALIDATE_SURNAME_MESSAGE,
   VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE,
   VALIDATE_ADDRESS_LINE1_MESSAGE,
   VALIDATE_ADDRESS_LINE2_MESSAGE,
   VALIDATE_ADDRESS_LINE3_MESSAGE,
+  VALIDATE_CITY_MESSAGE,
   VALIDATE_GROUP_NUMBER_MESSAGE,
   VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE,
   VALIDATE_DEPARTMENT_NUMBER_MESSAGE,
@@ -167,7 +174,7 @@ import {
   VALIDATE_TELEPHONE_MESSAGE,
   VALIDATE_POSTAL_CODE_MESSAGE,
 } from '../../../util/validators'
-import { required, requiredIf, helpers } from '@vuelidate/validators'
+import { required, requiredIf, helpers, maxLength } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT, IMMIGRATION_CODES, PROVINCES, PRIOR_RESIDENCES } from '../../../util/constants'
 import { formatPersonName } from '../../../util/utils'
@@ -323,11 +330,18 @@ export default {
     return {
       surname: {
         required,
+        maxLength: maxLength(35),
+        validateSurname: helpers.withMessage(VALIDATE_SURNAME_MESSAGE, validateSurname),
       },
       givenName: {
         required,
+        maxLength: maxLength(15),
+        validateFirstName: helpers.withMessage(VALIDATE_FIRST_NAME_MESSAGE, validateFirstName),
       },
-      secondName: {},
+      secondName: {
+        maxLength: maxLength(15),
+        validateSecondName: helpers.withMessage(VALIDATE_SECOND_NAME_MESSAGE, validateSecondName),
+      },
       dateOfBirth: {
         required,
         validateDOB: helpers.withMessage(VALIDATE_DOB_MESSAGE, validateDOB),
@@ -356,15 +370,22 @@ export default {
       coverageCancellationDate: { required },
       address1: {
         required,
+        maxLength: maxLength(25),
         validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateAddress),
       },
       address2: {
+        maxLength: maxLength(25),
         validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
       },
       address3: {
+        maxLength: maxLength(25),
         validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateAddress),
       },
-      city: { required },
+      city: {
+        required,
+        validateAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateAddress),
+        maxLength: maxLength(25),
+      },
       province: { required },
       postalCode: {
         required,
@@ -372,15 +393,21 @@ export default {
       },
       mailingAddress1: {
         required: helpers.withMessage(VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForVisaResident)),
+        maxLength: maxLength(25),
         validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateOptionalAddress),
       },
       mailingAddress2: {
+        maxLength: maxLength(25),
         validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateOptionalAddress),
       },
       mailingAddress3: {
+        maxLength: maxLength(25),
         validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateOptionalAddress),
       },
-      mailingAddressCity: {},
+      mailingAddressCity: {
+        maxLength: maxLength(25),
+        validateOptionalAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateOptionalAddress),
+      },
       mailingAddressProvince: {},
       mailingAddressPostalCode: {
         validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),

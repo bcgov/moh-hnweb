@@ -27,7 +27,7 @@ class AddVisaResidentWithoutPHN {
     this.mailingAddress1Input = Selector('#mailingAddress1')
     this.mailingAddress2Input = Selector('#mailingAddress2')
     this.mailingAddress3Input = Selector('#mailingAddress3')
-    this.mailingCityInput = Selector('#mailingCity')
+    this.mailingCityInput = Selector('#mailingAddressCity')
     this.mailingProvinceInput = Selector('#mailingProvince')
     this.mailingPostalCodeInput = Selector('#mailingAddressPostalCode')
     this.priorResidenceCodeInput = Selector('#priorResidenceCode')

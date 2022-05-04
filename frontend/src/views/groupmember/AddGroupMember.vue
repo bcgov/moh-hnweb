@@ -113,7 +113,7 @@
 </template>
 <script>
 import useVuelidate from '@vuelidate/core'
-import { required, requiredIf, helpers } from '@vuelidate/validators'
+import { required, requiredIf, helpers, maxLength } from '@vuelidate/validators'
 import AddListDependent from '../../components/groupmember/AddListDependent.vue'
 import {
   validateGroupNumber,
@@ -274,8 +274,16 @@ export default {
       this.departmentNumber = ''
       this.coverageEffectiveDate = null
       this.telephone = ''
-      this.homeAddress = {}
-      this.mailingAddress = {}
+      this.homeAddress.addressLine1 = ''
+      this.homeAddress.addressLine2 = ''
+      this.homeAddress.addressLine3 = ''
+      this.homeAddress.addressLine4 = ''
+      this.homeAddress.postalCode = ''
+      this.mailingAddress.addressLine1 = ''
+      this.mailingAddress.addressLine2 = ''
+      this.mailingAddress.addressLine3 = ''
+      this.mailingAddress.addressLine4 = ''
+      this.mailingAddress.postalCode = ''
       this.spousePhn = ''
       this.dependents = []
       this.result = null
@@ -310,15 +318,19 @@ export default {
       homeAddress: {
         addressLine1: {
           required,
+          maxLength: maxLength(25),
           validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateAddress),
         },
         addressLine2: {
+          maxLength: maxLength(25),
           validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
         },
         addressLine3: {
+          maxLength: maxLength(25),
           validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateAddress),
         },
         addressLine4: {
+          maxLength: maxLength(25),
           validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE4_MESSAGE, validateAddress),
         },
         postalCode: {
@@ -329,15 +341,19 @@ export default {
       mailingAddress: {
         addressLine1: {
           required: helpers.withMessage(VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE, requiredIf(validateMailingAddress)),
+          maxLength: maxLength(25),
           validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateOptionalAddress),
         },
         addressLine2: {
+          maxLength: maxLength(25),
           validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateOptionalAddress),
         },
         addressLine3: {
+          maxLength: maxLength(25),
           validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateOptionalAddress),
         },
         addressLine4: {
+          maxLength: maxLength(25),
           validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE4_MESSAGE, validateOptionalAddress),
         },
         postalCode: {

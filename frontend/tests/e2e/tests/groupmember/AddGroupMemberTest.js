@@ -7,6 +7,7 @@ const INVALID_ADDRESS_LINE1_MESSAGE = 'Address Line 1 is invalid'
 const INVALID_ADDRESS_LINE2_MESSAGE = 'Address Line 2 is invalid'
 const INVALID_ADDRESS_LINE3_MESSAGE = 'Address Line 3 is invalid'
 const INVALID_ADDRESS_LINE4_MESSAGE = 'Address Line 4 is invalid'
+const MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE = 'The maximum length allowed is 25'
 const ERROR_MESSAGE = 'Please correct errors before submitting'
 const PHN_REQUIRED_MESSAGE = 'PHN is required'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'
@@ -93,27 +94,105 @@ test('Check properly filled form passes validation', async (t) => {
     .contains(SUCCESS_MESSAGE)
 })
 
-test('Check invalid field validation', async (t) => {
+test('Check PHN, Group Number format validation', async (t) => {
   await t
-    // Given a Group Number entered with an invalid format
-    .typeText(AddGroupMember.groupNumberInput, '9000444000')
+    // Given the page is filled out correctly
+    .typeText(AddGroupMember.groupNumberInput, '6007109')
     .click(AddGroupMember.coverageEffectiveDateInput)
     .click(AddGroupMember.divSelectedDate)
     .click(AddGroupMember.phnInput)
-    .typeText(AddGroupMember.phnInput, '9000444000')
+    .typeText(AddGroupMember.phnInput, '9002807277')
+    .typeText(AddGroupMember.address1Input, 'Test 111 ST')
+    .typeText(AddGroupMember.postalCodeInput, 'V8V8V8')
+
+    // When I click the submit button
+    .click(AddGroupMember.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for invalid input format
+    .expect(AddGroupMember.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+})
+
+test('Check input field length validation', async (t) => {
+  await t
+    // Given a Group Number entered with an invalid format
+    .typeText(AddGroupMember.groupNumberInput, '9000444000000')
+    .click(AddGroupMember.coverageEffectiveDateInput)
+    .click(AddGroupMember.divSelectedDate)
+    .click(AddGroupMember.phnInput)
+    .typeText(AddGroupMember.phnInput, '9000444000000000000000')
+    .typeText(AddGroupMember.groupMemberNumberInput, '11111111111111111')
+    .typeText(AddGroupMember.departmentNumberInput, '1111111111')
+    .typeText(AddGroupMember.telephoneInput, '78077777777777')
+    .typeText(AddGroupMember.address1Input, 'Address Line 1 is toooooooooooooooooooooooooooooooo long')
+    .typeText(AddGroupMember.address2Input, 'Address Line 2 is toooooooooooooooooooooooooooooooo long')
+    .typeText(AddGroupMember.address3Input, 'Address Line 3 is toooooooooooooooooooooooooooooooo long')
+    .typeText(AddGroupMember.address4Input, 'Address Line 4 is toooooooooooooooooooooooooooooooo long')
+    .typeText(AddGroupMember.postalCodeInput, 'V8V 8V8')
+    .typeText(AddGroupMember.mailingAddress1Input, 'Mailing Address Line 1 is toooooooooooooooooooooooooooooooo long')
+    .typeText(AddGroupMember.mailingAddress2Input, 'Mailing Address Line 2 is toooooooooooooooooooooooooooooooo long')
+    .typeText(AddGroupMember.mailingAddress3Input, 'Mailing Address Line 3 is toooooooooooooooooooooooooooooooo long')
+    .typeText(AddGroupMember.mailingAddress4Input, 'Mailing Address Line 4 is toooooooooooooooooooooooooooooooo long')
+    .typeText(AddGroupMember.mailingPostalCodeInput, 'V8V 8V8')
+    // When I click the submit button
+    .click(AddGroupMember.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for invalid inputs
+    .expect(AddGroupMember.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(2).textContent)
+    .contains(INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(3).textContent)
+    .contains(INVALID_DEPARTMENT_NUMBER_ERROR_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(4).textContent)
+    .contains(PHONE_NUMBER_VALIDATION_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(5).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(6).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(7).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(8).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(9).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(10).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(11).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(12).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(13).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(14).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+})
+
+test('Check invalid character validation', async (t) => {
+  await t
+    // Given a Group Number entered with an invalid format
+    .typeText(AddGroupMember.groupNumberInput, '900044400@')
+    .click(AddGroupMember.coverageEffectiveDateInput)
+    .click(AddGroupMember.divSelectedDate)
+    .click(AddGroupMember.phnInput)
+    .typeText(AddGroupMember.phnInput, '9000444@@@')
     .typeText(AddGroupMember.groupMemberNumberInput, '!@^^^')
     .typeText(AddGroupMember.departmentNumberInput, '!@^^34')
-    .typeText(AddGroupMember.telephoneInput, '7807777')
+    .typeText(AddGroupMember.telephoneInput, '7807777@@')
     .typeText(AddGroupMember.address1Input, 'Test 111 ST!@#$%')
     .typeText(AddGroupMember.address2Input, 'Test 111 ST()_+{}')
     .typeText(AddGroupMember.address3Input, '!@#!@#')
     .typeText(AddGroupMember.address4Input, '{}{}{}}')
-    .typeText(AddGroupMember.postalCodeInput, 'T6T6T6')
+    .typeText(AddGroupMember.postalCodeInput, '@@@@@@@')
     .typeText(AddGroupMember.mailingAddress1Input, 'Test 111 ST!@#$%')
     .typeText(AddGroupMember.mailingAddress2Input, 'Test 111 ST()_+{}')
     .typeText(AddGroupMember.mailingAddress3Input, '!@#!@#')
     .typeText(AddGroupMember.mailingAddress4Input, '{}{}{}}')
-    .typeText(AddGroupMember.mailingPostalCodeInput, 'TTTTTT')
+    .typeText(AddGroupMember.mailingPostalCodeInput, '$%^&*(')
     // When I click the submit button
     .click(AddGroupMember.submitButton)
     // I expect an error message stating the page had errors and an individual error message for invalid inputs
