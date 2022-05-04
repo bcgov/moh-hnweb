@@ -155,7 +155,13 @@ import {
   validatePostalCode,
   validateAddress,
   validateOptionalAddress,
+  validateFirstName,
+  validateSecondName,
+  validateSurname,
   validateMailingAddressForVisaResident,
+  VALIDATE_FIRST_NAME_MESSAGE,
+  VALIDATE_SECOND_NAME_MESSAGE,
+  VALIDATE_SURNAME_MESSAGE,
   VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE,
   VALIDATE_ADDRESS_LINE1_MESSAGE,
   VALIDATE_ADDRESS_LINE2_MESSAGE,
@@ -324,11 +330,18 @@ export default {
     return {
       surname: {
         required,
+        maxLength: maxLength(35),
+        validateSurname: helpers.withMessage(VALIDATE_SURNAME_MESSAGE, validateSurname),
       },
       givenName: {
         required,
+        maxLength: maxLength(15),
+        validateFirstName: helpers.withMessage(VALIDATE_FIRST_NAME_MESSAGE, validateFirstName),
       },
-      secondName: {},
+      secondName: {
+        maxLength: maxLength(15),
+        validateSecondName: helpers.withMessage(VALIDATE_SECOND_NAME_MESSAGE, validateSecondName),
+      },
       dateOfBirth: {
         required,
         validateDOB: helpers.withMessage(VALIDATE_DOB_MESSAGE, validateDOB),

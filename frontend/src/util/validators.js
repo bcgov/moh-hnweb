@@ -229,7 +229,7 @@ export function validateSecondName(secondName) {
  */
 function validateAlpha(input, length) {
   if (input.length > length) {
-    return false
+    return true
   }
   return !/[^a-zA-Z]/.test(input)
 }

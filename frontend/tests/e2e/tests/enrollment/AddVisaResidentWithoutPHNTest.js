@@ -16,6 +16,8 @@ const INVALID_ADDRESS_LINE1_MESSAGE = 'Address Line 1 is invalid'
 const INVALID_ADDRESS_LINE2_MESSAGE = 'Address Line 2 is invalid'
 const INVALID_ADDRESS_LINE3_MESSAGE = 'Address Line 3 is invalid'
 const MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE = 'The maximum length allowed is 25'
+const MAX_LENGTH_NAME_MESSAGE = 'The maximum length allowed is 15'
+const MAX_LENGTH_SURNAME_MESSAGE = 'The maximum length allowed is 35'
 const INVALID_City_MESSAGE = 'City is invalid'
 const GROUPNUMBER_REQUIRED_MESSAGE = 'Group Number is required'
 const IMMIGRATION_CODE_REQUIRED_MESSAGE = 'Immigration Code is required'
@@ -236,6 +238,7 @@ test('Check invalid input field characters validation', async (t) => {
 
 test('Check invalid field length validation', async (t) => {
   await t
+    .setTestSpeed(0.01)
     .typeText(NameSearchPage.surnameInput, 'Test')
     .typeText(NameSearchPage.firstNameInput, 'Test')
     .typeText(NameSearchPage.dateOfBirthInput, '20211108')
@@ -246,6 +249,9 @@ test('Check invalid field length validation', async (t) => {
     .typeText(AddVisaResidentWithoutPHNPage.groupNumberInput, '9000444000')
     .typeText(AddVisaResidentWithoutPHNPage.groupMemberNumberInput, '9000444000')
     .typeText(AddVisaResidentWithoutPHNPage.departmentNumberInput, '11111111111')
+    .typeText(AddVisaResidentWithoutPHNPage.surnameInput, 'surname is toooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo long')
+    .typeText(AddVisaResidentWithoutPHNPage.firstNameInput, 'first name is toooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo long')
+    .typeText(AddVisaResidentWithoutPHNPage.secondNameInput, 'second Name is toooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo long')
     .typeText(AddVisaResidentWithoutPHNPage.telephoneInput, '11111111111')
     .typeText(AddVisaResidentWithoutPHNPage.address1Input, 'Address Line 1 is toooooooooooooooooooooooooooooooooooooo long')
     .typeText(AddVisaResidentWithoutPHNPage.address2Input, 'Address Line 2 is toooooooooooooooooooooooooooooooooooooo long')
@@ -269,27 +275,31 @@ test('Check invalid field length validation', async (t) => {
     .contains(INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(4).textContent)
     .contains(INVALID_DEPARTMENT_NUMBER_VALIDATION_MESSAGE)
-    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(7).textContent)
-    .contains(PHONE_NUMBER_VALIDATION_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(6).textContent)
+    .contains(MAX_LENGTH_SURNAME_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(8).textContent)
-    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .contains(MAX_LENGTH_NAME_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(9).textContent)
-    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .contains(MAX_LENGTH_NAME_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(10).textContent)
-    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
-    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(11).textContent)
-    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .contains(PHONE_NUMBER_VALIDATION_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(12).textContent)
-    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(13).textContent)
     .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(14).textContent)
     .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(15).textContent)
-    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(16).textContent)
     .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(17).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(18).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(19).textContent)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(20).textContent)
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)

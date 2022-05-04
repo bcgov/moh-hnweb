@@ -13,6 +13,8 @@ const GENDER_REQUIRED_MESSAGE = 'Gender is required'
 const INVALID_FIRST_NAME_MESSAGE = 'First Name is invalid'
 const INVALID_SECOND_NAME_MESSAGE = 'Second Name is invalid'
 const INVALID_SURNMAE_NAME_MESSAGE = 'Surname is invalid'
+const MAX_LENGTH_NAME_MESSAGE = 'The maximum length allowed is 15'
+const MAX_LENGTH_SURNAME_MESSAGE = 'The maximum length allowed is 35'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addStudyPermitHolderWithoutPHN'
 
@@ -90,11 +92,11 @@ test('Check length validation for Name', async (t) => {
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
     .expect(NameSearchPage.errorText.nth(0).textContent)
-    .contains(INVALID_SURNMAE_NAME_MESSAGE)
+    .contains(MAX_LENGTH_SURNAME_MESSAGE)
     .expect(NameSearchPage.errorText.nth(1).textContent)
-    .contains(INVALID_FIRST_NAME_MESSAGE)
+    .contains(MAX_LENGTH_NAME_MESSAGE)
     .expect(NameSearchPage.errorText.nth(2).textContent)
-    .contains(INVALID_SECOND_NAME_MESSAGE)
+    .contains(MAX_LENGTH_NAME_MESSAGE)
 })
 
 test('Check Name Serach Result contains warning message', async (t) => {
