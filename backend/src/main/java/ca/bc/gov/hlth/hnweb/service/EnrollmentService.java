@@ -1,7 +1,6 @@
 package ca.bc.gov.hlth.hnweb.service;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,10 +76,12 @@ public class EnrollmentService extends BaseService {
 		logger.debug("Enroll subscriber for Message ID [{}]; Transaction ID [{}]", r50.getMSH().getMsh10_MessageControlID(), transaction.getTransactionId().toString());
 		
 		String r50v2RequiredFormat = formatMessage(r50);
+		String transactionId = transaction.getTransactionId().toString();
 		logger.debug("Updated V2 message:\n{}", r50v2RequiredFormat);
-		
-		messageSent(transaction, V2MessageUtil.getMessageID(r50));
-		ResponseEntity<String> response = postHibcRequest(r50Path, r50Username, r50Password, r50v2RequiredFormat);
+
+		String messageId = V2MessageUtil.getMessageID(r50);
+		messageSent(transaction, messageId);
+		ResponseEntity<String> response = postHibcRequest(r50Path, r50Username, r50Password, r50v2RequiredFormat, transaction.getTransactionId().toString());
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		
@@ -91,6 +92,9 @@ public class EnrollmentService extends BaseService {
 	
 		Message v2Response = parseR50v2ToAck(response.getBody());
     	messageReceived(transaction, V2MessageUtil.getMessageID(v2Response));
+    	
+    	//All these id's must be same (Since there is a limit of length for V2MessageId, First 20 characters should match with Audit Db transaction Id
+    	logger.debug("TransactionId: {}, V2MessageId: {}, ResponseMessageId: {}", transactionId, messageId, V2MessageUtil.getMessageID(v2Response));
 				
 		return v2Response;
 	}
@@ -184,12 +188,12 @@ public class EnrollmentService extends BaseService {
 	    	
 	}
 	
-	private ResponseEntity<String> postHibcRequest(String path, String username, String password, String data) {
+	private ResponseEntity<String> postHibcRequest(String path, String username, String password, String data, String transactionId) {
         return hibcWebClient
                 .post()
                 .uri(path)
                 .contentType(MediaType.TEXT_PLAIN)
-                .header(TRANSACTION_ID, UUID.randomUUID().toString())
+                .header(TRANSACTION_ID, transactionId)
                 .headers(header -> header.setBasicAuth(username, password))
                 .bodyValue(data)
                 .retrieve()

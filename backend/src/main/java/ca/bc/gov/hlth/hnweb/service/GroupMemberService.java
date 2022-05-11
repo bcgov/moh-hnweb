@@ -1,7 +1,5 @@
 package ca.bc.gov.hlth.hnweb.service;
 
-import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +62,7 @@ public class GroupMemberService extends BaseService {
 		logger.info("Request {}", rpbspwb0Str);
 		
 		messageSent(transaction);
-		ResponseEntity<String> response = postRapidRequest(r31Path, rpbspwb0Str);
+		ResponseEntity<String> response = postRapidRequest(r31Path, rpbspwb0Str, transaction.getTransactionId().toString());
 		messageReceived(transaction);
 		logger.info("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		
@@ -91,7 +89,7 @@ public class GroupMemberService extends BaseService {
 		logger.info("Request {}", rpbsped0Str);
 		
 		messageSent(transaction);
-		ResponseEntity<String> response = postRapidRequest(r34Path, rpbsped0Str);
+		ResponseEntity<String> response = postRapidRequest(r34Path, rpbsped0Str, transaction.getTransactionId().toString());
 		messageReceived(transaction);
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
@@ -119,7 +117,7 @@ public class GroupMemberService extends BaseService {
 		logger.info("Request {}", rpbseed0Str);
 		
 		messageSent(transaction);
-		ResponseEntity<String> response = postRapidRequest(r34Path, rpbseed0Str);
+		ResponseEntity<String> response = postRapidRequest(r34Path, rpbseed0Str, transaction.getTransactionId().toString());
 		messageReceived(transaction);
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
@@ -147,7 +145,7 @@ public class GroupMemberService extends BaseService {
 		logger.info("Request {}", rpbspxp0Str);
 		
 		messageSent(transaction);
-		ResponseEntity<String> response = postRapidRequest(r30Path, rpbspxp0Str);
+		ResponseEntity<String> response = postRapidRequest(r30Path, rpbspxp0Str, transaction.getTransactionId().toString());
 		messageReceived(transaction);
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
@@ -175,7 +173,7 @@ public class GroupMemberService extends BaseService {
 		logger.info("Request {}", rpbspwc0Str);
 		
 		messageSent(transaction);
-		ResponseEntity<String> response = postRapidRequest(r35Path, rpbspwc0Str);
+		ResponseEntity<String> response = postRapidRequest(r35Path, rpbspwc0Str, transaction.getTransactionId().toString());
 		messageReceived(transaction);
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
@@ -203,7 +201,7 @@ public class GroupMemberService extends BaseService {
 		logger.info("Request {}", rpbspwp0Str);
 		
 		messageSent(transaction);
-		ResponseEntity<String> response = postRapidRequest(r36Path, rpbspwp0Str);
+		ResponseEntity<String> response = postRapidRequest(r36Path, rpbspwp0Str, transaction.getTransactionId().toString());
 		messageReceived(transaction);
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
@@ -218,12 +216,12 @@ public class GroupMemberService extends BaseService {
 		return rpbspwp0Response;
 	}
 
-	private ResponseEntity<String> postRapidRequest(String path, String body) {
+	private ResponseEntity<String> postRapidRequest(String path, String body, String transactionId) {
 		return rapidWebClient
 				.post()
 				.uri(path)
 				.contentType(MediaType.TEXT_PLAIN)
-				.header(TRANSACTION_ID, UUID.randomUUID().toString())
+				.header(TRANSACTION_ID, transactionId)
 				.bodyValue(body)
 				.retrieve()
 				.toEntity(String.class)

@@ -48,7 +48,7 @@ import ca.bc.gov.hlth.hnweb.service.MspContractsService;
 public class MspContractsController extends BaseController {
 
 	private static final Logger logger = LoggerFactory.getLogger(MspContractsController.class);
-
+	
 	@Autowired
 	private MspContractsService mspContractsService;
 
@@ -106,7 +106,7 @@ public class MspContractsController extends BaseController {
 		try {
 			RPBSPCI0Converter converter = new RPBSPCI0Converter();
 			RPBSPCI0 rpbspci0Request = converter.convertRequest(contractInquiryRequest);
-			RPBSPCI0 rpbspci0Response = mspContractsService.inquireContract(rpbspci0Request);
+			RPBSPCI0 rpbspci0Response = mspContractsService.inquireContract(rpbspci0Request, transaction);
 			ContractInquiryResponse contractInquiryResponse = converter.convertResponse(rpbspci0Response);
 
 			ResponseEntity<ContractInquiryResponse> response = ResponseEntity.ok(contractInquiryResponse);
@@ -140,7 +140,7 @@ public class MspContractsController extends BaseController {
 					&& StringUtils.isNotBlank(updateContractAddressRequest.getHomeAddress().getPostalCode())) {
 				RPBSPMA0Converter converter = new RPBSPMA0Converter();
 				RPBSPMA0 rpbspma0Request = converter.convertRequest(updateContractAddressRequest);
-				RPBSPMA0 rpbspma0Response = mspContractsService.updateAddress(rpbspma0Request);
+				RPBSPMA0 rpbspma0Response = mspContractsService.updateAddress(rpbspma0Request, transaction);
 				updateAddressResponse = converter.convertResponse(rpbspma0Response);
 			}
 
@@ -148,7 +148,7 @@ public class MspContractsController extends BaseController {
 			if (StringUtils.isNotBlank(updateContractAddressRequest.getPhone())) {
 				RPBSPEP0Converter ep0Converter = new RPBSPEP0Converter();
 				RPBSPEP0 rpbspep0Request = ep0Converter.convertRequest(updateContractAddressRequest);
-				RPBSPEP0 rpbspep0Response = mspContractsService.updatePhone(rpbspep0Request);
+				RPBSPEP0 rpbspep0Response = mspContractsService.updatePhone(rpbspep0Request, transaction);
 				updatePhoneResponse = ep0Converter.convertResponse(rpbspep0Response);
 			}
 

@@ -1,7 +1,5 @@
 package ca.bc.gov.hlth.hnweb.service;
 
-import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,9 +77,11 @@ public class EligibilityService extends BaseService {
 	 */
 	public Message checkEligibility(R15 r15, Transaction transaction) throws HNWebException, HL7Exception {
 		String r15v2 = parser.encode(r15);
-
-		messageSent(transaction, V2MessageUtil.getMessageID(r15));
-		ResponseEntity<String> response = postHibcRequest(r15Path, r15Username, r15Password, r15v2);
+	
+		String messageId = V2MessageUtil.getMessageID(r15);
+		messageSent(transaction, messageId);
+		String transactionId = transaction.getTransactionId().toString();
+		ResponseEntity<String> response = postHibcRequest(r15Path, r15Username, r15Password, r15v2, transactionId);
 		
 		if (response.getStatusCode() != HttpStatus.OK) {
 			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
@@ -90,6 +90,9 @@ public class EligibilityService extends BaseService {
 
 		Message v2Response = parseResponse(response.getBody(), "R15");
     	messageReceived(transaction, V2MessageUtil.getMessageID(v2Response));
+    	
+    	//All these id's must be same (Since there is a limit of length for V2MessageId, First 20 characters should match with Audit Db transaction Id
+    	logger.debug("TransactionId: {}, V2MessageId: {}, ResponseMessageId: {}", transactionId, messageId, V2MessageUtil.getMessageID(v2Response));
 		
 		return v2Response;
 	}
@@ -105,8 +108,11 @@ public class EligibilityService extends BaseService {
 	public Message checkMspCoverageStatus(E45 e45, Transaction transaction) throws HNWebException, HL7Exception {
 		String e45v2 = parser.encode(e45);
 		
-		messageSent(transaction, V2MessageUtil.getMessageID(e45));
-		ResponseEntity<String> response = postHibcRequest(e45Path, e45Username, e45Password, e45v2);
+		String messageId = V2MessageUtil.getMessageID(e45);
+		messageSent(transaction, messageId);
+		
+		String transactionId = transaction.getTransactionId().toString();
+		ResponseEntity<String> response = postHibcRequest(e45Path, e45Username, e45Password, e45v2, transactionId);
 		
 		if (response.getStatusCode() != HttpStatus.OK) {
 			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
@@ -115,6 +121,9 @@ public class EligibilityService extends BaseService {
 
 		Message v2Response = parseResponse(response.getBody(), "E45");
     	messageReceived(transaction, V2MessageUtil.getMessageID(v2Response));
+    	
+    	//All these id's must be same (Since there is a limit of length for V2MessageId, First 20 characters should match with Audit Db transaction Id
+    	logger.debug("TransactionId: {}, V2MessageId: {}, ResponseMessageId: {}", transactionId, messageId, V2MessageUtil.getMessageID(v2Response));
 		
 		return v2Response;
 	}
@@ -132,7 +141,7 @@ public class EligibilityService extends BaseService {
 		logger.info("Request {}", rpbsppe0Str);
 
 		messageSent(transaction);
-		ResponseEntity<String> response = postRapidRequest(r41Path, rpbsppe0Str);
+		ResponseEntity<String> response = postRapidRequest(r41Path, rpbsppe0Str, transaction.getTransactionId().toString());
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		
@@ -158,7 +167,7 @@ public class EligibilityService extends BaseService {
 		logger.info("Request {}", rpbsppl0Str);
 		
 		messageSent(transaction);
-		ResponseEntity<String> response = postRapidRequest(r42Path, rpbsppl0Str);
+		ResponseEntity<String> response = postRapidRequest(r42Path, rpbsppl0Str, transaction.getTransactionId().toString());
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 
@@ -171,24 +180,24 @@ public class EligibilityService extends BaseService {
 		return new RPBSPPL0(response.getBody());
 	}
 
-	private ResponseEntity<String> postRapidRequest(String path, String body) {
+	private ResponseEntity<String> postRapidRequest(String path, String body, String transactionId) {
 		return rapidWebClient
 				.post()
 				.uri(path)
 				.contentType(MediaType.TEXT_PLAIN)
-				.header(TRANSACTION_ID, UUID.randomUUID().toString())
+				.header(TRANSACTION_ID, transactionId)
 				.bodyValue(body)
 				.retrieve()
 				.toEntity(String.class)
 				.block();
 	}
 	
-	private ResponseEntity<String> postHibcRequest(String path, String username, String password, String data) {
+	private ResponseEntity<String> postHibcRequest(String path, String username, String password, String data, String transactionId) {
         return hibcWebClient
                 .post()
                 .uri(path)
                 .contentType(MediaType.TEXT_PLAIN)
-                .header(TRANSACTION_ID, UUID.randomUUID().toString())
+                .header(TRANSACTION_ID, transactionId)
                 .headers(header -> header.setBasicAuth(username, password))
                 .bodyValue(data)
                 .retrieve()

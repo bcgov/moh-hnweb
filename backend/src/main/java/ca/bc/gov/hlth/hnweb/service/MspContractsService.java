@@ -1,7 +1,5 @@
 package ca.bc.gov.hlth.hnweb.service;
 
-import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +53,7 @@ public class MspContractsService extends BaseService {
 		logger.info("Request:\n{}", rpbspmc0Str);
 
 		messageSent(transaction);
-		ResponseEntity<String> response = postRapidRequest(r32Path, rpbspmc0Str);
+		ResponseEntity<String> response = postRapidRequest(r32Path, rpbspmc0Str, transaction.getTransactionId().toString());
 		messageReceived(transaction);
 
 		logger.info("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
@@ -78,13 +76,15 @@ public class MspContractsService extends BaseService {
 	 * @return
 	 * @throws HNWebException
 	 */
-	public RPBSPCI0 inquireContract(RPBSPCI0 rpbspci0) throws HNWebException {
+	public RPBSPCI0 inquireContract(RPBSPCI0 rpbspci0, Transaction transaction) throws HNWebException {
 		String rpbspci0Str = rpbspci0.serialize();
 
 		logger.info("Request:\n{}", rpbspci0Str);
 
-		ResponseEntity<String> response = postRapidRequest(r40Path, rpbspci0Str);
-
+		messageSent(transaction);
+		ResponseEntity<String> response = postRapidRequest(r40Path, rpbspci0Str, transaction.getTransactionId().toString());
+		messageReceived(transaction);
+		
 		logger.info("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 
 		if (response.getStatusCode() != HttpStatus.OK) {
@@ -105,12 +105,12 @@ public class MspContractsService extends BaseService {
 	 * @return
 	 * @throws HNWebException
 	 */
-	public RPBSPMA0 updateAddress(RPBSPMA0 rpbspma0) throws HNWebException {
+	public RPBSPMA0 updateAddress(RPBSPMA0 rpbspma0, Transaction transaction) throws HNWebException {
 		String rpbspma0Str = rpbspma0.serialize();
 
 		logger.info("Request:\n{}", rpbspma0Str);
 
-		ResponseEntity<String> response = postRapidRequest(r38Path, rpbspma0Str);
+		ResponseEntity<String> response = postRapidRequest(r38Path, rpbspma0Str, transaction.getTransactionId().toString());
 
 		logger.info("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 
@@ -132,13 +132,15 @@ public class MspContractsService extends BaseService {
 	 * @return
 	 * @throws HNWebException
 	 */
-	public RPBSPEP0 updatePhone(RPBSPEP0 rpbspep0) throws HNWebException {
+	public RPBSPEP0 updatePhone(RPBSPEP0 rpbspep0, Transaction transaction) throws HNWebException {
 		String rpbspep0Str = rpbspep0.serialize();
 
 		logger.info("Request:\n{}", rpbspep0Str);
 
-		ResponseEntity<String> response = postRapidRequest(r38Path, rpbspep0Str);
-
+		messageSent(transaction);
+		ResponseEntity<String> response = postRapidRequest(r38Path, rpbspep0Str, transaction.getTransactionId().toString());
+		messageReceived(transaction);
+		
 		logger.info("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 
 		if (response.getStatusCode() != HttpStatus.OK) {
@@ -151,9 +153,9 @@ public class MspContractsService extends BaseService {
 		return rpbspep0Response;
 	}
 
-	private ResponseEntity<String> postRapidRequest(String path, String body) {
+	private ResponseEntity<String> postRapidRequest(String path, String body, String transactionId) {
 		return rapidWebClient.post().uri(path).contentType(MediaType.TEXT_PLAIN)
-				.header(TRANSACTION_ID, UUID.randomUUID().toString()).bodyValue(body).retrieve().toEntity(String.class)
+				.header(TRANSACTION_ID, transactionId).bodyValue(body).retrieve().toEntity(String.class)
 				.block();
 	}
 
