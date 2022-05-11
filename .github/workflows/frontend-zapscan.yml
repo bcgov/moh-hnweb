@@ -1,0 +1,29 @@
+# This is a basic workflow to help you get started with Actions
+
+name: OWASP ZAP SCAN UAT
+
+# Controls when the workflow will run
+on:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  owasp-zap-scan-uat:
+    name: OWASP ZAP Scan of Staff Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: OWASP ZAP Scan
+        uses: zaproxy/action-full-scan@v0.3.0
+        with:
+          allow_issue_writing: false
+          cmd_options: '-z "-config scanner.threadPerHost=20"'
+          target: https://mspdirect-uat.apps.silver.devops.gov.bc.ca/home
+
+      - name: Upload Report as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: OWASP ZAP - MSP Direct UAT Front End Report
+          path: report_html.html
