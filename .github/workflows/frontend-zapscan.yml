@@ -20,7 +20,7 @@ jobs:
         with:
           allow_issue_writing: false
           cmd_options: '-z "-config scanner.threadPerHost=20"'
-          target: https://mspdirect-uat.apps.silver.devops.gov.bc.ca/home
+          target: https://mspdirect-test.apps.silver.devops.gov.bc.ca/home
 
       - name: Upload Report as Artifact
         uses: actions/upload-artifact@v3
