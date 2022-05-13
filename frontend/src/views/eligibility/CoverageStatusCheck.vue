@@ -97,7 +97,7 @@ import AppCard from '../../components/ui/AppCard.vue'
 import AppCheckbox from '../../components/ui/AppCheckbox.vue'
 import EligibilityService from '../../services/EligibilityService'
 import useVuelidate from '@vuelidate/core'
-import { validateDOB, validatePHN, VALIDATE_DOB_MESSAGE, VALIDATE_PHN_MESSAGE } from '../../util/validators'
+import { validateDOB, validateMinimumDate, validatePHN, VALIDATE_DOB_MESSAGE, VALIDATE_MINIMUM_DATE_MESSAGE, VALIDATE_PHN_MESSAGE } from '../../util/validators'
 import { API_DATE_FORMAT, COVERAGE_END_REASONS } from '../../util/constants'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
@@ -275,6 +275,7 @@ export default {
       dateOfBirth: {
         required,
         validateDOB: helpers.withMessage(VALIDATE_DOB_MESSAGE, validateDOB),
+        validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
       },
       dateOfService: { required },
     }

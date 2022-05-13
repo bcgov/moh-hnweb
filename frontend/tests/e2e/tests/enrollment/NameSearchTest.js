@@ -15,6 +15,7 @@ const INVALID_SECOND_NAME_MESSAGE = 'Second Name is invalid'
 const INVALID_SURNMAE_NAME_MESSAGE = 'Surname is invalid'
 const MAX_LENGTH_NAME_MESSAGE = 'The maximum length allowed is 15'
 const MAX_LENGTH_SURNAME_MESSAGE = 'The maximum length allowed is 35'
+const MINIMUM_DATE_VALIDATION = 'Date must be later than 19000101'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addStudyPermitHolderWithoutPHN'
 
@@ -55,6 +56,23 @@ test('Check properly filled form passes validation', async (t) => {
     // I expect the AddVisaResident page to be loaded
     .expect(AddVisaResidentWithoutPHNPage.groupNumberInput.exists)
     .ok()
+})
+
+test('Check minimum date validation', async (t) => {
+  await t
+    // Given I have a form filled out with data
+    .typeText(NameSearchPage.surnameInput, 'Test')
+    .typeText(NameSearchPage.firstNameInput, 'Test')
+    .typeText(NameSearchPage.secondNameInput, 'Test')
+    .typeText(NameSearchPage.dateOfBirthInput, '19000101')
+    .click(NameSearchPage.radioButton)
+    // When I click the submit button
+    .click(NameSearchPage.submitButton)
+    // I expect an error message stating the page had errors and individual error messages for each field
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+    .expect(NameSearchPage.errorText.nth(0).textContent)
+    .contains(MINIMUM_DATE_VALIDATION)
 })
 
 test('Check alpha validation for Name', async (t) => {

@@ -55,7 +55,7 @@ import YesNoRadioButtonGroup from '../../components/ui/YesNoRadioButtonGroup.vue
 import useVuelidate from '@vuelidate/core'
 import { helpers, required, requiredIf } from '@vuelidate/validators'
 import dayjs from 'dayjs'
-import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumber, validatePHN } from '../../util/validators'
+import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_MINIMUM_DATE_MESSAGE, validateGroupNumber, validatePHN, validateMinimumDate } from '../../util/validators'
 import { API_DATE_FORMAT, RELATIONSHIPS } from '../../util/constants'
 import GroupMemberService from '../../services/GroupMemberService'
 import { useAlertStore } from '../../stores/alert'
@@ -165,7 +165,10 @@ export default {
         required,
         validateGroupNumber: helpers.withMessage(VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber),
       },
-      coverageEffectiveDate: { required },
+      coverageEffectiveDate: {
+        required,
+        validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
+      },
       phn: {
         required,
         validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
@@ -183,6 +186,7 @@ export default {
           return this.isStudent === 'Y'
         }),
       },
+      validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
     }
   },
 }

@@ -15,6 +15,7 @@ const INVALID_DEPENDENT_PHN_ERROR_MESSAGE = 'PHN format is invalid'
 const RELATIONSHIP_REQUIRED_MESSAGE = 'Relationship is required'
 const IS_STUDENT_REQUIRED_MESSAGE = 'Is this Dependent attending a Canadian Educational Institution? is required'
 const STUDENT_END_DATE_REQUIRED_MESSAGE = 'The value is required'
+const MINIMUM_DATE_VALIDATION = 'Date must be later than 19000101'
 const RAPID_RESPONSE = 'RPBS9145 PHN NOT FOUND'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/groupmember/AddDependent'
@@ -104,6 +105,27 @@ test('Check properly filled form passes validation', async (t) => {
     // I expect a response from RAPID
     .expect(AlertPage.alertBannerText.textContent)
     .contains(RAPID_RESPONSE)
+})
+
+test('Check minimum date validation', async (t) => {
+  await t
+    // Given I have a form filled out with data
+    .typeText(AddDependentPage.groupNumberInput, '6243109')
+    .typeText(AddDependentPage.coverageEffectiveDateInput, '202112')
+    .pressKey('tab')
+    .typeText(AddDependentPage.phnInput, '9397105575')
+    .typeText(AddDependentPage.dependentPhnInput, '9329090895')
+    .click(AddDependentPage.relationshipSelect)
+    .click(relationshipOption.withText('Spouse'))
+    .click(AddDependentPage.isStudentRadioButton)
+    .wait(1000)
+    .typeText(AddDependentPage.studentEndDateInput, '19000101')
+    .pressKey('tab')
+    // When I click the submit button
+    .click(AddDependentPage.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for date input range
+    .expect(AddDependentPage.errorText.nth(0).textContent)
+    .contains(MINIMUM_DATE_VALIDATION)
 })
 
 test('Check properly filled form passes validation, non student', async (t) => {

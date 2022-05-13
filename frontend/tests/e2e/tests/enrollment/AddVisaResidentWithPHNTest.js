@@ -24,6 +24,7 @@ const PERMIT_ISSUE_DATE_REQUIRED_MESSAGE = 'Permit Issue Date is required'
 const PERMIT_EXPIRY_DATE_REQUIRED_MESSAGE = 'Permit Expiry Date is required'
 const RESIDENCE_DATE_REQUIRED_MESSAGE = 'Residence Date is required'
 const COVERAGE_CANCELLATION_DATE_REQUIRED_MESSAGE = 'Coverage Cancellation Date is required'
+const MINIMUM_DATE_VALIDATION = 'Date must be later than 19000101'
 const HOME_ADDRESS_REQUIRED_MESSAGE = 'Home Address Line 1 is required'
 const MAILING_ADDRESS_REQUIRED_MESSAGE = 'Mailing Address Line 1 is required'
 const CITY_REQUIRED_MESSAGE = 'City is required'
@@ -153,6 +154,45 @@ test('Check properly filled form passes validation', async (t) => {
     // I expect a success message
     .expect(AlertPage.alertBannerText.textContent)
     .contains(SUCCESS_MESSAGE)
+})
+
+test('Check minimum date validation', async (t) => {
+  await t
+    .typeText(PersonDetails.phnInput, '9882807277')
+    .click(PersonDetails.submitButton)
+    .wait(5000)
+    // Given the page is filled out correctly
+    .typeText(AddVisaResidentWithPHNPage.groupNumberInput, '6337109')
+    .click(AddVisaResidentWithPHNPage.immigrationCodeSelect)
+    .click(immigrationCodeOption.withText('Employment Authorization'))
+    .typeText(AddVisaResidentWithPHNPage.departmentNumberInput, '123456')
+    .typeText(AddVisaResidentWithPHNPage.visaIssueDateInput, '19000101')
+    .typeText(AddVisaResidentWithPHNPage.visaExpiryDateInput, '19000101')
+    .typeText(AddVisaResidentWithPHNPage.residenceDateInput, '19000101')
+    .typeText(AddVisaResidentWithPHNPage.coverageEffectiveDateInput, '19000101')
+    .typeText(AddVisaResidentWithPHNPage.coverageCancellationDateInput, '19000101')
+    .typeText(AddVisaResidentWithPHNPage.telephoneInput, '7802024022')
+    .typeText(AddVisaResidentWithPHNPage.address1Input, 'Test 111 ST')
+    .typeText(AddVisaResidentWithPHNPage.cityInput, 'VICTORIA')
+    .click(AddVisaResidentWithPHNPage.provinceSelect)
+    .click(provinceOption.withText('British Columbia'))
+    .typeText(AddVisaResidentWithPHNPage.postalCodeInput, 'V8V8V8')
+    .click(AddVisaResidentWithPHNPage.priorResidenceCodeInput)
+    .click(priorResidenceCodeOption.withText('Alberta'))
+
+    // When I click the submit button
+    .click(AddVisaResidentWithPHNPage.submitButton)
+    // I expect a success message
+    .expect(AddVisaResidentWithPHNPage.errorText.nth(0).textContent)
+    .contains(MINIMUM_DATE_VALIDATION)
+    .expect(AddVisaResidentWithPHNPage.errorText.nth(1).textContent)
+    .contains(MINIMUM_DATE_VALIDATION)
+    .expect(AddVisaResidentWithPHNPage.errorText.nth(2).textContent)
+    .contains(MINIMUM_DATE_VALIDATION)
+    .expect(AddVisaResidentWithPHNPage.errorText.nth(3).textContent)
+    .contains(MINIMUM_DATE_VALIDATION)
+    .expect(AddVisaResidentWithPHNPage.errorText.nth(4).textContent)
+    .contains(MINIMUM_DATE_VALIDATION)
 })
 
 test('Check invalid input field character validation', async (t) => {

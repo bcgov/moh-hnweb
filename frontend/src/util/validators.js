@@ -92,6 +92,19 @@ export function validateDOB(dateOfBirth) {
 }
 
 /**
+ * Validates that the Date is not earlier than '1900-01-01' .
+ */
+export function validateMinimumDate(dateInput) {
+  if (!helpers.req(dateInput)) {
+    return true
+  }
+  if (!dayjs(dateInput).isAfter(dayjs('1900-01-01'))) {
+    return false
+  }
+  return true
+}
+
+/**
  * Validate Group Member Number. It can be up to nine (9) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid.
  */
 export function validateGroupMemberNumber(groupMemberNumber) {
@@ -292,6 +305,7 @@ export const VALIDATE_FIRST_NAME_MESSAGE = 'First Name is invalid'
 export const VALIDATE_SECOND_NAME_MESSAGE = 'Second Name is invalid'
 export const VALIDATE_CITY_MESSAGE = 'City is invalid'
 export const VALIDATE_DOB_MESSAGE = 'Date of Birth must not be in the future'
+export const VALIDATE_MINIMUM_DATE_MESSAGE = 'Date must be later than 19000101'
 export const VALIDATE_PHN_MESSAGE = 'PHN format is invalid'
 export const VALIDATE_CONTRACT_NUMBER_MESSAGE = 'MSP Contract Number is invalid'
 export const VALIDATE_GROUP_NUMBER_MESSAGE = 'Group Number is invalid'

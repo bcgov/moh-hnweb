@@ -126,6 +126,7 @@ import {
   validateOptionalAddress,
   validateDepartmentNumber,
   validateGroupMemberNumber,
+  validateMinimumDate,
   VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE,
   VALIDATE_ADDRESS_LINE1_MESSAGE,
   VALIDATE_ADDRESS_LINE2_MESSAGE,
@@ -137,6 +138,7 @@ import {
   VALIDATE_PHN_MESSAGE,
   VALIDATE_POSTAL_CODE_MESSAGE,
   VALIDATE_TELEPHONE_MESSAGE,
+  VALIDATE_MINIMUM_DATE_MESSAGE,
 } from '../../util/validators'
 import GroupMemberService from '../../services/GroupMemberService'
 import { useAlertStore } from '../../stores/alert'
@@ -311,7 +313,10 @@ export default {
       departmentNumber: {
         validateDepartmentNumber: helpers.withMessage(VALIDATE_DEPARTMENT_NUMBER_MESSAGE, validateDepartmentNumber),
       },
-      coverageEffectiveDate: { required },
+      coverageEffectiveDate: {
+        required,
+        validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
+      },
       telephone: {
         validateTelephone: helpers.withMessage(VALIDATE_TELEPHONE_MESSAGE, validateTelephone),
       },

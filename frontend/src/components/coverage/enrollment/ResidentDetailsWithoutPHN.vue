@@ -159,6 +159,7 @@ import {
   validateSecondName,
   validateSurname,
   validateMailingAddressForVisaResident,
+  validateMinimumDate,
   VALIDATE_FIRST_NAME_MESSAGE,
   VALIDATE_SECOND_NAME_MESSAGE,
   VALIDATE_SURNAME_MESSAGE,
@@ -173,6 +174,7 @@ import {
   VALIDATE_DOB_MESSAGE,
   VALIDATE_TELEPHONE_MESSAGE,
   VALIDATE_POSTAL_CODE_MESSAGE,
+  VALIDATE_MINIMUM_DATE_MESSAGE,
 } from '../../../util/validators'
 import { required, requiredIf, helpers, maxLength } from '@vuelidate/validators'
 import dayjs from 'dayjs'
@@ -345,6 +347,7 @@ export default {
       dateOfBirth: {
         required,
         validateDOB: helpers.withMessage(VALIDATE_DOB_MESSAGE, validateDOB),
+        validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
       },
       gender: {
         required,
@@ -357,17 +360,32 @@ export default {
       groupMemberNumber: {
         validateGroupMemberNumber: helpers.withMessage(VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, validateGroupMemberNumber),
       },
-      permitIssueDate: { required },
+      permitIssueDate: {
+        required,
+        validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
+      },
       departmentNumber: {
         validateDepartmentNumber: helpers.withMessage(VALIDATE_DEPARTMENT_NUMBER_MESSAGE, validateDepartmentNumber),
       },
-      permitExpiryDate: { required },
-      residenceDate: { required },
-      coverageEffectiveDate: { required },
+      permitExpiryDate: {
+        required,
+        validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
+      },
+      residenceDate: {
+        required,
+        validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
+      },
+      coverageEffectiveDate: {
+        required,
+        validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
+      },
       telephone: {
         validateTelephone: helpers.withMessage(VALIDATE_TELEPHONE_MESSAGE, validateTelephone),
       },
-      coverageCancellationDate: { required },
+      coverageCancellationDate: {
+        required,
+        validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
+      },
       address1: {
         required,
         maxLength: maxLength(25),

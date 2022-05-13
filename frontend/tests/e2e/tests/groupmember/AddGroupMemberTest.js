@@ -20,6 +20,7 @@ const HOME_ADDRESS_REQUIRED_MESSAGE = 'Home Address Line 1 is required'
 const MAILING_ADDRESS_REQUIRED_MESSAGE = 'Mailing Address Line 1 is required'
 const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
 const INVALID_POSTAL_CODE_VALIDATION_MESSAGE = 'Postal Code is invalid'
+const MINIMUM_DATE_VALIDATION = 'Date must be later than 19000101'
 const SUCCESS_MESSAGE = 'RPBS0031 9882807277 PHN IS INELIGIBLE. PLEASE FORWARD SOURCE DOCS TO MSP'
 const PHONE_NUMBER_VALIDATION_MESSAGE = 'Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
 
@@ -92,6 +93,24 @@ test('Check properly filled form passes validation', async (t) => {
     // I expect a success message
     .expect(AlertPage.alertBannerText.textContent)
     .contains(SUCCESS_MESSAGE)
+})
+
+test('Check minimum date validation', async (t) => {
+  await t
+    // Given the page is filled out correctly
+    .typeText(AddGroupMember.groupNumberInput, '6337109')
+    .click(AddGroupMember.coverageEffectiveDateInput)
+    .typeText('19000101')
+    .click(AddGroupMember.phnInput)
+    .typeText(AddGroupMember.phnInput, '9882807277')
+    .typeText(AddGroupMember.address1Input, 'Test 111 ST')
+    .typeText(AddGroupMember.postalCodeInput, 'V8V8V8')
+
+    // When I click the submit button
+    .click(AddGroupMember.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for date input range
+    .expect(AddGroupMember.errorText.nth(0).textContent)
+    .contains(MINIMUM_DATE_VALIDATION)
 })
 
 test('Check PHN, Group Number format validation', async (t) => {

@@ -10,6 +10,7 @@ const GROUP_NUMBER_REQUIRED_MESSAGE = 'Group Number is required'
 const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
 const COVERAGE_CANCEL_DATE_REQUIRED_MESSAGE = 'Coverage Cancel Date is required'
 const CANCEL_REASON_REQUIRED_MESSAGE = 'Cancel Reason is required'
+const MINIMUM_DATE_VALIDATION = 'Date must be later than 19000101'
 const RAPID_RESPONSE = 'RPBS0003 SUBSCRIBER PHN MUST BE ENTERED'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/groupmember/CancelGroupMember'
@@ -69,6 +70,23 @@ test('Check properly filled form passes validation', async (t) => {
     // I expect a response from RAPID
     .expect(AlertPage.alertBannerText.textContent)
     .contains(RAPID_RESPONSE)
+})
+
+test('Check minimum date validation', async (t) => {
+  await t
+    // Given I have a form filled out with data
+    .typeText(CancelGroupMember.phnInput, '9397105575')
+    .typeText(CancelGroupMember.groupNumberInput, '6243109')
+    // Date must be within 1 year
+    .typeText(CancelGroupMember.cancelDateInput, '19000101')
+    .pressKey('tab')
+    .click(CancelGroupMember.cancelReasonInput)
+    .pressKey('down')
+    // When I click the submit button
+    .click(CancelGroupMember.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for date input range
+    .expect(CancelGroupMember.errorText.nth(0).textContent)
+    .contains(MINIMUM_DATE_VALIDATION)
 })
 
 test('Check clear button clears the form', async (t) => {
