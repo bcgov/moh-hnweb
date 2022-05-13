@@ -105,6 +105,34 @@ export function validateMinimumDate(dateInput) {
 }
 
 /**
+ * Validates that the EffectiveDate is not earlier than '1900-01-01' .
+ */
+export function validateMinimumEffectiveDate(dateInput) {
+  if (!helpers.req(dateInput)) {
+    return true
+  }
+  dateInput = new Date(this.coverageEffectiveDate.year, this.coverageEffectiveDate.month, 1)
+  if (!dayjs(dateInput).isAfter(dayjs('1900-01-01'))) {
+    return false
+  }
+  return true
+}
+
+/**
+ * Validates that the Cancel Date is not earlier than '1900-01-01' .
+ */
+export function validateMinimumCancelDate(dateInput) {
+  if (!helpers.req(dateInput)) {
+    return true
+  }
+  dateInput = new Date(this.cancelDate.year, this.cancelDate.month, 1)
+  if (!dayjs(dateInput).isAfter(dayjs('1900-01-01'))) {
+    return false
+  }
+  return true
+}
+
+/**
  * Validate Group Member Number. It can be up to nine (9) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid.
  */
 export function validateGroupMemberNumber(groupMemberNumber) {

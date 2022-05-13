@@ -37,7 +37,7 @@
 <script>
 import useVuelidate from '@vuelidate/core'
 import { helpers, required } from '@vuelidate/validators'
-import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_MINIMUM_DATE_MESSAGE, validateGroupNumber, validatePHN, validateMinimumDate } from '../../util/validators'
+import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_MINIMUM_DATE_MESSAGE, validateGroupNumber, validatePHN, validateMinimumCancelDate } from '../../util/validators'
 import GroupMemberService from '../../services/GroupMemberService'
 import { useAlertStore } from '../../stores/alert'
 
@@ -137,7 +137,7 @@ export default {
       },
       cancelDate: {
         required,
-        validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
+        validateMinimumCancelDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumCancelDate),
       },
       cancelReason: { required },
     }

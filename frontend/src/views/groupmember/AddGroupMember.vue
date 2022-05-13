@@ -126,7 +126,7 @@ import {
   validateOptionalAddress,
   validateDepartmentNumber,
   validateGroupMemberNumber,
-  validateMinimumDate,
+  validateMinimumEffectiveDate,
   VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE,
   VALIDATE_ADDRESS_LINE1_MESSAGE,
   VALIDATE_ADDRESS_LINE2_MESSAGE,
@@ -315,7 +315,7 @@ export default {
       },
       coverageEffectiveDate: {
         required,
-        validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
+        validateMinimumEffectiveDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumEffectiveDate),
       },
       telephone: {
         validateTelephone: helpers.withMessage(VALIDATE_TELEPHONE_MESSAGE, validateTelephone),

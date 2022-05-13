@@ -78,7 +78,7 @@ test('Check minimum date validation', async (t) => {
     .typeText(CancelGroupMember.phnInput, '9397105575')
     .typeText(CancelGroupMember.groupNumberInput, '6243109')
     // Date must be within 1 year
-    .typeText(CancelGroupMember.cancelDateInput, '19000101')
+    .typeText(CancelGroupMember.cancelDateInput, '1900-01')
     .pressKey('tab')
     .click(CancelGroupMember.cancelReasonInput)
     .pressKey('down')

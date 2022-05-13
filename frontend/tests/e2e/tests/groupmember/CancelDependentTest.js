@@ -86,7 +86,7 @@ test('Check minimum date validation', async (t) => {
     .typeText(CancelDependent.phnInput, '9397105575')
     .typeText(CancelDependent.dependentPhnInput, '9397105575')
     .click(CancelDependent.cancelDateInput)
-    .typeText('19000101')
+    .typeText(CancelDependent.cancelDateInput, '1900-01')
     .click(CancelDependent.cancelReasonInput)
     .pressKey('down')
     .pressKey('enter')

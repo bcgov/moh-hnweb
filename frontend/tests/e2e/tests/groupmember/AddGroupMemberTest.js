@@ -100,7 +100,8 @@ test('Check minimum date validation', async (t) => {
     // Given the page is filled out correctly
     .typeText(AddGroupMember.groupNumberInput, '6337109')
     .click(AddGroupMember.coverageEffectiveDateInput)
-    .typeText('19000101')
+    //.click(AddGroupMember.divSelectedDate)
+    .typeText(AddGroupMember.coverageEffectiveDateInput, '1900-01')
     .click(AddGroupMember.phnInput)
     .typeText(AddGroupMember.phnInput, '9882807277')
     .typeText(AddGroupMember.address1Input, 'Test 111 ST')
