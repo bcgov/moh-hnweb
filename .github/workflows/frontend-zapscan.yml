@@ -1,12 +1,20 @@
 # This is a basic workflow to help you get started with Actions
 
-name: OWASP ZAP SCAN UAT
+name: OWASP ZAP SCAN
 
 # Controls when the workflow will run
 on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment:"
+        type: choice
+        required: true
+        options:
+        - TEST
+        - UAT
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -15,12 +23,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set environment
+        run: |
+          if [ ${{ github.event.inputs.Environment }} == 'TEST' ]; then
+            echo "ZAP_URL=${{ secrets.MSPDIRECT_TEST_URL }}" >> $GITHUB_ENV
+          elif [ ${{ github.event.inputs.Environment }} == 'UAT' ]; then
+            echo "ZAP_URL=${{ secrets.MSPDIRECT_UAT_URL }}" >> $GITHUB_ENV
+          fi
+    
       - name: OWASP ZAP Scan
         uses: zaproxy/action-full-scan@v0.3.0
         with:
           allow_issue_writing: false
           cmd_options: '-z "-config scanner.threadPerHost=20"'
-          target: https://mspdirect-test.apps.silver.devops.gov.bc.ca/home
+          target: ${{ env.ZAP_URL }}
 
       - name: Upload Report as Artifact
         uses: actions/upload-artifact@v3
