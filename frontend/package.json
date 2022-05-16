@@ -21,8 +21,7 @@
     "keycloak-js": "^15.0.2",
     "pinia": "next",
     "vue": "^3.2.13",
-    "vue-router": "4",
-    "vue3-date-time-picker": "2.8.0"
+    "vue-router": "4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.9.0",
