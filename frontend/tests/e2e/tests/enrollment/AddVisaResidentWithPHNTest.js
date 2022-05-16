@@ -88,10 +88,8 @@ test('Check required fields validation for mailing address', async (t) => {
     .click(PersonDetails.submitButton)
     .wait(5000)
     // Given required fields aren't filled out
-
-    // When I click the submit button
-
     .typeText(AddVisaResidentWithPHNPage.mailingAddress2Input, 'Test 111 ST')
+    // When I click the submit button
     .click(AddVisaResidentWithPHNPage.submitButton)
     .wait(1000)
     // I expect an error message stating the page had errors and individual error messages for each required field

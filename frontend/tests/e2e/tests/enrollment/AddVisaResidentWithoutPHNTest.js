@@ -186,7 +186,7 @@ test('Check minimum date validation', async (t) => {
     .wait(1000)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(NO_SEARCH_RESULT)
-    // Given the page is filled out correctly
+    // Given date is not later than 19000101
     .typeText(AddVisaResidentWithoutPHNPage.groupNumberInput, '6337109')
     .click(AddVisaResidentWithoutPHNPage.immigrationCodeSelect)
     .click(immigrationCodeOption.withText('Student Authorization'))

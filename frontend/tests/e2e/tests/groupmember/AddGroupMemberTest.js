@@ -97,7 +97,7 @@ test('Check properly filled form passes validation', async (t) => {
 
 test('Check minimum date validation', async (t) => {
   await t
-    // Given the page is filled out correctly
+    // Given I have a form filled out with date not later than 19000101
     .typeText(AddGroupMember.groupNumberInput, '6337109')
     .click(AddGroupMember.coverageEffectiveDateInput)
     //.click(AddGroupMember.divSelectedDate)

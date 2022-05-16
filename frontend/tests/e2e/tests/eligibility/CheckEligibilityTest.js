@@ -50,7 +50,7 @@ test('Check invalid phn format validation', async (t) => {
 
 test('Check minimum date validation', async (t) => {
   await t
-    // Given the page is filled out correctly
+    // Given date is not later than 19000101
     .typeText(CheckEligibilityPage.phnInput, '9395568139')
     .selectText(CheckEligibilityPage.eligibilityDate)
     .pressKey('delete')

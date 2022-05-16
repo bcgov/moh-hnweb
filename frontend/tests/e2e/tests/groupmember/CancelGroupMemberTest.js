@@ -74,7 +74,7 @@ test('Check properly filled form passes validation', async (t) => {
 
 test('Check minimum date validation', async (t) => {
   await t
-    // Given I have a form filled out with data
+    // Given I have a form filled out with date not later than 19000101
     .typeText(CancelGroupMember.phnInput, '9397105575')
     .typeText(CancelGroupMember.groupNumberInput, '6243109')
     // Date must be within 1 year

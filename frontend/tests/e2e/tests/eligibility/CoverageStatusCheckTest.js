@@ -95,7 +95,7 @@ test('Check date of birth in future validation', async (t) => {
 test('Check minimum date validation', async (t) => {
   await t
     .typeText(CoverageStatusCheckPage.phnInput, '9306448169')
-    //Given date Of Birth and date Of Service are entered
+    // Given date is not later than 19000101
     .typeText(CoverageStatusCheckPage.dateOfBirthInput, '19000101')
     .pressKey('tab')
     .typeText(CoverageStatusCheckPage.dateOfServiceInput, '19000101')

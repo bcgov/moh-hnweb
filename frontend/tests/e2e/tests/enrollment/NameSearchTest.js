@@ -60,7 +60,7 @@ test('Check properly filled form passes validation', async (t) => {
 
 test('Check minimum date validation', async (t) => {
   await t
-    // Given I have a form filled out with data
+    // Given I have a form filled out with date not later than 19000101
     .typeText(NameSearchPage.surnameInput, 'Test')
     .typeText(NameSearchPage.firstNameInput, 'Test')
     .typeText(NameSearchPage.secondNameInput, 'Test')
