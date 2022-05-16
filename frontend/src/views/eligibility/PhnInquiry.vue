@@ -1,4 +1,9 @@
 <template>
+  <AppInstructions
+    >Use PHN Inquiry to verify an individual's name, birthdate, gender, and to check their eligibility for Medical Services Plan (MSP) coverage. Access to PHN Inquiry is available to authorized users within both EMPLOYER organizations and HEALTH AUTHORITIES. Please look for notes of special interest
+    to either EMPLOYERS or HEALTH AUTHORITIES.<br />
+    HEALTH AUTHORITIES and HEALTH CARE PROVIDERS: If "N" response is received, use MSP Coverage Status Check to check eligibility.
+  </AppInstructions>
   <div>
     <p>Enter 1 or more PHNs</p>
     <form @submit.prevent="submitForm">
@@ -54,12 +59,46 @@
     <AppSimpleTable id="resultsTable">
       <thead>
         <tr>
-          <th>PHN</th>
+          <th>
+            <div>PHN</div>
+            <AppTooltip mode="header">
+              Each PHN is processed individually.<br />
+              Unsuccesfully processed PHNs appear with an error message, at the top of the response screen.<br />
+              Successfully processed PHNs are displayed in the order they were entered. Each has two lines, given name, birthdate, gender, ELIGIBIILTY status, and STUDENT status if applicable.
+            </AppTooltip>
+          </th>
           <th>Name</th>
           <th>Date of Birth</th>
           <th>Gender</th>
-          <th>Eligible</th>
-          <th>Student</th>
+          <th>
+            <div>Eligible</div>
+            <AppTooltip mode="header">
+              <p>"Eligible = Y" means that when checked today, the person is eligible for MSP.</p>
+              <ul>
+                <li>EMPLOYERS - if Y and this is a new employee or dependent, you can add them to your group account using the R30 - Add Employee or R31 - Add Employee Dependent.</li>
+                <li>HEALTH AUTHORITIES - although eligible today, a person could subsequently become ineligible for service on today's date. If a fee-for-service claim is involved, you may wish to use the MSP Teleplan system or Claims IVR to verify eligibility.</li>
+              </ul>
+              <br />
+              <p>
+                "Eligible = N" means the person was enrolled in MSP in the past, but is NOT eligible for publicly funded health care as of today's date. This person may have moved away from BC, opted out of MSP, joined the Armed Forces or RCMP, or may hold expired temporary immigration documents.
+                Any ‘N’ you receive must also be confirmed using the E45 MSP Coverage Status Check business service.
+              </p>
+              <ul>
+                <li>EMPLOYERS - if this person is a new employee or dependent who has moved back to BC, they will have to re-enroll. An MSP application or change form, with copies of foundation documents, must be submitted. Otherwise, contact the Help Desk.</li>
+                <li>HEALTH AUTHORITIES - if you need to know WHY a client is not eligible, use the E45 - Check Eligibility business service.</li>
+              </ul>
+            </AppTooltip>
+          </th>
+
+          <th>
+            <div>Student</div>
+            <AppTooltip mode="header">
+              <p>Student status, whether "Yes" or "No" does not affect eligibility for publicly funded health care.</p>
+              <ul>
+                <li>EMPLOYERS - you need to know student status if you are planning to add a dependent aged 19 to 24 to an employee's coverage.</li>
+              </ul>
+            </AppTooltip>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -72,6 +111,8 @@
 </template>
 
 <script>
+import AppInstructions from '../../components/ui/AppInstructions.vue'
+import AppTooltip from '../../components/ui/AppTooltip.vue'
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
 import EligibilityService from '../../services/EligibilityService'
 import PhnInquiryBeneficiary from '../../components/eligibility/PhnInquiryBeneficiary.vue'
@@ -83,7 +124,9 @@ import { useAlertStore } from '../../stores/alert.js'
 export default {
   name: 'PhnInquiry',
   components: {
+    AppInstructions,
     AppSimpleTable,
+    AppTooltip,
     PhnInquiryBeneficiary,
   },
   setup() {
@@ -205,3 +248,12 @@ export default {
   },
 }
 </script>
+<style scoped>
+th div {
+  float: left;
+}
+ul {
+  list-style: disc;
+  margin-left: 20px;
+}
+</style>

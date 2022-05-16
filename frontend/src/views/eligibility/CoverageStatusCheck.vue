@@ -3,7 +3,9 @@
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.phn" id="phn" label="PHN" type="text" v-model.trim="phn" />
+          <AppInput :e-model="v$.phn" id="phn" label="PHN" tooltip type="text" v-model.trim="phn">
+            <template v-slot:tooltip>Enter the individual’s 10 digit PHN. PHN is a mandatory field. If you leave it blank or enter invalid characters, an edit error message box will be displayed on the input screen.</template>
+          </AppInput>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -13,12 +15,20 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.dateOfService" id="dateOfService" label="Date Of Service" v-model="dateOfService" />
+          <AppDateInput :e-model="v$.dateOfService" id="dateOfService" label="Date Of Service" v-model="dateOfService">
+            <template v-slot:tooltip>The Date of Service defaults on the screen to today's date. The year (CCYY), month (MM) and day (DD) can be overridden. If you override the date with another date, it cannot be greater than today's date or more than 18 months in the past.</template>
+          </AppDateInput>
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col4">
           <h3>Patient Status Request</h3>
+          <AppTooltip>
+            Subsidy Insured Service: the screen will display whether MSP pays for Subsidy Insured Services for this PHN, including the number of services last paid to date, whether the beneficiary must pay, the number of paid services by calendar year. This information will be of interest to
+            supplementary benefits providers.<br />
+            Last Eye Exam: the screen will return the date of the last paid eye exam for this PHN within the last 24 months. This information will be of interest to those performing eye exams. Patient Restriction:, if the patient has been restricted to a single general practitioner, the MSP Coverage
+            Status Check will advise you to review the MSP Bulletin."
+          </AppTooltip>
           <p>Select by clicking one or more boxes</p>
         </AppCol>
         <AppCol>
@@ -95,6 +105,7 @@
 <script>
 import AppCard from '../../components/ui/AppCard.vue'
 import AppCheckbox from '../../components/ui/AppCheckbox.vue'
+import AppTooltip from '../../components/ui/AppTooltip.vue'
 import EligibilityService from '../../services/EligibilityService'
 import useVuelidate from '@vuelidate/core'
 import { validateDOB, validatePHN, VALIDATE_DOB_MESSAGE, VALIDATE_PHN_MESSAGE } from '../../util/validators'
@@ -106,7 +117,7 @@ import { useAlertStore } from '../../stores/alert.js'
 
 export default {
   name: 'CoverageStatusCheck',
-  components: { AppCard, AppCheckbox },
+  components: { AppCard, AppCheckbox, AppTooltip },
   setup() {
     return {
       alertStore: useAlertStore(),

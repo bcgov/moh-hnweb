@@ -6,7 +6,9 @@
           <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" type="text" v-model.trim="groupNumber" />
         </AppCol>
         <AppCol class="col4">
-          <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" tooltip tooltipText="Day always defaults to 1st of month" monthPicker inputDateFormat="yyyyMM" placeholder="YYYYMM" v-model="coverageEffectiveDate" />
+          <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" monthPicker inputDateFormat="yyyyMM" placeholder="YYYYMM" v-model="coverageEffectiveDate">
+            <template v-slot:tooltip>Day always defaults to 1st of month</template>
+          </AppDateInput>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -24,7 +26,9 @@
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <YesNoRadioButtonGroup :e-model="v$.isStudent" id="isStudent" label="Is this Dependent attending a Canadian Educational Institution?" tooltip tooltipText="Click either Yes or No" v-model="isStudent" />
+          <YesNoRadioButtonGroup :e-model="v$.isStudent" id="isStudent" label="Is this Dependent attending a Canadian Educational Institution?" v-model="isStudent">
+            <template v-slot:tooltip> Click either Yes or No </template>
+          </YesNoRadioButtonGroup>
         </AppCol>
       </AppRow>
       <AppRow>
