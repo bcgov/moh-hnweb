@@ -110,8 +110,10 @@ public class MspContractsService extends BaseService {
 
 		logger.info("Request:\n{}", rpbspma0Str);
 
+		messageSent(transaction);
 		ResponseEntity<String> response = postRapidRequest(r38Path, rpbspma0Str, transaction.getTransactionId().toString());
-
+		messageReceived(transaction);
+		
 		logger.info("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 
 		if (response.getStatusCode() != HttpStatus.OK) {
