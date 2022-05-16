@@ -277,7 +277,10 @@ export default {
         validateDOB: helpers.withMessage(VALIDATE_DOB_MESSAGE, validateDOB),
         validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
       },
-      dateOfService: { required },
+      dateOfService: {
+        required,
+        validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
+      },
     }
   },
 }

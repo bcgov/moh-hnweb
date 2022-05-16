@@ -1,12 +1,13 @@
+import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import CheckEligibilityPage from '../../pages/eligibility/CheckEligibilityPage'
-import { SITE_UNDER_TEST } from '../../configuration'
 import { regularAccUser } from '../../roles/roles'
 
 const ERROR_MESSAGE = 'Please correct errors before submitting'
 const SUCCESS_MESSAGE = 'HJMB001I SUCCESSFULLY COMPLETED'
 const PHN_REQUIRED_MESSAGE = 'PHN is required'
 const DATE_TO_CHECK_REQUIRED_MESSAGE = 'Date to Check is required'
+const MINIMUM_DATE_VALIDATION = 'Date must be later than 19000101'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/eligibility/checkEligibility'
@@ -43,6 +44,24 @@ test('Check invalid phn format validation', async (t) => {
     // I expect an error message stating the page had errors and an individual error message for the PHN format
     .expect(CheckEligibilityPage.errorText.nth(0).textContent)
     .contains(INVALID_PHN_ERROR_MESSAGE)
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+})
+
+test('Check minimum date validation', async (t) => {
+  await t
+    // Given the page is filled out correctly
+    .typeText(CheckEligibilityPage.phnInput, '9395568139')
+    .selectText(CheckEligibilityPage.eligibilityDate)
+    .pressKey('delete')
+    .pressKey('tab')
+    .typeText(CheckEligibilityPage.eligibilityDate, '19000101')
+    .pressKey('tab')
+    // When I click the submit button
+    .click(CheckEligibilityPage.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for minimum date
+    .expect(CheckEligibilityPage.errorText.nth(0).textContent)
+    .contains(MINIMUM_DATE_VALIDATION)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
 })
