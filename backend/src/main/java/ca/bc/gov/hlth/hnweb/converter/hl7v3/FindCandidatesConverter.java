@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -29,9 +30,9 @@ public class FindCandidatesConverter {
 	public FindCandidatesRequest convertRequest(NameSearchRequest nameSearchRequest) {
 		String surname = nameSearchRequest.getSurname();
 		String givenName = nameSearchRequest.getGivenName();
-		
-		logger.debug("Find Candidates for Name: [{} {}] DOB: [{}]",
-				surname, givenName, nameSearchRequest.getDateOfBirth());
+
+		logger.debug("Find Candidates for Name: [{} {}] DOB: [{}]", surname, givenName,
+				nameSearchRequest.getDateOfBirth());
 
 		FindCandidatesRequest findCandidatesRequest = new FindCandidatesRequest();
 
@@ -42,7 +43,11 @@ public class FindCandidatesConverter {
 
 		findCandidatesRequest.setName(name);
 		findCandidatesRequest.setBirthDate(V3MessageUtil.dateOnlyFormatter.format(nameSearchRequest.getDateOfBirth()));
-		findCandidatesRequest.setGender(nameSearchRequest.getGender());
+		String gender = nameSearchRequest.getGender();
+		if (StringUtils.isNotEmpty(gender) && gender.equals("U")) {
+			findCandidatesRequest.setGender("UNK");
+		} else
+			findCandidatesRequest.setGender(nameSearchRequest.getGender());
 
 		return findCandidatesRequest;
 
@@ -57,9 +62,9 @@ public class FindCandidatesConverter {
 
 		// BCHCIM.FC.0.0017 | Warning: The maximum number of results were returned, and
 		// more may be available. Please refine your search criteria and try again.
-		
+
 		// BCHCIM.FC.0.0018 | No candidates found. Please refine your search.
-		
+
 		// BCHCIM.FC.2.0004 | Error: The EMPI is unavailable. Please report the problem
 		// to the helpdesk.
 
@@ -70,20 +75,20 @@ public class FindCandidatesConverter {
 			statusCode = messageText[0];
 			message = messageText[1];
 		}
-		
+
 		String[] messageStr = message.split(":");
-		String status = messageStr[0].trim();		
+		String status = messageStr[0].trim();
 
 		if (status.equalsIgnoreCase(StatusEnum.WARNING.name())) {
-			message =  messageStr[1];
-			nameSearchResponse.setStatus(StatusEnum.WARNING);			
+			message = messageStr[1];
+			nameSearchResponse.setStatus(StatusEnum.WARNING);
 		} else if (status.equalsIgnoreCase(StatusEnum.ERROR.name())) {
-			message =  messageStr[1];
+			message = messageStr[1];
 			nameSearchResponse.setStatus(StatusEnum.ERROR);
 		} else {
 			nameSearchResponse.setStatus(StatusEnum.SUCCESS);
 		}
-		
+
 		nameSearchResponse.setMessage(String.format("%s%s", statusCode, message));
 
 		if (findCandidatesResponse.getResultCount() > 0) {

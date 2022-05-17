@@ -106,7 +106,8 @@ test('Check Name Serach Result contains warning message', async (t) => {
     .typeText(NameSearchPage.firstNameInput, 'humpty')
     .typeText(NameSearchPage.secondNameInput, 'eggo')
     .typeText(NameSearchPage.dateOfBirthInput, '19700101')
-    .click(NameSearchPage.radioButton)
+    //When gender code 'Unknown' is selected
+    .click(NameSearchPage.radioButtonUnknown)
     .wait(1000)
     // When I click the submit button
     .click(NameSearchPage.submitButton)
