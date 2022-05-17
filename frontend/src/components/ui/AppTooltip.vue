@@ -30,7 +30,6 @@ export default {
 <style scoped>
 .tooltip .tooltiptext {
   visibility: hidden;
-  opacity: 0.9;
   text-align: left;
   padding: 5px;
   margin-left: 5px;
@@ -46,12 +45,14 @@ export default {
 .tooltip-normal {
   background-color: #38598a;
   color: #ffffff;
+  opacity: 0.9;
 }
 
 .tooltip-header {
   background-color: #ffffff;
   color: #000000;
   font-weight: normal;
+  opacity: 1;
 }
 .tooltip:hover .tooltiptext {
   visibility: visible;

@@ -21,14 +21,16 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col4">
-          <h3>Patient Status Request</h3>
-          <AppTooltip>
-            Subsidy Insured Service: the screen will display whether MSP pays for Subsidy Insured Services for this PHN, including the number of services last paid to date, whether the beneficiary must pay, the number of paid services by calendar year. This information will be of interest to
-            supplementary benefits providers.<br />
-            Last Eye Exam: the screen will return the date of the last paid eye exam for this PHN within the last 24 months. This information will be of interest to those performing eye exams. Patient Restriction:, if the patient has been restricted to a single general practitioner, the MSP Coverage
-            Status Check will advise you to review the MSP Bulletin."
-          </AppTooltip>
+        <AppCol class="col4 flex">
+          <div class="flex">
+            <h3>Patient Status Request</h3>
+            <AppTooltip>
+              Subsidy Insured Service: the screen will display whether MSP pays for Subsidy Insured Services for this PHN, including the number of services last paid to date, whether the beneficiary must pay, the number of paid services by calendar year. This information will be of interest to
+              supplementary benefits providers.<br />
+              Last Eye Exam: the screen will return the date of the last paid eye exam for this PHN within the last 24 months. This information will be of interest to those performing eye exams. Patient Restriction:, if the patient has been restricted to a single general practitioner, the MSP
+              Coverage Status Check will advise you to review the MSP Bulletin."
+            </AppTooltip>
+          </div>
           <p>Select by clicking one or more boxes</p>
         </AppCol>
         <AppCol>
