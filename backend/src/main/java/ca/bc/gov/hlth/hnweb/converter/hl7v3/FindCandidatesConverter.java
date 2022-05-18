@@ -43,12 +43,8 @@ public class FindCandidatesConverter {
 
 		findCandidatesRequest.setName(name);
 		findCandidatesRequest.setBirthDate(V3MessageUtil.dateOnlyFormatter.format(nameSearchRequest.getDateOfBirth()));
-		String gender = nameSearchRequest.getGender();
-		if (StringUtils.isNotEmpty(gender) && gender.equals("U")) {
-			findCandidatesRequest.setGender("UNK");
-		} else
-			findCandidatesRequest.setGender(nameSearchRequest.getGender());
-
+		String gender = StringUtils.equals(nameSearchRequest.getGender(), "U") ? "UNK":nameSearchRequest.getGender();
+		findCandidatesRequest.setGender(gender);
 		return findCandidatesRequest;
 
 	}
