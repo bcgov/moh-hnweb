@@ -1,5 +1,6 @@
 import { ClientFunction, Selector } from 'testcafe'
 
+import { VALIDATE_MINIMUM_DATE_MESSAGE } from '../../../../src/util/constants'
 import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import CoverageStatusCheckPage from '../../pages/eligibility/CoverageStatusCheckPage'
@@ -9,7 +10,7 @@ const ERROR_MESSAGE = 'Please correct errors before submitting'
 const PHN_REQUIRED_MESSAGE = 'PHN is required'
 const DOB_REQUIRED_MESSAGE = 'Date Of Birth is required'
 const INVALID_DOB_ERROR_MESSAGE = 'Date of Birth must not be in the future'
-const MINIMUM_DATE_VALIDATION = 'Date must be later than 19000101'
+
 const DOS_REQUIRED_MESSAGE = 'Date Of Service is required'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'
 const SUCCESS_MESSAGE = 'HJMB001I SUCCESSFULLY COMPLETED'
@@ -96,17 +97,17 @@ test('Check minimum date validation', async (t) => {
   await t
     .typeText(CoverageStatusCheckPage.phnInput, '9306448169')
     // Given date is not later than 19000101
-    .typeText(CoverageStatusCheckPage.dateOfBirthInput, '19000101')
+    .typeText(CoverageStatusCheckPage.dateOfBirthInput, '18991231')
     .pressKey('tab')
-    .typeText(CoverageStatusCheckPage.dateOfServiceInput, '19000101')
+    .typeText(CoverageStatusCheckPage.dateOfServiceInput, '18991231')
     .pressKey('tab')
     // When I click the submit button
     .click(CoverageStatusCheckPage.submitButton)
     // I expect an error message stating the page had errors and an individual error message for the DoB format
     .expect(CoverageStatusCheckPage.errorText.nth(0).textContent)
-    .contains(MINIMUM_DATE_VALIDATION)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
     .expect(CoverageStatusCheckPage.errorText.nth(1).textContent)
-    .contains(MINIMUM_DATE_VALIDATION)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
 })

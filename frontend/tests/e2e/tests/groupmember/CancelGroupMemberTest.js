@@ -1,3 +1,4 @@
+import { VALIDATE_MINIMUM_DATE_MESSAGE } from '../../../../src/util/constants'
 import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import CancelGroupMember from '../../pages/groupmember/CancelGroupMember'
@@ -10,7 +11,6 @@ const GROUP_NUMBER_REQUIRED_MESSAGE = 'Group Number is required'
 const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
 const COVERAGE_CANCEL_DATE_REQUIRED_MESSAGE = 'Coverage Cancel Date is required'
 const CANCEL_REASON_REQUIRED_MESSAGE = 'Cancel Reason is required'
-const MINIMUM_DATE_VALIDATION = 'Date must be later than 19000101'
 const RAPID_RESPONSE = 'RPBS0003 SUBSCRIBER PHN MUST BE ENTERED'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/groupmember/CancelGroupMember'
@@ -78,7 +78,7 @@ test('Check minimum date validation', async (t) => {
     .typeText(CancelGroupMember.phnInput, '9397105575')
     .typeText(CancelGroupMember.groupNumberInput, '6243109')
     // Date must be within 1 year
-    .typeText(CancelGroupMember.cancelDateInput, '1900-01')
+    .typeText(CancelGroupMember.cancelDateInput, '1899-12')
     .pressKey('tab')
     .click(CancelGroupMember.cancelReasonInput)
     .pressKey('down')
@@ -86,7 +86,7 @@ test('Check minimum date validation', async (t) => {
     .click(CancelGroupMember.submitButton)
     // I expect an error message stating the page had errors and an individual error message for date input range
     .expect(CancelGroupMember.errorText.nth(0).textContent)
-    .contains(MINIMUM_DATE_VALIDATION)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
 })
 
 test('Check clear button clears the form', async (t) => {

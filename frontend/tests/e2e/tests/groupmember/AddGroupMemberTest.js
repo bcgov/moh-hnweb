@@ -1,3 +1,4 @@
+import { VALIDATE_MINIMUM_DATE_MESSAGE } from '../../../../src/util/constants'
 import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import AddGroupMember from '../../pages/groupmember/AddGroupMember'
@@ -20,7 +21,6 @@ const HOME_ADDRESS_REQUIRED_MESSAGE = 'Home Address Line 1 is required'
 const MAILING_ADDRESS_REQUIRED_MESSAGE = 'Mailing Address Line 1 is required'
 const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
 const INVALID_POSTAL_CODE_VALIDATION_MESSAGE = 'Postal Code is invalid'
-const MINIMUM_DATE_VALIDATION = 'Date must be later than 19000101'
 const SUCCESS_MESSAGE = 'RPBS0031 9882807277 PHN IS INELIGIBLE. PLEASE FORWARD SOURCE DOCS TO MSP'
 const PHONE_NUMBER_VALIDATION_MESSAGE = 'Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
 
@@ -101,7 +101,7 @@ test('Check minimum date validation', async (t) => {
     .typeText(AddGroupMember.groupNumberInput, '6337109')
     .click(AddGroupMember.coverageEffectiveDateInput)
     //.click(AddGroupMember.divSelectedDate)
-    .typeText(AddGroupMember.coverageEffectiveDateInput, '1900-01')
+    .typeText(AddGroupMember.coverageEffectiveDateInput, '1899-12')
     .click(AddGroupMember.phnInput)
     .typeText(AddGroupMember.phnInput, '9882807277')
     .typeText(AddGroupMember.address1Input, 'Test 111 ST')
@@ -111,7 +111,7 @@ test('Check minimum date validation', async (t) => {
     .click(AddGroupMember.submitButton)
     // I expect an error message stating the page had errors and an individual error message for date input range
     .expect(AddGroupMember.errorText.nth(0).textContent)
-    .contains(MINIMUM_DATE_VALIDATION)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
 })
 
 test('Check PHN, Group Number format validation', async (t) => {

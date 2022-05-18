@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 
-import { OUTPUT_DATE_FORMAT } from '../../../../src/util/constants'
+import { OUTPUT_DATE_FORMAT, VALIDATE_MINIMUM_DATE_MESSAGE } from '../../../../src/util/constants'
 import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import AddVisaResidentWithPHNPage from '../../pages/enrollment/AddVisaResidentWithPHNPage'
@@ -24,7 +24,6 @@ const PERMIT_ISSUE_DATE_REQUIRED_MESSAGE = 'Permit Issue Date is required'
 const PERMIT_EXPIRY_DATE_REQUIRED_MESSAGE = 'Permit Expiry Date is required'
 const RESIDENCE_DATE_REQUIRED_MESSAGE = 'Residence Date is required'
 const COVERAGE_CANCELLATION_DATE_REQUIRED_MESSAGE = 'Coverage Cancellation Date is required'
-const MINIMUM_DATE_VALIDATION = 'Date must be later than 19000101'
 const HOME_ADDRESS_REQUIRED_MESSAGE = 'Home Address Line 1 is required'
 const MAILING_ADDRESS_REQUIRED_MESSAGE = 'Mailing Address Line 1 is required'
 const CITY_REQUIRED_MESSAGE = 'City is required'
@@ -164,11 +163,11 @@ test('Check minimum date validation', async (t) => {
     .click(AddVisaResidentWithPHNPage.immigrationCodeSelect)
     .click(immigrationCodeOption.withText('Employment Authorization'))
     .typeText(AddVisaResidentWithPHNPage.departmentNumberInput, '123456')
-    .typeText(AddVisaResidentWithPHNPage.visaIssueDateInput, '19000101')
-    .typeText(AddVisaResidentWithPHNPage.visaExpiryDateInput, '19000101')
-    .typeText(AddVisaResidentWithPHNPage.residenceDateInput, '19000101')
-    .typeText(AddVisaResidentWithPHNPage.coverageEffectiveDateInput, '19000101')
-    .typeText(AddVisaResidentWithPHNPage.coverageCancellationDateInput, '19000101')
+    .typeText(AddVisaResidentWithPHNPage.visaIssueDateInput, '18991231')
+    .typeText(AddVisaResidentWithPHNPage.visaExpiryDateInput, '18991231')
+    .typeText(AddVisaResidentWithPHNPage.residenceDateInput, '18991231')
+    .typeText(AddVisaResidentWithPHNPage.coverageEffectiveDateInput, '18991231')
+    .typeText(AddVisaResidentWithPHNPage.coverageCancellationDateInput, '18991231')
     .typeText(AddVisaResidentWithPHNPage.telephoneInput, '7802024022')
     .typeText(AddVisaResidentWithPHNPage.address1Input, 'Test 111 ST')
     .typeText(AddVisaResidentWithPHNPage.cityInput, 'VICTORIA')
@@ -182,15 +181,15 @@ test('Check minimum date validation', async (t) => {
     .click(AddVisaResidentWithPHNPage.submitButton)
     // I expect a success message
     .expect(AddVisaResidentWithPHNPage.errorText.nth(0).textContent)
-    .contains(MINIMUM_DATE_VALIDATION)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
     .expect(AddVisaResidentWithPHNPage.errorText.nth(1).textContent)
-    .contains(MINIMUM_DATE_VALIDATION)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
     .expect(AddVisaResidentWithPHNPage.errorText.nth(2).textContent)
-    .contains(MINIMUM_DATE_VALIDATION)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
     .expect(AddVisaResidentWithPHNPage.errorText.nth(3).textContent)
-    .contains(MINIMUM_DATE_VALIDATION)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
     .expect(AddVisaResidentWithPHNPage.errorText.nth(4).textContent)
-    .contains(MINIMUM_DATE_VALIDATION)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
 })
 
 test('Check invalid input field character validation', async (t) => {

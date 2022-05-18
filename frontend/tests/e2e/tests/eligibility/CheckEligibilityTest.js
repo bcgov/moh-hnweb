@@ -1,3 +1,4 @@
+import { VALIDATE_MINIMUM_DATE_MESSAGE } from '../../../../src/util/constants'
 import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import CheckEligibilityPage from '../../pages/eligibility/CheckEligibilityPage'
@@ -7,7 +8,7 @@ const ERROR_MESSAGE = 'Please correct errors before submitting'
 const SUCCESS_MESSAGE = 'HJMB001I SUCCESSFULLY COMPLETED'
 const PHN_REQUIRED_MESSAGE = 'PHN is required'
 const DATE_TO_CHECK_REQUIRED_MESSAGE = 'Date to Check is required'
-const MINIMUM_DATE_VALIDATION = 'Date must be later than 19000101'
+
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/eligibility/checkEligibility'
@@ -55,13 +56,13 @@ test('Check minimum date validation', async (t) => {
     .selectText(CheckEligibilityPage.eligibilityDate)
     .pressKey('delete')
     .pressKey('tab')
-    .typeText(CheckEligibilityPage.eligibilityDate, '19000101')
+    .typeText(CheckEligibilityPage.eligibilityDate, '18991231')
     .pressKey('tab')
     // When I click the submit button
     .click(CheckEligibilityPage.submitButton)
     // I expect an error message stating the page had errors and an individual error message for minimum date
     .expect(CheckEligibilityPage.errorText.nth(0).textContent)
-    .contains(MINIMUM_DATE_VALIDATION)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
 })

@@ -1,3 +1,4 @@
+import { VALIDATE_MINIMUM_DATE_MESSAGE } from '../../../../src/util/constants'
 import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import AddVisaResidentWithoutPHNPage from '../../pages/enrollment/AddVisaResidentWithoutPHNPage'
@@ -24,7 +25,6 @@ const IMMIGRATION_CODE_REQUIRED_MESSAGE = 'Immigration Code is required'
 const PERMIT_ISSUE_DATE_REQUIRED_MESSAGE = 'Permit Issue Date is required'
 const PERMIT_EXPIRY_DATE_REQUIRED_MESSAGE = 'Permit Expiry Date is required'
 const RESIDENCE_DATE_REQUIRED_MESSAGE = 'Residence Date is required'
-const MINIMUM_DATE_VALIDATION = 'Date must be later than 19000101'
 const COVERAGE_CANCELLATION_DATE_REQUIRED_MESSAGE = 'Coverage Cancellation Date is required'
 const HOME_ADDRESS_REQUIRED_MESSAGE = 'Home Address Line 1 is required'
 const MAILING_ADDRESS_REQUIRED_MESSAGE = 'Mailing Address Line 1 is required'
@@ -186,17 +186,17 @@ test('Check minimum date validation', async (t) => {
     .wait(1000)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(NO_SEARCH_RESULT)
-    // Given date is not later than 19000101
+    // Given date is not earlier than 19000101
     .typeText(AddVisaResidentWithoutPHNPage.groupNumberInput, '6337109')
     .click(AddVisaResidentWithoutPHNPage.immigrationCodeSelect)
     .click(immigrationCodeOption.withText('Student Authorization'))
     .typeText(AddVisaResidentWithoutPHNPage.departmentNumberInput, '123456')
-    .typeText(AddVisaResidentWithoutPHNPage.visaIssueDateInput, '19000101')
+    .typeText(AddVisaResidentWithoutPHNPage.visaIssueDateInput, '18991231')
     .click(AddVisaResidentWithoutPHNPage.visaExpiryDateInput)
-    .typeText(AddVisaResidentWithoutPHNPage.visaExpiryDateInput, '19000101')
-    .typeText(AddVisaResidentWithoutPHNPage.residenceDateInput, '19000101')
-    .typeText(AddVisaResidentWithoutPHNPage.coverageEffectiveDateInput, '19000101')
-    .typeText(AddVisaResidentWithoutPHNPage.coverageCancellationDateInput, '19000101')
+    .typeText(AddVisaResidentWithoutPHNPage.visaExpiryDateInput, '18991231')
+    .typeText(AddVisaResidentWithoutPHNPage.residenceDateInput, '18991231')
+    .typeText(AddVisaResidentWithoutPHNPage.coverageEffectiveDateInput, '18991231')
+    .typeText(AddVisaResidentWithoutPHNPage.coverageCancellationDateInput, '18991231')
     .typeText(AddVisaResidentWithoutPHNPage.telephoneInput, '7802024022')
     .typeText(AddVisaResidentWithoutPHNPage.address1Input, 'Test 111 ST')
     .typeText(AddVisaResidentWithoutPHNPage.cityInput, 'VICTORIA')
@@ -211,13 +211,13 @@ test('Check minimum date validation', async (t) => {
     .wait(10000)
     // I expect an error message stating the page had errors and an individual error message for all the input fields having invalid characters
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(0).textContent)
-    .contains(MINIMUM_DATE_VALIDATION)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(1).textContent)
-    .contains(MINIMUM_DATE_VALIDATION)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(2).textContent)
-    .contains(MINIMUM_DATE_VALIDATION)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
     .expect(AddVisaResidentWithoutPHNPage.errorText.nth(3).textContent)
-    .contains(MINIMUM_DATE_VALIDATION)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
 })
 
 test('Check invalid input field characters validation', async (t) => {

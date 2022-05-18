@@ -1,3 +1,4 @@
+import { VALIDATE_MINIMUM_DATE_MESSAGE } from '../../../../src/util/constants'
 import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import AddVisaResidentWithoutPHNPage from '../../pages/enrollment/AddVisaResidentWithoutPHNPage'
@@ -15,7 +16,6 @@ const INVALID_SECOND_NAME_MESSAGE = 'Second Name is invalid'
 const INVALID_SURNMAE_NAME_MESSAGE = 'Surname is invalid'
 const MAX_LENGTH_NAME_MESSAGE = 'The maximum length allowed is 15'
 const MAX_LENGTH_SURNAME_MESSAGE = 'The maximum length allowed is 35'
-const MINIMUM_DATE_VALIDATION = 'Date must be later than 19000101'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addStudyPermitHolderWithoutPHN'
 
@@ -64,7 +64,7 @@ test('Check minimum date validation', async (t) => {
     .typeText(NameSearchPage.surnameInput, 'Test')
     .typeText(NameSearchPage.firstNameInput, 'Test')
     .typeText(NameSearchPage.secondNameInput, 'Test')
-    .typeText(NameSearchPage.dateOfBirthInput, '19000101')
+    .typeText(NameSearchPage.dateOfBirthInput, '18991231')
     .click(NameSearchPage.radioButton)
     // When I click the submit button
     .click(NameSearchPage.submitButton)
@@ -72,7 +72,7 @@ test('Check minimum date validation', async (t) => {
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
     .expect(NameSearchPage.errorText.nth(0).textContent)
-    .contains(MINIMUM_DATE_VALIDATION)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
 })
 
 test('Check alpha validation for Name', async (t) => {
