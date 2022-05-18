@@ -2,7 +2,7 @@
   <div>
     <div class="text_label">
       <label>{{ label }}</label>
-      <AppTooltip v-if="this.$slots.tooltip">
+      <AppTooltip v-if="$slots.tooltip">
         <slot name="tooltip"></slot>
       </AppTooltip>
     </div>

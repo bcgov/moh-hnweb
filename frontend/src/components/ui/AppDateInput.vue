@@ -1,7 +1,7 @@
 <template>
   <div class="text_label">
     <label>{{ label }}</label>
-    <AppTooltip v-if="this.$slots.tooltip"><slot name="tooltip"></slot></AppTooltip>
+    <AppTooltip v-if="$slots.tooltip"><slot name="tooltip"></slot></AppTooltip>
   </div>
   <div v-bind="$attrs">
     <Datepicker :autoApply="true" :class="inputClass" :enableTimePicker="false" :format="inputDateFormat" :placeholder="placeholder" :text-input="true" :monthPicker="$attrs.monthPicker" :uid="$attrs.id" v-model="value" />
