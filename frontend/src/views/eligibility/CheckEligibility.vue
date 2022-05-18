@@ -1,6 +1,6 @@
 <template>
   <AppHelp>
-    <p>Use Check Eligibility to determine if a person is a beneficiary of the Medical Services Plan (MSP) on a particular date of service. heck Eligibility returns a "Yes" or "No" for the Personal Health Number (PHN) submitted.</p>
+    <p>Use Check Eligibility to determine if a person is a beneficiary of the Medical Services Plan (MSP) on a particular date of service. Check Eligibility returns a "Yes" or "No" for the Personal Health Number (PHN) submitted.</p>
     <ul>
       <li>
         A "Yes" response means that, when checked today, the person is eligible on the "Date to Check" date. The person could subsequently become ineligible for service on that date. If a fee-for-service claim is involved, you may wish to use the MSP Teleplan system or Claims IVR to verify
@@ -165,13 +165,3 @@ export default {
   },
 }
 </script>
-<style scoped>
-ul {
-  list-style: disc;
-  margin-left: 20px;
-}
-
-.show-modal {
-  float: right;
-}
-</style>
