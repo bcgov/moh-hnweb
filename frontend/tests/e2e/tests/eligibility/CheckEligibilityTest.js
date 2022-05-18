@@ -1,4 +1,4 @@
-import { VALIDATE_MINIMUM_DATE_MESSAGE } from '../../../../src/util/constants'
+import { VALIDATE_MINIMUM_DATE_MESSAGE } from '../../../../src/util/validators'
 import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import CheckEligibilityPage from '../../pages/eligibility/CheckEligibilityPage'

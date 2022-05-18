@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 
-import { OUTPUT_DATE_FORMAT, VALIDATE_MINIMUM_DATE_MESSAGE } from '../../../../src/util/constants'
+import { OUTPUT_DATE_FORMAT } from '../../../../src/util/constants'
+import { VALIDATE_MINIMUM_DATE_MESSAGE } from '../../../../src/util/validators'
 import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import AddVisaResidentWithPHNPage from '../../pages/enrollment/AddVisaResidentWithPHNPage'

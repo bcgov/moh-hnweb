@@ -6,8 +6,6 @@ export const API_DATE_FORMAT = 'YYYY-MM-DD'
 
 export const DEFAULT_ERROR_MESSAGE = 'Please correct errors before submitting'
 
-export const VALIDATE_MINIMUM_DATE_MESSAGE = 'Date must be on or after 19000101'
-
 export const COVERAGE_END_REASONS = new Map([
   ['OO', 'OPTED OUT'],
   ['OOPM', 'OUT OF PROVINCE MOVE'],
