@@ -1,8 +1,8 @@
 <template>
   <Transition name="modal">
-    <div v-if="show" class="modal-mask">
+    <div v-if="show" class="modal-mask" @keydown.esc="$emit('close')" tabindex="0">
       <div class="modal-wrapper">
-        <div class="modal-container">
+        <div class="modal-container" v-draggable="">
           <div class="modal-header">
             <slot name="header"></slot>
           </div>
@@ -55,6 +55,9 @@ export default {
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
+  cursor: grab;
+  max-height: 600px;
+  overflow: auto;
 }
 
 .modal-header h3 {

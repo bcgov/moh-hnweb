@@ -1,7 +1,7 @@
 <template>
   <div class="tooltip">
     <font-awesome-icon class="tooltip-icon" icon="question-circle" />
-    <span :class="tooltipTextClass"><slot></slot></span>
+    <div :class="tooltipTextClass"><slot></slot></div>
   </div>
 </template>
 
@@ -16,7 +16,6 @@ export default {
   },
   computed: {
     tooltipTextClass() {
-      console.log(this.mode)
       return {
         tooltiptext: true,
         'tooltip-normal': this.mode === '' || this.mode === 'normal',
@@ -41,7 +40,6 @@ export default {
   position: absolute;
   z-index: 1;
 }
-
 .tooltip-normal {
   background-color: #38598a;
   color: #ffffff;
@@ -56,5 +54,10 @@ export default {
 }
 .tooltip:hover .tooltiptext {
   visibility: visible;
+}
+
+:slotted(li) {
+  list-style: disc;
+  margin-left: 20px;
 }
 </style>

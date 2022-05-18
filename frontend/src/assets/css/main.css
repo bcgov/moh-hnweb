@@ -9,6 +9,10 @@ hr {
   border: 1px solid #606060;
 }
 
+th div {
+  float: left;
+}
+
 /* Main */
 main {
   max-width: 1320px;

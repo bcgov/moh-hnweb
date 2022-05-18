@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@bcgov/bc-sans": "^1.0.1",
+    "@braks/revue-draggable": "^0.4.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/vue-fontawesome": "prerelease",
