@@ -46,12 +46,21 @@ export default {
   opacity: 0.9;
 }
 
+:slotted(.tooltip-normal p) {
+  color: #ffffff;
+}
+
 .tooltip-header {
   background-color: #ffffff;
   color: #000000;
   font-weight: normal;
   opacity: 1;
 }
+
+:slotted(.tooltip-header p) {
+  color: #000000;
+}
+
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }

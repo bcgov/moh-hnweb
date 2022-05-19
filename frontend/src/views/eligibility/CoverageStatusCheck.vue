@@ -1,4 +1,13 @@
 <template>
+  <AppHelp
+    ><p>MSP Direct Coverage Status Check provides the same functionality as the Medical Services Plan (MSP) Teleplan system and Claims IVR.</p>
+    <p>Use the MSP Coverage Status Check to check if a person is eligible to have their claim for a health service paid by the MSP. The MSP Coverage Status Check returns a "YES" or "NO" answer for the Personal Health Number (PHN) submitted</p>
+    <p>As well as checking eligibility, you can use the MSP Coverage Status Check to submit one or more requests (Patient Status answers are only returned if the person is eligible "YES" eligibility response)</p>
+    <p>
+      Edit error messages appear on the input screen and tell you what fields need correcting. These will be mandatory fields that have been left blank or fields that have been completed with invalid data. Make the necessary correction(s) on the input screen and click Submit to resubmit the business
+      service.
+    </p></AppHelp
+  >
   <div>
     <form @submit.prevent="submitForm">
       <AppRow>
@@ -25,10 +34,14 @@
           <div class="flex">
             <h3>Patient Status Request</h3>
             <AppTooltip>
-              Subsidy Insured Service: the screen will display whether MSP pays for Subsidy Insured Services for this PHN, including the number of services last paid to date, whether the beneficiary must pay, the number of paid services by calendar year. This information will be of interest to
-              supplementary benefits providers.<br />
-              Last Eye Exam: the screen will return the date of the last paid eye exam for this PHN within the last 24 months. This information will be of interest to those performing eye exams. Patient Restriction:, if the patient has been restricted to a single general practitioner, the MSP
-              Coverage Status Check will advise you to review the MSP Bulletin."
+              <p>
+                Subsidy Insured Service: the screen will display whether MSP pays for Subsidy Insured Services for this PHN, including the number of services last paid to date, whether the beneficiary must pay, the number of paid services by calendar year. This information will be of interest to
+                supplementary benefits providers.
+              </p>
+              <p>
+                Last Eye Exam: the screen will return the date of the last paid eye exam for this PHN within the last 24 months. This information will be of interest to those performing eye exams. Patient Restriction:, if the patient has been restricted to a single general practitioner, the MSP
+                Coverage Status Check will advise you to review the MSP Bulletin.
+              </p>
             </AppTooltip>
           </div>
           <p>Select by clicking one or more boxes</p>
@@ -66,7 +79,14 @@
         <AppOutput label="Date Of Service" :value="result.dateOfService" />
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Eligible on Date of Service?" :value="eligibleOnDateOfService" />
+        <AppOutput label="Eligible on Date of Service?" :value="eligibleOnDateOfService">
+          <template v-slot:tooltip
+            ><p>If the response is "YES", the person is eligible to have their claim for that date of service paid by MSP.</p>
+            <p>
+              If the response is "No", the screen will return additional information about why the coverage was terminated and instructions that should be provided to the individual If the individual is subject to alternate billing (RCMP or Armed Forces), this information will also be displayed
+            </p></template
+          >
+        </AppOutput>
       </AppCol>
       <AppCol class="col3">
         <AppOutput label="Coverage End Date" :value="result.coverageEndDate" />
@@ -107,6 +127,7 @@
 <script>
 import AppCard from '../../components/ui/AppCard.vue'
 import AppCheckbox from '../../components/ui/AppCheckbox.vue'
+import AppHelp from '../../components/ui/AppHelp.vue'
 import AppTooltip from '../../components/ui/AppTooltip.vue'
 import EligibilityService from '../../services/EligibilityService'
 import useVuelidate from '@vuelidate/core'
@@ -119,7 +140,7 @@ import { useAlertStore } from '../../stores/alert.js'
 
 export default {
   name: 'CoverageStatusCheck',
-  components: { AppCard, AppCheckbox, AppTooltip },
+  components: { AppCard, AppCheckbox, AppHelp, AppTooltip },
   setup() {
     return {
       alertStore: useAlertStore(),
