@@ -13,6 +13,7 @@ import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResident
 import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
 import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
 import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
+import ReinstateOverAgeDependent from '../views/coverage/maintenance/ReinstateOverAgeDependent.vue'
 import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
 import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
 import PhnLookup from '../views/eligibility/PhnLookup.vue'
@@ -66,6 +67,20 @@ const createRoutes = (app) => [
     path: '/coverage/maintenance',
     name: 'CoverageMaintenance',
     component: CoverageMaintenanceHome,
+    redirect: {
+      name: 'ReinstateOverAgeDependent',
+    },
+    children: [
+      {
+        path: 'reinstateOverAgeDependent',
+        name: 'ReinstateOverAgeDependent',
+        component: ReinstateOverAgeDependent,
+        meta: {
+          permission: 'ReinstateOverAgeDependent',
+          requiresAuth: true,
+        },
+      },
+    ],
   },
   {
     path: '/coverage/enrollment',

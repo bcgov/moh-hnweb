@@ -1,4 +1,5 @@
 import axios from 'axios'
+
 import keycloak from '../keycloak'
 
 export const resources = {
@@ -20,6 +21,7 @@ export const resources = {
     updateNumberAndDept: '/group-member/update-number-and-dept',
     cancelGroupMember: '/group-member/cancel-group-member',
     cancelDependent: '/group-member/cancel-dependent',
+    reinstateOverAgeDependent: '/group-member/reinstate-over-age-dependent',
   },
   mspContracts: {
     getContractPeriods: '/msp-contracts/get-contract-periods',
