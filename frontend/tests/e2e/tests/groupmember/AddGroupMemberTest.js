@@ -1,3 +1,4 @@
+import { VALIDATE_MINIMUM_DATE_MESSAGE } from '../../../../src/util/validators'
 import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import AddGroupMember from '../../pages/groupmember/AddGroupMember'
@@ -92,6 +93,25 @@ test('Check properly filled form passes validation', async (t) => {
     // I expect a success message
     .expect(AlertPage.alertBannerText.textContent)
     .contains(SUCCESS_MESSAGE)
+})
+
+test('Check minimum date validation', async (t) => {
+  await t
+    // Given I have a form filled out with date not later than 19000101
+    .typeText(AddGroupMember.groupNumberInput, '6337109')
+    .click(AddGroupMember.coverageEffectiveDateInput)
+    //.click(AddGroupMember.divSelectedDate)
+    .typeText(AddGroupMember.coverageEffectiveDateInput, '1899-12')
+    .click(AddGroupMember.phnInput)
+    .typeText(AddGroupMember.phnInput, '9882807277')
+    .typeText(AddGroupMember.address1Input, 'Test 111 ST')
+    .typeText(AddGroupMember.postalCodeInput, 'V8V8V8')
+
+    // When I click the submit button
+    .click(AddGroupMember.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for date input range
+    .expect(AddGroupMember.errorText.nth(0).textContent)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
 })
 
 test('Check PHN, Group Number format validation', async (t) => {

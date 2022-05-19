@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 
 import { OUTPUT_DATE_FORMAT } from '../../../../src/util/constants'
+import { VALIDATE_MINIMUM_DATE_MESSAGE } from '../../../../src/util/validators'
 import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import AddVisaResidentWithPHNPage from '../../pages/enrollment/AddVisaResidentWithPHNPage'
@@ -87,10 +88,8 @@ test('Check required fields validation for mailing address', async (t) => {
     .click(PersonDetails.submitButton)
     .wait(5000)
     // Given required fields aren't filled out
-
-    // When I click the submit button
-
     .typeText(AddVisaResidentWithPHNPage.mailingAddress2Input, 'Test 111 ST')
+    // When I click the submit button
     .click(AddVisaResidentWithPHNPage.submitButton)
     .wait(1000)
     // I expect an error message stating the page had errors and individual error messages for each required field
@@ -153,6 +152,45 @@ test('Check properly filled form passes validation', async (t) => {
     // I expect a success message
     .expect(AlertPage.alertBannerText.textContent)
     .contains(SUCCESS_MESSAGE)
+})
+
+test('Check minimum date validation', async (t) => {
+  await t
+    .typeText(PersonDetails.phnInput, '9882807277')
+    .click(PersonDetails.submitButton)
+    .wait(5000)
+    // Given the page is filled out correctly
+    .typeText(AddVisaResidentWithPHNPage.groupNumberInput, '6337109')
+    .click(AddVisaResidentWithPHNPage.immigrationCodeSelect)
+    .click(immigrationCodeOption.withText('Employment Authorization'))
+    .typeText(AddVisaResidentWithPHNPage.departmentNumberInput, '123456')
+    .typeText(AddVisaResidentWithPHNPage.visaIssueDateInput, '18991231')
+    .typeText(AddVisaResidentWithPHNPage.visaExpiryDateInput, '18991231')
+    .typeText(AddVisaResidentWithPHNPage.residenceDateInput, '18991231')
+    .typeText(AddVisaResidentWithPHNPage.coverageEffectiveDateInput, '18991231')
+    .typeText(AddVisaResidentWithPHNPage.coverageCancellationDateInput, '18991231')
+    .typeText(AddVisaResidentWithPHNPage.telephoneInput, '7802024022')
+    .typeText(AddVisaResidentWithPHNPage.address1Input, 'Test 111 ST')
+    .typeText(AddVisaResidentWithPHNPage.cityInput, 'VICTORIA')
+    .click(AddVisaResidentWithPHNPage.provinceSelect)
+    .click(provinceOption.withText('British Columbia'))
+    .typeText(AddVisaResidentWithPHNPage.postalCodeInput, 'V8V8V8')
+    .click(AddVisaResidentWithPHNPage.priorResidenceCodeInput)
+    .click(priorResidenceCodeOption.withText('Alberta'))
+
+    // When I click the submit button
+    .click(AddVisaResidentWithPHNPage.submitButton)
+    // I expect a success message
+    .expect(AddVisaResidentWithPHNPage.errorText.nth(0).textContent)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
+    .expect(AddVisaResidentWithPHNPage.errorText.nth(1).textContent)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
+    .expect(AddVisaResidentWithPHNPage.errorText.nth(2).textContent)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
+    .expect(AddVisaResidentWithPHNPage.errorText.nth(3).textContent)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
+    .expect(AddVisaResidentWithPHNPage.errorText.nth(4).textContent)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
 })
 
 test('Check invalid input field character validation', async (t) => {

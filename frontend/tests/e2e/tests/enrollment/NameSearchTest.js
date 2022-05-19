@@ -1,3 +1,4 @@
+import { VALIDATE_MINIMUM_DATE_MESSAGE } from '../../../../src/util/validators'
 import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import AddVisaResidentWithoutPHNPage from '../../pages/enrollment/AddVisaResidentWithoutPHNPage'
@@ -55,6 +56,23 @@ test('Check properly filled form passes validation', async (t) => {
     // I expect the AddVisaResident page to be loaded
     .expect(AddVisaResidentWithoutPHNPage.groupNumberInput.exists)
     .ok()
+})
+
+test('Check minimum date validation', async (t) => {
+  await t
+    // Given I have a form filled out with date not later than 19000101
+    .typeText(NameSearchPage.surnameInput, 'Test')
+    .typeText(NameSearchPage.firstNameInput, 'Test')
+    .typeText(NameSearchPage.secondNameInput, 'Test')
+    .typeText(NameSearchPage.dateOfBirthInput, '18991231')
+    .click(NameSearchPage.radioButton)
+    // When I click the submit button
+    .click(NameSearchPage.submitButton)
+    // I expect an error message stating the page had errors and individual error messages for each field
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+    .expect(NameSearchPage.errorText.nth(0).textContent)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
 })
 
 test('Check alpha validation for Name', async (t) => {

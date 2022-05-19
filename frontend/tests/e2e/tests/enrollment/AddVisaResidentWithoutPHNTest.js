@@ -1,3 +1,4 @@
+import { VALIDATE_MINIMUM_DATE_MESSAGE } from '../../../../src/util/validators'
 import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import AddVisaResidentWithoutPHNPage from '../../pages/enrollment/AddVisaResidentWithoutPHNPage'
@@ -175,6 +176,50 @@ test('Check properly filled form passes validation', async (t) => {
     .contains(SUCCESS_MESSAGE)
 })
 
+test('Check minimum date validation', async (t) => {
+  await t
+    .typeText(NameSearchPage.surnameInput, 'Test')
+    .typeText(NameSearchPage.firstNameInput, 'Test')
+    .typeText(NameSearchPage.dateOfBirthInput, '20001108')
+    .click(NameSearchPage.radioButton)
+    .click(NameSearchPage.submitButton)
+    .wait(1000)
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(NO_SEARCH_RESULT)
+    // Given date is not earlier than 19000101
+    .typeText(AddVisaResidentWithoutPHNPage.groupNumberInput, '6337109')
+    .click(AddVisaResidentWithoutPHNPage.immigrationCodeSelect)
+    .click(immigrationCodeOption.withText('Student Authorization'))
+    .typeText(AddVisaResidentWithoutPHNPage.departmentNumberInput, '123456')
+    .typeText(AddVisaResidentWithoutPHNPage.visaIssueDateInput, '18991231')
+    .click(AddVisaResidentWithoutPHNPage.visaExpiryDateInput)
+    .typeText(AddVisaResidentWithoutPHNPage.visaExpiryDateInput, '18991231')
+    .typeText(AddVisaResidentWithoutPHNPage.residenceDateInput, '18991231')
+    .typeText(AddVisaResidentWithoutPHNPage.coverageEffectiveDateInput, '18991231')
+    .typeText(AddVisaResidentWithoutPHNPage.coverageCancellationDateInput, '18991231')
+    .typeText(AddVisaResidentWithoutPHNPage.telephoneInput, '7802024022')
+    .typeText(AddVisaResidentWithoutPHNPage.address1Input, 'Test 111 ST')
+    .typeText(AddVisaResidentWithoutPHNPage.cityInput, 'VICTORIA')
+    .click(AddVisaResidentWithoutPHNPage.provinceSelect)
+    .click(provinceOption.withText('British Columbia'))
+    .typeText(AddVisaResidentWithoutPHNPage.postalCodeInput, 'V8V8V8')
+    .click(AddVisaResidentWithoutPHNPage.priorResidenceCodeInput)
+    .click(priorResidenceCodeOption.withText('British Columbia'))
+
+    // When I click the submit button
+    .click(AddVisaResidentWithoutPHNPage.submitButton)
+    .wait(10000)
+    // I expect an error message stating the page had errors and an individual error message for all the input fields having invalid characters
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(0).textContent)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(1).textContent)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(2).textContent)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
+    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(3).textContent)
+    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
+})
+
 test('Check invalid input field characters validation', async (t) => {
   await t
     .typeText(NameSearchPage.surnameInput, 'Test')
@@ -238,7 +283,6 @@ test('Check invalid input field characters validation', async (t) => {
 
 test('Check invalid field length validation', async (t) => {
   await t
-    .setTestSpeed(0.01)
     .typeText(NameSearchPage.surnameInput, 'Test')
     .typeText(NameSearchPage.firstNameInput, 'Test')
     .typeText(NameSearchPage.dateOfBirthInput, '20211108')

@@ -147,6 +147,7 @@ import {
   validatePostalCode,
   validateAddress,
   validateOptionalAddress,
+  validateMinimumDate,
   validateMailingAddressForVisaResident,
   VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE,
   VALIDATE_ADDRESS_LINE1_MESSAGE,
@@ -158,6 +159,7 @@ import {
   VALIDATE_DEPARTMENT_NUMBER_MESSAGE,
   VALIDATE_TELEPHONE_MESSAGE,
   VALIDATE_POSTAL_CODE_MESSAGE,
+  VALIDATE_MINIMUM_DATE_MESSAGE,
 } from '../../../util/validators'
 import { required, requiredIf, helpers, maxLength } from '@vuelidate/validators'
 import dayjs from 'dayjs'
@@ -321,17 +323,29 @@ export default {
       groupMemberNumber: {
         validateGroupMemberNumber: helpers.withMessage(VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, validateGroupMemberNumber),
       },
-      visaIssueDate: { required },
+      visaIssueDate: {
+        required,
+        validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
+      },
       departmentNumber: {
         validateDepartmentNumber: helpers.withMessage(VALIDATE_DEPARTMENT_NUMBER_MESSAGE, validateDepartmentNumber),
       },
-      visaExpiryDate: { required },
-      residenceDate: { required },
+      visaExpiryDate: {
+        required,
+        validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
+      },
+      residenceDate: {
+        required,
+        validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
+      },
       coverageEffectiveDate: { required },
       telephone: {
         validateTelephone: helpers.withMessage(VALIDATE_TELEPHONE_MESSAGE, validateTelephone),
       },
-      coverageCancellationDate: { required },
+      coverageCancellationDate: {
+        required,
+        validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
+      },
       address1: {
         required,
         maxLength: maxLength(25),
