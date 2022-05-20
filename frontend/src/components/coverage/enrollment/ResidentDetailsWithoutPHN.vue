@@ -357,17 +357,27 @@ export default {
       groupMemberNumber: {
         validateGroupMemberNumber: helpers.withMessage(VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, validateGroupMemberNumber),
       },
-      permitIssueDate: { required },
+      permitIssueDate: {
+        required,
+      },
       departmentNumber: {
         validateDepartmentNumber: helpers.withMessage(VALIDATE_DEPARTMENT_NUMBER_MESSAGE, validateDepartmentNumber),
       },
-      permitExpiryDate: { required },
-      residenceDate: { required },
-      coverageEffectiveDate: { required },
+      permitExpiryDate: {
+        required,
+      },
+      residenceDate: {
+        required,
+      },
+      coverageEffectiveDate: {
+        required,
+      },
       telephone: {
         validateTelephone: helpers.withMessage(VALIDATE_TELEPHONE_MESSAGE, validateTelephone),
       },
-      coverageCancellationDate: { required },
+      coverageCancellationDate: {
+        required,
+      },
       address1: {
         required,
         maxLength: maxLength(25),

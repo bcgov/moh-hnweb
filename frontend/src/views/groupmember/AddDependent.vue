@@ -165,7 +165,9 @@ export default {
         required,
         validateGroupNumber: helpers.withMessage(VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber),
       },
-      coverageEffectiveDate: { required },
+      coverageEffectiveDate: {
+        required,
+      },
       phn: {
         required,
         validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),

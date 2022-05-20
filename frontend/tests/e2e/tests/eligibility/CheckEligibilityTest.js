@@ -1,12 +1,13 @@
+import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import CheckEligibilityPage from '../../pages/eligibility/CheckEligibilityPage'
-import { SITE_UNDER_TEST } from '../../configuration'
 import { regularAccUser } from '../../roles/roles'
 
 const ERROR_MESSAGE = 'Please correct errors before submitting'
 const SUCCESS_MESSAGE = 'HJMB001I SUCCESSFULLY COMPLETED'
 const PHN_REQUIRED_MESSAGE = 'PHN is required'
 const DATE_TO_CHECK_REQUIRED_MESSAGE = 'Date to Check is required'
+
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/eligibility/checkEligibility'

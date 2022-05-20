@@ -238,7 +238,6 @@ test('Check invalid input field characters validation', async (t) => {
 
 test('Check invalid field length validation', async (t) => {
   await t
-    .setTestSpeed(0.01)
     .typeText(NameSearchPage.surnameInput, 'Test')
     .typeText(NameSearchPage.firstNameInput, 'Test')
     .typeText(NameSearchPage.dateOfBirthInput, '20211108')

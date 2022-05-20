@@ -135,7 +135,9 @@ export default {
         required,
         validateGroupNumber: helpers.withMessage(VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber),
       },
-      cancelDate: { required },
+      cancelDate: {
+        required,
+      },
       cancelReason: { required },
     }
   },

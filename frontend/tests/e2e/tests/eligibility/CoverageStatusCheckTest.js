@@ -9,6 +9,7 @@ const ERROR_MESSAGE = 'Please correct errors before submitting'
 const PHN_REQUIRED_MESSAGE = 'PHN is required'
 const DOB_REQUIRED_MESSAGE = 'Date Of Birth is required'
 const INVALID_DOB_ERROR_MESSAGE = 'Date of Birth must not be in the future'
+
 const DOS_REQUIRED_MESSAGE = 'Date Of Service is required'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'
 const SUCCESS_MESSAGE = 'HJMB001I SUCCESSFULLY COMPLETED'

@@ -276,7 +276,9 @@ export default {
         required,
         validateDOB: helpers.withMessage(VALIDATE_DOB_MESSAGE, validateDOB),
       },
-      dateOfService: { required },
+      dateOfService: {
+        required,
+      },
     }
   },
 }

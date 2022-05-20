@@ -311,7 +311,9 @@ export default {
       departmentNumber: {
         validateDepartmentNumber: helpers.withMessage(VALIDATE_DEPARTMENT_NUMBER_MESSAGE, validateDepartmentNumber),
       },
-      coverageEffectiveDate: { required },
+      coverageEffectiveDate: {
+        required,
+      },
       telephone: {
         validateTelephone: helpers.withMessage(VALIDATE_TELEPHONE_MESSAGE, validateTelephone),
       },

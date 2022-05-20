@@ -15,6 +15,7 @@ const INVALID_DEPENDENT_PHN_ERROR_MESSAGE = 'PHN format is invalid'
 const RELATIONSHIP_REQUIRED_MESSAGE = 'Relationship is required'
 const IS_STUDENT_REQUIRED_MESSAGE = 'Is this Dependent attending a Canadian Educational Institution? is required'
 const STUDENT_END_DATE_REQUIRED_MESSAGE = 'The value is required'
+
 const RAPID_RESPONSE = 'RPBS9145 PHN NOT FOUND'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/groupmember/AddDependent'
