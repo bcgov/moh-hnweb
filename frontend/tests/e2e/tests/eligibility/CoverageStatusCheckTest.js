@@ -1,6 +1,5 @@
 import { ClientFunction, Selector } from 'testcafe'
 
-import { VALIDATE_MINIMUM_DATE_MESSAGE } from '../../../../src/util/validators'
 import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import CoverageStatusCheckPage from '../../pages/eligibility/CoverageStatusCheckPage'
@@ -89,25 +88,6 @@ test('Check date of birth in future validation', async (t) => {
     // I expect an error message stating the page had errors and an individual error message for the DoB format
     .expect(CoverageStatusCheckPage.errorText.nth(0).textContent)
     .contains(INVALID_DOB_ERROR_MESSAGE)
-    .expect(AlertPage.alertBannerText.textContent)
-    .contains(ERROR_MESSAGE)
-})
-
-test('Check minimum date validation', async (t) => {
-  await t
-    .typeText(CoverageStatusCheckPage.phnInput, '9306448169')
-    // Given date is not later than 19000101
-    .typeText(CoverageStatusCheckPage.dateOfBirthInput, '18991231')
-    .pressKey('tab')
-    .typeText(CoverageStatusCheckPage.dateOfServiceInput, '18991231')
-    .pressKey('tab')
-    // When I click the submit button
-    .click(CoverageStatusCheckPage.submitButton)
-    // I expect an error message stating the page had errors and an individual error message for the DoB format
-    .expect(CoverageStatusCheckPage.errorText.nth(0).textContent)
-    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
-    .expect(CoverageStatusCheckPage.errorText.nth(1).textContent)
-    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
 })

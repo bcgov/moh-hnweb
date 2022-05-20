@@ -50,7 +50,7 @@
 import AppCard from '../../components/ui/AppCard.vue'
 import EligibilityService from '../../services/EligibilityService'
 import useVuelidate from '@vuelidate/core'
-import { validatePHN, validateMinimumDate, VALIDATE_PHN_MESSAGE, VALIDATE_MINIMUM_DATE_MESSAGE } from '../../util/validators'
+import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import { API_DATE_FORMAT, COVERAGE_END_REASONS } from '../../util/constants'
 import dayjs from 'dayjs'
@@ -149,7 +149,6 @@ export default {
       },
       eligibilityDate: {
         required,
-        validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
       },
     }
   },
