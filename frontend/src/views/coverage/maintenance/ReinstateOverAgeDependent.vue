@@ -24,7 +24,7 @@
       <AppRow>
         <AppCol class="col6">
           <YesNoRadioButtonGroup :e-model="v$.isStudent" id="isStudent" label="Is this Dependent attending a Canadian Educational Institution?" v-model="isStudent">
-            <template v-slot:tooltip>Click either Yes or No </template>
+            <template #tooltip>Click either Yes or No </template>
           </YesNoRadioButtonGroup>
         </AppCol>
       </AppRow>
