@@ -1,5 +1,7 @@
 <template>
-  <AppRadioButtonGroup :e-model="eModel" :id="id" :label="label" :group="this.YES_NO_RADIO_BUTTON_GROUP" :tooltip="tooltip" :tooltipText="tooltipText" v-model="modelValue" />
+  <AppRadioButtonGroup :e-model="eModel" :id="id" :label="label" :group="this.YES_NO_RADIO_BUTTON_GROUP" v-model="modelValue">
+    <template #tooltip><slot name="tooltip"></slot></template>
+  </AppRadioButtonGroup>
 </template>
 
 <script>
@@ -15,8 +17,6 @@ export default {
     label: { default: 'Choose Yes or No', type: String },
     id: { default: 'yesNo', type: String },
     modelValue: String,
-    tooltip: Boolean,
-    tooltipText: String,
   },
   created() {
     this.YES_NO_RADIO_BUTTON_GROUP = [

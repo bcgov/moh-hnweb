@@ -1,9 +1,7 @@
 <template>
   <div class="text_label">
     <label>{{ label }}</label>
-    <AppTooltip v-if="tooltip" :tooltipText="tooltipText">
-      <font-awesome-icon class="tooltip-icon" icon="question-circle" />
-    </AppTooltip>
+    <AppTooltip v-if="$slots.tooltip"><slot name="tooltip"></slot></AppTooltip>
   </div>
   <div v-bind="$attrs">
     <Datepicker :autoApply="true" :class="inputClass" :enableTimePicker="false" :format="inputDateFormat" :placeholder="placeholder" :text-input="true" :monthPicker="$attrs.monthPicker" :uid="$attrs.id" v-model="value" />
@@ -37,8 +35,6 @@ export default {
       default: OUTPUT_DATE_FORMAT,
       type: String,
     },
-    tooltip: Boolean,
-    tooltipText: String,
   },
   computed: {
     value: {

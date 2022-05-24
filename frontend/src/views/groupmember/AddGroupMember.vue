@@ -6,7 +6,9 @@
           <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" type="text" v-model.trim="groupNumber" />
         </AppCol>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" tooltip tooltipText="Date always defaults to first day of the month" monthPicker inputDateFormat="yyyy-MM" placeholder="YYYY-MM" v-model="coverageEffectiveDate" />
+          <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" monthPicker inputDateFormat="yyyy-MM" placeholder="YYYY-MM" v-model="coverageEffectiveDate">
+            <template #tooltip>Date always defaults to first day of the month</template>
+          </AppDateInput>
         </AppCol>
       </AppRow>
       <AppRow>
