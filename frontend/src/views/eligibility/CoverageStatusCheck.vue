@@ -32,7 +32,7 @@
       <AppRow>
         <AppCol class="col4 flex">
           <div class="flex">
-            <h3>Patient Status Request</h3>
+            <h4>Patient Status Request</h4>
             <AppTooltip>
               <p>
                 Subsidy Insured Service: the screen will display whether MSP pays for Subsidy Insured Services for this PHN, including the number of services last paid to date, whether the beneficiary must pay, the number of paid services by calendar year. This information will be of interest to
@@ -44,11 +44,13 @@
               </p>
             </AppTooltip>
           </div>
-          <p>Select by clicking one or more boxes</p>
+          <div class="checkbox-group">
+            <AppCheckbox id="checkSubsidyInsuredService" label="Check for Subsidy Insured Service" v-model="checkSubsidyInsuredService" />
+            <AppCheckbox id="checkLastEyeExam" label="Check for Last Eye Exam" v-model="checkLastEyeExam" />
+          </div>
         </AppCol>
         <AppCol>
-          <AppCheckbox id="checkSubsidyInsuredService" label="Check for Subsidy Insured Service" v-model="checkSubsidyInsuredService" />
-          <AppCheckbox id="checkLastEyeExam" label="Check for Last Eye Exam" v-model="checkLastEyeExam" />
+
         </AppCol>
       </AppRow>
       <AppRow>
@@ -319,3 +321,8 @@ export default {
   },
 }
 </script>
+<style>
+.checkbox-group {
+  margin-bottom: 10px;
+}
+</style>
