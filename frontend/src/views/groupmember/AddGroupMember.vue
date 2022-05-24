@@ -7,7 +7,7 @@
         </AppCol>
         <AppCol class="col3">
           <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" monthPicker inputDateFormat="yyyy-MM" placeholder="YYYY-MM" v-model="coverageEffectiveDate">
-            <template v-slot:tooltip>Date always defaults to first day of the month</template>
+            <template #tooltip>Date always defaults to first day of the month</template>
           </AppDateInput>
         </AppCol>
       </AppRow>

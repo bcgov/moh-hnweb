@@ -1,6 +1,6 @@
 <template>
   <AppRadioButtonGroup :e-model="eModel" :id="id" :label="label" :group="this.YES_NO_RADIO_BUTTON_GROUP" v-model="modelValue">
-    <template v-slot:tooltip><slot name="tooltip"></slot></template>
+    <template #tooltip><slot name="tooltip"></slot></template>
   </AppRadioButtonGroup>
 </template>
 

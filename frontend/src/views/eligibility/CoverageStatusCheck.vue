@@ -13,7 +13,7 @@
       <AppRow>
         <AppCol class="col3">
           <AppInput :e-model="v$.phn" id="phn" label="PHN" tooltip type="text" v-model.trim="phn">
-            <template v-slot:tooltip>Enter the individual’s 10 digit PHN. PHN is a mandatory field. If you leave it blank or enter invalid characters, an edit error message box will be displayed on the input screen.</template>
+            <template #tooltip>Enter the individual’s 10 digit PHN. PHN is a mandatory field. If you leave it blank or enter invalid characters, an edit error message box will be displayed on the input screen.</template>
           </AppInput>
         </AppCol>
       </AppRow>
@@ -25,7 +25,7 @@
       <AppRow>
         <AppCol class="col3">
           <AppDateInput :e-model="v$.dateOfService" id="dateOfService" label="Date Of Service" v-model="dateOfService">
-            <template v-slot:tooltip>The Date of Service defaults on the screen to today's date. The year (CCYY), month (MM) and day (DD) can be overridden. If you override the date with another date, it cannot be greater than today's date or more than 18 months in the past.</template>
+            <template #tooltip>The Date of Service defaults on the screen to today's date. The year (CCYY), month (MM) and day (DD) can be overridden. If you override the date with another date, it cannot be greater than today's date or more than 18 months in the past.</template>
           </AppDateInput>
         </AppCol>
       </AppRow>
@@ -49,9 +49,7 @@
             <AppCheckbox id="checkLastEyeExam" label="Check for Last Eye Exam" v-model="checkLastEyeExam" />
           </div>
         </AppCol>
-        <AppCol>
-
-        </AppCol>
+        <AppCol> </AppCol>
       </AppRow>
       <AppRow>
         <AppButton :submitting="searching" mode="primary" type="submit">Submit</AppButton>
@@ -82,7 +80,7 @@
       </AppCol>
       <AppCol class="col3">
         <AppOutput label="Eligible on Date of Service?" :value="eligibleOnDateOfService">
-          <template v-slot:tooltip
+          <template #tooltip
             ><p>If the response is "YES", the person is eligible to have their claim for that date of service paid by MSP.</p>
             <p>
               If the response is "No", the screen will return additional information about why the coverage was terminated and instructions that should be provided to the individual If the individual is subject to alternate billing (RCMP or Armed Forces), this information will also be displayed
