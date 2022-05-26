@@ -31,4 +31,9 @@ export default {
 .instructions {
   float: right;
 }
+
+:slotted(ul) {
+  list-style: disc;
+  margin-left: 20px;
+}
 </style>
