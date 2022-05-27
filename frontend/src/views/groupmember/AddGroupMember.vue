@@ -6,7 +6,9 @@
           <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" type="text" v-model.trim="groupNumber" />
         </AppCol>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" tooltip tooltipText="Date always defaults to first day of the month" monthPicker inputDateFormat="yyyy-MM" placeholder="YYYY-MM" v-model="coverageEffectiveDate" />
+          <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" monthPicker inputDateFormat="yyyy-MM" placeholder="YYYY-MM" v-model="coverageEffectiveDate">
+            <template #tooltip>Date always defaults to first day of the month</template>
+          </AppDateInput>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -126,7 +128,6 @@ import {
   validateOptionalAddress,
   validateDepartmentNumber,
   validateGroupMemberNumber,
-  validateMinimumEffectiveDate,
   VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE,
   VALIDATE_ADDRESS_LINE1_MESSAGE,
   VALIDATE_ADDRESS_LINE2_MESSAGE,
@@ -138,7 +139,6 @@ import {
   VALIDATE_PHN_MESSAGE,
   VALIDATE_POSTAL_CODE_MESSAGE,
   VALIDATE_TELEPHONE_MESSAGE,
-  VALIDATE_MINIMUM_DATE_MESSAGE,
 } from '../../util/validators'
 import GroupMemberService from '../../services/GroupMemberService'
 import { useAlertStore } from '../../stores/alert'
@@ -315,7 +315,6 @@ export default {
       },
       coverageEffectiveDate: {
         required,
-        validateMinimumEffectiveDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumEffectiveDate),
       },
       telephone: {
         validateTelephone: helpers.withMessage(VALIDATE_TELEPHONE_MESSAGE, validateTelephone),

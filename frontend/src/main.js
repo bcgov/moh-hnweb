@@ -3,6 +3,7 @@ import '@bcgov/bc-sans/css/BCSans.css'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 
+import { DraggablePlugin } from '@braks/revue-draggable'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faBullhorn, faCheckCircle, faChevronDown, faExclamationCircle, faExclamationTriangle, faExternalLinkAlt, faInfoCircle, faQuestionCircle, faSpinner, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -60,6 +61,8 @@ function initApp(permissions) {
 
   const router = createRouter(app)
   app.use(router)
+
+  app.use(DraggablePlugin)
 
   app.config.globalProperties.$keycloak = keycloak
 

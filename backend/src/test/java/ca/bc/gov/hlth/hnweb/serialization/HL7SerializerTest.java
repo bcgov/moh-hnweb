@@ -15,6 +15,7 @@ import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.MessageMetaData;
+import ca.bc.gov.hlth.hnweb.model.v3.Name;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
 import ca.bc.gov.hlth.hnweb.utils.TestUtil;
@@ -67,8 +68,10 @@ public class HL7SerializerTest {
 		mmd.setOrganization("HOOPC");
 		mmd.setSourceSystemOverride("BCHCIM");
 		FindCandidatesRequest getDemoQuery = new FindCandidatesRequest();
-		getDemoQuery.setSurname("Purple");
-		getDemoQuery.setFirstGivenName("Barney");
+		Name name = new Name();
+		name.setSurname("Purple");
+		name.setFirstGivenName("Barney");
+		getDemoQuery.setName(name);
 		getDemoQuery.setBirthDate("19400101");
 
 

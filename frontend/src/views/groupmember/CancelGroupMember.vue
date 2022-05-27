@@ -13,7 +13,9 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.cancelDate" id="cancelDate" label="Coverage Cancel Date" tooltip tooltipText="Date always defaults to last day of the month" monthPicker inputDateFormat="yyyy-MM" placeholder="YYYY-MM" v-model="cancelDate" />
+          <AppDateInput :e-model="v$.cancelDate" id="cancelDate" label="Coverage Cancel Date" monthPicker inputDateFormat="yyyy-MM" placeholder="YYYY-MM" v-model="cancelDate">
+            <template #tooltip> Date always defaults to last day of the month </template>
+          </AppDateInput>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -37,7 +39,7 @@
 <script>
 import useVuelidate from '@vuelidate/core'
 import { helpers, required } from '@vuelidate/validators'
-import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_MINIMUM_DATE_MESSAGE, validateGroupNumber, validatePHN, validateMinimumCancelDate } from '../../util/validators'
+import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumber, validatePHN } from '../../util/validators'
 import GroupMemberService from '../../services/GroupMemberService'
 import { useAlertStore } from '../../stores/alert'
 
@@ -137,7 +139,6 @@ export default {
       },
       cancelDate: {
         required,
-        validateMinimumCancelDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumCancelDate),
       },
       cancelReason: { required },
     }

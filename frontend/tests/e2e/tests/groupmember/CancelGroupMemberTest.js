@@ -1,4 +1,3 @@
-import { VALIDATE_MINIMUM_DATE_MESSAGE } from '../../../../src/util/validators'
 import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import CancelGroupMember from '../../pages/groupmember/CancelGroupMember'
@@ -70,23 +69,6 @@ test('Check properly filled form passes validation', async (t) => {
     // I expect a response from RAPID
     .expect(AlertPage.alertBannerText.textContent)
     .contains(RAPID_RESPONSE)
-})
-
-test('Check minimum date validation', async (t) => {
-  await t
-    // Given I have a form filled out with date not later than 19000101
-    .typeText(CancelGroupMember.phnInput, '9397105575')
-    .typeText(CancelGroupMember.groupNumberInput, '6243109')
-    // Date must be within 1 year
-    .typeText(CancelGroupMember.cancelDateInput, '1899-12')
-    .pressKey('tab')
-    .click(CancelGroupMember.cancelReasonInput)
-    .pressKey('down')
-    // When I click the submit button
-    .click(CancelGroupMember.submitButton)
-    // I expect an error message stating the page had errors and an individual error message for date input range
-    .expect(CancelGroupMember.errorText.nth(0).textContent)
-    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
 })
 
 test('Check clear button clears the form', async (t) => {

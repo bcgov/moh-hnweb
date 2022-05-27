@@ -1,4 +1,3 @@
-import { VALIDATE_MINIMUM_DATE_MESSAGE } from '../../../../src/util/validators'
 import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import CheckEligibilityPage from '../../pages/eligibility/CheckEligibilityPage'
@@ -45,24 +44,6 @@ test('Check invalid phn format validation', async (t) => {
     // I expect an error message stating the page had errors and an individual error message for the PHN format
     .expect(CheckEligibilityPage.errorText.nth(0).textContent)
     .contains(INVALID_PHN_ERROR_MESSAGE)
-    .expect(AlertPage.alertBannerText.textContent)
-    .contains(ERROR_MESSAGE)
-})
-
-test('Check minimum date validation', async (t) => {
-  await t
-    // Given date is not later than 19000101
-    .typeText(CheckEligibilityPage.phnInput, '9395568139')
-    .selectText(CheckEligibilityPage.eligibilityDate)
-    .pressKey('delete')
-    .pressKey('tab')
-    .typeText(CheckEligibilityPage.eligibilityDate, '18991231')
-    .pressKey('tab')
-    // When I click the submit button
-    .click(CheckEligibilityPage.submitButton)
-    // I expect an error message stating the page had errors and an individual error message for minimum date
-    .expect(CheckEligibilityPage.errorText.nth(0).textContent)
-    .contains(VALIDATE_MINIMUM_DATE_MESSAGE)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
 })

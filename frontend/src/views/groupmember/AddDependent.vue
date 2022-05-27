@@ -6,7 +6,9 @@
           <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" type="text" v-model.trim="groupNumber" />
         </AppCol>
         <AppCol class="col4">
-          <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" tooltip tooltipText="Day always defaults to 1st of month" monthPicker inputDateFormat="yyyyMM" placeholder="YYYYMM" v-model="coverageEffectiveDate" />
+          <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" monthPicker inputDateFormat="yyyyMM" placeholder="YYYYMM" v-model="coverageEffectiveDate">
+            <template #tooltip>Day always defaults to 1st of month</template>
+          </AppDateInput>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -24,7 +26,9 @@
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <YesNoRadioButtonGroup :e-model="v$.isStudent" id="isStudent" label="Is this Dependent attending a Canadian Educational Institution?" tooltip tooltipText="Click either Yes or No" v-model="isStudent" />
+          <YesNoRadioButtonGroup :e-model="v$.isStudent" id="isStudent" label="Is this Dependent attending a Canadian Educational Institution?" v-model="isStudent">
+            <template #tooltip> Click either Yes or No </template>
+          </YesNoRadioButtonGroup>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -55,7 +59,7 @@ import YesNoRadioButtonGroup from '../../components/ui/YesNoRadioButtonGroup.vue
 import useVuelidate from '@vuelidate/core'
 import { helpers, required, requiredIf } from '@vuelidate/validators'
 import dayjs from 'dayjs'
-import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, VALIDATE_MINIMUM_DATE_MESSAGE, validateGroupNumber, validatePHN, validateMinimumDate, validateMinimumEffectiveDate } from '../../util/validators'
+import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumber, validatePHN } from '../../util/validators'
 import { API_DATE_FORMAT, RELATIONSHIPS } from '../../util/constants'
 import GroupMemberService from '../../services/GroupMemberService'
 import { useAlertStore } from '../../stores/alert'
@@ -167,7 +171,6 @@ export default {
       },
       coverageEffectiveDate: {
         required,
-        validateMinimumEffectiveDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumEffectiveDate),
       },
       phn: {
         required,
@@ -185,7 +188,6 @@ export default {
         requiredIfIsStudent: requiredIf(() => {
           return this.isStudent === 'Y'
         }),
-        validateMinimumDate: helpers.withMessage(VALIDATE_MINIMUM_DATE_MESSAGE, validateMinimumDate),
       },
     }
   },

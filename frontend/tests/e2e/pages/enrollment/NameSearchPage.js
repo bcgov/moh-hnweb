@@ -7,6 +7,7 @@ class NameSearch {
     this.secondNameInput = Selector('#secondName')
     this.dateOfBirthInput = Selector('#dp-input-dateOfBirth')
     this.radioButton = Selector('#gender')
+    this.radioButtonUnknown = Selector('label').withText('Unknown')
 
     this.submitButton = Selector('button[type="submit"]')
     this.addButton = Selector('button[type="button"]').withText('Add')
