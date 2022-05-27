@@ -18,7 +18,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col4">
-          <AppDateInput :e-model="v$.dependentBirthDate" id="dependentBirthDate" label="Dependent's Birth Date" v-model="dependentBirthDate" />
+          <AppDateInput :e-model="v$.dependentDateOfBirth" id="dependentDateOfBirth" label="Dependent's Birth Date" v-model="dependentDateOfBirth" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -58,7 +58,7 @@ import { helpers, required, requiredIf } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumber, validatePHN } from '../../../util/validators'
 import { API_DATE_FORMAT, RELATIONSHIPS } from '../../../util/constants'
-import GroupMemberService from '../../../services/GroupMemberService'
+import MaintenanceService from '../../../services/MaintenanceService'
 import { useAlertStore } from '../../../stores/alert'
 import AppCol from '../../../components/grid/AppCol.vue'
 
@@ -84,7 +84,7 @@ export default {
       groupNumber: '',
       phn: '',
       dependentPhn: '',
-      dependentBirthDate: null,
+      dependentDateOfBirth: null,
       relationship: '',
       isStudent: '',
       studentEndDate: null,
@@ -102,16 +102,17 @@ export default {
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
+          console.log('isValid ' + isValid)
           this.showError()
           return
         }
 
         this.result = (
-          await GroupMemberService.addDependent({
+          await MaintenanceService.reinstateOverAgeDependent({
             groupNumber: this.groupNumber,
             phn: this.phn,
             dependentPhn: this.dependentPhn,
-            relationship: this.relationship,
+            dependentDateOfBirth: dayjs(this.dependentDateOfBirth).format(API_DATE_FORMAT),
             isStudent: this.isStudent,
             studentEndDate: this.studentEndDate ? dayjs(this.studentEndDate).format(API_DATE_FORMAT) : null,
           })
@@ -140,7 +141,7 @@ export default {
       this.groupNumber = ''
       this.phn = ''
       this.dependentPhn = ''
-      this.relationship = ''
+      this.dependentDateOfBirth = ''
       this.isStudent = ''
       this.studentEndDate = null
       this.result = null
@@ -163,10 +164,7 @@ export default {
         required,
         validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
       },
-      dependentBirthDate: { required },
-      relationship: {
-        required,
-      },
+      dependentDateOfBirth: { required },
       isStudent: { required },
       studentEndDate: {
         requiredIfIsStudent: requiredIf(() => {
