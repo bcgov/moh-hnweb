@@ -47,13 +47,13 @@ public class E45Converter extends BaseV2Converter {
 		super(mshDefaults);
 	}
 	
-	public E45 convertRequest(CheckMspCoverageStatusRequest request) throws HL7Exception {
+	public E45 convertRequest(CheckMspCoverageStatusRequest request, String messageId) throws HL7Exception {
 		phn = request.getPhn();
 		dateOfService = request.getDateOfService();
 
 		E45 e45 = new E45();
 
-    	populateMSH(e45.getMSH());
+    	populateMSH(e45.getMSH(), messageId);
     	populateHDR(e45.getHDR());
     	populateSFT(e45.getSFT());
     	populateQPD(e45.getQPD(), request.getDateOfBirth(), request.getDateOfService(), request.getCheckSubsidyInsuredService(), request.getCheckLastEyeExam(), request.getCheckPatientRestriction());

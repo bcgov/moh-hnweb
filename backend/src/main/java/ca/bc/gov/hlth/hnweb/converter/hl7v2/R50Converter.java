@@ -42,7 +42,7 @@ public class R50Converter extends BaseV2Converter {
 		super(mshDefaults);
 	}
 	
-	public R50 convertRequest(EnrollSubscriberRequest request) throws HL7Exception {
+	public R50 convertRequest(EnrollSubscriberRequest request, String messageId) throws HL7Exception {
 		phn = request.getPhn();
 		messageType = StringUtils.isEmpty(phn) ? MESSAGE_TYPE_Z05 : MESSAGE_TYPE_Z06;
 			
@@ -50,7 +50,7 @@ public class R50Converter extends BaseV2Converter {
     	R50 r50 = new R50(); 
     	ZIA zia = r50.getZIA();
    	   	
-     	populateMSH(r50.getMSH());
+     	populateMSH(r50.getMSH(), messageId);
     	populateZHD(r50.getZHD());
     	populatePID(r50.getPID(), phn, request.getDateOfBirth(), request.getGender());    	    	
     	populateIN1(r50.getIN1(), request.getCoverageEffectiveDate(), request.getCoverageCancellationDate(), request.getGroupNumber(), request.getGroupMemberNumber(),request.getDepartmentNumber());
