@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     logout() {
-      if (confirm('Please confirm you want to sign out. ' + '\nThis will also end all other active Keycloak or SiteMinder sessions you have open.')) {
+      if (confirm('Please confirm you want to sign out. ' + '\nThis will also end all other active Keycloak or SiteMinders you have open.')) {
         this.$keycloak.logout({
           redirectUri: location.origin + this.$router.resolve({ name: 'Login' }).path,
         })
