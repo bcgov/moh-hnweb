@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { routerKey } from 'vue-router'
+
 import keycloak from '../keycloak'
 
 export const resources = {
@@ -39,7 +41,11 @@ export function apiRequest() {
       headers: { Authorization: 'Bearer ' + keycloak.token },
     })
   }
-  return keycloak.updateToken(0).then(createAxios)
+  try {
+    return keycloak.updateToken(0).then(createAxios)
+  } catch (err) {
+    window.location.reload()
+  }
 }
 
 export default apiRequest

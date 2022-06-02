@@ -42,6 +42,10 @@ keycloak.onReady = async function (authenticated) {
   }
 }
 
+keycloak.onAuthRefreshError = () => {
+  window.location.reload()
+}
+
 function initApp(permissions) {
   const app = createApp(App)
 
