@@ -49,7 +49,7 @@
   <div id="confirmation" v-if="!inputFormActive">
     <br />
     <p>PHN: {{ result?.phn }}</p>
-    <AppButton @click="resetForm" mode="primary" type="button">Add Another Group Member's Dependent</AppButton>
+    <AppButton @click="resetForm" mode="primary" type="button">Reinstate Another OverAge Dependent</AppButton>
   </div>
 </template>
 

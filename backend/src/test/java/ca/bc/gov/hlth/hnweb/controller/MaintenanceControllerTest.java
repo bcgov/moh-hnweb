@@ -34,7 +34,8 @@ public class MaintenanceControllerTest extends BaseControllerTest {
 
 	private static final String R43_NO_COVERAGE_FOUND = "        RPBSPRE000000010                                ERRORMSGRPBS0067NO COVERAGE FOUND FOR THE PHN ENTERED. PLEASE CONTACT MSP               9332912486633710993292797331970-01-01Y2023-01";
 	
-
+	private static final String R43_CANNOT_BE_REINSTANTED = "        RPBSPRE000000010                                ERRORMSGRPBS1054DEPENDENT CANNOT BE REINSTATED AS A STUDENT THIS TIME. PLS CONTACT MSP. 9387807484502802293190799262013-03-29Y2022-12";
+	
 	protected static DateTimeFormatter dateOnlyFormatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_FORMAT_DATE_ONLY);
 	
 	@Autowired
@@ -46,7 +47,7 @@ public class MaintenanceControllerTest extends BaseControllerTest {
         		.setBody(R43_INVALID_STUDENT_DATE_DATE)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
         
-        ReinstateOverAgeDependentRequest reinstateRequest = createReinstateOverAgeDependentRequest(LocalDate.of(2020, 1, 1));
+        ReinstateOverAgeDependentRequest reinstateRequest = createReinstateOverAgeDependentRequest("9332912486", LocalDate.of(2020, 1, 1));
 		
         ResponseEntity<ReinstateOverAgeDependentResponse> response = maintenanceController.reinstateOverAgeDependent(reinstateRequest, createHttpServletRequest());
 		
@@ -72,7 +73,7 @@ public class MaintenanceControllerTest extends BaseControllerTest {
         		.setBody(R43_NO_COVERAGE_FOUND)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
         
-        ReinstateOverAgeDependentRequest reinstateRequest = createReinstateOverAgeDependentRequest(null);
+        ReinstateOverAgeDependentRequest reinstateRequest = createReinstateOverAgeDependentRequest("9332912486", null);
 		
         ResponseEntity<ReinstateOverAgeDependentResponse> response = maintenanceController.reinstateOverAgeDependent(reinstateRequest, createHttpServletRequest());
 		
@@ -98,7 +99,7 @@ public class MaintenanceControllerTest extends BaseControllerTest {
         		.setBody(R43_NOT_ATTENDING_CANADIAN_SCHOOL)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
         
-        ReinstateOverAgeDependentRequest reinstateRequest = createReinstateOverAgeDependentRequest(null);
+        ReinstateOverAgeDependentRequest reinstateRequest = createReinstateOverAgeDependentRequest("9332912486", null);
 		
         ResponseEntity<ReinstateOverAgeDependentResponse> response = maintenanceController.reinstateOverAgeDependent(reinstateRequest, createHttpServletRequest());
 		
@@ -107,6 +108,32 @@ public class MaintenanceControllerTest extends BaseControllerTest {
         assertEquals("RPBS0108 STUDENT NOT ATTENDING SCHOOL IN CANADA, MUST FORWARD DOCUMENTS TO MSP.", reinstateResponse.getMessage());
 
         assertEquals("9332912486", reinstateResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.REINSTATE_OVER_AGE_DEPENDENT);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+	}
+	
+	@Test
+	public void testReinstateOverAgeDependent_error_cannotBeReinstated() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R43_CANNOT_BE_REINSTANTED)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        ReinstateOverAgeDependentRequest reinstateRequest = createReinstateOverAgeDependentRequest("9387807484", null);
+		
+        ResponseEntity<ReinstateOverAgeDependentResponse> response = maintenanceController.reinstateOverAgeDependent(reinstateRequest, createHttpServletRequest());
+		
+        ReinstateOverAgeDependentResponse reinstateResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, reinstateResponse.getStatus());
+        assertEquals("RPBS1054 DEPENDENT CANNOT BE REINSTATED AS A STUDENT THIS TIME. PLS CONTACT MSP.", reinstateResponse.getMessage());
+
+        assertEquals("9387807484", reinstateResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -128,10 +155,10 @@ public class MaintenanceControllerTest extends BaseControllerTest {
         registry.add("rapid.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
     }
 	
-	private ReinstateOverAgeDependentRequest createReinstateOverAgeDependentRequest(LocalDate studentEndDate) {
+	private ReinstateOverAgeDependentRequest createReinstateOverAgeDependentRequest(String phn, LocalDate studentEndDate) {
 		ReinstateOverAgeDependentRequest reinstateRequest = new ReinstateOverAgeDependentRequest();
 		reinstateRequest.setGroupNumber("6337109");
-		reinstateRequest.setPhn("9332912486");
+		reinstateRequest.setPhn(phn);
 		reinstateRequest.setDependentPhn("9329279733");
 		reinstateRequest.setDependentDateOfBirth(LocalDate.of(1970, 1, 1));
 		reinstateRequest.setStudentEndDate(studentEndDate);
