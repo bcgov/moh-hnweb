@@ -1,6 +1,7 @@
 package ca.bc.gov.hlth.hnweb.converter.rapid;
 
-import org.apache.commons.lang3.StringUtils;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import ca.bc.gov.hlth.hnweb.model.rapid.RE0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
@@ -25,12 +26,9 @@ public class RPBSPRE0Converter extends BaseRapidConverter {
 		re0.setGroupNumber(request.getGroupNumber());
 		re0.setDependentPHN(request.getDependentPhn());
 		re0.setDependentDOB(formatDate(request.getDependentDateOfBirth()));
-		re0.setCanadianStudent(request.getIsStudent());
-		if (StringUtils.equals("Y", request.getIsStudent())) {
-			re0.setStudentEndDate(formatDate(request.getStudentEndDate()));
-		} else {
-			re0.setStudentEndDate("");
-		}
+		re0.setCanadianStudent(request.getIsStudent()); 
+		LocalDate studentEndDate = request.getStudentEndDate() != null ? request.getStudentEndDate() : calculateStudentEndDate(request.getDependentDateOfBirth());
+		re0.setStudentEndDate(studentEndDate.format(DateTimeFormatter.ofPattern(RAPID_YYYY_MM_FORMAT)));
 
 		RPBSPRE0 rpbspre0 = new RPBSPRE0();
 		rpbspre0.setRpbsHeader(rpbsHeader);
@@ -45,6 +43,7 @@ public class RPBSPRE0Converter extends BaseRapidConverter {
 		
 		handleStatus(header, response);
 		
+		response.setPhn(rpbspre0.getRe0().getSubscriberPHN());
 		
 		return response;
 	}
@@ -52,6 +51,12 @@ public class RPBSPRE0Converter extends BaseRapidConverter {
 	@Override
 	public String getTranCode() {
 		return TRAN_CODE;
+	}
+	
+	private LocalDate calculateStudentEndDate(LocalDate birthDate) {
+		// The end date is to be stripped of the dd portion. If the end date is empty then a new end date
+		// is to be made up from the dependents birth date and the current year plus one
+		return LocalDate.of(LocalDate.now().getYear(), birthDate.getMonth(), birthDate.getDayOfYear()).plusYears(1);
 	}
 
 }

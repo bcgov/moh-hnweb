@@ -3,7 +3,6 @@ package ca.bc.gov.hlth.hnweb.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPRE0Converter;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPRE0;
-import ca.bc.gov.hlth.hnweb.model.rest.enrollment.EnrollSubscriberResponse;
-import ca.bc.gov.hlth.hnweb.model.rest.enrollment.GetPersonDetailsResponse;
-import ca.bc.gov.hlth.hnweb.model.rest.enrollment.NameSearchResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ReinstateOverAgeDependentRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ReinstateOverAgeDependentResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
@@ -57,7 +53,7 @@ public class MaintenanceController extends BaseController {
 			logger.info("reinstateOverAgeDependent response: {} ", reinstateResponse);
 	
 			transactionComplete(transaction);
-			//inquirePhnResponse.getBeneficiaries().forEach(beneficiary -> addAffectedParty(transaction, IdentifierType.PHN, beneficiary.getPhn(), AffectedPartyDirection.OUTBOUND));
+			addAffectedParty(transaction, IdentifierType.PHN, reinstateResponse.getPhn(), AffectedPartyDirection.OUTBOUND);
 	
 			return response;	
 		} catch (Exception e) {
@@ -67,19 +63,11 @@ public class MaintenanceController extends BaseController {
 	}
 	
 	private Transaction auditReinstateOverAgeDependentStart(ReinstateOverAgeDependentRequest reinstateRequest, HttpServletRequest request) {
-		Transaction transaction = transactionStart(request, TransactionType.ADD_DEPENDENT);
+		Transaction transaction = transactionStart(request, TransactionType.REINSTATE_OVER_AGE_DEPENDENT);
 		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, reinstateRequest.getGroupNumber(), AffectedPartyDirection.INBOUND);
 		addAffectedParty(transaction, IdentifierType.PHN, reinstateRequest.getPhn(), AffectedPartyDirection.INBOUND);
 		addAffectedParty(transaction, IdentifierType.PHN, reinstateRequest.getDependentPhn(), AffectedPartyDirection.INBOUND);
 		return transaction;
-	}
-
-
-	private void auditGetNameSearchComplete(Transaction transaction, NameSearchResponse nameSearchResponse) {
-		transactionComplete(transaction);
-		if (nameSearchResponse.getCandidates() != null) {
-			nameSearchResponse.getCandidates().forEach(candidate -> addAffectedParty(transaction, IdentifierType.PHN, candidate.getPhn(), AffectedPartyDirection.OUTBOUND));
-		}
 	}
 
 }

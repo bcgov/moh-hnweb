@@ -153,8 +153,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         
         assertTransactionCreated(TransactionType.GET_CONTRACT_PERIODS);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 4);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 4);
 	}
 	
 	@Test
@@ -198,8 +198,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));        
         
         assertTransactionCreated(TransactionType.GET_CONTRACT_PERIODS);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 22);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 22);
 	}
 	
 	@Test
@@ -230,8 +230,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         
         assertTransactionCreated(TransactionType.GET_CONTRACT_PERIODS);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
 	}
 	
 	@Test
@@ -289,8 +289,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         
         assertTransactionCreated(TransactionType.CONTRACT_INQUIRY);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 2);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 2);
 	}
 	
 	@Test
@@ -321,8 +321,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertTransactionCreated(TransactionType.CONTRACT_INQUIRY);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
 	}
 	
 	@Test
@@ -352,8 +352,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE)); 
         assertTransactionCreated(TransactionType.CONTRACT_INQUIRY);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
 	}
 	
 	@Test
@@ -397,8 +397,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE)); 
         assertTransactionCreated(TransactionType.CONTRACT_INQUIRY);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 20);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 20);
 	}
 	
 	@Test
@@ -432,8 +432,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertTransactionCreated(TransactionType.UPDATE_CONTRACT_ADDRESS);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
 	}
 	
 	@Test
@@ -474,8 +474,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertTransactionCreated(TransactionType.UPDATE_CONTRACT_ADDRESS);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
 	}
 	
 	@Test
@@ -519,8 +519,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertTransactionCreated(TransactionType.UPDATE_CONTRACT_ADDRESS);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
 	}
 	
 	@Test
@@ -556,8 +556,8 @@ public class MspContractsControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         assertTransactionCreated(TransactionType.UPDATE_CONTRACT_ADDRESS);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
 	}
 	
     /**

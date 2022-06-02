@@ -35,7 +35,9 @@
       </AppRow>
       <AppRow>
         <AppCol class="col4">
-          <AppDateInput :e-model="v$.studentEndDate" id="studentEndDate" label="Student End Date" v-model="studentEndDate" />
+          <AppDateInput :e-model="v$.studentEndDate" id="studentEndDate" label="Student End Date" monthPicker inputDateFormat="yyyyMM" placeholder="YYYYMM" v-model="studentEndDate">
+            <template #tooltip>Date always defaults to last day of the month</template>
+          </AppDateInput>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -95,6 +97,12 @@ export default {
       },
     }
   },
+  computed: {
+    // Student End Date should be the last day of the month. In JavaScript this can be done by using day 0 of the next month
+    studentEndDateAdjusted() {
+      return new Date(this.studentEndDate.year, this.studentEndDate.month + 1, 0)
+    },
+  },
   methods: {
     async submitForm() {
       this.submitting = true
@@ -102,7 +110,6 @@ export default {
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
-          console.log('isValid ' + isValid)
           this.showError()
           return
         }
@@ -114,7 +121,7 @@ export default {
             dependentPhn: this.dependentPhn,
             dependentDateOfBirth: dayjs(this.dependentDateOfBirth).format(API_DATE_FORMAT),
             isStudent: this.isStudent,
-            studentEndDate: this.studentEndDate ? dayjs(this.studentEndDate).format(API_DATE_FORMAT) : null,
+            studentEndDate: this.studentEndDate ? dayjs(this.studentEndDateAdjusted).format(API_DATE_FORMAT) : null,
           })
         ).data
 

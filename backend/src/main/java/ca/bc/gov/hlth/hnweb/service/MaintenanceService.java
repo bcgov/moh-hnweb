@@ -48,6 +48,8 @@ public class MaintenanceService extends BaseService {
 		
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		
+		logger.info("Response {}", response.getBody());
+		
 		if (response.getStatusCode() != HttpStatus.OK) {
 			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
 			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);

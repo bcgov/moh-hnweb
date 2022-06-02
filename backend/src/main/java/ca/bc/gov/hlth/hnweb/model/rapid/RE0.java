@@ -28,7 +28,7 @@ public class RE0 {
 		dependentPHN = StringUtils.substring(message, 17, 27);
 		dependentDOB = StringUtils.substring(message, 27, 34);
 		canadianStudent = StringUtils.substring(message, 34, 35);
-		studentEndDate = StringUtils.substring(message, 35, 45);
+		studentEndDate = StringUtils.substring(message, 35, 42);
 	}
 
 	public String serialize() {
@@ -39,7 +39,7 @@ public class RE0 {
 		sb.append(StringUtils.rightPad(dependentPHN, 10));
 		sb.append(StringUtils.rightPad(dependentDOB, 10));
 		sb.append(StringUtils.rightPad(canadianStudent, 1));
-		sb.append(StringUtils.rightPad(studentEndDate, 10));
+		sb.append(StringUtils.rightPad(studentEndDate, 7));
 
 		return sb.toString();
 	}
