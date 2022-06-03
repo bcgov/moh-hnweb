@@ -34,8 +34,8 @@
 </template>
 
 <script>
-import CoverageMaintenanceService from '../../../services/CoverageMaintenanceService'
-import MspContractsService from '../../../services/MspContractsService'
+import MaintenanceService from '../../../services/MaintenanceService'
+
 import useVuelidate from '@vuelidate/core'
 import { validatePHN, validateGroupNumber, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
@@ -82,7 +82,7 @@ export default {
           return
         }
         this.result = (
-          await CoverageMaintenanceService.changeEffectiveDate({
+          await MaintenanceService.changeEffectiveDate({
             groupNumber: this.groupNumber,
             phn: this.phn,
             existingEffectiveDate: dayjs(this.existingEffectiveDate).format(API_DATE_FORMAT),

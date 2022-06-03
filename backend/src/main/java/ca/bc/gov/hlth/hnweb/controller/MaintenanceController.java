@@ -41,9 +41,10 @@ public class MaintenanceController extends BaseController {
 	private MaintenanceService maintenanceService;
 
 	/**
-	 * Changes coverage effective date for the group number. Maps to the legacy R46.
+	 * Changes coverage effective date for the group number. Maps to the legacy
+	 * R46a.
 	 * 
-	 * @param addDependentRequest
+	 * @param changeEffectiveDateRequest
 	 * @return The result of the operation.
 	 */
 	@PostMapping("/change-effective-date")
@@ -63,8 +64,6 @@ public class MaintenanceController extends BaseController {
 			logger.info("changeEffectiveDateResponse response: {} ", changeEffectiveDateResponse);
 
 			auditChangeEffectiveDateComplete(transaction, changeEffectiveDateResponse);
-			addAffectedParty(transaction, IdentifierType.PHN, changeEffectiveDateResponse.getPhn(),
-					AffectedPartyDirection.OUTBOUND);
 
 			return response;
 		} catch (Exception e) {
@@ -76,9 +75,8 @@ public class MaintenanceController extends BaseController {
 	private Transaction auditChangeEffectiveDateStart(ChangeEffectiveDateRequest changeEffectiveDateRequest,
 			HttpServletRequest request) {
 
-		Transaction transaction = transactionStart(request, TransactionType.ENROLL_SUBSCRIBER);
-		// Some requests do not contain the PHN e.g R50 z05 as it is Enroll subscriber
-		// without PHN
+		Transaction transaction = transactionStart(request, TransactionType.CHANGE_EFFECTIVE_DATE);
+
 		if (StringUtils.isNotBlank(changeEffectiveDateRequest.getPhn())) {
 			addAffectedParty(transaction, IdentifierType.PHN, changeEffectiveDateRequest.getPhn(),
 					AffectedPartyDirection.INBOUND);
@@ -90,8 +88,7 @@ public class MaintenanceController extends BaseController {
 			ChangeEffectiveDateResponse changeEffectiveDateResponse) {
 
 		transactionComplete(transaction);
-		// Some responses do not contain the PHN e.g. in the case of R50 z06 it is just
-		// an ACK
+
 		if (StringUtils.isNotBlank(changeEffectiveDateResponse.getPhn())) {
 			addAffectedParty(transaction, IdentifierType.PHN, changeEffectiveDateResponse.getPhn(),
 					AffectedPartyDirection.OUTBOUND);
