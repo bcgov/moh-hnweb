@@ -6,8 +6,6 @@
 # 4. Push the image to selected repository
 # 5. Edit the selcted Argo CD manifest file
 
-
-
 name: deploy-mspdirect
 
 env:
@@ -20,9 +18,6 @@ env:
   OPENSHIFT_NAMESPACE:
   FRONTEND_IMAGE_ID:
   BACKEND_IMAGE_ID:
-  
-
-
 
 # Controls when the workflow will run
 on:
@@ -33,29 +28,35 @@ on:
         type: choice
         description: Select an environment to deploy
         options:
-        - dev
-        - test
-        - uat
+          - dev
+          - test
+          - uat
+          - production
       Branch:
-        description: 'Enter branch name (Currently deployable releases are created only from main )'
+        description: "Enter branch name (Currently deployable releases are created only from main )"
         required: true
-        default: main
+        default: 6883-Update-MSP-Direct-actions
       Release:
-        description: 'Enter build number: '
+        description: "Enter build number: "
         required: true
         default: 1
-               
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  deploy:
+  compute:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    outputs:
+      VERSION: ${{env.VERSION}}
+      OPENSHIFT_NAMESPACE: ${{env.OPENSHIFT_NAMESPACE}}
+      DEPLOY_SUFFIX: ${{env.DEPLOY_SUFFIX}}
+      DEVOPS_DIR: ${{env.DEVOPS_DIR}}
+      FRONTEND_IMAGE_ID: ${{env.FRONTEND_IMAGE_ID}}
+      BACKEND_IMAGE_ID: ${{env.BACKEND_IMAGE_ID}}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-
       # 1. Login to OpenShift
       - name: Log in to OpenShift
         uses: redhat-actions/oc-login@v1
@@ -76,10 +77,54 @@ jobs:
             if (`${{ github.event.inputs.Environment }}` == 'test' || `${{ github.event.inputs.Environment }}` == 'uat') {
               return "c5839f-test"
             }
+            if (`${{ github.event.inputs.Environment }}` == 'production') {
+              return "c5839f-prod"
+            }
+
+      - name: Compute deployment env suffix
+        id: set-deploy-suffix
+        uses: actions/github-script@v5
+        with:
+          script: |
+            if (`${{ github.event.inputs.Environment }}` == 'dev') {
+              return "-dev"
+            }
+            if (`${{ github.event.inputs.Environment }}` == 'test') {
+              return "-test"
+            } 
+            if ( `${{ github.event.inputs.Environment }}` == 'uat') {
+              return "-uat"
+            }
+            if (`${{ github.event.inputs.Environment }}` == 'production') {
+              return ""
+            }
+
+      - name: Compute devops directory
+        id: set-devops-dir
+        uses: actions/github-script@v5
+        with:
+          script: |
+            if (`${{ github.event.inputs.Environment }}` == 'dev') {
+              return "dev"
+            }
+            if (`${{ github.event.inputs.Environment }}` == 'test') {
+              return "test"
+            } 
+            if ( `${{ github.event.inputs.Environment }}` == 'uat') {
+              return "uat"
+            }
+            if (`${{ github.event.inputs.Environment }}` == 'production') {
+              return "prod"
+            }
+
+      - name: Set env values
+        run: |
+          echo "OPENSHIFT_NAMESPACE=${{steps.set-namespace.outputs.result}}"  | tee -a $GITHUB_ENV
+          echo "DEPLOY_SUFFIX=${{steps.set-deploy-suffix.outputs.result}}"  | tee -a $GITHUB_ENV
+          echo "DEVOPS_DIR=${{steps.set-devops-dir.outputs.result}}"  | tee -a $GITHUB_ENV
 
       - name: Compute Version image
         run: |
-          echo "OPENSHIFT_NAMESPACE=${{steps.set-namespace.outputs.result}}"  | tee -a $GITHUB_ENV
           echo "VERSION=${{ env.VERSION_PREFIX }}${{ github.event.inputs.Branch }}_${{ github.event.inputs.Release }}"  | tee -a $GITHUB_ENV
 
       - name: Find image
@@ -100,13 +145,41 @@ jobs:
             else {
               core.info(`✅ Valid image found.`);
             }
-      # 4. Push the image to selected repository
+
+  deploy_without_approval:
+    if: github.event.inputs.Environment != 'production'
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    needs: [compute]
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Set environment variables from previous job
+        id: set-env
+        run: |
+          echo "VERSION=${{needs.compute.outputs.VERSION}}"  | tee -a $GITHUB_ENV
+          echo "OPENSHIFT_NAMESPACE=${{needs.compute.outputs.OPENSHIFT_NAMESPACE}}"  | tee -a $GITHUB_ENV
+          echo "DEPLOY_SUFFIX=${{needs.compute.outputs.DEPLOY_SUFFIX}}"  | tee -a $GITHUB_ENV
+          echo "DEVOPS_DIR=${{needs.compute.outputs.DEVOPS_DIR}}"  | tee -a $GITHUB_ENV
+          echo "FRONTEND_IMAGE_ID=${{needs.compute.outputs.FRONTEND_IMAGE_ID}}"  | tee -a $GITHUB_ENV
+          echo "BACKEND_IMAGE_ID=${{needs.compute.outputs.BACKEND_IMAGE_ID}}"  | tee -a $GITHUB_ENV
+
+      # Login to OpenShift
+      - name: Log in to OpenShift
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{env.OPENSHIFT_SERVER}}
+          openshift_token: ${{env.OPENSHIFT_TOKEN}}
+          insecure_skip_tls_verify: true
+          namespace: ${{env.DEFAULT_NAMESPACE}}
+
+      # Push the image to selected repository
       - name: Push Image
         run: |
-          oc tag ${{ env.FRONTEND_IMAGE_NAME }}:${{ env.VERSION }} ${{ env.OPENSHIFT_NAMESPACE }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ env.VERSION }}
-          oc tag ${{ env.BACKEND_IMAGE_NAME }}:${{ env.VERSION }} ${{ env.OPENSHIFT_NAMESPACE }}/${{ env.BACKEND_IMAGE_NAME }}:${{ env.VERSION }}
+          oc tag ${{ env.FRONTEND_IMAGE_NAME }}:${{ env.VERSION }} ${{ env.OPENSHIFT_NAMESPACE }}/${{ env.FRONTEND_IMAGE_NAME }}${{ env.DEPLOY_SUFFIX }}:${{ env.VERSION }}
+          oc tag ${{ env.BACKEND_IMAGE_NAME }}:${{ env.VERSION }} ${{ env.OPENSHIFT_NAMESPACE }}/${{ env.BACKEND_IMAGE_NAME }}${{ env.DEPLOY_SUFFIX }}:${{ env.VERSION }}
 
-      # 5. Edit the selcted Argo CD manifest file
+      # Edit the selected Argo CD manifest file
       # Update the image ID in the manifest repository used by Argo CD.
       # We need to use the SSH deploy key to check out the manifest repo, set up
       # Kustomize in the runner, update the image ID, commit the change, and
@@ -118,7 +191,7 @@ jobs:
           ssh-private-key: ${{ secrets.GITOPS_C5839F_PRIVATE_KEY }}
 
       - name: Check out manifest repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ssh-key: ${{ secrets.GITOPS_C5839F_PRIVATE_KEY }}
           repository: ${{ secrets.GITOPS_C5839F_REPO }}
@@ -130,11 +203,77 @@ jobs:
       - name: Update image ID and commit change
         if: ${{ success() }}
         run: |
-          cd mspdirect-devops/overlays/${{ github.event.inputs.Environment }}
-          kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/${{ env.OPENSHIFT_NAMESPACE }}/${{ env.BACKEND_IMAGE_NAME }}@${{ env.BACKEND_IMAGE_ID }}"
-          kustomize edit set image "frontend-image=image-registry.openshift-image-registry.svc:5000/${{ env.OPENSHIFT_NAMESPACE }}/${{ env.FRONTEND_IMAGE_NAME }}@${{ env.FRONTEND_IMAGE_ID }}"
+          cd mspdirect-devops/overlays/${{ env.DEVOPS_DIR }}
+          kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/${{ env.OPENSHIFT_NAMESPACE }}/${{ env.BACKEND_IMAGE_NAME }}${{ env.DEPLOY_SUFFIX }}@${{ env.BACKEND_IMAGE_ID }}"
+          kustomize edit set image "frontend-image=image-registry.openshift-image-registry.svc:5000/${{ env.OPENSHIFT_NAMESPACE }}/${{ env.FRONTEND_IMAGE_NAME }}${{ env.DEPLOY_SUFFIX }}@${{ env.FRONTEND_IMAGE_ID }}"
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git commit -am "Update frontend and backend image ids using deploy workflow."
-          git push origin    
-          
+          git commit -am "Deploying release build: ${{ env.VERSION }} in ${{ github.event.inputs.Environment }} using deploy-mspdirect workflow."
+          git push origin
+
+  deploy_with_approval:
+    if: github.event.inputs.Environment  == 'production'
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    # Ask for approval by specifying an environment which has been configured with required viewers in the repos Settings -> Environments
+    environment: ReviewRequired
+    needs: [compute]
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Set environment variables from previous job
+        id: set-env
+        run: |
+          echo "VERSION=${{needs.compute.outputs.VERSION}}"  | tee -a $GITHUB_ENV
+          echo "OPENSHIFT_NAMESPACE=${{needs.compute.outputs.OPENSHIFT_NAMESPACE}}"  | tee -a $GITHUB_ENV
+          echo "DEPLOY_SUFFIX=${{needs.compute.outputs.DEPLOY_SUFFIX}}"  | tee -a $GITHUB_ENV
+          echo "DEVOPS_DIR=${{needs.compute.outputs.DEVOPS_DIR}}"  | tee -a $GITHUB_ENV
+          echo "FRONTEND_IMAGE_ID=${{needs.compute.outputs.FRONTEND_IMAGE_ID}}"  | tee -a $GITHUB_ENV
+          echo "BACKEND_IMAGE_ID=${{needs.compute.outputs.BACKEND_IMAGE_ID}}"  | tee -a $GITHUB_ENV
+
+      # Login to OpenShift
+      - name: Log in to OpenShift
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{env.OPENSHIFT_SERVER}}
+          openshift_token: ${{env.OPENSHIFT_TOKEN}}
+          insecure_skip_tls_verify: true
+          namespace: ${{env.DEFAULT_NAMESPACE}}
+
+      # Push the image to selected repository
+      - name: Push Image
+        run: |
+          oc tag ${{ env.FRONTEND_IMAGE_NAME }}:${{ env.VERSION }} ${{ env.OPENSHIFT_NAMESPACE }}/${{ env.FRONTEND_IMAGE_NAME }}${{ env.DEPLOY_SUFFIX }}:${{ env.VERSION }}
+          oc tag ${{ env.BACKEND_IMAGE_NAME }}:${{ env.VERSION }} ${{ env.OPENSHIFT_NAMESPACE }}/${{ env.BACKEND_IMAGE_NAME }}${{ env.DEPLOY_SUFFIX }}:${{ env.VERSION }}
+
+      # Edit the selected Argo CD manifest file
+      # Update the image ID in the manifest repository used by Argo CD.
+      # We need to use the SSH deploy key to check out the manifest repo, set up
+      # Kustomize in the runner, update the image ID, commit the change, and
+      # push the changes back to the manifest repository.
+      # ------------------------------------------------------------------------
+      - name: Prepare deploy key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.GITOPS_C5839F_PRIVATE_KEY }}
+
+      - name: Check out manifest repo
+        uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.GITOPS_C5839F_PRIVATE_KEY }}
+          repository: ${{ secrets.GITOPS_C5839F_REPO }}
+          ref: main
+
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v1
+
+      - name: Update image ID and commit change
+        if: ${{ success() }}
+        run: |
+          cd mspdirect-devops/overlays/${{ env.DEVOPS_DIR }}
+          kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/${{ env.OPENSHIFT_NAMESPACE }}/${{ env.BACKEND_IMAGE_NAME }}${{ env.DEPLOY_SUFFIX }}@${{ env.BACKEND_IMAGE_ID }}"
+          kustomize edit set image "frontend-image=image-registry.openshift-image-registry.svc:5000/${{ env.OPENSHIFT_NAMESPACE }}/${{ env.FRONTEND_IMAGE_NAME }}${{ env.DEPLOY_SUFFIX }}@${{ env.FRONTEND_IMAGE_ID }}"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -am "Deploying release build: ${{ env.VERSION }} in ${{ github.event.inputs.Environment }} using deploy-mspdirect workflow."
+          git push origin
