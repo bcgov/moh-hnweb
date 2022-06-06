@@ -4,7 +4,7 @@
 # 2. Find the image digest from input parameters
 # 3. Validate if that is correct. If not, exit the job
 # 4. Push the image to selected repository
-# 5. Edit the selcted Argo CD manifest file
+# 5. Edit the selected Argo CD manifest file
 
 name: deploy-mspdirect
 
@@ -14,7 +14,7 @@ env:
   FRONTEND_IMAGE_NAME: mspdirect-frontend
   BACKEND_IMAGE_NAME: mspdirect-backend
   DEFAULT_NAMESPACE: "c5839f-tools"
-  VERSION_PREFIX: "Release_1.0_"
+  VERSION_PREFIX: "release_1.0_"
   OPENSHIFT_NAMESPACE:
   FRONTEND_IMAGE_ID:
   BACKEND_IMAGE_ID:
@@ -35,7 +35,7 @@ on:
       Branch:
         description: "Enter branch name (Currently deployable releases are created only from main )"
         required: true
-        default: 6883-Update-MSP-Direct-actions
+        default: main
       Release:
         description: "Enter build number: "
         required: true
