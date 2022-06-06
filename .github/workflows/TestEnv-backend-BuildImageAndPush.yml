@@ -7,12 +7,13 @@ env:
   IMAGE_REGISTRY_USER: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_USER }}
   IMAGE_REGISTRY_PASSWORD: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
   IMAGE_NAME: mspdirect-backend
+  TEST_SUFFIX: -test
   IMAGE_TAGS:
 
 on:
-  # Run the workflow manually, instead of on a push.
-  # The user specifies the name of the build config to use, which should be an
-  #   API build config.
+  # Run the workflow on either:
+  #   a push to 'main' branch
+  #   manually through the Action
   # --------------------------------------------------------------------------
 
   push:
@@ -35,44 +36,40 @@ jobs:
       # Check out the code
       - name: Check out code
         id: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: main
 
-      # Determine the tags
+      # Determine the version number tag i.e. test_auto_build_<branch-name>_<build execution>
+      - name: Determine Version number
+        # Branch name is fixed to 'main' in version identifier
+        run: |
+          echo "VERSION=test_auto_build_main_${{github.run_number}}" | tee -a $GITHUB_ENV
+
+      # Determine the tags. Create all tags with full names. Only 'tags' are used as this allows specifying
+      # the image name in each tag. This is needed because it is different in each namespace as it contains '-test' suffix in the test namespace.
+      # Note, with multiple tags all have the same digest value.
       - name: Determine image tags
         if: env.IMAGE_TAGS == ''
         run: |
-          echo "IMAGE_TAGS=latest ${GITHUB_SHA::12} mspdirect-test" | tee -a $GITHUB_ENV
+          echo "IMAGE_TAGS=${{ env.TOOLSNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${GITHUB_SHA::12} ${{ env.TOOLSNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:mspdirect${{ env.TEST_SUFFIX }} ${{ env.TOOLSNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }} ${{ env.TESTNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}${{ env.TEST_SUFFIX }}:${GITHUB_SHA::12} ${{ env.TESTNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}${{ env.TEST_SUFFIX }}:mspdirect${{ env.TEST_SUFFIX }} ${{ env.TESTNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}${{ env.TEST_SUFFIX }}:${{ env.VERSION }} " | tee -a $GITHUB_ENV
 
-      # Build from docker file
+      # Build from docker file.
       - name: Build from Dockerfile
         id: build-docker
         uses: redhat-actions/buildah-build@v2
         with:
-          image: ${{ env.IMAGE_NAME }}
           tags: ${{ env.IMAGE_TAGS }}
           context: ./backend
           dockerfiles: |
             ./backend/Dockerfile
 
-      - name: Push to tools registry
-        id: push-image-tools
+      # Push all images at the same time using different tags from the build. This allows having different image names.
+      - name: Push to tools and test registry
+        id: push-images
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: ${{ steps.build-docker.outputs.image }}
           tags: ${{ steps.build-docker.outputs.tags }}
-          registry: ${{ env.TOOLSNS_IMAGE_REGISTRY }}
-          username: ${{ env.IMAGE_REGISTRY_USER }}
-          password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
-
-      - name: Push to test registry
-        id: push-image-test
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: ${{ steps.build-docker.outputs.image }}
-          tags: ${{ steps.build-docker.outputs.tags }}
-          registry: ${{ env.TESTNS_IMAGE_REGISTRY }}
           username: ${{ env.IMAGE_REGISTRY_USER }}
           password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
 
@@ -87,7 +84,7 @@ jobs:
           ssh-private-key: ${{ secrets.GITOPS_C5839F_PRIVATE_KEY }}
 
       - name: Check out manifest repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ssh-key: ${{ secrets.GITOPS_C5839F_PRIVATE_KEY }}
           repository: ${{ secrets.GITOPS_C5839F_REPO }}
@@ -100,8 +97,8 @@ jobs:
         if: ${{ success() }}
         run: |
           cd mspdirect-devops/overlays/test
-          kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/c5839f-test/${{ env.IMAGE_NAME }}@${{ steps.push-image-test.outputs.digest }}"
+          kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/c5839f-test/${{ env.IMAGE_NAME }}${{ env.TEST_SUFFIX }}@${{ steps.push-images.outputs.digest }}"
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git commit -am "Update Backend API image ID for test"
+          git commit -am "Deploying build: ${{ env.VERSION }} in test using TestEnv-backend-BuildImageAndPush workflow."
           git push origin
