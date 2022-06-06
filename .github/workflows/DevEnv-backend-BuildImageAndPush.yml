@@ -7,6 +7,7 @@ env:
   IMAGE_REGISTRY_USER: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_USER }}
   IMAGE_REGISTRY_PASSWORD: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
   IMAGE_NAME: mspdirect-backend
+  DEV_SUFFIX: -dev
   IMAGE_TAGS:
 
 on:
@@ -28,44 +29,39 @@ jobs:
       # Check out the code
       - name: Check out code
         id: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.event.inputs.branch }}
+
+      # Determine the version number tag i.e. dev_build_<branch-name>_<build execution>
+      - name: Determine Version number
+        # Branch name is taken from action inputs
+        run: |
+          echo "VERSION=dev_build_${{ github.event.inputs.branch }}_${{github.run_number}}" | tee -a $GITHUB_ENV
 
       # Determine the tags
       - name: Determine image tags
         if: env.IMAGE_TAGS == ''
         run: |
-          echo "IMAGE_TAGS=${GITHUB_SHA::12}" | tee -a $GITHUB_ENV
+          echo "IMAGE_TAGS=${{ env.TOOLSNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${GITHUB_SHA::12} ${{ env.TOOLSNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:mspdirect${{ env.DEV_SUFFIX }} ${{ env.TOOLSNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }} ${{ env.DEVNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}${{ env.DEV_SUFFIX }}:${GITHUB_SHA::12} ${{ env.DEVNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}${{ env.DEV_SUFFIX }}:mspdirect${{ env.DEV_SUFFIX }} ${{ env.DEVNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}${{ env.DEV_SUFFIX }}:${{ env.VERSION }} " | tee -a $GITHUB_ENV
 
-      # Build from docker file
+      # Build from docker file. Tags the build the previously created tags which are used in the next step which pushes them to the registry. One set of tags for tools and one for dev. Only 'tags' are used as this allows specifying
+      # the image name in each tag. This is needed because it is different in each namespace as it contains '-dev' suffix in the dev namespace. Note, with multiple tags both have the same digest value.
       - name: Build from Dockerfile
         id: build-docker
         uses: redhat-actions/buildah-build@v2
         with:
-          image: ${{ env.IMAGE_NAME }}
           tags: ${{ env.IMAGE_TAGS }}
           context: ./backend
           dockerfiles: |
             ./backend/Dockerfile
 
-      - name: Push to tools registry
-        id: push-image-tools
+      # Push images at the same time using the different tags from the build. This allows having different image names.
+      - name: Push to tools and dev registry
+        id: push-images
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: ${{ steps.build-docker.outputs.image }}
           tags: ${{ steps.build-docker.outputs.tags }}
-          registry: ${{ env.TOOLSNS_IMAGE_REGISTRY }}
-          username: ${{ env.IMAGE_REGISTRY_USER }}
-          password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
-
-      - name: Push to dev registry
-        id: push-image-dev
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: ${{ steps.build-docker.outputs.image }}
-          tags: ${{ steps.build-docker.outputs.tags }}
-          registry: ${{ env.DEVNS_IMAGE_REGISTRY }}
           username: ${{ env.IMAGE_REGISTRY_USER }}
           password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
 
@@ -80,7 +76,7 @@ jobs:
           ssh-private-key: ${{ secrets.GITOPS_C5839F_PRIVATE_KEY }}
 
       - name: Check out manifest repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ssh-key: ${{ secrets.GITOPS_C5839F_PRIVATE_KEY }}
           repository: ${{ secrets.GITOPS_C5839F_REPO }}
@@ -93,8 +89,8 @@ jobs:
         if: ${{ success() }}
         run: |
           cd mspdirect-devops/overlays/dev
-          kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/c5839f-dev/${{ env.IMAGE_NAME }}@${{ steps.push-image-dev.outputs.digest }}"
+          kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/c5839f-dev/${{ env.IMAGE_NAME }}${{ env.DEV_SUFFIX }}@${{ steps.push-images.outputs.digest }}"
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git commit -am "Update Backend API image ID for Dev"
+          git commit -am "Deploying build: ${{ env.VERSION }} in dev using DevEnv-backend-BuildImageAndPush workflow."
           git push origin
