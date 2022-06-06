@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="changeEffectiveDate" v-if="updateMode">
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
@@ -59,8 +59,8 @@ export default {
       updateMode: true,
       phn: '',
       groupNumber: '',
-      existingEffectiveDate: new Date(),
-      newEffectiveDate: new Date(),
+      existingEffectiveDate: null,
+      newEffectiveDate: null,
       result: {
         phn: '',
         status: '',
@@ -117,13 +117,13 @@ export default {
     resetForm() {
       this.groupNumber = ''
       this.phn = ''
-      this.existingEffectiveDate = new Date()
-      this.newEffectiveDate = new Date()
+      this.existingEffectiveDate = null
+      this.newEffectiveDate = null
       this.result = null
       this.v$.$reset()
       this.alertStore.dismissAlert()
-      this.searchOk = false
-      this.searching = false
+      this.updateMode = true
+      this.updateOk = false
     },
   },
   validations() {
