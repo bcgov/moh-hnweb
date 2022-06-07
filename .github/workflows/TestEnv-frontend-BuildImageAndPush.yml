@@ -11,17 +11,17 @@ env:
   IMAGE_TAGS:
 
 on:
+  # Run the workflow on either:
+  #   a push to 'main' branch
+  #   manually through the Action
+  # --------------------------------------------------------------------------
+
   push:
     branches: [main]
     paths:
       - "frontend/**"
 
   workflow_dispatch:
-    inputs:
-      branch:
-        description: "Enter branch name:"
-        required: true
-        default: main
 
 jobs:
   buildAndPush:
@@ -35,7 +35,7 @@ jobs:
         with:
           ref: main
 
-      # Determine the version number tag i.e. test_auto_build_<branch-name>_<build execution>
+      # Determine the version number tag i.e. test_auto_build_main_<build execution>
       - name: Determine Version number
         # Branch name is fixed to 'main' in version identifier
         run: |
