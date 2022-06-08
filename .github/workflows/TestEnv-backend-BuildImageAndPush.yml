@@ -45,7 +45,6 @@ jobs:
       # the image name in each tag. This is needed because it is different in each namespace as it contains '-test' suffix in the test namespace.
       # Note, with multiple tags all have the same digest value.
       - name: Determine image tags
-        if: env.IMAGE_TAGS == ''
         run: |
           echo "IMAGE_TAGS=${{ env.TOOLSNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${GITHUB_SHA::12} ${{ env.TOOLSNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:mspdirect${{ env.TEST_SUFFIX }} ${{ env.TOOLSNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }} ${{ env.TESTNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}${{ env.TEST_SUFFIX }}:${GITHUB_SHA::12} ${{ env.TESTNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}${{ env.TEST_SUFFIX }}:mspdirect${{ env.TEST_SUFFIX }} ${{ env.TESTNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}${{ env.TEST_SUFFIX }}:${{ env.VERSION }} " | tee -a $GITHUB_ENV
 

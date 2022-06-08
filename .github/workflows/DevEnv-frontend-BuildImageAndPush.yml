@@ -33,11 +33,11 @@ jobs:
         with:
           ref: ${{ github.event.inputs.branch }}
 
-      # Determine the version number tag i.e. Release_1.0_<branch-name>_<build execution>
+      # Determine the version number tag i.e. dev_build_<branch-name>_<build execution>
       - name: Determine Version number
         # Branch name is taken from action inputs
         run: |
-          echo "VERSION=Dev_Build_${{ github.event.inputs.branch }}_${{github.run_number}}" | tee -a $GITHUB_ENV
+          echo "VERSION=dev_build_${{ github.event.inputs.branch }}_${{github.run_number}}" | tee -a $GITHUB_ENV
 
       # Edit .env in frontend with the value
       - name: Edit env file to add version
@@ -47,7 +47,6 @@ jobs:
 
       # Determine the tags
       - name: Determine image tags
-        if: env.IMAGE_TAGS == ''
         run: |
           echo "IMAGE_TAGS=${{ env.TOOLSNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${GITHUB_SHA::12} ${{ env.TOOLSNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:mspdirect${{ env.DEV_SUFFIX }} ${{ env.TOOLSNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }} ${{ env.DEVNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}${{ env.DEV_SUFFIX }}:${GITHUB_SHA::12} ${{ env.DEVNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}${{ env.DEV_SUFFIX }}:mspdirect${{ env.DEV_SUFFIX }} ${{ env.DEVNS_IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}${{ env.DEV_SUFFIX }}:${{ env.VERSION }} " | tee -a $GITHUB_ENV
 
