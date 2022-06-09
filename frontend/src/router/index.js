@@ -307,9 +307,8 @@ export const createRouter = (app) => {
 
     const authenticated = app.config.globalProperties.$keycloak.authenticated
 
-    // Check if the backend is available
-    if (!authStore.apiAvailable && to.name !== 'Error') {
-      console.log(`To ${to.name}`)
+    // Check if the API is available
+    if (!authStore.apiAvailable && to.name !== 'Error' && to.name !== 'Help') {
       alertStore.setErrorAlert('MSP Direct API is unavailable.')
       next({ name: 'Error' })
       return
