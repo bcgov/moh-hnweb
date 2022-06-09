@@ -23,7 +23,7 @@
 
       <section aria-labelledby="helpSection3">
         <h2 id="helpSection3">Contact the Ministry of Health Help Desk</h2>
-        <p>The Ministry of Health provides support for MSP direct Monday to Friday, 8:00AM to 4:30PM, excluding statutory holidays.</p>
+        <p>The Ministry of Health provides support for MSP Direct Monday to Friday, 8:00AM to 4:30PM, excluding statutory holidays.</p>
         <p>
           For further information or support about MSP Direct business services, please contact:
           <AppLabel>Email</AppLabel><a href="mailto:HLTH.HnetConnection@gov.bc.ca?subject=MSP Direct Help">HLTH.HnetConnection@gov.bc.ca</a>
