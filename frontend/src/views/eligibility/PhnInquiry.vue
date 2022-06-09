@@ -124,6 +124,7 @@ import useVuelidate from '@vuelidate/core'
 import { validateOptionalPHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
 import { helpers } from '@vuelidate/validators'
 import { useAlertStore } from '../../stores/alert.js'
+import { handleServiceError } from '../../util/utils'
 
 export default {
   name: 'PhnInquiry',
@@ -188,7 +189,7 @@ export default {
         this.searchOk = true
         this.alertStore.setAlert({ message: this.result.message, type: this.result.status })
       } catch (err) {
-        this.alertStore.setErrorAlert(err)
+        handleServiceError(err, this.alertStore, this.$router)
       } finally {
         this.searching = false
       }

@@ -9,7 +9,7 @@
 </script>
 
 <template>
-  <TheHeader/>
+  <TheHeader :key="$route.fullPath"/>
   <TheNavBar/>
   <main>
     <section class="content">

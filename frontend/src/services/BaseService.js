@@ -41,11 +41,7 @@ export function apiRequest() {
       headers: { Authorization: 'Bearer ' + keycloak.token },
     })
   }
-  try {
-    return keycloak.updateToken(0).then(createAxios)
-  } catch (err) {
-    window.location.reload()
-  }
+  return keycloak.updateToken(0).then(createAxios)
 }
 
 export default apiRequest
