@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { routerKey } from 'vue-router'
 
 import keycloak from '../keycloak'
 
