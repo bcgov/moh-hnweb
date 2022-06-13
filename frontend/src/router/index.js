@@ -1,5 +1,6 @@
 import { createRouter as createVueRouter, createWebHistory } from 'vue-router'
 
+import Error from './../views/Error.vue'
 import Help from './../views/Help.vue'
 import Home from './../views/Home.vue'
 import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
@@ -66,6 +67,9 @@ const createRoutes = (app) => [
     path: '/coverage/maintenance',
     name: 'CoverageMaintenance',
     component: CoverageMaintenanceHome,
+    redirect: {
+      name: 'Home',
+    },
   },
   {
     path: '/coverage/enrollment',
@@ -246,6 +250,14 @@ const createRoutes = (app) => [
     ],
   },
   {
+    path: '/error',
+    name: 'Error',
+    component: Error,
+    meta: {
+      requiresAuth: false,
+    },
+  },
+  {
     path: '/help',
     name: 'Help',
     component: Help,
@@ -298,6 +310,13 @@ export const createRouter = (app) => {
 
     const authenticated = app.config.globalProperties.$keycloak.authenticated
 
+    // Check if the API is available
+    if (!authStore.apiAvailable && to.name !== 'Error' && to.name !== 'Help') {
+      alertStore.setErrorAlert('MSP Direct API is unavailable.')
+      next({ name: 'Error' })
+      return
+    }
+
     // Login handling. Place here instead of Login beforeEnter to centralize access to authStore/authenticated
     if (to.name === 'Login') {
       // Authenticated users should never see the Login screen
@@ -328,7 +347,7 @@ export const createRouter = (app) => {
 
     // Validate that the user has permissions
     const hasAnyPermission = authStore.hasAnyPermission
-    if (!hasAnyPermission && to.name !== 'Unauthorized') {
+    if (!hasAnyPermission && to.name !== 'Unauthorized' && to.name !== 'Help') {
       next({ name: 'Unauthorized' })
       return
     }

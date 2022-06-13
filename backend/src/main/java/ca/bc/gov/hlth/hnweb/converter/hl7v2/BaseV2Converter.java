@@ -51,10 +51,6 @@ public abstract class BaseV2Converter {
 		this.mshDefaults = mshDefaults;
 		this.userInfo = SecurityUtil.loadUserInfo();
 	}
-
-	protected void populateMSH(MSH msh) throws HL7Exception {
-		populateMSH(msh, messageDateTime);
-	}
 	
 	protected void populateMSH(MSH msh, String messageId) throws HL7Exception {
 		V2MessageUtil.setMshValues(msh, mshDefaults.getSendingApplication(), mshDefaults.getSendingFacility(), getReceivingApplication(), 
