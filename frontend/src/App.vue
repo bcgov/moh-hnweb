@@ -10,7 +10,7 @@
 
 <template>
   <TheHeader :key="$route.fullPath"/>
-  <TheNavBar/>
+  <TheNavBar :key="$route.fullPath"/>
   <main>
     <section class="content">
       <TheAlert/>
