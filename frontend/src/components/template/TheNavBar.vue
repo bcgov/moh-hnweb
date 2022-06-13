@@ -22,6 +22,7 @@
         <li id="coverage-maintenance-link" :class="tabClass($route, 'CoverageMaintenance')" v-if="hasMaintenancePermission()">
           <div class="dropdown">
             <span>Coverage Maintenance</span>
+            <div class="dropdown-content"></div>
           </div>
         </li>
         <li id="coverage-enrollment-link" :class="menuTabClass($route, '/coverage/enrollment')" v-if="hasEnrollmentPermission()">
@@ -109,7 +110,7 @@ export default {
       return this.hasPermission('AddGroupMember') || this.hasPermission('AddDependent') || this.hasPermission('UpdateNumberAndDept') || this.hasPermission('CancelGroupMember') || this.hasPermission('CancelDependent')
     },
     hasMaintenancePermission() {
-      return false
+      return this.hasPermission('ReinstateOverAgeDependent') || this.hasPermission('ChangeEffectiveDate') || this.hasPermission('ExtendCancelDate')
     },
     hasMSPContractsPermission() {
       return this.hasPermission('GetContractPeriods') || this.hasPermission('ContractInquiry') || this.hasPermission('UpdateContractAddress')
