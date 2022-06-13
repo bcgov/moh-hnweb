@@ -66,6 +66,9 @@ const createRoutes = (app) => [
     path: '/coverage/maintenance',
     name: 'CoverageMaintenance',
     component: CoverageMaintenanceHome,
+    redirect: {
+      name: 'Home',
+    },
   },
   {
     path: '/coverage/enrollment',
