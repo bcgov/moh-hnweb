@@ -6,7 +6,6 @@
           <img src="../../assets/images/logo.png" width="154" class="logo" alt="BC Government Logo" />
           <div class="site-container">
             <div class="sitename">{{ title }}</div>
-            <div aria-label="This application is currently in Beta phase" class="Beta-PhaseBanner">Beta</div>
           </div>
         </section>
         <section class="options user-select-off">
@@ -98,15 +97,5 @@ header .container .options .sign-out:focus {
 header .site-container {
   display: inline-block;
   vertical-align: top;
-}
-
-.Beta-PhaseBanner {
-  color: #fcba19;
-  display: inline-block;
-  padding-left: 5px;
-  padding-top: 12px;
-  text-transform: uppercase;
-  font-weight: 600;
-  font-size: 16px;
 }
 </style>
