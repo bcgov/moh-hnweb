@@ -33,8 +33,11 @@ keycloak.onReady = async function (authenticated) {
       permissions = data
     }
   } catch (err) {
-    // An error here indicates that MSP Direct API is unavailable
-    apiAvailable = false
+    // Check for network error
+    // Other errors (401, 403) are possible
+    if (err.message === 'Network Error') {
+      apiAvailable = false
+    }
   } finally {
     initApp(permissions, apiAvailable)
   }
