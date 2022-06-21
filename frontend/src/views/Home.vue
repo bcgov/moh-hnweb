@@ -14,6 +14,7 @@
 import AppBulletin from '../components/ui/AppBulletin.vue'
 import BulletinService from '../services/BulletinService.js'
 import { useAlertStore } from '../stores/alert'
+import { handleServiceError } from '../util/utils'
 
 export default {
   name: 'home',
@@ -34,7 +35,7 @@ export default {
     try {
       this.bulletins = (await BulletinService.getBulletins()).data
     } catch (err) {
-      this.alertStore.setErrorAlert(err)
+      handleServiceError(err, this.alertStore, this.$router)
     }
   },
 }

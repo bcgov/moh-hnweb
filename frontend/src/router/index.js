@@ -329,6 +329,7 @@ export const createRouter = (app) => {
         // This handles session expiry where a user's permissions have been retrieved but the refreshToken is invalid
         authStore.permissions = []
         next()
+        return
       }
     }
 

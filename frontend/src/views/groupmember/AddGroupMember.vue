@@ -142,6 +142,7 @@ import {
 } from '../../util/validators'
 import GroupMemberService from '../../services/GroupMemberService'
 import { useAlertStore } from '../../stores/alert'
+import { handleServiceError } from '../../util/utils'
 
 export default {
   name: 'AddGroupMember',
@@ -254,7 +255,7 @@ export default {
           return
         }
       } catch (err) {
-        this.alertStore.setErrorAlert(err)
+        handleServiceError(err, this.alertStore, this.$router)
       } finally {
         this.submitting = false
       }

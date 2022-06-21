@@ -102,6 +102,7 @@ import {
 } from '../../util/validators'
 import MspContractsService from '../../services/MspContractsService'
 import { useAlertStore } from '../../stores/alert'
+import { handleServiceError } from '../../util/utils'
 
 export default {
   name: 'UpdateContractAddress',
@@ -188,7 +189,7 @@ export default {
           return
         }
       } catch (err) {
-        this.alertStore.setErrorAlert(err)
+        handleServiceError(err, this.alertStore, this.$router)
       } finally {
         this.submitting = false
       }

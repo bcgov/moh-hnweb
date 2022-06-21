@@ -100,6 +100,7 @@ import { validateOptionalPHN, validateGroupNumber, VALIDATE_PHN_MESSAGE, VALIDAT
 import { required, helpers } from '@vuelidate/validators'
 import MspContractsService from '../../services/MspContractsService'
 import { useAlertStore } from '../../stores/alert'
+import { handleServiceError } from '../../util/utils'
 
 export default {
   name: 'GetGroupMembersContractAddress',
@@ -175,7 +176,7 @@ export default {
           this.result.contractInquiryBeneficiaries = []
         }
       } catch (err) {
-        this.alertStore.setErrorAlert(err)
+        handleServiceError(err, this.alertStore, this.$router)
       } finally {
         this.searching = false
       }
