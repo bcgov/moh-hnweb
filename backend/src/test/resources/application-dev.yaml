@@ -76,3 +76,37 @@ hibc:
   cert:
     file: classpath:keystore/testcert.pfx
     password: abc123
+
+ # Mapping of roles (SPGs) to specific permissions
+security:
+  rolePermissions:
+    dummy:
+      - Dummy
+    e45:
+      - MSPCoverageCheck
+    eligibility:
+      - MSPCoverageCheck
+      - CheckEligibility
+      - PHNInquiry
+    traininghealthauth:
+      - MSPCoverageCheck
+      - CheckEligibility
+      - AddGroupMember
+      - AddDependent
+      - GetContractPeriods
+      - UpdateNumberAndDept
+      - CancelGroupMember
+      - CancelDependent
+      - GetContractAddress
+      - UpdateContractAddress
+      - ContractInquiry
+      - PHNInquiry
+      - PHNLookup
+      - ReinstateOverAgeDependent
+      - ReinstateCancelledCoverage
+      - RenewCancelledCoverage
+      - ChangeEffectiveDate
+      - ChangeCancelDate
+      - ExtendCancelDate
+      - AddPermitHolderWOPHN
+      - AddPermitHolderWithPHN

@@ -20,7 +20,7 @@ public class SecurityPropertiesTest {
 		Map<String, List<String>> rolePermissions = securityProperties.getRolePermissions();
 		assertEquals(4, rolePermissions.size());
 		
-		List<String> e45Permissions = rolePermissions.get("E45");
+		List<String> e45Permissions = rolePermissions.get("e45");
 		assertEquals(1, e45Permissions.size());
 		assertEquals("MSPCoverageCheck", e45Permissions.get(0));
 	}

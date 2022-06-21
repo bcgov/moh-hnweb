@@ -88,7 +88,7 @@ public class SecurityUtil {
         List<String> roles = loadRoles(jwt);
         List<String> permissions = new ArrayList<>();
         roles.forEach(role -> {
-        	List<String> currentPermissions = rolePermissions.get(role);
+        	List<String> currentPermissions = rolePermissions.get(role.toLowerCase());
         	if (currentPermissions != null) {
         		permissions.addAll(currentPermissions);	
         	} else {
