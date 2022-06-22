@@ -31,9 +31,35 @@ export default {
   },
   methods: {
     logout() {
+      let logouturi = ''
+      const redirectUri = location.origin + this.$router.resolve({ name: 'Login' }).path
+      const siteMinderLogoutUri = config.SITE_MINDER_LOGOUT_URI || import.meta.env.VITE_SITE_MINDER_LOGOUT_URI
+      const phsaLogoutUri = config.PHSA_LOGOUT_URI || import.meta.env.VITE_PHSA_LOGOUT_URI
+      const idp = this.$keycloak.tokenParsed.identity_provider
+
       if (confirm('Please confirm you want to sign out. ' + '\nThis will also end all other active Keycloak or SiteMinder sessions you have open.')) {
+        switch (idp) {
+          case 'idir':
+          case 'bceid_business':
+            /**
+             * Currently Keycloak does not support logging out of SiteMinder IDP's automatically so
+             * we set the Keycloak Logout redirect_uri= parameter to be the SiteMinder logout and we
+             * set the SiteMinder returl= parameter to be application which chains both logouts for
+             * full Single Sign Out. https://github.com/bcgov/ocp-sso/issues/4
+             */
+            logouturi = siteMinderLogoutUri + '?retnow=1&returl=' + redirectUri
+            break
+          case 'moh_idp':
+            logouturi = redirectUri
+            break
+          case 'phsa':
+            logouturi = phsaLogoutUri
+          default:
+            break
+        }
+
         this.$keycloak.logout({
-          redirectUri: location.origin + this.$router.resolve({ name: 'Login' }).path,
+          redirectUri: logouturi,
         })
       }
     },
