@@ -1,4 +1,5 @@
 import axios from 'axios'
+
 import keycloak from '../keycloak'
 
 export const resources = {

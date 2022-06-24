@@ -13,6 +13,7 @@ import ResidentDetails from '../../../components/coverage/enrollment/ResidentDet
 import RegistrationConfirmation from '../../../components/coverage/enrollment/RegistrationConfirmation.vue'
 import { useAlertStore } from '../../../stores/alert'
 import { useStudyPermitHolderStore } from '../../../stores/studyPermitHolder'
+import { handleServiceError } from '../../../util/utils'
 
 export default {
   name: 'AddVisaResidentWithPHN',
@@ -105,7 +106,7 @@ export default {
         this.studyPermitHolderStore.resident = this.getPersonDetailsResult.person
         this.pageAction = this.PAGE_ACTION.REGISTRATION
       } catch (err) {
-        this.alertStore.setErrorAlert(err)
+        handleServiceError(err, this.alertStore, this.$router)
       } finally {
         this.searching = false
       }
@@ -126,7 +127,7 @@ export default {
         this.getPersonDetailsResult.person = { ...personDetails }
         this.pageAction = this.PAGE_ACTION.CONFIRMATION
       } catch (err) {
-        this.alertStore.setErrorAlert(err)
+        handleServiceError(err, this.alertStore, this.$router)
       } finally {
         this.submitting = false
       }

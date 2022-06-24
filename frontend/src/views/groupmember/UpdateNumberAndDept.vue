@@ -41,6 +41,7 @@ import { validateGroupNumber, validateGroupMemberNumber, validateDepartmentNumbe
 import { required, helpers } from '@vuelidate/validators'
 import { DEFAULT_ERROR_MESSAGE } from '../../util/constants.js'
 import { useAlertStore } from '../../stores/alert'
+import { handleServiceError } from '../../util/utils'
 
 export default {
   name: 'updateNumberAndDept',
@@ -111,7 +112,7 @@ export default {
           return
         }
       } catch (err) {
-        this.alertStore.setErrorAlert(err)
+        handleServiceError(err, this.alertStore, this.$router)
       } finally {
         this.submitting = false
       }

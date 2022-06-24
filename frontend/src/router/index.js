@@ -317,11 +317,20 @@ export const createRouter = (app) => {
       return
     }
 
-    // Authenticated users should never see the Login screen
-    // Send them to Home instead
-    if (authenticated && to.name === 'Login') {
-      next({ name: 'Home' })
-      return
+    // Login handling. Place here instead of Login beforeEnter to centralize access to authStore/authenticated
+    if (to.name === 'Login') {
+      // Authenticated users should never see the Login screen
+      // Send them to Home instead
+      if (authenticated) {
+        next({ name: 'Home' })
+        return
+      } else {
+        // If the user is unauthenticated and attempting to Login, remove any existing permissions
+        // This handles session expiry where a user's permissions have been retrieved but the refreshToken is invalid
+        authStore.permissions = []
+        next()
+        return
+      }
     }
 
     // Always navigate to pages that don't require auth

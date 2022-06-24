@@ -42,6 +42,7 @@ import { helpers, required } from '@vuelidate/validators'
 import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumber, validatePHN } from '../../util/validators'
 import GroupMemberService from '../../services/GroupMemberService'
 import { useAlertStore } from '../../stores/alert'
+import { handleServiceError } from '../../util/utils'
 
 export default {
   name: 'CancelGroupMember',
@@ -107,7 +108,7 @@ export default {
           this.alertStore.setSuccessAlert(this.result.message)
         }
       } catch (err) {
-        this.alertStore.setErrorAlert(err)
+        handleServiceError(err, this.alertStore, this.$router)
       } finally {
         this.submitting = false
       }
