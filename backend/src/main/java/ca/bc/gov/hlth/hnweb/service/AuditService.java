@@ -3,6 +3,7 @@ package ca.bc.gov.hlth.hnweb.service;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -11,16 +12,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditReportResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedParty;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
+import ca.bc.gov.hlth.hnweb.persistence.entity.Bulletin;
 import ca.bc.gov.hlth.hnweb.persistence.entity.ErrorLevel;
 import ca.bc.gov.hlth.hnweb.persistence.entity.EventMessage;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
+import ca.bc.gov.hlth.hnweb.persistence.entity.Organization;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 import ca.bc.gov.hlth.hnweb.persistence.entity.TransactionEvent;
 import ca.bc.gov.hlth.hnweb.persistence.entity.TransactionEventType;
 import ca.bc.gov.hlth.hnweb.persistence.repository.AffectedPartyRepository;
 import ca.bc.gov.hlth.hnweb.persistence.repository.EventMessageRepository;
+import ca.bc.gov.hlth.hnweb.persistence.repository.OrganizationRepository;
 import ca.bc.gov.hlth.hnweb.persistence.repository.TransactionEventRepository;
 import ca.bc.gov.hlth.hnweb.persistence.repository.TransactionRepository;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
@@ -45,7 +50,9 @@ public class AuditService {
 	
 	@Autowired
 	private TransactionRepository transactionRepository;
-
+		
+	@Autowired
+	private OrganizationRepository organizationRepository;
 	/**
 	 * Creates a new {@link Transaction}.
 	 * 
@@ -171,6 +178,14 @@ public class AuditService {
 		affectedParty.setDirection(direction.getValue());
 		affectedParty.setTransaction(transaction);
 		return affectedPartyRepository.save(affectedParty);
+	}
+	
+	public List<Organization> getOrganization() {
+		return organizationRepository.findAll();
+	}
+	
+	public List<Transaction> getAuditReport(String type, String organization) {
+		return transactionRepository.findByTypeAndOrganization(type, organization);
 	}
 	
 }

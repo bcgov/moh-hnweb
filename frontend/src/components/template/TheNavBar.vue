@@ -8,6 +8,14 @@
         <li id="home-link" :class="tabClass($route, 'Home')" v-if="authenticated">
           <router-link @click="resetAlert" :to="{ name: 'Home' }">Home</router-link>
         </li>
+        <li id="audit-report-link" :class="menuTabClass($route, '/reports')">
+          <div class="dropdown">
+            <span>Reports</span>
+            <div class="dropdown-content">
+              <router-link @click="resetAlert" :class="menuClass($route, 'AuditReporting')" :to="{ name: 'AuditReporting' }">AuditReporting</router-link>
+            </div>
+          </div>
+        </li>
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
           <div class="dropdown">
             <span>Eligibility & PHN</span>
@@ -99,6 +107,9 @@ export default {
     },
     hasPermission(permission) {
       return this.authStore.hasPermission(permission)
+    },
+    hasReportPermission() {
+      return this.hasPermission('AuditReporting')
     },
     hasEligibilityPermission() {
       return this.hasPermission('MSPCoverageCheck') || this.hasPermission('CheckEligibility') || this.hasPermission('PHNInquiry') || this.hasPermission('PHNLookup')
