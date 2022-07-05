@@ -251,7 +251,7 @@ export default {
         if (this.result?.status === 'success') {
           this.addMode = false
           this.addOk = true
-          this.alertStore.setSuccessAlert(this.result.message)
+          this.alertStore.setInfoAlert(this.result.message)
           return
         }
       } catch (err) {

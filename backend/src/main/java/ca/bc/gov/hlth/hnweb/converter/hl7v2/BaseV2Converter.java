@@ -31,6 +31,8 @@ public abstract class BaseV2Converter {
 	protected static final String PID_NAMESPACE_ID = "BC";
 	
 	protected static final String PID_ID_TYPE_CODE = "PH";
+	
+	protected static final String SUCCESS_MESSAGE = "TRANSACTION COMPLETED";
 
 	protected static DateTimeFormatter dateOnlyFormatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_FORMAT_DATE_ONLY);
 	
@@ -97,9 +99,13 @@ public abstract class BaseV2Converter {
 		String statusText = terser.get("/.ERR-1-4-2");
 		
 		logger.debug("Acknowledgement code {} received in response. Status code: {}, Status message: {}", msaAcknowledgementCode, statusCode, statusText);
-		
-		response.setMessage(String.format("%s %s", statusCode, statusText));
+
+		response.setMessage(String.format("%s %s", statusCode, overrideSuccessMessageText(status, statusText)));
 		response.setStatus(status);
+	}
+
+	private String overrideSuccessMessageText(StatusEnum status, String statusText) {
+		return status == StatusEnum.SUCCESS ? SUCCESS_MESSAGE : statusText;
 	}
 
 }

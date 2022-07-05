@@ -104,7 +104,7 @@ export default {
         }
 
         this.searchOk = true
-        this.alertStore.setAlert({ message: this.result.message, type: this.result.status })
+        this.alertStore.setAlertWithInfoForSuccess(this.result.message, this.result.status)
       } catch (err) {
         handleServiceError(err, this.alertStore, this.$router)
       } finally {

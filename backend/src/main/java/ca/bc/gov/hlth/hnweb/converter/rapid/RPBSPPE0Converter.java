@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPPE0;
@@ -17,6 +19,9 @@ import ca.bc.gov.hlth.hnweb.model.rest.eligibility.InquirePhnRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.eligibility.InquirePhnResponse;
 
 public class RPBSPPE0Converter extends BaseRapidConverter {
+	
+	protected static final Logger logger = LoggerFactory.getLogger(RPBSPPE0Converter.class);
+
 	private static final String TRAN_CODE = "RPBSPPE0";
 
 	public RPBSPPE0Converter() {
@@ -63,7 +68,7 @@ public class RPBSPPE0Converter extends BaseRapidConverter {
 			String statusText = StringUtils.trimToEmpty(beneficiary.getStatusText());
 
 			if (StringUtils.equals(statusCode, STATUS_CODE_SUCCESS)) {
-				successMessage = String.format("%s %s", statusCode, statusText);
+				successMessage = String.format("%s %s", statusCode, SUCCESS_MESSAGE);
 				
 				// Map each record
 				InquirePhnBeneficiary ipBeneficiary = new InquirePhnBeneficiary();

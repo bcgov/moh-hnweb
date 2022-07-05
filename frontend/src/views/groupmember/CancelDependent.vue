@@ -124,7 +124,7 @@ export default {
 
         if (this.result?.status === 'success') {
           this.inputFormActive = false
-          this.alertStore.setSuccessAlert(this.result.message)
+          this.alertStore.setInfoAlert(this.result.message)
         }
       } catch (err) {
         handleServiceError(err, this.alertStore, this.$router)
