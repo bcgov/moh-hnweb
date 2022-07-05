@@ -11,13 +11,13 @@ public class AuditReportRequest {
 
 	private String organization;
 
-	private String type;
+	private String transactionType;
 
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	private LocalDate startDate;
+	//@JsonFormat(pattern = "yyyy-MM-dd")
+	//private LocalDate startDate;
 
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	private LocalDate endDate;
+	//@JsonFormat(pattern = "yyyy-MM-dd")
+	//private LocalDate endDate;
 
 	public String getUserId() {
 		return userId;
@@ -27,6 +27,8 @@ public class AuditReportRequest {
 		this.userId = userId;
 	}
 
+	
+	
 	public String getOrganization() {
 		return organization;
 	}
@@ -35,28 +37,22 @@ public class AuditReportRequest {
 		this.organization = organization;
 	}
 
-	public String getType() {
-		return type;
+	public String getTransactionType() {
+		return transactionType;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setTransactionType(String transactionType) {
+		this.transactionType = transactionType;
 	}
 
-	public LocalDate getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(LocalDate startDate) {
-		this.startDate = startDate;
-	}
-
-	public LocalDate getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(LocalDate endDate) {
-		this.endDate = endDate;
-	}
+	/*
+	 * public LocalDate getStartDate() { return startDate; }
+	 * 
+	 * public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
+	 * 
+	 * public LocalDate getEndDate() { return endDate; }
+	 * 
+	 * public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
+	 */
 
 }

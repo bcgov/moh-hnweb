@@ -12,10 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditReportResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedParty;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
-import ca.bc.gov.hlth.hnweb.persistence.entity.Bulletin;
 import ca.bc.gov.hlth.hnweb.persistence.entity.ErrorLevel;
 import ca.bc.gov.hlth.hnweb.persistence.entity.EventMessage;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;

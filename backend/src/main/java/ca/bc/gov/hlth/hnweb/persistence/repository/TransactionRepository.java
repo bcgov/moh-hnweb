@@ -14,7 +14,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
 	@Query("SELECT DISTINCT organization FROM Transaction")
 	List<String> findDistinctOrganization();
 
-	@Query("SELECT t from Transaction t where t.type =:type AND t.organization =:organization")
+	@Query("SELECT t from Transaction t, AffectedParty af where t.type =:type AND t.organization =:organization and t.transactionId=af.transaction")
 	List<Transaction> findByTypeAndOrganization(@Param("type") String type,
 			@Param("organization") String organization);
 

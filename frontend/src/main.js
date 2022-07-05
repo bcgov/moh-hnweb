@@ -2,12 +2,14 @@ import '@bcgov/bc-sans/css/BCSans.css'
 
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
+import Multiselect from 'vue-multiselect'
 
 import { DraggablePlugin } from '@braks/revue-draggable'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faBullhorn, faCheckCircle, faChevronDown, faExclamationCircle, faExclamationTriangle, faExternalLinkAlt, faInfoCircle, faQuestionCircle, faSpinner, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+import AppMultiSelect from './components/ui/AppMultiSelect.vue'
 import App from './App.vue'
 import AppCol from './components/grid/AppCol.vue'
 import AppRow from './components/grid/AppRow.vue'
@@ -54,6 +56,7 @@ function initApp(permissions, apiAvailable) {
   app.component('AppInput', AppInput)
   app.component('AppOutput', AppOutput)
   app.component('AppSelect', AppSelect)
+  app.component('AppMultiSelect', AppMultiSelect)
 
   // Set up Pinia with permissions
   app.use(createPinia())

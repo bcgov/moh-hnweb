@@ -69,3 +69,17 @@ export const RELATIONSHIPS = [
   { text: 'Spouse', value: 'S' },
   { text: 'Dependent', value: 'D' },
 ]
+
+//Audit Report Organization
+export const ORGANIZATION_CODE = [
+  { text: 'Select', value: '' },
+  { text: 'Student Authorization', value: 'S' },
+  { text: 'Employment Authorization', value: 'W' },
+]
+
+//TRANSACTION TYPE
+export const TRANSACTION_TYPES = [
+  { text: 'Select', value: '' },
+  { text: 'Student Authorization', value: 'S' },
+  { text: 'Employment Authorization', value: 'W' },
+]

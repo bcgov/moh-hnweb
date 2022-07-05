@@ -3,6 +3,7 @@ import axios from 'axios'
 import keycloak from '../keycloak'
 
 export const resources = {
+  auditReport: '/audit-reports/get-audit-report',
   bulletins: '/bulletins',
   enrollment: {
     nameSearch: 'enrollment/name-search',

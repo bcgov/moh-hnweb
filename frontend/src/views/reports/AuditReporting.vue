@@ -1,24 +1,19 @@
 <template>
-  <div id="updateNumberAndDept" v-if="searchMode">
+  <div id="viewAuditReport" v-if="searchMode">
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" type="text" v-model.trim="groupNumber" />
+          <AppInput :e-model="v$.userId" id="userId" label="User ID:" type="text" v-model.trim="userId" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.phn" id="phn" label="Group Member's PHN" type="text" v-model="phn" />
+          <AppSelect :e-model="v$.organization" id="organization" label="Organization" v-model="organization" :options="cancelReasons" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.groupMemberNumber" id="groupMemberNumber" label="Group Member Number" type="text" v-model.trim="groupMemberNumber" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppInput :e-model="v$.departmentNumber" id="departmentNumber" label="Department Number" type="text" v-model="departmentNumber" />
+          <AppSelect :e-model="v$.transactionType" id="transactionType" label="transaction Type" v-model="transactionType" :options="cancelReasons" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -35,11 +30,10 @@
 </template>
 
 <script>
-import GroupMemberService from '../../services/GroupMemberService'
+import AuditService from '../../services/AuditService'
 import useVuelidate from '@vuelidate/core'
-import { validateGroupNumber, validateGroupMemberNumber, validateDepartmentNumber, validatePHN, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE } from '../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
-import { DEFAULT_ERROR_MESSAGE } from '../../util/constants.js'
+import { ORGANIZATION_CODE, TRANSACTION_TYPES } from '../../util/constants'
 import { useAlertStore } from '../../stores/alert'
 import { handleServiceError } from '../../util/utils'
 
@@ -51,52 +45,50 @@ export default {
       v$: useVuelidate(),
     }
   },
+  created() {
+    // Organization Id drop down options
+    this.organizationIdOptions = ORGANIZATION_CODE
+    // Transaction Type drop down options
+    this.transactionTypeOptions = TRANSACTION_TYPES
+  },
   data() {
     return {
-      groupNumber: '',
-      phn: '',
-      groupMemberNumber: '',
-      departmentNumber: '',
+      userId: '',
+      organization: '',
+      transactionId: [],
       updateOk: false,
       searchMode: true,
       submitting: false,
+      authors: ['Laravel', 'Laravel 5', 'Vue JS', 'ItSolutionStuff.com', 'HDTuto.com'],
       result: {
-        phn: '',
+        auditReportResponse: '',
         status: '',
         message: '',
       },
+      cancelReasons: [
+        { text: 'Divorced', value: 'I' },
+        { text: 'No longer a child', value: 'P' },
+        { text: 'Out of province move', value: 'E' },
+      ],
     }
   },
   methods: {
     async submitForm() {
-      this.result = null
       this.submitting = true
-      this.updateOk = false
-      this.searchMode = true
       this.alertStore.dismissAlert()
+
       try {
-        const errors = []
-        const isFormValid = await this.v$.$validate()
-        if (!isFormValid) {
-          errors.push(DEFAULT_ERROR_MESSAGE)
-        }
-
-        const isMemberNumberAndDeptValid = this.validateMemberNumberAndDeptNumber()
-        if (!isMemberNumberAndDeptValid) {
-          errors.push('Group Member Number and/or Department Number is required')
-        }
-
-        if (!isFormValid || !isMemberNumberAndDeptValid) {
-          this.showError(errors)
+        const isValid = await this.v$.$validate()
+        if (!isValid) {
+          this.showError()
           return
         }
 
         this.result = (
-          await GroupMemberService.updateNumberAndDept({
-            phn: this.phn,
-            groupNumber: this.groupNumber,
-            departmentNumber: this.departmentNumber,
-            groupMemberNumber: this.groupMemberNumber,
+          await AuditService.getAuditReport({
+            userId: this.userId,
+            organization: this.organization,
+            transactionType: this.transactionType,
           })
         ).data
 
@@ -106,10 +98,8 @@ export default {
         }
 
         if (this.result?.status === 'success') {
-          this.searchMode = false
-          this.updateOk = true
+          this.inputFormActive = false
           this.alertStore.setSuccessAlert(this.result.message)
-          return
         }
       } catch (err) {
         handleServiceError(err, this.alertStore, this.$router)
@@ -117,45 +107,27 @@ export default {
         this.submitting = false
       }
     },
-    updateAnotherGroupMember() {
-      this.$router.go()
-    },
-    showError(errors) {
-      this.alertStore.setErrorAlerts(errors)
+    showError(error) {
+      this.alertStore.setErrorAlert(error)
       this.result = {}
-      this.submitting = false
     },
     resetForm() {
-      this.phn = ''
-      this.groupMemberNumber = ''
-      this.groupNumber = ''
-      this.departmentNumber = ''
+      this.userId = ''
+      this.organization = ''
+      this.transactionType = {}
       this.result = null
-      this.updateOk = false
-      this.searchMode = true
-      this.submitting = false
+      this.inputFormActive = true
       this.v$.$reset()
       this.alertStore.dismissAlert()
-    },
-    validateMemberNumberAndDeptNumber() {
-      return this.groupMemberNumber !== '' || this.departmentNumber !== ''
     },
   },
   validations() {
     return {
-      phn: {
+      userId: {
         required,
-        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
       },
-      groupNumber: {
+      organization: {
         required,
-        validateGroupNumber: helpers.withMessage(VALIDATE_GROUP_NUMBER_MESSAGE, validateGroupNumber),
-      },
-      groupMemberNumber: {
-        validateGroupMemberNumber: helpers.withMessage(VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, validateGroupMemberNumber),
-      },
-      departmentNumber: {
-        validateDepartmentNumber: helpers.withMessage(VALIDATE_DEPARTMENT_NUMBER_MESSAGE, validateDepartmentNumber),
       },
     }
   },
