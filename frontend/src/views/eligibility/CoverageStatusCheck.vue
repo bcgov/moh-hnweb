@@ -1,13 +1,9 @@
 <template>
-  <AppHelp
-    ><p>MSP Direct Coverage Status Check provides the same functionality as the Medical Services Plan (MSP) Teleplan system and Claims IVR.</p>
+  <AppHelp>
+    <p>MSP Direct Coverage Status Check provides the same functionality as the Medical Services Plan (MSP) Teleplan system and Claims IVR.</p>
     <p>Use the MSP Coverage Status Check to check if a person is eligible to have their claim for a health service paid by the MSP. The MSP Coverage Status Check returns a "YES" or "NO" answer for the Personal Health Number (PHN) submitted</p>
     <p>As well as checking eligibility, you can use the MSP Coverage Status Check to submit one or more requests (Patient Status answers are only returned if the person is eligible "YES" eligibility response)</p>
-    <p>
-      Edit error messages appear on the input screen and tell you what fields need correcting. These will be mandatory fields that have been left blank or fields that have been completed with invalid data. Make the necessary correction(s) on the input screen and click Submit to resubmit the business
-      service.
-    </p></AppHelp
-  >
+  </AppHelp>
   <div>
     <form @submit.prevent="submitForm">
       <AppRow>
