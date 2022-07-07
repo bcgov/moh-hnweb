@@ -212,8 +212,8 @@ public class AuditService {
 
 	}
 
-	private Date convertLocalDateToDate(LocalDate startDate) throws ParseException {
-		return new SimpleDateFormat("yyyy-MM-dd").parse(startDate.toString());
+	private Date convertLocalDateToDate(LocalDate date) throws ParseException {
+		return new SimpleDateFormat("yyyy-MM-dd").parse(date.toString());
 	}
 	
 }

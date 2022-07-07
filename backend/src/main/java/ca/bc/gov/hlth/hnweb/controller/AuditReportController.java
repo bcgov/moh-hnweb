@@ -53,6 +53,8 @@ public class AuditReportController extends BaseController {
 				auditReportRequest.getTransactionType(), auditReportRequest.getOrganization(),
 				auditReportRequest.getUserId(), auditReportRequest.getStartDate(), auditReportRequest.getEndDate()));
 		
+		logger.info("Audit Report size : {}", auditReport.size());
+		
 		AuditReportResponse auditReportingResponse = new AuditReportResponse();
 		auditReportingResponse.setAuditReports(auditReport);
 		auditReportingResponse.setStatus(StatusEnum.SUCCESS);	
