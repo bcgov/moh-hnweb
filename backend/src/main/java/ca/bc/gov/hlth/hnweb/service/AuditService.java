@@ -2,6 +2,9 @@ package ca.bc.gov.hlth.hnweb.service;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -178,12 +181,39 @@ public class AuditService {
 		return affectedPartyRepository.save(affectedParty);
 	}
 	
+	/**
+	 * Retrieves distinct organization for audit report
+	 * @return
+	 */
 	public List<Organization> getOrganization() {
 		return organizationRepository.findAll();
 	}
-	
-	public List<Transaction> getAuditReport(String type, String organization) {
-		return transactionRepository.findByTypeAndOrganization(type, organization);
+
+	/**
+	 * Retrieves audit records for the given search parameters
+	 * @param type
+	 * @param organization
+	 * @param userId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<AffectedParty> getAuditReport(String type, String organization, String userId, LocalDate startDate,
+			LocalDate endDate) {
+		try {
+			Date formattedStartDate = convertLocalDateToDate(startDate);
+			Date formattedendDate = convertLocalDateToDate(endDate);
+			return affectedPartyRepository.findByTransactionAndDirection(type, organization, userId, formattedStartDate,
+					formattedendDate);
+		} catch (ParseException e) {
+			logger.error(e.getLocalizedMessage());
+			return null;
+		}		
+
+	}
+
+	private Date convertLocalDateToDate(LocalDate startDate) throws ParseException {
+		return new SimpleDateFormat("yyyy-MM-dd").parse(startDate.toString());
 	}
 	
 }

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-
 public class AuditReportRequest {
 
 	private String userId;
@@ -13,11 +12,9 @@ public class AuditReportRequest {
 
 	private String transactionType;
 
-	//@JsonFormat(pattern = "yyyy-MM-dd")
-	//private LocalDate startDate;
+	private LocalDate startDate;
 
-	//@JsonFormat(pattern = "yyyy-MM-dd")
-	//private LocalDate endDate;
+	private LocalDate endDate;
 
 	public String getUserId() {
 		return userId;
@@ -27,8 +24,6 @@ public class AuditReportRequest {
 		this.userId = userId;
 	}
 
-	
-	
 	public String getOrganization() {
 		return organization;
 	}
@@ -45,14 +40,20 @@ public class AuditReportRequest {
 		this.transactionType = transactionType;
 	}
 
-	/*
-	 * public LocalDate getStartDate() { return startDate; }
-	 * 
-	 * public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
-	 * 
-	 * public LocalDate getEndDate() { return endDate; }
-	 * 
-	 * public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
-	 */
+	public LocalDate getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(LocalDate startDate) {
+		this.startDate = startDate;
+	}
+
+	public LocalDate getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(LocalDate endDate) {
+		this.endDate = endDate;
+	}
 
 }
