@@ -23,7 +23,6 @@
     "keycloak-js": "^15.0.2",
     "pinia": "next",
     "vue": "^3.2.13",
-    "vue-class-component": "^8.0.0",
     "vue-multiselect": "^3.0.0-alpha.2",
     "vue-router": "4"
   },
