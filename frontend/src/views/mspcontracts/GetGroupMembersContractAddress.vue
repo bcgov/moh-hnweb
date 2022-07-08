@@ -170,7 +170,7 @@ export default {
         }
 
         this.searchOk = true
-        this.alertStore.setAlert({ message: this.result.message, type: this.result.status })
+        this.alertStore.setAlertWithInfoForSuccess( this.result.message, this.result.status )
         if (this.result.message === 'RPBS0059 MORE THAN 20 PERSONS. PLEASE CONTACT MSP') {
           // in legacy no results are shown the > 20 message is returned so clear result info
           this.result.contractInquiryBeneficiaries = []
