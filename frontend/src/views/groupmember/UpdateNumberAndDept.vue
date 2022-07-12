@@ -108,7 +108,7 @@ export default {
         if (this.result?.status === 'success') {
           this.searchMode = false
           this.updateOk = true
-          this.alertStore.setSuccessAlert(this.result.message)
+          this.alertStore.setInfoAlert(this.result.message)
           return
         }
       } catch (err) {

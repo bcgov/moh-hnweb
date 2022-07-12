@@ -7,7 +7,10 @@
       <AppLink href="https://www2.gov.bc.ca/gov/content/health/practitioner-professional-resources/system-access/msp-direct" popout>Transactions in MSP Direct?</AppLink>
     </li>
     <li>
-      <AppLink href="https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/identity-and-authentication-services" popout>Get BC Services Card or BCeID</AppLink>
+      <AppLink href="https://www.bceid.ca/directories/bluepages/details.aspx?serviceId=7611&eServiceType=all" popout>Register for Business BCeID</AppLink>
+    </li>
+    <li>
+      <AppLink href="https://www2.gov.bc.ca/gov/content?id=034E906146794F84A00535A3F9354913" popout>Set up the BC Services Card app</AppLink>
     </li>
   </AppNav>
 </template>

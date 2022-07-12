@@ -7,6 +7,8 @@ const config = (() => {
     // SERVICE_URL: '',
     // KEYCLOAK_CLIENT_ID:,
     // USER_TRANSFER_URL: '',
+    // SITE_MINDER_LOGOUT_URI: '',
+    // PHSA_LOGOUT_URI: '',
     // ENABLE_KC_LOGIN: true,
   }
 })()
