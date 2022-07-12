@@ -1,6 +1,5 @@
 package ca.bc.gov.hlth.hnweb.model.rest.auditreport;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class AuditReport {

@@ -1,6 +1,6 @@
 <template>
   <TheSubNav>
-    <SubNavTab routeName="AuditReporting" title="Audit Reporting" />
+    <SubNavTab routeName="AuditReporting" title="Audit Reporting" v-if="hasPermission('AuditReporting')"/>
   </TheSubNav>
   <router-view />
 </template>

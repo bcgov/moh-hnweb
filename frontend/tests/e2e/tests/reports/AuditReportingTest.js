@@ -13,7 +13,6 @@ const SUCCESS_MESSAGE = 'Transaction completed successfully'
 const NO_RESULT_MESSAGE = 'No results were returned. Please refine your search criteria, and try again.'
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/reports/auditReporting'
 
-
 fixture(`Audit Reporting Page`).disablePageCaching`Test Audit Reporting`
     .beforeEach(async (t) => {
         await t.useRole(regularAccUser).navigateTo(PAGE_TO_TEST)

@@ -9,7 +9,6 @@
       <AppRow>
         <AppCol class="col3">
           <AppLabel>Organization</AppLabel>
-
           <div class="checkbox-wrapper">
             <label class="checkbox" :for="option.value" v-for="option in organizationOptions" :key="option.value">
               {{ option.value }}

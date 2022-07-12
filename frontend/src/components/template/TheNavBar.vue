@@ -108,9 +108,6 @@ export default {
     hasPermission(permission) {
       return this.authStore.hasPermission(permission)
     },
-    hasReportPermission() {
-      return this.hasPermission('AuditReporting')
-    },
     hasEligibilityPermission() {
       return this.hasPermission('MSPCoverageCheck') || this.hasPermission('CheckEligibility') || this.hasPermission('PHNInquiry') || this.hasPermission('PHNLookup')
     },
