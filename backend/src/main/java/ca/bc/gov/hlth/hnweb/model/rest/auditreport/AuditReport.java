@@ -42,8 +42,6 @@ public class AuditReport {
 		this.userId = userId;
 	}
 
-	
-
 	public String getAffectedPartyId() {
 		return affectedPartyId;
 	}
