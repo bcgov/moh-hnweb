@@ -1,16 +1,15 @@
 package ca.bc.gov.hlth.hnweb.model.rest.auditreport;
 
 import java.time.LocalDate;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.List;
 
 public class AuditReportRequest {
 
 	private String userId;
 
-	private String organization;
+	private List<String> organizations;
 
-	private String transactionType;
+	private List<String> transactionTypes;
 
 	private LocalDate startDate;
 
@@ -24,20 +23,20 @@ public class AuditReportRequest {
 		this.userId = userId;
 	}
 
-	public String getOrganization() {
-		return organization;
+	public List<String> getOrganizations() {
+		return organizations;
 	}
 
-	public void setOrganization(String organization) {
-		this.organization = organization;
+	public void setOrganizations(List<String> organizations) {
+		this.organizations = organizations;
 	}
 
-	public String getTransactionType() {
-		return transactionType;
+	public List<String> getTransactionTypes() {
+		return transactionTypes;
 	}
 
-	public void setTransactionType(String transactionType) {
-		this.transactionType = transactionType;
+	public void setTransactionTypes(List<String> transactionTypes) {
+		this.transactionTypes = transactionTypes;
 	}
 
 	public LocalDate getStartDate() {

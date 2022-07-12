@@ -12,7 +12,7 @@
           <div class="dropdown">
             <span>Reports</span>
             <div class="dropdown-content">
-              <router-link @click="resetAlert" :class="menuClass($route, 'AuditReporting')" :to="{ name: 'AuditReporting' }">Audit Reporting</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'AuditReporting')" :to="{ name: 'AuditReporting' }" v-if="hasPermission('AuditReporting')">Audit Reporting</router-link>
             </div>
           </div>
         </li>

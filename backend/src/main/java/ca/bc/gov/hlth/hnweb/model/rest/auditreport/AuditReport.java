@@ -1,6 +1,7 @@
 package ca.bc.gov.hlth.hnweb.model.rest.auditreport;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class AuditReport {
 
@@ -10,7 +11,7 @@ public class AuditReport {
 
 	private String userId;
 
-	private LocalDate transactionStartTime;
+	private LocalDateTime transactionStartTime;
 
 	private String affectedPartyId;
 
@@ -68,11 +69,11 @@ public class AuditReport {
 		this.transactionId = transactionId;
 	}
 
-	public LocalDate getTransactionStartTime() {
+	public LocalDateTime getTransactionStartTime() {
 		return transactionStartTime;
 	}
 
-	public void setTransactionStartTime(LocalDate transactionStartTime) {
+	public void setTransactionStartTime(LocalDateTime transactionStartTime) {
 		this.transactionStartTime = transactionStartTime;
 	}
 

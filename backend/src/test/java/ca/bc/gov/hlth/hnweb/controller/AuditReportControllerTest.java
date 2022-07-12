@@ -4,6 +4,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,10 +53,18 @@ public class AuditReportControllerTest extends BaseControllerTest {
 
 	@Test
 	public void testGetAuditReport_withOptionalParam() {
+		List<String> types = new ArrayList<>();
+		types.add(TransactionType.CHECK_ELIGIBILITY.name());
+		types.add(TransactionType.PHN_INQUIRY.name());
+		
+		List<String> orgs = new ArrayList<>();
+		orgs.add("00000010");
+		orgs.add("00000020");
+		
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setUserId("test");
-		auditReportRequest.setOrganization("00000010");
-		auditReportRequest.setTransactionType(TransactionType.CHECK_ELIGIBILITY.name());
+		auditReportRequest.setOrganizations(orgs);
+		auditReportRequest.setTransactionTypes(types);
 		auditReportRequest.setStartDate(LocalDate.now());
 		auditReportRequest.setEndDate(LocalDate.now());
 

@@ -182,8 +182,8 @@ public class AuditService {
 	}
 	
 	/**
-	 * Retrieves distinct organization for audit report
-	 * @return
+	 * Retrieves distinct organization for audit report.
+	 * @return list of organization.
 	 */
 	public List<Organization> getOrganization() {
 		return organizationRepository.findAll();
@@ -191,19 +191,19 @@ public class AuditService {
 
 	/**
 	 * Retrieves audit records for the given search parameters
-	 * @param type
-	 * @param organization
+	 * @param types Transaction types
+	 * @param organizations
 	 * @param userId
 	 * @param startDate
 	 * @param endDate
 	 * @return
 	 */
-	public List<AffectedParty> getAuditReport(String type, String organization, String userId, LocalDate startDate,
+	public List<AffectedParty> getAuditReport(List<String> types, List<String> organizations, String userId, LocalDate startDate,
 			LocalDate endDate) {
 		try {
 			Date formattedStartDate = convertLocalDateToDate(startDate);
 			Date formattedendDate = convertLocalDateToDate(endDate);
-			return affectedPartyRepository.findByTransactionAndDirection(type, organization, userId, formattedStartDate,
+			return affectedPartyRepository.findByTransactionAndDirection(types, organizations, userId, formattedStartDate,
 					formattedendDate);
 		} catch (ParseException e) {
 			logger.error(e.getLocalizedMessage());

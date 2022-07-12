@@ -1,7 +1,7 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
 import java.time.Instant;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,7 +34,7 @@ import ca.bc.gov.hlth.hnweb.service.AuditService;
 @RequestMapping("/audit-reports")
 @RestController
 public class AuditReportController extends BaseController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(AuditReportController.class);
 
 	@Autowired
@@ -42,30 +42,32 @@ public class AuditReportController extends BaseController {
 
 	/**
 	 * Retrieves the audit record
+	 * 
 	 * @param auditReportRequest
 	 * @param request
 	 * @return List of audit records
 	 */
 	@PostMapping("/get-audit-report")
-	public ResponseEntity<AuditReportResponse> getAuditReport(
-			@Valid @RequestBody AuditReportRequest auditReportRequest, HttpServletRequest request) {
+	public ResponseEntity<AuditReportResponse> getAuditReport(@Valid @RequestBody AuditReportRequest auditReportRequest,
+			HttpServletRequest request) {
 		List<AuditReport> auditReport = convertReport(auditService.getAuditReport(
-				auditReportRequest.getTransactionType(), auditReportRequest.getOrganization(),
+				auditReportRequest.getTransactionTypes(), auditReportRequest.getOrganizations(),
 				auditReportRequest.getUserId(), auditReportRequest.getStartDate(), auditReportRequest.getEndDate()));
-		
+
 		logger.info("Audit Report size : {}", auditReport.size());
-		
+
 		AuditReportResponse auditReportingResponse = new AuditReportResponse();
 		auditReportingResponse.setAuditReports(auditReport);
-		auditReportingResponse.setStatus(StatusEnum.SUCCESS);	
-		
+		auditReportingResponse.setStatus(StatusEnum.SUCCESS);
+
 		ResponseEntity<AuditReportResponse> responseEntity = ResponseEntity.ok(auditReportingResponse);
-		
+
 		return responseEntity;
 	}
 
 	/**
 	 * Retrieves distinct organization
+	 * 
 	 * @return array of organization
 	 */
 	@GetMapping("/get-organization")
@@ -84,7 +86,7 @@ public class AuditReportController extends BaseController {
 			model.setType(affectedParty.getTransaction().getType());
 			model.setUserId(affectedParty.getTransaction().getUserId());
 			model.setAffectedPartyId(affectedParty.getIdentifier());
-			model.setAffectedPartyType(affectedParty.getIdentifierType());		
+			model.setAffectedPartyType(affectedParty.getIdentifierType());
 			model.setTransactionStartTime(convertDate(affectedParty.getTransaction().getStartTime()));
 
 			auditReportResponse.add(model);
@@ -95,21 +97,20 @@ public class AuditReportController extends BaseController {
 
 	private JSONArray convertOrganization(List<Organization> organizations) {
 		JSONArray jsonArray = new JSONArray();
-		JSONObject jsonObject = new JSONObject();
 
-		organizations.forEach(organization -> {			
+		organizations.forEach(organization -> {
 			if (organization != null) {
+				JSONObject jsonObject = new JSONObject();
 				jsonObject.put("text", organization.getOrganization());
 				jsonObject.put("value", organization.getOrganization());
+				jsonArray.add(jsonObject);
 			}
 		});
-
-		jsonArray.add(jsonObject);
 		return jsonArray;
 	}
-	
-	private LocalDate convertDate(Date date) {
-		return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+
+	private LocalDateTime convertDate(Date date) {
+		return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
 
 }

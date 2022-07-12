@@ -8,7 +8,15 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppSelect :e-model="v$.organization" id="organization" label="Organization" v-model="organization" :options="organizationOptions" />
+          <AppLabel>Organization</AppLabel>
+
+          <div class="checkbox-wrapper">
+            <label class="checkbox" :for="option.value" v-for="option in organizationOptions" :key="option.value">
+              {{ option.value }}
+              <input type="checkbox" :id="option.value" :value="option.value" v-model="organizations" />
+              <span class="checkmark"></span>
+            </label>
+          </div>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -30,7 +38,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.endDate" id="dateOfBirth" label="End Date" v-model="endDate" />
+          <AppDateInput :e-model="v$.endDate" id="endDate" label="End Date" v-model="endDate" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -85,7 +93,7 @@ export default {
   data() {
     return {
       userId: '',
-      organization: '',
+      organizations: [],
       endDate: null,
       startDate: null,
       organizationOptions: [],
@@ -129,8 +137,8 @@ export default {
         }
         this.result = (
           await AuditService.getAuditReport({
-            organization: this.organization,
-            transactionType: this.transactionType,
+            organizations: this.organizations,
+            transactionTypes: this.transactionTypes,
             userId: this.userId,
             startDate: this.startDate,
             endDate: this.endDate,
@@ -162,8 +170,8 @@ export default {
     },
     resetForm() {
       this.userId = ''
-      this.organization = ''
-      this.transactionType = ''
+      this.organizations = {}
+      this.transactionTypes = {}
       this.startDate = ''
       this.endDate = ''
       this.result = null
