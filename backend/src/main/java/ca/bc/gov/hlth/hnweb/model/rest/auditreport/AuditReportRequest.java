@@ -55,4 +55,10 @@ public class AuditReportRequest {
 		this.endDate = endDate;
 	}
 
+	@Override
+	public String toString() {
+		return "AuditReportRequest [userId=" + userId + ", organization=" + organizations + ", type ="
+				+ transactionTypes + ", startDate=" + startDate + ", endDate=" + endDate + "]";
+	}
+
 }

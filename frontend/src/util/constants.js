@@ -69,4 +69,3 @@ export const RELATIONSHIPS = [
   { text: 'Spouse', value: 'S' },
   { text: 'Dependent', value: 'D' },
 ]
-
