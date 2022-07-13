@@ -32,7 +32,6 @@ import ca.bc.gov.hlth.hnweb.persistence.repository.TransactionRepository;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
-import io.netty.handler.codec.http2.Http2FrameLogger.Direction;
 
 /**
  * Service for working with Auditing via Transaction tables.

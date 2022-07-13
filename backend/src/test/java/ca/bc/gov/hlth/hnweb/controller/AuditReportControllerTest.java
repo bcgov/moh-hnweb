@@ -59,8 +59,7 @@ public class AuditReportControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testGetAuditReport_withoutOptionalParam() {
-		createOrganization();
+	public void testGetAuditReport_withoutOptionalParam() {;
 		createAuditReport();
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setUserId("hnweb1");
@@ -77,7 +76,6 @@ public class AuditReportControllerTest extends BaseControllerTest {
 
 	@Test
 	public void testGetAuditReport_withOptionalParam() {
-		//createOrganization();
 		createAuditReport();
 		
 		List<String> types = new ArrayList<>();
