@@ -32,6 +32,7 @@ import ca.bc.gov.hlth.hnweb.persistence.repository.TransactionRepository;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
+import io.netty.handler.codec.http2.Http2FrameLogger.Direction;
 
 /**
  * Service for working with Auditing via Transaction tables.
@@ -194,6 +195,7 @@ public class AuditService {
 	 * @param types Transaction types
 	 * @param organizations
 	 * @param userId
+	 * @param direction
 	 * @param startDate
 	 * @param endDate
 	 * @return
@@ -203,7 +205,7 @@ public class AuditService {
 		try {
 			Date formattedStartDate = convertLocalDateToDate(startDate);
 			Date formattedendDate = convertLocalDateToDate(endDate);
-			return affectedPartyRepository.findByTransactionAndDirection(types, organizations, userId, formattedStartDate,
+			return affectedPartyRepository.findByTransactionAndDirection(types, organizations, userId, AffectedPartyDirection.INBOUND.name(), formattedStartDate,
 					formattedendDate);
 		} catch (ParseException e) {
 			logger.error(e.getLocalizedMessage());

@@ -11,12 +11,13 @@ import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedParty;
 
 public interface AffectedPartyRepository extends JpaRepository<AffectedParty, Long> {
 
-	@Query("SELECT af from AffectedParty af where "		 
-		      +"(af.transaction.organization IN (:organizations) or :organizations is null) and "
-		      +"(af.transaction.type IN (:types) or :types is null) and "
+	@Query("SELECT af from AffectedParty af where "	 
+		      +"(COALESCE(:organizations, null) is null or af.transaction.organization IN (:organizations)) and "
+		      +"(COALESCE(:type, null) is null or af.transaction.type IN (:type)) and "
 		      +"(af.transaction.userId=:userId) and "
-		      +"(af.direction='Inbound') and "
+		      +"(af.direction=:direction) and "
 		      +"(af.transaction.startTime between :startDate and :endDate)")
-	List<AffectedParty> findByTransactionAndDirection(@Param("types") List<String> types,
-			@Param("organizations") List<String> organizations, @Param("userId") String userId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+	List<AffectedParty> findByTransactionAndDirection(@Param("type") List<String> type,
+			@Param("organizations") List<String> organizations, @Param("userId") String userId, @Param("direction") String direction, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
 }
