@@ -94,8 +94,7 @@ public class AuditReportControllerTest extends BaseControllerTest {
 		auditReportRequest.setTransactionTypes(types);
 		auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
 		auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
-		System.out.println(auditReportRequest.toString());
-
+		
 		ResponseEntity<AuditReportResponse> auditReport = auditReportController.getAuditReport(auditReportRequest,
 				createHttpServletRequest());
 
