@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import ca.bc.gov.hlth.hnweb.persistence.entity.Organization;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 import ca.bc.gov.hlth.hnweb.persistence.repository.AffectedPartyRepository;
 import ca.bc.gov.hlth.hnweb.persistence.repository.OrganizationRepository;
+import ca.bc.gov.hlth.hnweb.persistence.repository.TransactionRepository;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
 
 public class AuditReportControllerTest extends BaseControllerTest {
@@ -38,6 +40,9 @@ public class AuditReportControllerTest extends BaseControllerTest {
 
 	@Autowired
 	private AffectedPartyRepository affectedPartyRepository;
+	
+	@Autowired
+	private TransactionRepository transactionRepository;
 
 	@Test
 	public void testGetOrganization() throws Exception {
@@ -72,7 +77,7 @@ public class AuditReportControllerTest extends BaseControllerTest {
 
 	@Test
 	public void testGetAuditReport_withOptionalParam() {
-		createOrganization();
+		//createOrganization();
 		createAuditReport();
 		
 		List<String> types = new ArrayList<>();
@@ -113,17 +118,19 @@ public class AuditReportControllerTest extends BaseControllerTest {
 		transaction.setServer("server1");
 		transaction.setSessionId("123456");
 		transaction.setSourceIp("0:0:0:0:0:0:0:1");
-		Date myDate = new GregorianCalendar(2022, 7, 5).getTime();
-		transaction.setStartTime(myDate);
+		transaction.setTransactionId(UUID.randomUUID());
+		Date transactionDate = new GregorianCalendar(2022, 7, 5).getTime();
+		transaction.setStartTime(transactionDate);
 		transaction.setType(TransactionType.CHECK_ELIGIBILITY.name());
 		transaction.setUserId("hnweb1");
+		transactionRepository.save(transaction);
 
 		AffectedParty affectedParty = new AffectedParty();
 		affectedParty.setIdentifier(IdentifierType.PHN.name());
 		affectedParty.setIdentifierType(IdentifierType.PHN.getValue());
 		affectedParty.setDirection(AffectedPartyDirection.INBOUND.name());
 		affectedParty.setTransaction(transaction);
-		System.out.println(transaction.toString());
+	
 		affectedPartyRepository.save(affectedParty);
 	}
 
