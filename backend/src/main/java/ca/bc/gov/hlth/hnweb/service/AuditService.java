@@ -204,7 +204,7 @@ public class AuditService {
 		try {
 			Date formattedStartDate = convertLocalDateToDate(startDate);
 			Date formattedendDate = convertLocalDateToDate(endDate);
-			return affectedPartyRepository.findByTransactionAndDirection(types, organizations, userId, AffectedPartyDirection.INBOUND.name(), formattedStartDate,
+			return affectedPartyRepository.findByTransactionAndDirection(types, organizations, userId, AffectedPartyDirection.INBOUND.getValue(), formattedStartDate,
 					formattedendDate);
 		} catch (ParseException e) {
 			logger.error(e.getLocalizedMessage());

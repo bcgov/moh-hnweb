@@ -48,7 +48,7 @@
   </div>
   <br />
 
-  <div id="searchResult" v-if="searchOk && result.auditReports.length > 0">
+  <div id="searchResults" v-if="searchOk && result.auditReports.length > 0">
     <AppSimpleTable id="resultsTable">
       <thead>
         <tr>
@@ -204,7 +204,7 @@ export default {
 
 <style scoped>
 .checkbox-wrapper {
-  height: 125px;
+  max-height: 125px;
   width: 400px;
   overflow: auto;
   padding-left: 10px;
@@ -263,5 +263,13 @@ export default {
 /* Show the checkmark when checked */
 .checkbox input:checked ~ .checkmark:after {
   display: block;
+}
+
+#searchResults {
+  overflow: auto;
+  height: 800px;
+}
+
+#resultsTable {
 }
 </style>
