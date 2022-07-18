@@ -7,18 +7,18 @@ import ca.bc.gov.hlth.hnweb.model.rest.BaseResponse;
 
 public class AuditReportResponse extends BaseResponse {
 
-	private List<AuditReport> auditReports = new ArrayList<>();
+	private List<AuditRecord> records = new ArrayList<>();
 
-	public List<AuditReport> getAuditReports() {
-		return auditReports;
+	public List<AuditRecord> getRecords() {
+		return records;
 	}
 
-	public void setAuditReports(List<AuditReport> auditReports) {
-		this.auditReports = auditReports;
+	public void setRecords(List<AuditRecord> auditReports) {
+		this.records = auditReports;
 	}
 	
 	@Override
 	public String toString() {
-		return "AuditReportResponse [auditReports=" + auditReports + "]";
+		return "AuditReportResponse [auditReport=" + records + "]";
 	}
 }

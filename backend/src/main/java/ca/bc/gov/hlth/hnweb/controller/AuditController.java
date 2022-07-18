@@ -20,22 +20,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nimbusds.jose.shaded.json.JSONArray;
-import com.nimbusds.jose.shaded.json.JSONObject;
-
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
-import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditReport;
+import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditRecord;
 import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditReportRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditReportResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedParty;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Organization;
 import ca.bc.gov.hlth.hnweb.service.AuditService;
 
-@RequestMapping("/audit-reports")
+@RequestMapping("/audit")
 @RestController
-public class AuditReportController extends BaseController {
+public class AuditController extends BaseController {
 
-	private static final Logger logger = LoggerFactory.getLogger(AuditReportController.class);
+	private static final Logger logger = LoggerFactory.getLogger(AuditController.class);
 
 	@Autowired
 	private AuditService auditService;
@@ -47,17 +44,17 @@ public class AuditReportController extends BaseController {
 	 * @param request
 	 * @return List of audit records
 	 */
-	@PostMapping("/get-audit-report")
+	@PostMapping("/audit-report")
 	public ResponseEntity<AuditReportResponse> getAuditReport(@Valid @RequestBody AuditReportRequest auditReportRequest,
 			HttpServletRequest request) {
-		List<AuditReport> auditReport = convertReport(auditService.getAuditReport(
+		List<AuditRecord> auditReport = convertReport(auditService.getAffectedParties(
 				auditReportRequest.getTransactionTypes(), auditReportRequest.getOrganizations(),
 				auditReportRequest.getUserId(), auditReportRequest.getStartDate(), auditReportRequest.getEndDate()));
 
 		logger.info("Audit Report size : {}", auditReport.size());
 
 		AuditReportResponse auditReportingResponse = new AuditReportResponse();
-		auditReportingResponse.setAuditReports(auditReport);
+		auditReportingResponse.setRecords(auditReport);
 		auditReportingResponse.setStatus(StatusEnum.SUCCESS);
 
 		ResponseEntity<AuditReportResponse> responseEntity = ResponseEntity.ok(auditReportingResponse);
@@ -68,19 +65,19 @@ public class AuditReportController extends BaseController {
 	/**
 	 * Retrieves distinct organization
 	 * 
-	 * @return array of organization
+	 * @return list of organization
 	 */
-	@GetMapping("/get-organization")
-	public ResponseEntity<JSONArray> getOrganization() {
-		JSONArray organization = convertOrganization(auditService.getOrganization());
-		ResponseEntity<JSONArray> responseEntity = ResponseEntity.ok(organization);
+	@GetMapping("/organizations")
+	public ResponseEntity<List<String>> getOrganizations() {
+		List<String> organization = convertOrganization(auditService.getOrganizations());
+		ResponseEntity<List<String>> responseEntity = ResponseEntity.ok(organization);
 		return responseEntity;
 	}
 
-	private List<AuditReport> convertReport(List<AffectedParty> affectedParties) {
-		List<AuditReport> auditReportResponse = new ArrayList<>();
+	private List<AuditRecord> convertReport(List<AffectedParty> affectedParties) {
+		List<AuditRecord> auditReportResponse = new ArrayList<>();
 		affectedParties.forEach(affectedParty -> {
-			AuditReport model = new AuditReport();
+			AuditRecord model = new AuditRecord();
 			model.setOrganization(affectedParty.getTransaction().getOrganization());
 			model.setTransactionId(affectedParty.getTransaction().getTransactionId().toString());
 			model.setType(affectedParty.getTransaction().getType());
@@ -95,18 +92,15 @@ public class AuditReportController extends BaseController {
 		return auditReportResponse;
 	}
 
-	private JSONArray convertOrganization(List<Organization> organizations) {
-		JSONArray jsonArray = new JSONArray();
+	private List<String> convertOrganization(List<Organization> organizations) {
+		List<String> orgianizations = new ArrayList<>();
 
 		organizations.forEach(organization -> {
 			if (organization != null) {
-				JSONObject jsonObject = new JSONObject();
-				jsonObject.put("text", organization.getOrganization());
-				jsonObject.put("value", organization.getOrganization());
-				jsonArray.add(jsonObject);
+				orgianizations.add(organization.getOrganization());
 			}
 		});
-		return jsonArray;
+		return orgianizations;
 	}
 
 	private LocalDateTime convertDate(Date date) {

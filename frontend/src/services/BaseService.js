@@ -28,8 +28,8 @@ export const resources = {
     updateContractAddress: '/msp-contracts/update-contract-address',
   },
   reports: {
-    getAuditReport: '/audit-reports/get-audit-report',
-    getOrganization: '/audit-reports/get-organization',
+    getAuditReport: '/audit/audit-report',
+    getOrganizations: '/audit/organizations',
   },
   user: {
     permissions: '/user/permissions',

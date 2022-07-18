@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.nimbusds.jose.shaded.json.JSONArray;
-
 import ca.bc.gov.hlth.hnweb.BaseControllerTest;
 import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditReportRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditReportResponse;
@@ -30,10 +28,10 @@ import ca.bc.gov.hlth.hnweb.persistence.repository.OrganizationRepository;
 import ca.bc.gov.hlth.hnweb.persistence.repository.TransactionRepository;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
 
-public class AuditReportControllerTest extends BaseControllerTest {
+public class AuditControllerTest extends BaseControllerTest {
 
 	@Autowired
-	private AuditReportController auditReportController;
+	private AuditController auditReportController;
 
 	@Autowired
 	private OrganizationRepository organizationRepository;
@@ -47,14 +45,14 @@ public class AuditReportControllerTest extends BaseControllerTest {
 	@Test
 	public void testGetOrganization() throws Exception {
 		createOrganization();
-		ResponseEntity<JSONArray> organization = auditReportController.getOrganization();
+		ResponseEntity<List<String>> organization = auditReportController.getOrganizations();
 
 		assertEquals(HttpStatus.OK, organization.getStatusCode());
-		JSONArray jsonArray = organization.getBody();
+		List<String> orgs = organization.getBody();
 
-		assertNotNull(jsonArray);
+		assertNotNull(orgs);
 		// Check the number of valid records
-		assertEquals(1, jsonArray.size());
+		assertEquals(1, orgs.size());
 
 	}
 
@@ -70,7 +68,7 @@ public class AuditReportControllerTest extends BaseControllerTest {
 				createHttpServletRequest());
 
 		assertEquals(HttpStatus.OK, auditReport.getStatusCode());
-		assertEquals(1, auditReport.getBody().getAuditReports().size());
+		assertEquals(1, auditReport.getBody().getRecords().size());
 
 	}
 
@@ -97,7 +95,7 @@ public class AuditReportControllerTest extends BaseControllerTest {
 				createHttpServletRequest());
 
 		assertEquals(HttpStatus.OK, auditReport.getStatusCode());
-		assertEquals(1, auditReport.getBody().getAuditReports().size());
+		assertEquals(1, auditReport.getBody().getRecords().size());
 
 	}
 
@@ -125,7 +123,7 @@ public class AuditReportControllerTest extends BaseControllerTest {
 		AffectedParty affectedParty = new AffectedParty();
 		affectedParty.setIdentifier(IdentifierType.PHN.name());
 		affectedParty.setIdentifierType(IdentifierType.PHN.getValue());
-		affectedParty.setDirection(AffectedPartyDirection.INBOUND.name());
+		affectedParty.setDirection(AffectedPartyDirection.INBOUND.getValue());
 		affectedParty.setTransaction(transaction);
 	
 		affectedPartyRepository.save(affectedParty);

@@ -2,7 +2,7 @@ package ca.bc.gov.hlth.hnweb.model.rest.auditreport;
 
 import java.time.LocalDateTime;
 
-public class AuditReport {
+public class AuditRecord {
 
 	private String type;
 

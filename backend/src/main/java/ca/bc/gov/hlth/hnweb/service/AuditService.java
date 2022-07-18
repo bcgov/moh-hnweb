@@ -185,7 +185,7 @@ public class AuditService {
 	 * Retrieves distinct organization for audit report.
 	 * @return list of organization.
 	 */
-	public List<Organization> getOrganization() {
+	public List<Organization> getOrganizations() {
 		return organizationRepository.findAll();
 	}
 
@@ -199,7 +199,7 @@ public class AuditService {
 	 * @param endDate
 	 * @return
 	 */
-	public List<AffectedParty> getAuditReport(List<String> types, List<String> organizations, String userId, LocalDate startDate,
+	public List<AffectedParty> getAffectedParties(List<String> types, List<String> organizations, String userId, LocalDate startDate,
 			LocalDate endDate) {
 		try {
 			Date formattedStartDate = convertLocalDateToDate(startDate);

@@ -10,9 +10,9 @@
         <AppCol class="col3">
           <AppLabel>Organization</AppLabel>
           <div class="checkbox-wrapper">
-            <label class="checkbox" :for="option.value" v-for="option in organizationOptions" :key="option.value">
-              {{ option.value }}
-              <input type="checkbox" :id="option.value" :value="option.value" v-model="organizations" />
+            <label class="checkbox" :for="option" v-for="option in organizationOptions" :key="option">
+              {{ option }}
+              <input type="checkbox" :id="option" :value="option" v-model="organizations" />
               <span class="checkmark"></span>
             </label>
           </div>
@@ -22,9 +22,9 @@
         <AppCol class="col3">
           <AppLabel>Transaction Types</AppLabel>
           <div class="checkbox-wrapper">
-            <label class="checkbox" :for="option.value" v-for="option in transactionOptions" :key="option.value">
-              {{ option.value }}
-              <input type="checkbox" :id="option.value" :value="option.value" v-model="transactionTypes" />
+            <label class="checkbox" :for="option" v-for="option in transactionOptions" :key="option">
+              {{ option }}
+              <input type="checkbox" :id="option" :value="option" v-model="transactionTypes" />
               <span class="checkmark"></span>
             </label>
           </div>
@@ -47,8 +47,7 @@
     </form>
   </div>
   <br />
-
-  <div id="searchResults" v-if="searchOk && result.auditReports.length > 0">
+  <div id="searchResults" v-if="searchOk && result.records.length > 0">
     <AppSimpleTable id="resultsTable">
       <thead>
         <tr>
@@ -62,8 +61,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="auditReport in result.auditReports">
-          <AuditReportRecords :auditReport="auditReport" />
+        <tr v-for="record in result.records">
+          <AuditReportRecord :record="record" />
         </tr>
       </tbody>
     </AppSimpleTable>
@@ -72,7 +71,7 @@
 
 <script>
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
-import AuditReportRecords from '../../components/reports/AuditReportRecords.vue'
+import AuditReportRecord from '../../components/reports/AuditReportRecord.vue'
 import AuditService from '../../services/AuditService'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
@@ -81,7 +80,7 @@ import { handleServiceError } from '../../util/utils'
 import AppLabel from '../../components/ui/AppLabel.vue'
 
 export default {
-  components: { AppLabel, AppSimpleTable, AuditReportRecords },
+  components: { AppLabel, AppSimpleTable, AuditReportRecord },
   name: 'auditReporting',
   setup() {
     return {
@@ -98,28 +97,13 @@ export default {
       organizationOptions: [],
       transactionTypes: [],
       searchOk: false,
-      searchMode: true,
       submitting: false,
       result: {
-        auditReports: [],
+        records: [],
         message: '',
         status: '',
       },
-      transactionOptions: [
-        { text: 'CheckEligibility', value: 'CheckEligibility' },
-        { text: 'PHNInquiry', value: 'PHNInquiry' },
-        { text: 'PHNLookup', value: 'PHNLookup' },
-        { text: 'EnrollSubscriber', value: 'EnrollSubscriber' },
-        { text: 'GetPersonDetails', value: 'GetPersonDetails' },
-        { text: 'NameSearch', value: 'NameSearch' },
-        { text: 'AddGroupMember', value: 'AddGroupMember' },
-        { text: 'AddDependent', value: 'AddDependent' },
-        { text: 'UpdateNumberAndDept', value: 'UpdateNumberAndDept' },
-        { text: 'CancelDependent', value: 'CancelDependent' },
-        { text: 'ContractInquiry', value: 'ContractInquiry' },
-        { text: 'GetContractAddress', value: 'GetContractAddress' },
-        { text: 'UpdateContractAddress', value: 'UpdateContractAddress' },
-      ],
+      transactionOptions: ['CheckEligibility', 'PHNInquiry', 'PHNLookup', 'EnrollSubscriber', 'GetPersonDetails', 'NameSearch', 'AddGroupMember', 'AddDependent', 'UpdateNumberAndDept', 'CancelDependent', 'ContractInquiry', 'GetContractAddress', 'UpdateContractAddress'],
     }
   },
   methods: {
@@ -149,7 +133,7 @@ export default {
           return
         }
 
-        if (this.result.auditReports.length > 0) {
+        if (this.result.records.length > 0) {
           this.result.message = 'Transaction completed successfully'
         } else {
           this.result.message = 'No results were returned. Please refine your search criteria, and try again.'
@@ -169,8 +153,8 @@ export default {
     },
     resetForm() {
       this.userId = ''
-      this.organizations = {}
-      this.transactionTypes = {}
+      this.organizations = []
+      this.transactionTypes = []
       this.startDate = ''
       this.endDate = ''
       this.result = null
