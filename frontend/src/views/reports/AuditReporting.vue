@@ -41,7 +41,7 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppButton :submitting="submitting" mode="primary" type="submit">Submit</AppButton>
+        <AppButton :submitting="searching" mode="primary" type="submit">Submit</AppButton>
         <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
       </AppRow>
     </form>
@@ -78,6 +78,7 @@ import { required } from '@vuelidate/validators'
 import { useAlertStore } from '../../stores/alert'
 import { handleServiceError } from '../../util/utils'
 import AppLabel from '../../components/ui/AppLabel.vue'
+import dayjs from 'dayjs'
 
 export default {
   components: { AppLabel, AppSimpleTable, AuditReportRecord },
@@ -92,12 +93,12 @@ export default {
     return {
       userId: '',
       organizations: [],
-      endDate: null,
-      startDate: null,
+      endDate: new Date(),
+      startDate: dayjs().subtract(1, 'month').toDate(),
       organizationOptions: [],
       transactionTypes: [],
       searchOk: false,
-      submitting: false,
+      searching: false,
       result: {
         records: [],
         message: '',
@@ -109,6 +110,7 @@ export default {
   methods: {
     async submitForm() {
       this.result = null
+      this.searching = true
       this.searchOk = false
       this.alertStore.dismissAlert()
 
@@ -132,33 +134,36 @@ export default {
           this.alertStore.setErrorAlert(this.result.message)
           return
         }
-
-        if (this.result.records.length > 0) {
-          this.result.message = 'Transaction completed successfully'
+        const maxResults = 1000
+        if (this.result.records.length >= maxResults) {
+          this.alertStore.setWarningAlert(`Maximum results (${maxResults}) returned. Please refine your search criteria and try again.`)
+        } else if (this.result.records.length > 0) {
+          this.alertStore.setSuccessAlert('Transaction completed successfully')
         } else {
-          this.result.message = 'No results were returned. Please refine your search criteria, and try again.'
+          this.alertStore.setErrorAlert('No results were returned. Please refine your search criteria and try again.')
         }
 
         this.searchOk = true
-        this.alertStore.setAlert({ message: this.result.message, type: this.result.status })
       } catch (err) {
         handleServiceError(err, this.alertStore, this.$router)
       } finally {
-        this.submitting = false
+        this.searching = false
       }
     },
     showError(error) {
       this.alertStore.setErrorAlert(error)
       this.result = {}
+      this.searching = false
     },
     resetForm() {
       this.userId = ''
       this.organizations = []
       this.transactionTypes = []
-      this.startDate = ''
-      this.endDate = ''
+      this.endDate = new Date()
+      this.startDate = dayjs().subtract(1, 'month').toDate()
       this.result = null
       this.searchOk = false
+      this.searching = false
       this.v$.$reset()
       this.alertStore.dismissAlert()
     },

@@ -12,6 +12,8 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ import ca.bc.gov.hlth.hnweb.persistence.entity.Organization;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 import ca.bc.gov.hlth.hnweb.persistence.entity.TransactionEvent;
 import ca.bc.gov.hlth.hnweb.persistence.entity.TransactionEventType;
+import ca.bc.gov.hlth.hnweb.persistence.repository.AffectedPartyPageableRepository;
 import ca.bc.gov.hlth.hnweb.persistence.repository.AffectedPartyRepository;
 import ca.bc.gov.hlth.hnweb.persistence.repository.EventMessageRepository;
 import ca.bc.gov.hlth.hnweb.persistence.repository.OrganizationRepository;
@@ -42,6 +45,9 @@ public class AuditService {
 	
 	@Autowired
 	private AffectedPartyRepository affectedPartyRepository;
+	
+	@Autowired
+	private AffectedPartyPageableRepository affectedPartyPageableRepository;
 	
 	@Autowired
 	private EventMessageRepository eventMessageRepository;
@@ -204,8 +210,10 @@ public class AuditService {
 		try {
 			Date formattedStartDate = convertLocalDateToDate(startDate);
 			Date formattedendDate = convertLocalDateToDate(endDate);
-			return affectedPartyRepository.findByTransactionAndDirection(types, organizations, userId, AffectedPartyDirection.INBOUND.getValue(), formattedStartDate,
-					formattedendDate);
+			// XXX Limit the results to 1000 until we implement pagination
+			Pageable page = PageRequest.of(0, 1000);
+			return affectedPartyPageableRepository.findByTransactionAndDirection(types, organizations, userId, AffectedPartyDirection.INBOUND.getValue(), formattedStartDate,
+					formattedendDate, page);
 		} catch (ParseException e) {
 			logger.error(e.getLocalizedMessage());
 			return null;

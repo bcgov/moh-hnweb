@@ -11,7 +11,7 @@
 export default {
   props: {
     record: {
-      type: Array,
+      type: Object,
       required: true,
     },
   },
