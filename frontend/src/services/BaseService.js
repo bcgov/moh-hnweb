@@ -27,6 +27,10 @@ export const resources = {
     inquireContract: '/msp-contracts/inquire-contract',
     updateContractAddress: '/msp-contracts/update-contract-address',
   },
+  reports: {
+    getAuditReport: '/audit/audit-report',
+    getOrganizations: '/audit/organizations',
+  },
   user: {
     permissions: '/user/permissions',
   },
