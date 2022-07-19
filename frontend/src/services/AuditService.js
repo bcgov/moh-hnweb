@@ -4,7 +4,7 @@ export default {
   getAuditReport(request) {
     return apiRequest().then((axiosInstance) => axiosInstance.post(resources.reports.getAuditReport, request))
   },
-  getOrganization() {
+  getOrganizations() {
     return apiRequest().then((axiosInstance) => axiosInstance.get(resources.reports.getOrganizations))
   },
 }

@@ -3,7 +3,7 @@
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.userId" id="userId" label="User ID:" type="text" v-model.trim="userId" />
+          <AppInput :e-model="v$.userId" id="userId" label="User ID" type="text" v-model.trim="userId" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -183,7 +183,7 @@ export default {
   },
   async created() {
     try {
-      this.organizationOptions = (await AuditService.getOrganization()).data
+      this.organizationOptions = (await AuditService.getOrganizations()).data
     } catch (err) {
       handleServiceError(err, this.alertStore, this.$router)
     }
