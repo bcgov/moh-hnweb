@@ -44,7 +44,7 @@ public class ChangeEffectiveDateRequest {
 
 	@Override
 	public String toString() {
-		return "UpdateNumberAndDeptRequest [phn=" + phn + ", groupNumber=" + groupNumber + ", existingEffectiveDate=" + existingEffectiveDate
+		return "ChangeEffectiveDateRequest [phn=" + phn + ", groupNumber=" + groupNumber + ", existingEffectiveDate=" + existingEffectiveDate
 				+ ", newEffectiveDate=" + newEffectiveDate + "]";
 	}
 

@@ -16,7 +16,8 @@ import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAJ0;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 
 /**
- * Service for: Change Effective Date. (R46)
+ * Service for processing Coverage Maintenance requests. 
+ *
  */
 @Service
 public class MaintenanceService extends BaseService {

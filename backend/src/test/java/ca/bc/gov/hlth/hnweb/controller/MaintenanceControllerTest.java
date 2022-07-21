@@ -28,6 +28,10 @@ class MaintenanceControllerTest extends BaseControllerTest {
 	
 	private static final String R46_INVALID_COVERAGE_EFF_DATE = "        RPBSPAJ000000010                                ERRORMSGRPBS1020COVERAGE EFFECTIVE DAY INVALID                                          633710993319269192014-06-012022-06-02";
 	
+	private static final String R46_SUBSCRIBER_NOT_COVERED = "        RPBSPAJ000000010                                ERRORMSGRPBS9109SUBSCRIBER NOT COVERED UNDER THIS GROUP                                 633710993319269192022-07-012022-09-01";
+	
+	private static final String R46_SUCCESS = "        RPBSPAJ000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  484190498732516932022-01-012022-03-01";
+	
 	@Autowired
 	private MaintenanceController maintenanceController;
    
@@ -73,6 +77,60 @@ class MaintenanceControllerTest extends BaseControllerTest {
         assertEquals("RPBS1020 COVERAGE EFFECTIVE DAY INVALID", changeEffectiveDateResponse.getMessage());
 
         assertEquals("9331926919", changeEffectiveDateResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.CHANGE_EFFECTIVE_DATE);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+   
+	}
+	
+	@Test
+	public void testChangeEffectiveDate_error_SubscriberNotCovered() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R46_SUBSCRIBER_NOT_COVERED)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        ChangeEffectiveDateRequest changeEffectiveDateRequest = changeEffectiveDate(LocalDate.of(2020, 1, 1),LocalDate.of(2021, 1, 1) );
+		
+        ResponseEntity<ChangeEffectiveDateResponse> response = maintenanceController.changeEffectiveDate(changeEffectiveDateRequest, createHttpServletRequest());
+		
+        ChangeEffectiveDateResponse changeEffectiveDateResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, changeEffectiveDateResponse.getStatus());
+        assertEquals("RPBS9109 SUBSCRIBER NOT COVERED UNDER THIS GROUP", changeEffectiveDateResponse.getMessage());
+
+        assertEquals("9331926919", changeEffectiveDateResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.CHANGE_EFFECTIVE_DATE);
+        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+   
+	}
+	
+	@Test
+	public void testChangeEffectiveDate_success() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R46_SUCCESS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        ChangeEffectiveDateRequest changeEffectiveDateRequest = changeEffectiveDate(LocalDate.of(2022, 1, 1),LocalDate.of(2022, 1, 3) );
+		
+        ResponseEntity<ChangeEffectiveDateResponse> response = maintenanceController.changeEffectiveDate(changeEffectiveDateRequest, createHttpServletRequest());
+		
+        ChangeEffectiveDateResponse changeEffectiveDateResponse = response.getBody();
+		assertEquals(StatusEnum.SUCCESS, changeEffectiveDateResponse.getStatus());
+        assertEquals("RPBS9014 TRANSACTION SUCCESSFUL", changeEffectiveDateResponse.getMessage());
+
+        assertEquals("9873251693", changeEffectiveDateResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        

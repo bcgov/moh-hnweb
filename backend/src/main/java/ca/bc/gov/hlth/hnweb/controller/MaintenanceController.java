@@ -24,12 +24,7 @@ import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.service.MaintenanceService;
 
 /**
- * Handles request related to coverage maintenance. These will include:
- * <ul>
- * <li>Z26
- * <li>Change Effective Date
- * <ul>
- *
+ * Handles request related to coverage maintenance.
  */
 @RequestMapping("/maintenance")
 @RestController
