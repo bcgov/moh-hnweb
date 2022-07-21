@@ -28,8 +28,8 @@ import GetContractPeriods from '../views/mspcontracts/GetContractPeriods.vue'
 import GetGroupMembersContractAddress from '../views/mspcontracts/GetGroupMembersContractAddress.vue'
 import MspContractsHome from '../views/mspcontracts/MspContractsHome.vue'
 import UpdateContractAddress from '../views/mspcontracts/UpdateContractAddress.vue'
-import ViewPatientRegHistory from '../views/patientregistrations/ViewPatientRegHistory.vue'
-import ViewPatientRegHistoryHome from '../views/patientregistrations/ViewPatientRegHistoryHome.vue'
+import AuditReportHome from '../views/reports/AuditReportHome.vue'
+import AuditReporting from '../views/reports/AuditReporting.vue'
 import CredentialsInfo from '../views/welcome/CredentialsInfo.vue'
 import Login from '../views/welcome/Login.vue'
 
@@ -50,6 +50,25 @@ const createRoutes = (app) => [
     },
   },
   {
+    path: '/reports',
+    name: 'reports',
+    component: AuditReportHome,
+    redirect: {
+      name: 'AuditReporting',
+    },
+    children: [
+      {
+        path: 'auditReporting',
+        name: 'AuditReporting',
+        component: AuditReporting,
+        meta: {
+          permission: 'AuditReporting',
+          requiresAuth: true,
+        },
+      },
+    ],
+  },
+  {
     path: '/welcome/credentialsInfo',
     name: 'CredentialsInfo',
     component: CredentialsInfo,
@@ -65,26 +84,6 @@ const createRoutes = (app) => [
       requiresAuth: false,
     },
   },
-  {
-    path: '/pbf',
-    name: 'PatientRegistration',
-    component: ViewPatientRegHistoryHome,
-    redirect: {
-      name: 'ViewPatientRegHistory',
-    },
-    children: [
-      {
-        path: 'viewPatientRegHistory',
-        name: 'ViewPatientRegHistory',
-        component: ViewPatientRegHistory,
-        meta: {
-          permission: 'ViewPatientRegHistory',
-          requiresAuth: false,
-        },
-      },
-    ],
-  },
-
   {
     path: '/coverage/maintenance',
     name: 'CoverageMaintenance',

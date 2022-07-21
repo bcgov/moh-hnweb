@@ -8,6 +8,14 @@
         <li id="home-link" :class="tabClass($route, 'Home')" v-if="authenticated">
           <router-link @click="resetAlert" :to="{ name: 'Home' }">Home</router-link>
         </li>
+        <li id="audit-report-link" :class="menuTabClass($route, '/reports')">
+          <div class="dropdown">
+            <span>Reports</span>
+            <div class="dropdown-content">
+              <router-link @click="resetAlert" :class="menuClass($route, 'AuditReporting')" :to="{ name: 'AuditReporting' }" v-if="hasPermission('AuditReporting')">Audit Reporting</router-link>
+            </div>
+          </div>
+        </li>
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
           <div class="dropdown">
             <span>Eligibility & PHN</span>
