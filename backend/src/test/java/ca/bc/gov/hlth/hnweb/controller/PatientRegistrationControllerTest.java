@@ -29,10 +29,10 @@ import okhttp3.mockwebserver.MockResponse;
  * JUnit test class for PBFController
  *
  */
-public class PBFControllerTest extends BaseControllerTest {
+public class PatientRegistrationControllerTest extends BaseControllerTest {
 	
 	@Autowired
-	private PBFController pbfController;
+	private PatientRegistrationController pbfController;
 
 	@Autowired
 	private PatientRegisterRepository patientRegisterRepository;

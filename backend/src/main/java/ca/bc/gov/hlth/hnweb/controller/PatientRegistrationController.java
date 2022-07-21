@@ -43,9 +43,9 @@ import ca.bc.gov.hlth.hnweb.service.PatientRegistrationService;
  */
 @RequestMapping("/patient-registration")
 @RestController
-public class PBFController extends BaseController {
+public class PatientRegistrationController extends BaseController {
 
-	private static final Logger logger = LoggerFactory.getLogger(PBFController.class);
+	private static final Logger logger = LoggerFactory.getLogger(PatientRegistrationController.class);
 
 	@Autowired
 	private EnrollmentService enrollmentService;
@@ -98,6 +98,7 @@ public class PBFController extends BaseController {
 		patientRegistrationResponse.setStatus(StatusEnum.SUCCESS);
 
 		GetPersonDetailsResponse personDetailsResponse = patientRegistrationResponse.getPersonDetail();
+		//Person detail error will be considered as warning for patient register response
 		if (personDetailsResponse.getStatus() == StatusEnum.ERROR) {
 			patientRegistrationResponse.setPersonDetail(null);
 			patientRegistrationResponse.setStatus(StatusEnum.WARNING);

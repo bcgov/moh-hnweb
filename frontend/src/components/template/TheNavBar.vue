@@ -27,13 +27,8 @@
             </div>
           </div>
         </li>
-        <li id="view-registartion-history-link" :class="menuTabClass($route, '/pbf')">
-          <div class="dropdown">
-            <span>Patient Registration</span>
-            <div class="dropdown-content">
-              <router-link @click="resetAlert" :class="menuClass($route, 'ViewPatientRegHistory')" :to="{ name: 'ViewPatientRegHistory' }">View Registration History</router-link>
-            </div>
-          </div>
+        <li id="view-registartion-history-link" :class="tabClass($route, '/pbf')">
+          <router-link @click="resetAlert" :class="menuClass($route, 'ViewPatientRegHistory')" :to="{ name: 'ViewPatientRegHistory' }">Patient Registration</router-link>
         </li>
         <li id="coverage-maintenance-link" :class="tabClass($route, 'CoverageMaintenance')" v-if="hasMaintenancePermission()">
           <div class="dropdown">

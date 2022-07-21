@@ -28,6 +28,8 @@ import GetContractPeriods from '../views/mspcontracts/GetContractPeriods.vue'
 import GetGroupMembersContractAddress from '../views/mspcontracts/GetGroupMembersContractAddress.vue'
 import MspContractsHome from '../views/mspcontracts/MspContractsHome.vue'
 import UpdateContractAddress from '../views/mspcontracts/UpdateContractAddress.vue'
+import ViewPatientRegHistory from '../views/patientregistrations/ViewPatientRegHistory.vue'
+import ViewPatientRegHistoryHome from '../views/patientregistrations/ViewPatientRegHistoryHome.vue'
 import AuditReportHome from '../views/reports/AuditReportHome.vue'
 import AuditReporting from '../views/reports/AuditReporting.vue'
 import CredentialsInfo from '../views/welcome/CredentialsInfo.vue'
@@ -64,6 +66,25 @@ const createRoutes = (app) => [
         meta: {
           permission: 'AuditReporting',
           requiresAuth: true,
+        },
+      },
+    ],
+  },
+  {
+    path: '/pbf',
+    name: 'pbf',
+    component: ViewPatientRegHistoryHome,
+    redirect: {
+      name: 'ViewPatientRegHistory',
+    },
+    children: [
+      {
+        path: 'viewPatientRegHistory',
+        name: 'ViewPatientRegHistory',
+        component: ViewPatientRegHistory,
+        meta: {
+          permission: 'ViewPatientRegHistory',
+          requiresAuth: false,
         },
       },
     ],
