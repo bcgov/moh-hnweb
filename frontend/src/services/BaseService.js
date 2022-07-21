@@ -15,6 +15,9 @@ export const resources = {
     inquirePhn: '/eligibility/inquire-phn',
     lookupPhn: '/eligibility/lookup-phn',
   },
+  maintenance: {
+    changeEffectiveDate: '/maintenance/change-effective-date',
+  },
   groupMember: {
     addGroupMember: '/group-member/add-group-member',
     addDependent: '/group-member/add-dependent',
