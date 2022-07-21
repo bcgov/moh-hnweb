@@ -24,8 +24,6 @@ public class ChangeEffectiveDateRequest {
 		this.groupNumber = groupNumber;
 	}
 
-
-
 	public LocalDate getExistingEffectiveDate() {
 		return existingEffectiveDate;
 	}
@@ -44,8 +42,8 @@ public class ChangeEffectiveDateRequest {
 
 	@Override
 	public String toString() {
-		return "ChangeEffectiveDateRequest [phn=" + phn + ", groupNumber=" + groupNumber + ", existingEffectiveDate=" + existingEffectiveDate
-				+ ", newEffectiveDate=" + newEffectiveDate + "]";
+		return "ChangeEffectiveDateRequest [phn=" + phn + ", groupNumber=" + groupNumber + ", existingEffectiveDate="
+				+ existingEffectiveDate + ", newEffectiveDate=" + newEffectiveDate + "]";
 	}
 
 }
