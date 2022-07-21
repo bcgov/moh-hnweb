@@ -68,7 +68,7 @@ const createRoutes = (app) => [
   {
     path: '/pbf',
     name: 'PatientRegistration',
-    component: ViewPatientRegHistory,
+    component: ViewPatientRegHistoryHome,
     redirect: {
       name: 'ViewPatientRegHistory',
     },
@@ -76,7 +76,7 @@ const createRoutes = (app) => [
       {
         path: 'viewPatientRegHistory',
         name: 'ViewPatientRegHistory',
-        component: ViewPatientRegHistoryHome,
+        component: ViewPatientRegHistory,
         meta: {
           permission: 'ViewPatientRegHistory',
           requiresAuth: false,
