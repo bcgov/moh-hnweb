@@ -1,38 +1,5 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# 💁 The OpenShift Starter workflow will:
-# - Checkout your repository
-# - Perform a container image build
-# - Push the built image to the GitHub Container Registry (GHCR)
-# - Log in to your OpenShift cluster
-# - Create an OpenShift app from the image and expose it to the internet
-
-# ℹ️ Configure your repository and the workflow with the following steps:
-# 1. Have access to an OpenShift cluster. Refer to https://www.openshift.com/try
-# 2. Create the OPENSHIFT_SERVER and OPENSHIFT_TOKEN repository secrets. Refer to:
-#   - https://github.com/redhat-actions/oc-login#readme
-#   - https://docs.github.com/en/actions/reference/encrypted-secrets
-#   - https://cli.github.com/manual/gh_secret_set
-# 3. (Optional) Edit the top-level 'env' section as marked with '🖊️' if the defaults are not suitable for your project.
-# 4. (Optional) Edit the build-image step to build your project.
-#    The default build type is by using a Dockerfile at the root of the repository,
-#    but can be replaced with a different file, a source-to-image build, or a step-by-step buildah build.
-# 5. Commit and push the workflow file to your default branch to trigger a workflow run.
-
-# 👋 Visit our GitHub organization at https://github.com/redhat-actions/ to see our actions and provide feedback.
-
 name: sample-workflow
 
-env:
-  # Registries such as GHCR, Quay.io, and Docker Hub are supported.
-  OPENSHIFT_SERVER: ${{ secrets.C5839F_OPENSHIFT_SERVER }}
-  OPENSHIFT_TOKEN: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
-  OPENSHIFT_REPO: ${{ secrets.GITOPS_C5839F_REPO }}
-  IMAGE_REGISTRY_USER: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_USER }}
-  IMAGE_REGISTRY_PASSWORD: ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN }}
   
 
 on:
@@ -56,5 +23,6 @@ jobs:
       - name: Print out 
         id: print
         run: |
-          echo ${{secrets.C5839F_OPENSHIFT_SERVER}} | sed 's/./& /g'
-          echo ${{env.OPENSHIFT_REPO}}
+          echo "Openshift server is ${{secrets.C5839F_OPENSHIFT_SERVER}}" | sed 's/./& /g'
+          echo "Openshift service account is ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_USER }}" | sed 's/./& /g'
+          echo "Gitops repo is ${{secrets.GITOPS_C5839F_REPO}}" | sed 's/./& /g'
