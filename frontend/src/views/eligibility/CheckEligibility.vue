@@ -1,4 +1,14 @@
 <template>
+  <AppHelp>
+    <p>Use Check Eligibility to determine if a person is a beneficiary of the Medical Services Plan (MSP) on a particular date of service. Check Eligibility returns a "Yes" or "No" for the Personal Health Number (PHN) submitted.</p>
+    <ul>
+      <li>
+        A "Yes" response means that, when checked today, the person is eligible on the "Date to Check" date. The person could subsequently become ineligible for service on that date. If a fee-for-service claim is involved, you may wish to use the MSP Teleplan system or Claims IVR to verify
+        eligibility.
+      </li>
+      <li>If the response is "No", the screen will return additional information about why the coverage was terminated and instructions that should be provided to the individual. If the individual is subject to alternate billing (RCMP or Armed Forces), this information will also be displayed.</li>
+    </ul>
+  </AppHelp>
   <div>
     <form @submit.prevent="submitForm">
       <AppRow>
@@ -48,6 +58,7 @@
 
 <script>
 import AppCard from '../../components/ui/AppCard.vue'
+import AppHelp from '../../components/ui/AppHelp.vue'
 import EligibilityService from '../../services/EligibilityService'
 import useVuelidate from '@vuelidate/core'
 import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
@@ -55,11 +66,13 @@ import { required, helpers } from '@vuelidate/validators'
 import { API_DATE_FORMAT, COVERAGE_END_REASONS } from '../../util/constants'
 import dayjs from 'dayjs'
 import { useAlertStore } from '../../stores/alert'
+import { handleServiceError } from '../../util/utils'
 
 export default {
   name: 'CheckEligibility',
   components: {
     AppCard,
+    AppHelp,
   },
   setup() {
     return {
@@ -83,6 +96,7 @@ export default {
         status: '',
         message: '',
       },
+      showModal: false,
     }
   },
   computed: {
@@ -119,9 +133,9 @@ export default {
         }
 
         this.searchOk = true
-        this.alertStore.setAlert({ message: this.result.message, type: this.result.status })
+        this.alertStore.setAlertWithInfoForSuccess(this.result.message, this.result.status)
       } catch (err) {
-        this.alertStore.setErrorAlert(err)
+        handleServiceError(err, this.alertStore, this.$router)
       } finally {
         this.searching = false
       }

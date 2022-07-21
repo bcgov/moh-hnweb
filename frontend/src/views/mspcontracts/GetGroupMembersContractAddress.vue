@@ -100,6 +100,7 @@ import { validateOptionalPHN, validateGroupNumber, VALIDATE_PHN_MESSAGE, VALIDAT
 import { required, helpers } from '@vuelidate/validators'
 import MspContractsService from '../../services/MspContractsService'
 import { useAlertStore } from '../../stores/alert'
+import { handleServiceError } from '../../util/utils'
 
 export default {
   name: 'GetGroupMembersContractAddress',
@@ -169,13 +170,13 @@ export default {
         }
 
         this.searchOk = true
-        this.alertStore.setAlert({ message: this.result.message, type: this.result.status })
+        this.alertStore.setAlertWithInfoForSuccess( this.result.message, this.result.status )
         if (this.result.message === 'RPBS0059 MORE THAN 20 PERSONS. PLEASE CONTACT MSP') {
           // in legacy no results are shown the > 20 message is returned so clear result info
           this.result.contractInquiryBeneficiaries = []
         }
       } catch (err) {
-        this.alertStore.setErrorAlert(err)
+        handleServiceError(err, this.alertStore, this.$router)
       } finally {
         this.searching = false
       }

@@ -2,8 +2,8 @@
   <div>
     <div class="text_label">
       <label>{{ label }}</label>
-      <AppTooltip v-if="tooltip" :tooltipText="tooltipText">
-        <font-awesome-icon class="tooltip-icon" icon="question-circle" />
+      <AppTooltip v-if="$slots.tooltip">
+        <slot name="tooltip"></slot>
       </AppTooltip>
     </div>
     <div :class="groupClass">
@@ -34,8 +34,6 @@ export default {
     label: String,
     modelValue: String,
     group: Array,
-    tooltip: Boolean,
-    tooltipText: String,
   },
   watch: {
     modelValue: function (val) {

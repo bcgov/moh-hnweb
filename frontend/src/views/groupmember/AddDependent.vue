@@ -6,7 +6,9 @@
           <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" type="text" v-model.trim="groupNumber" />
         </AppCol>
         <AppCol class="col4">
-          <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" tooltip tooltipText="Day always defaults to 1st of month" monthPicker inputDateFormat="yyyyMM" placeholder="YYYYMM" v-model="coverageEffectiveDate" />
+          <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" monthPicker inputDateFormat="yyyyMM" placeholder="YYYYMM" v-model="coverageEffectiveDate">
+            <template #tooltip>Day always defaults to 1st of month</template>
+          </AppDateInput>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -24,7 +26,9 @@
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <YesNoRadioButtonGroup :e-model="v$.isStudent" id="isStudent" label="Is this Dependent attending a Canadian Educational Institution?" tooltip tooltipText="Click either Yes or No" v-model="isStudent" />
+          <YesNoRadioButtonGroup :e-model="v$.isStudent" id="isStudent" label="Is this Dependent attending a Canadian Educational Institution?" v-model="isStudent">
+            <template #tooltip> Click either Yes or No </template>
+          </YesNoRadioButtonGroup>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -59,6 +63,7 @@ import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumbe
 import { API_DATE_FORMAT, RELATIONSHIPS } from '../../util/constants'
 import GroupMemberService from '../../services/GroupMemberService'
 import { useAlertStore } from '../../stores/alert'
+import { handleServiceError } from '../../util/utils'
 
 export default {
   name: 'AddDependent',
@@ -133,10 +138,10 @@ export default {
 
         if (this.result?.status === 'success') {
           this.inputFormActive = false
-          this.alertStore.setSuccessAlert(this.result.message)
+          this.alertStore.setInfoAlert(this.result.message)
         }
       } catch (err) {
-        this.alertStore.setErrorAlert(err)
+        handleServiceError(err, this.alertStore, this.$router)
       } finally {
         this.submitting = false
       }

@@ -164,7 +164,7 @@ public class EligibilityController extends BaseController {
 
 		try {
 			E45Converter converter = new E45Converter(mshDefaults);
-			E45 e45 = converter.convertRequest(checkMspCoverageStatusRequest);
+			E45 e45 = converter.convertRequest(checkMspCoverageStatusRequest, transaction.getTransactionId().toString());
 			Message e45Response = eligibilityService.checkMspCoverageStatus(e45, transaction);
 			
 			CheckMspCoverageStatusResponse coverageResponse = converter.convertResponse(e45Response);

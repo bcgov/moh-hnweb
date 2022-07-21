@@ -3,6 +3,7 @@ import '@bcgov/bc-sans/css/BCSans.css'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 
+import { DraggablePlugin } from '@braks/revue-draggable'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faBullhorn, faCheckCircle, faChevronDown, faExclamationCircle, faExclamationTriangle, faExternalLinkAlt, faInfoCircle, faQuestionCircle, faSpinner, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -20,12 +21,11 @@ import { createRouter } from './router'
 import UserService from './services/UserService'
 import { useAuthStore } from './stores/auth'
 
-// import store from './store'
-
 keycloak.onReady = async function (authenticated) {
   // Only initialize the application after keycloak is ready
   // otherwise the router won't have the correct authentication
   // info to work with
+  let apiAvailable = true
   let permissions = []
   try {
     if (authenticated) {
@@ -33,15 +33,17 @@ keycloak.onReady = async function (authenticated) {
       permissions = data
     }
   } catch (err) {
-    /* The error will only be thrown from the API when no role is found and in that case an appropriate unauthorized page will be shown,
-     so it does not need to be handled or displayed here.
-     */
+    // Check for network error
+    // Other errors (401, 403) are possible
+    if (err.message === 'Network Error') {
+      apiAvailable = false
+    }
   } finally {
-    initApp(permissions)
+    initApp(permissions, apiAvailable)
   }
 }
 
-function initApp(permissions) {
+function initApp(permissions, apiAvailable) {
   const app = createApp(App)
 
   app.component('AppCol', AppCol)
@@ -57,9 +59,12 @@ function initApp(permissions) {
   app.use(createPinia())
   const auth = useAuthStore()
   auth.permissions = permissions
+  auth.apiAvailable = apiAvailable
 
   const router = createRouter(app)
   app.use(router)
+
+  app.use(DraggablePlugin)
 
   app.config.globalProperties.$keycloak = keycloak
 

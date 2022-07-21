@@ -1,9 +1,16 @@
 <template>
+  <AppHelp>
+    <p>MSP Direct Coverage Status Check provides the same functionality as the Medical Services Plan (MSP) Teleplan system and Claims IVR.</p>
+    <p>Use the MSP Coverage Status Check to check if a person is eligible to have their claim for a health service paid by the MSP. The MSP Coverage Status Check returns a "YES" or "NO" answer for the Personal Health Number (PHN) submitted</p>
+    <p>As well as checking eligibility, you can use the MSP Coverage Status Check to submit one or more requests (Patient Status answers are only returned if the person is eligible "YES" eligibility response)</p>
+  </AppHelp>
   <div>
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.phn" id="phn" label="PHN" type="text" v-model.trim="phn" />
+          <AppInput :e-model="v$.phn" id="phn" label="PHN" tooltip type="text" v-model.trim="phn">
+            <template #tooltip>Enter the individual’s 10 digit PHN. PHN is a mandatory field. If you leave it blank or enter invalid characters, an edit error message box will be displayed on the input screen.</template>
+          </AppInput>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -13,18 +20,32 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppDateInput :e-model="v$.dateOfService" id="dateOfService" label="Date Of Service" v-model="dateOfService" />
+          <AppDateInput :e-model="v$.dateOfService" id="dateOfService" label="Date Of Service" v-model="dateOfService">
+            <template #tooltip>The Date of Service defaults on the screen to today's date. The year (CCYY), month (MM) and day (DD) can be overridden. If you override the date with another date, it cannot be greater than today's date or more than 18 months in the past.</template>
+          </AppDateInput>
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col4">
-          <h3>Patient Status Request</h3>
-          <p>Select by clicking one or more boxes</p>
+        <AppCol class="col4 flex">
+          <div class="flex">
+            <h4>Patient Status Request</h4>
+            <AppTooltip>
+              <p>
+                Subsidy Insured Service: the screen will display whether MSP pays for Subsidy Insured Services for this PHN, including the number of services last paid to date, whether the beneficiary must pay, the number of paid services by calendar year. This information will be of interest to
+                supplementary benefits providers.
+              </p>
+              <p>
+                Last Eye Exam: the screen will return the date of the last paid eye exam for this PHN within the last 24 months. This information will be of interest to those performing eye exams. Patient Restriction:, if the patient has been restricted to a single general practitioner, the MSP
+                Coverage Status Check will advise you to review the MSP Bulletin.
+              </p>
+            </AppTooltip>
+          </div>
+          <div class="checkbox-group">
+            <AppCheckbox id="checkSubsidyInsuredService" label="Check for Subsidy Insured Service" v-model="checkSubsidyInsuredService" />
+            <AppCheckbox id="checkLastEyeExam" label="Check for Last Eye Exam" v-model="checkLastEyeExam" />
+          </div>
         </AppCol>
-        <AppCol>
-          <AppCheckbox id="checkSubsidyInsuredService" label="Check for Subsidy Insured Service" v-model="checkSubsidyInsuredService" />
-          <AppCheckbox id="checkLastEyeExam" label="Check for Last Eye Exam" v-model="checkLastEyeExam" />
-        </AppCol>
+        <AppCol> </AppCol>
       </AppRow>
       <AppRow>
         <AppButton :submitting="searching" mode="primary" type="submit">Submit</AppButton>
@@ -54,7 +75,14 @@
         <AppOutput label="Date Of Service" :value="result.dateOfService" />
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Eligible on Date of Service?" :value="eligibleOnDateOfService" />
+        <AppOutput label="Eligible on Date of Service?" :value="eligibleOnDateOfService">
+          <template #tooltip
+            ><p>If the response is "YES", the person is eligible to have their claim for that date of service paid by MSP.</p>
+            <p>
+              If the response is "No", the screen will return additional information about why the coverage was terminated and instructions that should be provided to the individual If the individual is subject to alternate billing (RCMP or Armed Forces), this information will also be displayed
+            </p></template
+          >
+        </AppOutput>
       </AppCol>
       <AppCol class="col3">
         <AppOutput label="Coverage End Date" :value="result.coverageEndDate" />
@@ -95,18 +123,21 @@
 <script>
 import AppCard from '../../components/ui/AppCard.vue'
 import AppCheckbox from '../../components/ui/AppCheckbox.vue'
+import AppHelp from '../../components/ui/AppHelp.vue'
+import AppTooltip from '../../components/ui/AppTooltip.vue'
 import EligibilityService from '../../services/EligibilityService'
 import useVuelidate from '@vuelidate/core'
 import { validateDOB, validatePHN, VALIDATE_DOB_MESSAGE, VALIDATE_PHN_MESSAGE } from '../../util/validators'
 import { API_DATE_FORMAT, COVERAGE_END_REASONS } from '../../util/constants'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
+import { handleServiceError } from '../../util/utils'
 
 import { useAlertStore } from '../../stores/alert.js'
 
 export default {
   name: 'CoverageStatusCheck',
-  components: { AppCard, AppCheckbox },
+  components: { AppCard, AppCheckbox, AppHelp, AppTooltip },
   setup() {
     return {
       alertStore: useAlertStore(),
@@ -241,9 +272,9 @@ export default {
         }
 
         this.searchOk = true
-        this.alertStore.setAlert({ message: this.result.message, type: this.result.status })
+        this.alertStore.setAlertWithInfoForSuccess(this.result.message, this.result.status)
       } catch (err) {
-        this.alertStore.setErrorAlert(err)
+        handleServiceError(err, this.alertStore, this.$router)
       } finally {
         this.searching = false
       }
@@ -283,3 +314,8 @@ export default {
   },
 }
 </script>
+<style>
+.checkbox-group {
+  margin-bottom: 10px;
+}
+</style>

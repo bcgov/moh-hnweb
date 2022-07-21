@@ -40,10 +40,11 @@ export default {
   display: block;
   position: relative;
   padding-left: 25px;
-  margin-bottom: 12px;
+  margin: 5px 0px 7px 3px;
   cursor: pointer;
-  font-family: ‘BCSans’, ‘Noto Sans’, Verdana, Arial, sans-serif;
+  font-family: 'BCSans', 'Noto Sans', Verdana, Arial, sans-serif;
   font-size: 16px;
+  font-weight: 400;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -62,7 +63,7 @@ export default {
 /* Create a custom checkbox */
 .checkmark {
   position: absolute;
-  top: 0;
+  top: 3px;
   left: 0;
   height: 16px;
   width: 16px;

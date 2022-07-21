@@ -1,14 +1,13 @@
 # This is a manual workflow that performs following activities:
-# 1. Determine the version number tag i.e. Release_1.0_<branch-name>_<build execution>  
+# 1. Determine the version number tag i.e. release_1.0_<branch-name>_<build execution>
 # 2. Determine tags for OpenShift image
 # 3. Edit .env in frontend with the value
 # 3. Creates images for frontend and backend code
 # 4. Tags the images with release number
 # 5. Tags the images with additional tags if any
 # 6. Upload the images in image repository in tools namespace
-# 7. Tag the commit in Git with release number 
+# 7. Tag the commit in Git with release number
 # 8. Deploy the release in test environment <Commented for next story>
-
 
 name: release-mspdirect
 # Build the image and deploy in OpenShift environment
@@ -23,163 +22,99 @@ env:
   IMAGE_TAGS:
   RELEASE_VERSION:
 
-
 on:
   # Run the workflow manually, instead of on a push.
-  # The user specifies the optional tag  
+  # The user specifies the optional tag
   # --------------------------------------------------------------------------
-  
+
   workflow_dispatch:
     inputs:
       OPENSHIFT_IMAGE_TAG:
-        description: 'Optional parameter for additional tags on released images. '
+        description: "Optional parameter for additional tags on released images. "
         required: false
         default:
-              
 
 jobs:
-
   createMSPDirectRelease:
     runs-on: ubuntu-latest
-    
+
     steps:
-    # Check out the code
-    - name: Check out code
-      id: checkout
-      uses: actions/checkout@v2
-      with:
-        ref: main     
+      # Check out the code
+      - name: Check out code
+        id: checkout
+        uses: actions/checkout@v3
+        with:
+          ref: main
 
-    # 1. Determine the version number tag i.e. Release_1.0_<branch-name>_<build execution> 
-    - name: Determine Version number
-      # Branch name is fixed to 'main' in version identifier
-      run: |
-        echo "RELEASE_VERSION=Release_1.0_main_${{github.run_number}}" | tee -a $GITHUB_ENV
-        
-    # 2. Determine tags for OpenShift image
-    - name: Determine image tags
-      run: |
-        echo "IMAGE_TAGS= ${GITHUB_SHA::12} ${{ env.RELEASE_VERSION }} ${{ github.event.inputs.OPENSHIFT_IMAGE_TAG }}  " | tee -a $GITHUB_ENV
+      # 1. Determine the version number tag i.e. release_1.0_<branch-name>_<build execution>
+      - name: Determine Version number
+        # Branch name is fixed to 'main' in version identifier
+        run: |
+          echo "RELEASE_VERSION=release_1.0_main_${{github.run_number}}" | tee -a $GITHUB_ENV
 
+      # 2. Determine tags for OpenShift image
+      - name: Determine image tags
+        run: |
+          echo "IMAGE_TAGS= ${GITHUB_SHA::12} ${{ env.RELEASE_VERSION }} ${{ github.event.inputs.OPENSHIFT_IMAGE_TAG }}  " | tee -a $GITHUB_ENV
 
-    # 3. Edit .env in frontend with the value
-    - name: Edit env file to add version
-      run: |
-        cd ./frontend/env_config
-        sed -i 's/<VERSION>/${{ env.RELEASE_VERSION }}/' .env
+      # 3. Edit .env in frontend with the value
+      - name: Edit env file to add version
+        run: |
+          cd ./frontend/env_config
+          sed -i 's/<VERSION>/${{ env.RELEASE_VERSION }}/' .env
 
-# 3. Creates images for frontend and backend code
-# 4. Tags the images with release number
-# 5. Tags the images with additional tags if any
-    # Build frontend from docker file
-    - name: Build frontend from Dockerfile
-      id: build-docker-frontend
-      uses: redhat-actions/buildah-build@v2
-      with:
-        image: ${{ env.IMAGE_NAME_FRONTEND }}
-        tags: ${{ env.IMAGE_TAGS }}
-        context: ./frontend
-        dockerfiles: |
-          ./frontend/Dockerfile
+      # 3. Creates images for frontend and backend code
+      # 4. Tags the images with release number
+      # 5. Tags the images with additional tags if any
+      # Build frontend from docker file
+      - name: Build frontend from Dockerfile
+        id: build-docker-frontend
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.IMAGE_NAME_FRONTEND }}
+          tags: ${{ env.IMAGE_TAGS }}
+          context: ./frontend
+          dockerfiles: |
+            ./frontend/Dockerfile
 
-    # Build backend from docker file
-    - name: Build backend from Dockerfile
-      id: build-docker-backend
-      uses: redhat-actions/buildah-build@v2
-      with:
-        image: ${{ env.IMAGE_NAME_BACKEND }}
-        tags: ${{ env.IMAGE_TAGS }}
-        context: ./backend
-        dockerfiles: |
-          ./backend/Dockerfile
+      # Build backend from docker file
+      - name: Build backend from Dockerfile
+        id: build-docker-backend
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.IMAGE_NAME_BACKEND }}
+          tags: ${{ env.IMAGE_TAGS }}
+          context: ./backend
+          dockerfiles: |
+            ./backend/Dockerfile
 
-# 6. Upload the images in image repository in tools namespace
-    - name: Push frontend image to registry
-      id: push-image-frontend
-      uses: redhat-actions/push-to-registry@v2
-      with:
-        image: ${{ steps.build-docker-frontend.outputs.image }}
-        tags: ${{ steps.build-docker-frontend.outputs.tags }}
-        registry: ${{ env.IMAGE_REGISTRY }}
-        username: ${{ env.IMAGE_REGISTRY_USER }}
-        password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
+      # 6. Upload the images in image repository in tools namespace
+      - name: Push frontend image to registry
+        id: push-image-frontend
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-docker-frontend.outputs.image }}
+          tags: ${{ steps.build-docker-frontend.outputs.tags }}
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ env.IMAGE_REGISTRY_USER }}
+          password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
 
-    - name: Push backend image to registry
-      id: push-image-backend
-      uses: redhat-actions/push-to-registry@v2
-      with:
-        image: ${{ steps.build-docker-backend.outputs.image }}
-        tags: ${{ steps.build-docker-backend.outputs.tags }}
-        registry: ${{ env.IMAGE_REGISTRY }}
-        username: ${{ env.IMAGE_REGISTRY_USER }}
-        password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
+      - name: Push backend image to registry
+        id: push-image-backend
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-docker-backend.outputs.image }}
+          tags: ${{ steps.build-docker-backend.outputs.tags }}
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ env.IMAGE_REGISTRY_USER }}
+          password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
 
-# 7. Tag the commit in Git with release number and <Check> Optional tags
-    - name: Tag the commit with Release number
-      id: tag
-      run: |
-        echo "Tagging the commit: ${GITHUB_SHA}"
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git tag -a -f "v${{env.RELEASE_VERSION}}" -m "Tag generated by GitHub Actions: release-mspdirect."
-        git push origin --tags          
-
-
-#************************************************************************************** 
-#************************************************************************************** 
-# Getting an error when doing 2 checkout actions in same job
-# Commented the code for next story, to include deploy to test as default in release job
-#************************************************************************************** 
-#************************************************************************************** 
-
-# 8. Deploy the release in test environment
-    # - name: Push frontend image to test registry
-    #   id: push-image-frontend-test
-    #   uses: redhat-actions/push-to-registry@v2
-    #   with:
-    #     image: ${{ steps.build-docker-frontend.outputs.image }}
-    #     tags: ${{ steps.build-docker-frontend.outputs.tags }}
-    #     registry: ${{ env.TESTNS_IMAGE_REGISTRY }}
-    #     username: ${{ env.IMAGE_REGISTRY_USER }}
-    #     password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
-
-    # - name: Push backend image to registry
-    #   id: push-image-backend-test
-    #   uses: redhat-actions/push-to-registry@v2
-    #   with:
-    #     image: ${{ steps.build-docker-backend.outputs.image }}
-    #     tags: ${{ steps.build-docker-backend.outputs.tags }}
-    #     registry: ${{ env.TESTNS_IMAGE_REGISTRY }}
-    #     username: ${{ env.IMAGE_REGISTRY_USER }}
-    #     password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
-
-    # # Update the image ID in the manifest repository used by Argo CD.
-    # # We need to use the SSH deploy key to check out the manifest repo, set up
-    # # Kustomize in the runner, update the image ID, commit the change, and
-    # # push the changes back to the manifest repository.
-    # # ------------------------------------------------------------------------
-    # - name: Prepare deploy key
-    #   uses: webfactory/ssh-agent@v0.5.3
-    #   with:
-    #     ssh-private-key: ${{ secrets.GITOPS_C5839F_PRIVATE_KEY }}
-
-    # - name: Check out manifest repo
-    #   uses: actions/checkout@v2
-    #   with:
-    #     ssh-key: ${{ secrets.GITOPS_C5839F_PRIVATE_KEY }}
-    #     repository: ${{ secrets.GITOPS_C5839F_REPO }}
-    #     ref: main
-
-    # - name: Set up Kustomize
-    #   uses: imranismail/setup-kustomize@v1
-
-    # - name: Update image ID and commit change
-    #   if: ${{ success() }}
-    #   run: |
-    #     cd mspdirect-devops/overlays/test
-    #     kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/c5839f-test/${{ env.IMAGE_NAME }}@${{ steps.push-image-backend-test.outputs.digest }}"
-    #     kustomize edit set image "frontend-image=image-registry.openshift-image-registry.svc:5000/c5839f-test/${{ env.IMAGE_NAME }}@${{ steps.push-image-frontend-test.outputs.digest }}"
-    #     git config --local user.email "action@github.com"
-    #     git config --local user.name "GitHub Action"
-    #     git commit -am "release-mpsdirect workflow deploying release build in test environment."
-    #     git push origin
+      # 7. Tag the commit in Git with release number and <Check> Optional tags
+      - name: Tag the commit with Release number
+        id: tag
+        run: |
+          echo "Tagging the commit: ${GITHUB_SHA}"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a -f "v${{env.RELEASE_VERSION}}" -m "Tag generated by GitHub Actions: release-mspdirect."
+          git push origin --tags

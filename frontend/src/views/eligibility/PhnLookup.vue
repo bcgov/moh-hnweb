@@ -46,6 +46,7 @@ import useVuelidate from '@vuelidate/core'
 import { validateContractNumber, validateGroupNumber, VALIDATE_CONTRACT_NUMBER_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE } from '../../util/validators'
 import { helpers, required } from '@vuelidate/validators'
 import { useAlertStore } from '../../stores/alert.js'
+import { handleServiceError } from '../../util/utils'
 
 export default {
   name: 'PhnInquiry',
@@ -91,9 +92,9 @@ export default {
         }
 
         this.searchOk = true
-        this.alertStore.setAlert({ message: this.result.message, type: this.result.status })
+        this.alertStore.setAlertWithInfoForSuccess( this.result.message, this.result.status )
       } catch (err) {
-        this.alertStore.setErrorAlert(err)
+        handleServiceError(err, this.alertStore, this.$router)
       } finally {
         this.searching = false
       }

@@ -66,7 +66,7 @@ public class EnrollmentController extends BaseController {
 
 		try {
 			R50Converter converter = new R50Converter(mshDefaults);
-			R50 r50 = converter.convertRequest(enrollSubscriberRequest);
+			R50 r50 = converter.convertRequest(enrollSubscriberRequest, transaction.getTransactionId().toString());
 			Message r50Message = enrollmentService.enrollSubscriber(r50, transaction);
 			EnrollSubscriberResponse enrollSubscriberResponse = converter.convertResponse(r50Message);
 			ResponseEntity<EnrollSubscriberResponse> responseEntity = ResponseEntity.ok(enrollSubscriberResponse);

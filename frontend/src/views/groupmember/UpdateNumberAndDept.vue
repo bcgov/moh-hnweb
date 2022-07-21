@@ -41,6 +41,7 @@ import { validateGroupNumber, validateGroupMemberNumber, validateDepartmentNumbe
 import { required, helpers } from '@vuelidate/validators'
 import { DEFAULT_ERROR_MESSAGE } from '../../util/constants.js'
 import { useAlertStore } from '../../stores/alert'
+import { handleServiceError } from '../../util/utils'
 
 export default {
   name: 'updateNumberAndDept',
@@ -107,11 +108,11 @@ export default {
         if (this.result?.status === 'success') {
           this.searchMode = false
           this.updateOk = true
-          this.alertStore.setSuccessAlert(this.result.message)
+          this.alertStore.setInfoAlert(this.result.message)
           return
         }
       } catch (err) {
-        this.alertStore.setErrorAlert(err)
+        handleServiceError(err, this.alertStore, this.$router)
       } finally {
         this.submitting = false
       }

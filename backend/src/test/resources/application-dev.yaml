@@ -16,7 +16,7 @@ spring:
         jwt:
           audience: MSPDIRECT-SERVICE
   datasource:
-    url: jdbc:h2:mem:mspdirect;MODE=PostgreSQL;INIT=runscript from 'classpath:scripts/create.sql'
+    url: jdbc:h2:mem:mspdirect;MODE=PostgreSQL;DB_CLOSE_ON_EXIT=FALSE;INIT=runscript from 'classpath:scripts/create.sql'
     driverClassName: org.h2.Driver
   jpa:
     properties:
@@ -77,3 +77,38 @@ hibc:
   cert:
     file: classpath:keystore/testcert.pfx
     password: abc123
+
+ # Mapping of roles (SPGs) to specific permissions
+security:
+  rolePermissions:
+    dummy:
+      - Dummy
+    e45:
+      - MSPCoverageCheck
+    eligibility:
+      - MSPCoverageCheck
+      - CheckEligibility
+      - PHNInquiry
+    traininghealthauth:
+      - MSPCoverageCheck
+      - CheckEligibility
+      - AddGroupMember
+      - AddDependent
+      - GetContractPeriods
+      - UpdateNumberAndDept
+      - CancelGroupMember
+      - CancelDependent
+      - GetContractAddress
+      - UpdateContractAddress
+      - ContractInquiry
+      - PHNInquiry
+      - PHNLookup
+      - ReinstateOverAgeDependent
+      - ReinstateCancelledCoverage
+      - RenewCancelledCoverage
+      - ChangeEffectiveDate
+      - ChangeCancelDate
+      - ExtendCancelDate
+      - AddPermitHolderWOPHN
+      - AddPermitHolderWithPHN
+      - AuditReporting

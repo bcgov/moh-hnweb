@@ -9,8 +9,8 @@
 </script>
 
 <template>
-  <TheHeader/>
-  <TheNavBar/>
+  <TheHeader :key="$route.fullPath"/>
+  <TheNavBar :key="$route.fullPath"/>
   <main>
     <section class="content">
       <TheAlert/>
