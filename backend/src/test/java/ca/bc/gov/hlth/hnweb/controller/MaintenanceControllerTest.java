@@ -41,7 +41,7 @@ class MaintenanceControllerTest extends BaseControllerTest {
         		.setBody(R46_NEW_EFFDATE_NOT_EQUQL_OLD)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
         
-        ChangeEffectiveDateRequest changeEffectiveDateRequest = changeEffectiveDate(LocalDate.of(2020, 1, 1),LocalDate.of(2021, 1, 1) );
+        ChangeEffectiveDateRequest changeEffectiveDateRequest = createChangeEffectiveDate(LocalDate.of(2020, 1, 1),LocalDate.of(2021, 1, 1) );
 		
         ResponseEntity<ChangeEffectiveDateResponse> response = maintenanceController.changeEffectiveDate(changeEffectiveDateRequest, createHttpServletRequest());
 		
@@ -58,8 +58,7 @@ class MaintenanceControllerTest extends BaseControllerTest {
         
         assertTransactionCreated(TransactionType.CHANGE_EFFECTIVE_DATE);
         assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
-   
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);  
 	}
 	
 	@Test
@@ -68,7 +67,7 @@ class MaintenanceControllerTest extends BaseControllerTest {
         		.setBody(R46_INVALID_COVERAGE_EFF_DATE)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
         
-        ChangeEffectiveDateRequest changeEffectiveDateRequest = changeEffectiveDate(LocalDate.of(2020, 1, 1),LocalDate.of(2021, 1, 1) );
+        ChangeEffectiveDateRequest changeEffectiveDateRequest = createChangeEffectiveDate(LocalDate.of(2020, 1, 1),LocalDate.of(2021, 1, 1) );
 		
         ResponseEntity<ChangeEffectiveDateResponse> response = maintenanceController.changeEffectiveDate(changeEffectiveDateRequest, createHttpServletRequest());
 		
@@ -85,8 +84,7 @@ class MaintenanceControllerTest extends BaseControllerTest {
         
         assertTransactionCreated(TransactionType.CHANGE_EFFECTIVE_DATE);
         assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
-   
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);  
 	}
 	
 	@Test
@@ -95,7 +93,7 @@ class MaintenanceControllerTest extends BaseControllerTest {
         		.setBody(R46_SUBSCRIBER_NOT_COVERED)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
         
-        ChangeEffectiveDateRequest changeEffectiveDateRequest = changeEffectiveDate(LocalDate.of(2020, 1, 1),LocalDate.of(2021, 1, 1) );
+        ChangeEffectiveDateRequest changeEffectiveDateRequest = createChangeEffectiveDate(LocalDate.of(2020, 1, 1),LocalDate.of(2021, 1, 1) );
 		
         ResponseEntity<ChangeEffectiveDateResponse> response = maintenanceController.changeEffectiveDate(changeEffectiveDateRequest, createHttpServletRequest());
 		
@@ -112,8 +110,7 @@ class MaintenanceControllerTest extends BaseControllerTest {
         
         assertTransactionCreated(TransactionType.CHANGE_EFFECTIVE_DATE);
         assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
-   
+        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1); 
 	}
 	
 	@Test
@@ -122,13 +119,13 @@ class MaintenanceControllerTest extends BaseControllerTest {
         		.setBody(R46_SUCCESS)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
         
-        ChangeEffectiveDateRequest changeEffectiveDateRequest = changeEffectiveDate(LocalDate.of(2022, 1, 1),LocalDate.of(2022, 1, 3) );
+        ChangeEffectiveDateRequest changeEffectiveDateRequest = createChangeEffectiveDate(LocalDate.of(2022, 1, 1),LocalDate.of(2022, 1, 3) );
 		
         ResponseEntity<ChangeEffectiveDateResponse> response = maintenanceController.changeEffectiveDate(changeEffectiveDateRequest, createHttpServletRequest());
 		
         ChangeEffectiveDateResponse changeEffectiveDateResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, changeEffectiveDateResponse.getStatus());
-        assertEquals("RPBS9014 TRANSACTION SUCCESSFUL", changeEffectiveDateResponse.getMessage());
+        assertEquals("RPBS9014 TRANSACTION COMPLETED", changeEffectiveDateResponse.getMessage());
 
         assertEquals("9873251693", changeEffectiveDateResponse.getPhn());
         
@@ -140,7 +137,6 @@ class MaintenanceControllerTest extends BaseControllerTest {
         assertTransactionCreated(TransactionType.CHANGE_EFFECTIVE_DATE);
         assertAffectedParyCount(AffectedPartyDirection.INBOUND, 1);
         assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
-   
 	}
 
 
@@ -157,7 +153,7 @@ class MaintenanceControllerTest extends BaseControllerTest {
 	}
 	
 
-	private ChangeEffectiveDateRequest changeEffectiveDate(LocalDate newEffectiveDate, LocalDate oldEffectiveDate) {
+	private ChangeEffectiveDateRequest createChangeEffectiveDate(LocalDate newEffectiveDate, LocalDate oldEffectiveDate) {
 		ChangeEffectiveDateRequest changeEffDateRequest = new ChangeEffectiveDateRequest();
 		changeEffDateRequest.setGroupNumber("6337109");
 		changeEffDateRequest.setPhn("9331926919");
