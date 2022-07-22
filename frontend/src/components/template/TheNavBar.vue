@@ -8,7 +8,7 @@
         <li id="home-link" :class="tabClass($route, 'Home')" v-if="authenticated">
           <router-link @click="resetAlert" :to="{ name: 'Home' }">Home</router-link>
         </li>
-        <li id="audit-report-link" :class="menuTabClass($route, '/reports')">
+        <li id="audit-report-link" :class="menuTabClass($route, '/reports')" v-if="hasReportsPermission()">
           <div class="dropdown">
             <span>Reports</span>
             <div class="dropdown-content">
@@ -107,6 +107,9 @@ export default {
     },
     hasPermission(permission) {
       return this.authStore.hasPermission(permission)
+    },
+    hasReportsPermission() {
+      return this.hasPermission('AuditReporting')
     },
     hasEligibilityPermission() {
       return this.hasPermission('MSPCoverageCheck') || this.hasPermission('CheckEligibility') || this.hasPermission('PHNInquiry') || this.hasPermission('PHNLookup')
