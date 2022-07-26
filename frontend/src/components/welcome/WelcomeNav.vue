@@ -1,8 +1,12 @@
 <template>
   <AppNav>
     <li :class="linkClass($route, 'Login')"><router-link :to="{ name: 'Login' }">MSP Direct Login</router-link></li>
-    <li><AppLink href="#">What is new MSP Direct?</AppLink></li>
-    <li :class="linkClass($route, 'CredentialsInfo')"><router-link :to="{ name: 'CredentialsInfo' }">What are new log-in Credentials?</router-link></li>
+    <li>
+      <AppLink href="https://gov.bc.ca/mspdirectupgrade2022" popout>What is the new MSP Direct?</AppLink>
+    </li>
+    <li>
+      <AppLink href="https://www2.gov.bc.ca/gov/content/health/practitioner-professional-resources/system-access/msp-direct#govcred" popout>What are new log-in Credentials?</AppLink>
+    </li>
     <li>
       <AppLink href="https://www2.gov.bc.ca/gov/content/health/practitioner-professional-resources/system-access/msp-direct" popout>Transactions in MSP Direct?</AppLink>
     </li>
