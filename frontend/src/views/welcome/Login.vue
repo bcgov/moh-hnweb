@@ -1,6 +1,6 @@
 <template>
   <AppRow>
-    <AppCol class="col3">
+    <AppCol class="welcome-nav-col">
       <WelcomeNav />
     </AppCol>
     <AppCol>
@@ -37,3 +37,9 @@ export default {
   },
 }
 </script>
+<style scoped>
+.welcome-nav-col {
+  flex: 0 0 27%;
+  max-width: 27%;
+}
+</style>
