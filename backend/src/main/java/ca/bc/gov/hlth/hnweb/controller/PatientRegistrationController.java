@@ -54,12 +54,12 @@ public class PatientRegistrationController extends BaseController {
 	private PatientRegistrationService patientRegistrationService;
 
 	@PostMapping("/registration-history")
-	public ResponseEntity<ViewPatientRegisterResponse> getRegistrationHistory(
+	public ResponseEntity<ViewPatientRegisterResponse> getPatientRegistrationHistory(
 			@Valid @RequestBody ViewPatientRegisterRequest viewPatientRegisterRequest, HttpServletRequest request) {
 
 		logger.info("View Patient Register request: {} ", viewPatientRegisterRequest.getPhn());
 
-		Transaction transaction = transactionStart(request, TransactionType.GET_PERSON_DETAILS);
+		Transaction transaction = transactionStart(request, TransactionType.GET_PATIENT_REGISTRATION_HISTORY);
 		addAffectedParty(transaction, IdentifierType.PHN, viewPatientRegisterRequest.getPhn(),
 				AffectedPartyDirection.INBOUND);
 
@@ -128,9 +128,9 @@ public class PatientRegistrationController extends BaseController {
 		patientRegistrations.forEach(patientRegistration -> {
 			PatientRegisterModel model = new PatientRegisterModel();
 
-			model.setEffectiveDate(convertDate(patientRegistration.getEffectiveDate()));
-			model.setCurrentStatus(setStatus(patientRegistration.getCancelDate()));
+			model.setEffectiveDate(convertDate(patientRegistration.getEffectiveDate()));			
 			model.setCancelDate(convertDate(patientRegistration.getCancelDate()));
+			model.setCurrentStatus(setStatus(model.getCancelDate(), model.getEffectiveDate()));
 			model.setAdministrativeCode(patientRegistration.getAdministrativeCode());
 			model.setRegistrationReasonCode(StringUtils.isEmpty(patientRegistration.getRegistrationReasonCode()) ? "N/A"
 					: patientRegistration.getRegistrationReasonCode());
@@ -162,9 +162,24 @@ public class PatientRegistrationController extends BaseController {
 		return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
 	}
 
-	private String setStatus(Date cancelDate) {
-		Date date = new Date();
-		return date.compareTo(cancelDate) > 0 ? "Registered" : "De-Registered";
+	private String setStatus(LocalDate cancelDate, LocalDate effectiveDate) {
+		String currentStatus = "";
+		LocalDate today = LocalDate.now();
+		
+		//“Registered” when the current date is greater than or equal to the effective date and less than or equal to the cancel date.
+		//“De-Registered” when the current date is later than the registration cancel date
+		//“Future Registration” when the registration date is in the future
+		
+		if (today.compareTo(effectiveDate)>= 0 && today.compareTo(cancelDate)<= 0 ) {
+			currentStatus = "Registered";
+		} else if (today.compareTo(cancelDate) > 0) {
+			currentStatus = "De-Registered";
+		} else if (effectiveDate.compareTo(today)> 0 ) {
+			currentStatus = "Future Registration";
+		}
+		
+		return currentStatus;
+		
 
 	}
 

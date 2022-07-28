@@ -20,6 +20,7 @@ public enum TransactionType {
 	CONTRACT_INQUIRY("ContractInquiry"),	//R40
 	GET_CONTRACT_ADDRESS("GetContractAddress"), //R37
 	UPDATE_CONTRACT_ADDRESS("UpdateContractAddress"), //R38
+	GET_PATIENT_REGISTRATION_HISTORY("GetPatientRegistrationHistory"), //R70
 	
 	UNKNOWN("Unknown");
 

@@ -10,15 +10,8 @@ import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.PatientRegister;
 
 public interface PatientRegisterRepository extends JpaRepository<PatientRegister, Long> {
 
-	@Query("select p from PatientRegister p "
-	+ "where p.payeeNumber in ("
-	+ "select p2.payeeNumber from PBFClinicPayee p1 inner join PBFClinicPayee p2 "
-    + "on p1.reportGroup="
-	+ "p2.reportGroup where p1.payeeNumber= :payee )")
-	//+ "and p1.effectiveDate<= "
-	//+ "currentDate and currentDate<= "
-	//+ "p1.cancelDate and p2.effectiveDate<= "
-	//+ "currentDate and currentDate<=p2.cancelDate)")
+	@Query("select p from PatientRegister p " + "where p.payeeNumber in ("
+			+ "select p2.payeeNumber from PBFClinicPayee p1 inner join PBFClinicPayee p2 " + "on p1.reportGroup="
+			+ "p2.reportGroup where p1.payeeNumber= :payee )")
 	List<PatientRegister> findPatientRegisterByPayeeClinic(@Param("payee") String payee);
-
 }
