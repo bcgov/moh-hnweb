@@ -1,18 +1,18 @@
 package ca.bc.gov.hlth.hnweb.model.v3;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 public class Person {
 
-  private Date birthDate;
+  private LocalDate birthDate;
   private boolean birthDateMasked = false;
   private String deceased;
   private boolean deathConfirmed = false;
   private String eligibility;
-  private Date deathDate;
+  private LocalDate deathDate;
   private String gender;
   private String phn;
   private String phnStatus;
@@ -33,8 +33,8 @@ public class Person {
   private Telecommunication workEmail = new Telecommunication();
   private Telecommunication mobileEmail = new Telecommunication();
   private List<MedicalRecordNumber> medicalRecordNumbers = new ArrayList<MedicalRecordNumber>();
-  private Date createdDate;
-  private Date updatedDate;
+  private LocalDate createdDate;
+  private LocalDate updatedDate;
   private String updatedBy;
 
   private List<Person> personHistory;
@@ -178,27 +178,27 @@ public class Person {
     return true;
   }
 
-  public Date getBirthDate() {
+  public LocalDate getBirthDate() {
     return birthDate;
   }
 
-  public void setBirthDate(Date birthDate) {
+  public void setBirthDate(LocalDate birthDate) {
     this.birthDate = birthDate;
   }
 
-  public Date getCreatedDate() {
+  public LocalDate getCreatedDate() {
     return createdDate;
   }
 
-  public void setCreatedDate(Date createdDate) {
+  public void setCreatedDate(LocalDate createdDate) {
     this.createdDate = createdDate;
   }
 
-  public Date getDeathDate() {
+  public LocalDate getDeathDate() {
     return deathDate;
   }
 
-  public void setDeathDate(Date deathDate) {
+  public void setDeathDate(LocalDate deathDate) {
     this.deathDate = deathDate;
   }
 
@@ -317,11 +317,11 @@ public class Person {
     this.updatedBy = updatedBy;
   }
 
-  public Date getUpdatedDate() {
+  public LocalDate getUpdatedDate() {
     return updatedDate;
   }
 
-  public void setUpdatedDate(Date updatedDate) {
+  public void setUpdatedDate(LocalDate updatedDate) {
     this.updatedDate = updatedDate;
   }
 

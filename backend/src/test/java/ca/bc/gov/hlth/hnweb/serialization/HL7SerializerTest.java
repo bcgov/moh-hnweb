@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -81,6 +82,7 @@ public class HL7SerializerTest {
 		FindCandidatesResponse demographicsResponse = hl7.fromXml(TestUtil.convertXMLFileToString(path1), FindCandidatesResponse.class);
 		assertEquals("9999999999", demographicsResponse.getResults().get(0).getPerson().getPhn());
 		assertEquals(3, demographicsResponse.getResultCount());
+		assertEquals(LocalDate.of(1940, 06, 06), demographicsResponse.getResults().get(0).getPerson().getBirthDate());
 
 	}
 

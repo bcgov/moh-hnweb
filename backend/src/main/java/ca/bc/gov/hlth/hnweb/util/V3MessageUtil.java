@@ -1,8 +1,7 @@
 package ca.bc.gov.hlth.hnweb.util;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 /**
  *Utility class for V3 messages
@@ -29,8 +28,8 @@ public class V3MessageUtil {
 		return SOAP_ENVELOPE_START + formattedRequest + SOAP_ENVELOPE_END;
 	}
 	
-	public static String convertDateToString(Date date) {
-		return new SimpleDateFormat(V2MessageUtil.DATE_FORMAT_DATE_ONLY).format(date);
+	public static String convertDateToString(LocalDate date) {
+		return date.format(DateTimeFormatter.ofPattern(V2MessageUtil.DATE_FORMAT_DATE_ONLY));
 	}
 	
 }
