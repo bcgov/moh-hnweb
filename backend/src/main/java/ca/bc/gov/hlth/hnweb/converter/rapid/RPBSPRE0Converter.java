@@ -56,7 +56,7 @@ public class RPBSPRE0Converter extends BaseRapidConverter {
 	private LocalDate calculateStudentEndDate(LocalDate birthDate) {
 		// The end date is to be stripped of the dd portion. If the end date is empty then a new end date
 		// is to be made up from the dependents birth date and the current year plus one
-		return LocalDate.of(LocalDate.now().getYear(), birthDate.getMonth(), birthDate.getDayOfYear()).plusYears(1);
+		return LocalDate.of(LocalDate.now().getYear(), birthDate.getMonth(), birthDate.getDayOfMonth()).plusYears(1);
 	}
 
 }

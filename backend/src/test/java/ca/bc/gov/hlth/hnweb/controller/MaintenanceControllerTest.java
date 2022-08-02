@@ -26,7 +26,7 @@ import okhttp3.mockwebserver.RecordedRequest;
 
 public class MaintenanceControllerTest extends BaseControllerTest {
 	
-	private static final String R43_SUCCESS = "";
+	private static final String R43_SUCCESS = "        RPBSPRE000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  9873252394484190498732523872000-05-10Y2022-12";
 	
 	private static final String R43_INVALID_STUDENT_DATE_DATE = "        RPBSPRE000000010                                ERRORMSGRPBS0111STUDENT END DATE YEAR MUST BE GREATER THAN OR EQUAL TO CURRENT YEAR.    9332912486633710993292797331970-01-01Y2020-01";
 
@@ -134,6 +134,32 @@ public class MaintenanceControllerTest extends BaseControllerTest {
         assertEquals("RPBS1054 DEPENDENT CANNOT BE REINSTATED AS A STUDENT THIS TIME. PLS CONTACT MSP.", reinstateResponse.getMessage());
 
         assertEquals("9387807484", reinstateResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.REINSTATE_OVER_AGE_DEPENDENT);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+	}
+	
+	@Test
+	public void testReinstateOverAgeDependent_success() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R43_SUCCESS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        ReinstateOverAgeDependentRequest reinstateRequest = createReinstateOverAgeDependentRequest("9873252394", null);
+		
+        ResponseEntity<ReinstateOverAgeDependentResponse> response = maintenanceController.reinstateOverAgeDependent(reinstateRequest, createHttpServletRequest());
+		
+        ReinstateOverAgeDependentResponse reinstateResponse = response.getBody();
+		assertEquals(StatusEnum.SUCCESS, reinstateResponse.getStatus());
+        assertEquals("RPBS9014 TRANSACTION COMPLETED", reinstateResponse.getMessage());
+
+        assertEquals("9873252394", reinstateResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
