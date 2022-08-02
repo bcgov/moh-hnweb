@@ -130,7 +130,7 @@ public class EnrollmentControllerTest extends BaseControllerTest {
 		//Check the response
 		assertEquals(StatusEnum.SUCCESS, enrollSubscriber.getBody().getStatus());
 		
-		assertEquals("HJMB001I SUCCESSFULLY COMPLETED", enrollSubscriber.getBody().getMessage());
+		assertEquals("HJMB001I TRANSACTION COMPLETED", enrollSubscriber.getBody().getMessage());
 		
 		
 		//Check the client request is sent as expected
@@ -156,7 +156,7 @@ public class EnrollmentControllerTest extends BaseControllerTest {
 
 		//Check the response
 		assertEquals(StatusEnum.SUCCESS, enrollSubscriber.getBody().getStatus());
-		assertEquals("HJMB001I SUCCESSFULLY COMPLETED", enrollSubscriber.getBody().getMessage());
+		assertEquals("HJMB001I TRANSACTION COMPLETED", enrollSubscriber.getBody().getMessage());
 		assertEquals("9873808694", enrollSubscriber.getBody().getPhn());
 		
 		

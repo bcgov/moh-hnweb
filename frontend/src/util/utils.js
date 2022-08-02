@@ -26,3 +26,14 @@ export function decodeRelationship(relationshipCode) {
       return relationshipCode
   }
 }
+
+export function handleServiceError(err, alertStore, router) {
+  if (typeof err === 'boolean') {
+    // Keycloak refresh token expiry causes Boolean err
+    // Warn and return to login
+    alertStore.setWarningAlert('Session expired. Please login.')
+    router.push({ name: 'Login' })
+  } else {
+    alertStore.setErrorAlert(err)
+  }
+}

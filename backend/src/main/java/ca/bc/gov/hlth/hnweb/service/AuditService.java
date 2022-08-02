@@ -2,12 +2,18 @@ package ca.bc.gov.hlth.hnweb.service;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +22,14 @@ import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.persistence.entity.ErrorLevel;
 import ca.bc.gov.hlth.hnweb.persistence.entity.EventMessage;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
+import ca.bc.gov.hlth.hnweb.persistence.entity.Organization;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 import ca.bc.gov.hlth.hnweb.persistence.entity.TransactionEvent;
 import ca.bc.gov.hlth.hnweb.persistence.entity.TransactionEventType;
+import ca.bc.gov.hlth.hnweb.persistence.repository.AffectedPartyPageableRepository;
 import ca.bc.gov.hlth.hnweb.persistence.repository.AffectedPartyRepository;
 import ca.bc.gov.hlth.hnweb.persistence.repository.EventMessageRepository;
+import ca.bc.gov.hlth.hnweb.persistence.repository.OrganizationRepository;
 import ca.bc.gov.hlth.hnweb.persistence.repository.TransactionEventRepository;
 import ca.bc.gov.hlth.hnweb.persistence.repository.TransactionRepository;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
@@ -38,6 +47,9 @@ public class AuditService {
 	private AffectedPartyRepository affectedPartyRepository;
 	
 	@Autowired
+	private AffectedPartyPageableRepository affectedPartyPageableRepository;
+	
+	@Autowired
 	private EventMessageRepository eventMessageRepository;
 
 	@Autowired
@@ -45,7 +57,9 @@ public class AuditService {
 	
 	@Autowired
 	private TransactionRepository transactionRepository;
-
+		
+	@Autowired
+	private OrganizationRepository organizationRepository;
 	/**
 	 * Creates a new {@link Transaction}.
 	 * 
@@ -171,6 +185,44 @@ public class AuditService {
 		affectedParty.setDirection(direction.getValue());
 		affectedParty.setTransaction(transaction);
 		return affectedPartyRepository.save(affectedParty);
+	}
+	
+	/**
+	 * Retrieves distinct organization for audit report.
+	 * @return list of organization.
+	 */
+	public List<Organization> getOrganizations() {
+		return organizationRepository.findAll();
+	}
+
+	/**
+	 * Retrieves audit records for the given search parameters
+	 * @param types Transaction types
+	 * @param organizations
+	 * @param userId
+	 * @param direction
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<AffectedParty> getAffectedParties(List<String> types, List<String> organizations, String userId, LocalDate startDate,
+			LocalDate endDate) {
+		try {
+			Date formattedStartDate = convertLocalDateToDate(startDate);
+			Date formattedendDate = convertLocalDateToDate(endDate);
+			// XXX Limit the results to 1000 until we implement pagination
+			Pageable page = PageRequest.of(0, 1000);
+			return affectedPartyPageableRepository.findByTransactionAndDirection(types, organizations, userId, AffectedPartyDirection.INBOUND.getValue(), formattedStartDate,
+					formattedendDate, page);
+		} catch (ParseException e) {
+			logger.error(e.getLocalizedMessage());
+			return null;
+		}		
+
+	}
+
+	private Date convertLocalDateToDate(LocalDate date) throws ParseException {
+		return new SimpleDateFormat("yyyy-MM-dd").parse(date.toString());
 	}
 	
 }

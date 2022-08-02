@@ -1,5 +1,6 @@
 import { createRouter as createVueRouter, createWebHistory } from 'vue-router'
 
+import Error from './../views/Error.vue'
 import Help from './../views/Help.vue'
 import Home from './../views/Home.vue'
 import CheckEligibility from './../views/eligibility/CheckEligibility.vue'
@@ -28,6 +29,8 @@ import GetContractPeriods from '../views/mspcontracts/GetContractPeriods.vue'
 import GetGroupMembersContractAddress from '../views/mspcontracts/GetGroupMembersContractAddress.vue'
 import MspContractsHome from '../views/mspcontracts/MspContractsHome.vue'
 import UpdateContractAddress from '../views/mspcontracts/UpdateContractAddress.vue'
+import AuditReportHome from '../views/reports/AuditReportHome.vue'
+import AuditReporting from '../views/reports/AuditReporting.vue'
 import CredentialsInfo from '../views/welcome/CredentialsInfo.vue'
 import Login from '../views/welcome/Login.vue'
 
@@ -46,6 +49,25 @@ const createRoutes = (app) => [
     meta: {
       requiresAuth: true,
     },
+  },
+  {
+    path: '/reports',
+    name: 'reports',
+    component: AuditReportHome,
+    redirect: {
+      name: 'AuditReporting',
+    },
+    children: [
+      {
+        path: 'auditReporting',
+        name: 'AuditReporting',
+        component: AuditReporting,
+        meta: {
+          permission: 'AuditReporting',
+          requiresAuth: true,
+        },
+      },
+    ],
   },
   {
     path: '/welcome/credentialsInfo',
@@ -261,6 +283,14 @@ const createRoutes = (app) => [
     ],
   },
   {
+    path: '/error',
+    name: 'Error',
+    component: Error,
+    meta: {
+      requiresAuth: false,
+    },
+  },
+  {
     path: '/help',
     name: 'Help',
     component: Help,
@@ -313,11 +343,27 @@ export const createRouter = (app) => {
 
     const authenticated = app.config.globalProperties.$keycloak.authenticated
 
-    // Authenticated users should never see the Login screen
-    // Send them to Home instead
-    if (authenticated && to.name === 'Login') {
-      next({ name: 'Home' })
+    // Check if the API is available
+    if (!authStore.apiAvailable && to.name !== 'Error' && to.name !== 'Help') {
+      alertStore.setErrorAlert('MSP Direct API is unavailable.')
+      next({ name: 'Error' })
       return
+    }
+
+    // Login handling. Place here instead of Login beforeEnter to centralize access to authStore/authenticated
+    if (to.name === 'Login') {
+      // Authenticated users should never see the Login screen
+      // Send them to Home instead
+      if (authenticated) {
+        next({ name: 'Home' })
+        return
+      } else {
+        // If the user is unauthenticated and attempting to Login, remove any existing permissions
+        // This handles session expiry where a user's permissions have been retrieved but the refreshToken is invalid
+        authStore.permissions = []
+        next()
+        return
+      }
     }
 
     // Always navigate to pages that don't require auth
@@ -335,7 +381,7 @@ export const createRouter = (app) => {
 
     // Validate that the user has permissions
     const hasAnyPermission = authStore.hasAnyPermission
-    if (!hasAnyPermission && to.name !== 'Unauthorized') {
+    if (!hasAnyPermission && to.name !== 'Unauthorized' && to.name !== 'Help') {
       next({ name: 'Unauthorized' })
       return
     }

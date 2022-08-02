@@ -133,7 +133,7 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		
 		UpdateNumberAndDeptResponse updateNumberAndDeptResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, updateNumberAndDeptResponse.getStatus());
-        assertEquals("RPBS9014 TRANSACTION SUCCESSFUL", updateNumberAndDeptResponse.getMessage());
+        assertEquals("RPBS9014 TRANSACTION COMPLETED", updateNumberAndDeptResponse.getMessage());
         assertEquals("9873895927", updateNumberAndDeptResponse.getPhn());
         
 		// Check the client request is sent as expected
@@ -303,7 +303,7 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		
 		CancelGroupMemberResponse cancelGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, cancelGroupMemberResponse.getStatus());
-        assertEquals("RPBS9014 TRANSACTION SUCCESSFUL", cancelGroupMemberResponse.getMessage());
+        assertEquals("RPBS9014 TRANSACTION COMPLETED", cancelGroupMemberResponse.getMessage());
         assertEquals("9873895927", cancelGroupMemberResponse.getPhn());
         
 		// Check the client request is sent as expected
@@ -373,7 +373,7 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		
 		AddGroupMemberResponse addGroupMemberResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, addGroupMemberResponse.getStatus());
-        assertEquals("RPBS9014 TRANSACTION SUCCESSFUL", addGroupMemberResponse.getMessage());
+        assertEquals("RPBS9014 TRANSACTION COMPLETED", addGroupMemberResponse.getMessage());
         assertEquals("9873895902", addGroupMemberResponse.getPhn());
         
 		// Check the client request is sent as expected
@@ -402,7 +402,7 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		
 		AddDependentResponse addDependentResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, addDependentResponse.getStatus());
-        assertEquals("RPBS9014 TRANSACTION SUCCESSFUL", addDependentResponse.getMessage());
+        assertEquals("RPBS9014 TRANSACTION COMPLETED", addDependentResponse.getMessage());
         assertEquals("9347984074", addDependentResponse.getPhn());
         
 		// Check the client request is sent as expected
@@ -665,7 +665,7 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		
 		CancelDependentResponse cancelDependentResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, cancelDependentResponse.getStatus());
-        assertEquals("RPBS9014 TRANSACTION SUCCESSFUL", cancelDependentResponse.getMessage());
+        assertEquals("RPBS9014 TRANSACTION COMPLETED", cancelDependentResponse.getMessage());
         assertEquals("9873895927", cancelDependentResponse.getPhn());
         
 		// Check the client request is sent as expected

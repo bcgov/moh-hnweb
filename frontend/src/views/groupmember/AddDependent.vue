@@ -63,6 +63,7 @@ import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumbe
 import { API_DATE_FORMAT, RELATIONSHIPS } from '../../util/constants'
 import GroupMemberService from '../../services/GroupMemberService'
 import { useAlertStore } from '../../stores/alert'
+import { handleServiceError } from '../../util/utils'
 
 export default {
   name: 'AddDependent',
@@ -137,10 +138,10 @@ export default {
 
         if (this.result?.status === 'success') {
           this.inputFormActive = false
-          this.alertStore.setSuccessAlert(this.result.message)
+          this.alertStore.setInfoAlert(this.result.message)
         }
       } catch (err) {
-        this.alertStore.setErrorAlert(err)
+        handleServiceError(err, this.alertStore, this.$router)
       } finally {
         this.submitting = false
       }

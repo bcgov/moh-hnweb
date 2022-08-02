@@ -29,37 +29,3 @@ v2:
     sendingFacility: HN-WEB
     receivingFacility: BC00001013
     processingID: D
-
-# Mapping of roles (SPGs) to specific permissions
-security:
-  rolePermissions:
-    DUMMY:
-      - Dummy
-    E45:
-      - MSPCoverageCheck
-    ELIGIBILITY:
-      - MSPCoverageCheck
-      - CheckEligibility
-      - PHNInquiry
-    TRAININGHEALTHAUTH:
-      - MSPCoverageCheck
-      - CheckEligibility
-      - AddGroupMember
-      - AddDependent
-      - GetContractPeriods
-      - UpdateNumberAndDept
-      - CancelGroupMember
-      - CancelDependent
-      - GetContractAddress
-      - UpdateContractAddress
-      - ContractInquiry
-      - PHNInquiry
-      - PHNLookup
-      - ReinstateOverAgeDependent
-      - ReinstateCancelledCoverage
-      - RenewCancelledCoverage
-      - ChangeEffectiveDate
-      - ChangeCancelDate
-      - ExtendCancelDate
-      - AddPermitHolderWOPHN
-      - AddPermitHolderWithPHN

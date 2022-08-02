@@ -1,12 +1,12 @@
 <template>
   <AppRow>
-    <AppCol class="col3">
+    <AppCol class="welcome-nav-col">
       <WelcomeNav />
     </AppCol>
     <AppCol>
       <section id="loginButtons">
         <h1>MSP Direct Login</h1>
-        <p>Welcome to the new-and-improved MSP Direct website. MSP Direct is an online business service, authorized by the Ministry of Health, that allows group plan administrators to do a number of adjustments to their group members account.</p>
+        <p>Welcome to the new MSP Direct. MSP Direct is an online business service, authorized by the Ministry of Health, that allows group plan administrators to do a number of adjustments to their group members account.</p>
         <p>Please log-in to the MSP Direct using one of the IDs:</p>
         <AppButton @click="login('phsa')" class="btn-xxl" id="phsaLogin">Health Authority ID</AppButton>
         <AppButton @click="login('idir')" class="btn-xxl" id="idirLogin">IDIR</AppButton>
@@ -37,3 +37,9 @@ export default {
   },
 }
 </script>
+<style scoped>
+.welcome-nav-col {
+  flex: 0 0 27%;
+  max-width: 27%;
+}
+</style>

@@ -145,7 +145,7 @@ public class EligibilityControllerTest extends BaseControllerTest {
 		
 		CheckEligibilityResponse checkEligibilityResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, checkEligibilityResponse.getStatus());
-        assertEquals("HJMB001I SUCCESSFULLY COMPLETED", checkEligibilityResponse.getMessage());
+        assertEquals("HJMB001I TRANSACTION COMPLETED", checkEligibilityResponse.getMessage());
 
         assertEquals("9347984074", checkEligibilityResponse.getPhn());
         assertEquals("Y", checkEligibilityResponse.getBeneficiaryOnDateChecked());
@@ -178,7 +178,7 @@ public class EligibilityControllerTest extends BaseControllerTest {
 		
 		CheckEligibilityResponse checkEligibilityResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, checkEligibilityResponse.getStatus());
-        assertEquals("HJMB001I SUCCESSFULLY COMPLETED", checkEligibilityResponse.getMessage());
+        assertEquals("HJMB001I TRANSACTION COMPLETED", checkEligibilityResponse.getMessage());
 
         assertEquals("9347984074", checkEligibilityResponse.getPhn());
         assertEquals("N", checkEligibilityResponse.getBeneficiaryOnDateChecked());
@@ -243,7 +243,7 @@ public class EligibilityControllerTest extends BaseControllerTest {
 		
 		CheckMspCoverageStatusResponse checkCoverageResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, checkCoverageResponse.getStatus());
-        assertEquals("HJMB001I SUCCESSFULLY COMPLETED", checkCoverageResponse.getMessage());
+        assertEquals("HJMB001I TRANSACTION COMPLETED", checkCoverageResponse.getMessage());
         assertEquals("9395568139", checkCoverageResponse.getPhn());
         assertEquals(dateOnlyFormatter.format(serviceDate), checkCoverageResponse.getDateOfService());
         assertEquals("20190731", checkCoverageResponse.getCoverageEndDate());
@@ -284,7 +284,7 @@ public class EligibilityControllerTest extends BaseControllerTest {
 		
 		CheckMspCoverageStatusResponse checkCoverageResponse = response.getBody();
 		assertEquals(StatusEnum.SUCCESS, checkCoverageResponse.getStatus());
-        assertEquals("HJMB001I SUCCESSFULLY COMPLETED", checkCoverageResponse.getMessage());
+        assertEquals("HJMB001I TRANSACTION COMPLETED", checkCoverageResponse.getMessage());
 
         assertEquals("9347984074", checkCoverageResponse.getPhn());
         assertEquals(dateOnlyFormatter.format(serviceDate), checkCoverageResponse.getDateOfService());
@@ -408,7 +408,7 @@ public class EligibilityControllerTest extends BaseControllerTest {
 
 		// Check the response
         assertEquals(StatusEnum.SUCCESS, inquirePhnResponse.getStatus());
-        assertEquals("RPBS9014 TRANSACTION SUCCESSFUL", inquirePhnResponse.getMessage());
+        assertEquals("RPBS9014 TRANSACTION COMPLETED", inquirePhnResponse.getMessage());
 
         List<InquirePhnBeneficiary> beneficiaries = inquirePhnResponse.getBeneficiaries();
         assertEquals(1, beneficiaries.size());
@@ -552,7 +552,7 @@ public class EligibilityControllerTest extends BaseControllerTest {
 
 		// Check the response
         assertEquals(StatusEnum.SUCCESS, lookupPhnResponse.getStatus());
-        assertEquals("RPBS9014 TRANSACTION SUCCESSFUL", lookupPhnResponse.getMessage());
+        assertEquals("RPBS9014 TRANSACTION COMPLETED", lookupPhnResponse.getMessage());
 		
 		// Check the client request is sent as expected
         List<LookupPhnBeneficiary> beneficiaries = lookupPhnResponse.getBeneficiaries();

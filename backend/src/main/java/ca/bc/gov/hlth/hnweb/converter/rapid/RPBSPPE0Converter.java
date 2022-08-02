@@ -63,7 +63,7 @@ public class RPBSPPE0Converter extends BaseRapidConverter {
 			String statusText = StringUtils.trimToEmpty(beneficiary.getStatusText());
 
 			if (StringUtils.equals(statusCode, STATUS_CODE_SUCCESS)) {
-				successMessage = String.format("%s %s", statusCode, statusText);
+				successMessage = String.format("%s %s", statusCode, SUCCESS_MESSAGE);
 				
 				// Map each record
 				InquirePhnBeneficiary ipBeneficiary = new InquirePhnBeneficiary();

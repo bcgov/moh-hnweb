@@ -1,6 +1,5 @@
-import { defineStore } from 'pinia'
-
 import { DEFAULT_ERROR_MESSAGE } from '../util/constants.js'
+import { defineStore } from 'pinia'
 
 export const useAlertStore = defineStore('alert', {
   state: () => ({
@@ -13,6 +12,11 @@ export const useAlertStore = defineStore('alert', {
     setAlert(alert) {
       this.message = alert.message
       this.type = alert.type
+      this.active = true
+    },
+    setAlertWithInfoForSuccess(message, status) {
+      this.message = message
+      this.type = status === 'success' ? 'info' : status
       this.active = true
     },
     setErrorAlert(message) {

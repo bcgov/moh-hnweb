@@ -22,7 +22,7 @@ public abstract class BaseRapidConverter {
 	
 	protected static final String STATUS_CODE_SUCCESS = "RPBS9014";
 	
-	protected static final String STATUS_TEXT_SUCCESS = "TRANSACTION SUCCESSFUL";
+	protected static final String SUCCESS_MESSAGE = "TRANSACTION COMPLETED";
 	
 	protected UserInfo userInfo;
 	
@@ -40,7 +40,7 @@ public abstract class BaseRapidConverter {
 		} else if (StringUtils.equals(header.getIdentifier(), RPBSHeader.IDENTIFER_RESPONSE)) {
 			if (StringUtils.equals(statusCode, STATUS_CODE_SUCCESS)) {
 				response.setStatus(StatusEnum.SUCCESS);
-				response.setMessage(generateMessage(statusCode, statusText, null));
+				response.setMessage(generateMessage(statusCode, SUCCESS_MESSAGE, null));
 			} else {
 				response.setStatus(StatusEnum.WARNING);
 				response.setMessage(generateMessage(statusCode, statusText, phn));

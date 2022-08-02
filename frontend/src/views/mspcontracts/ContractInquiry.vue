@@ -113,6 +113,7 @@ import { validateOptionalPHN, validateGroupNumber, VALIDATE_PHN_MESSAGE, VALIDAT
 import { required, helpers } from '@vuelidate/validators'
 import MspContractsService from '../../services/MspContractsService'
 import { useAlertStore } from '../../stores/alert'
+import { handleServiceError } from '../../util/utils'
 
 export default {
   name: 'ContractInquiry',
@@ -169,9 +170,9 @@ export default {
         }
 
         this.searchOk = true
-        this.alertStore.setAlert({ message: this.result.message, type: this.result.status })
+        this.alertStore.setAlertWithInfoForSuccess( this.result.message, this.result.status )
       } catch (err) {
-        this.alertStore.setErrorAlert(err)
+        handleServiceError(err, this.alertStore, this.$router)
       } finally {
         this.searching = false
       }

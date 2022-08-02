@@ -8,6 +8,14 @@
         <li id="home-link" :class="tabClass($route, 'Home')" v-if="authenticated">
           <router-link @click="resetAlert" :to="{ name: 'Home' }">Home</router-link>
         </li>
+        <li id="audit-report-link" :class="menuTabClass($route, '/reports')" v-if="hasReportsPermission()">
+          <div class="dropdown">
+            <span>Reports</span>
+            <div class="dropdown-content">
+              <router-link @click="resetAlert" :class="menuClass($route, 'AuditReporting')" :to="{ name: 'AuditReporting' }" v-if="hasPermission('AuditReporting')">Audit Reporting</router-link>
+            </div>
+          </div>
+        </li>
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
           <div class="dropdown">
             <span>Eligibility & PHN</span>
@@ -102,6 +110,9 @@ export default {
     hasPermission(permission) {
       return this.authStore.hasPermission(permission)
     },
+    hasReportsPermission() {
+      return this.hasPermission('AuditReporting')
+    },
     hasEligibilityPermission() {
       return this.hasPermission('MSPCoverageCheck') || this.hasPermission('CheckEligibility') || this.hasPermission('PHNInquiry') || this.hasPermission('PHNLookup')
     },
@@ -112,7 +123,7 @@ export default {
       return this.hasPermission('AddGroupMember') || this.hasPermission('AddDependent') || this.hasPermission('UpdateNumberAndDept') || this.hasPermission('CancelGroupMember') || this.hasPermission('CancelDependent')
     },
     hasMaintenancePermission() {
-      return this.hasPermission('ReinstateOverAgeDependent')
+      return this.hasPermission('ReinstateOverAgeDependent') || this.hasPermission('ChangeEffectiveDate') || this.hasPermission('ExtendCancelDate')
     },
     hasMSPContractsPermission() {
       return this.hasPermission('GetContractPeriods') || this.hasPermission('ContractInquiry') || this.hasPermission('UpdateContractAddress')
