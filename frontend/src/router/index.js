@@ -9,6 +9,7 @@ import { useAlertStore } from '../stores/alert'
 import { useAuthStore } from '../stores/auth'
 import { useStudyPermitHolderStore } from '../stores/studyPermitHolder'
 import NotFound from '../views/NotFound.vue'
+import pbf from '../views/PBFLogin.vue'
 import Unauthorized from '../views/Unauthorized.vue'
 import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
 import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
@@ -40,6 +41,11 @@ const createRoutes = (app) => [
     redirect: {
       name: 'Login',
     },
+  },
+  {
+    path: '/pbf',
+    name: 'pbf',
+    component: pbf,
   },
   {
     path: '/home',

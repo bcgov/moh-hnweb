@@ -16,6 +16,9 @@
             </div>
           </div>
         </li>
+        <li id="view-registartion-history-link" :class="tabClass($route, '/auditReporting')" v-if="hasPBFPermission()">
+          <router-link @click="resetAlert" :class="menuClass($route, 'AuditReporting')" :to="{ name: 'AuditReporting' }">Patient Registration</router-link>
+        </li>
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
           <div class="dropdown">
             <span>Eligibility & PHN</span>
@@ -106,9 +109,13 @@ export default {
       return route.path.startsWith(routePath) ? 'active' : 'inactive'
     },
     hasPermission(permission) {
-      return this.authStore.hasPermission(permission)
+      return this.authStore.hasPermission(permission) && this.isMSPUser()
+    },
+    hasPBFPermission(permission) {
+      return this.authStore.hasPermission(permission) && this.isPBFUser()
     },
     hasReportsPermission() {
+      console.log('auditing' + this.isPBFUser())
       return this.hasPermission('AuditReporting')
     },
     hasEligibilityPermission() {
@@ -125,6 +132,12 @@ export default {
     },
     hasMSPContractsPermission() {
       return this.hasPermission('GetContractPeriods') || this.hasPermission('ContractInquiry') || this.hasPermission('UpdateContractAddress')
+    },
+    isPBFUser() {
+      return this.authStore.pbfUser
+    },
+    isMSPUser() {
+      return this.authStore.mspUser
     },
   },
 }

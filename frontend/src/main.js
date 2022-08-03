@@ -27,10 +27,15 @@ keycloak.onReady = async function (authenticated) {
   // info to work with
   let apiAvailable = true
   let permissions = []
+  let mspUser = true
+  let pbfUser = false
   try {
     if (authenticated) {
       const data = (await UserService.getPermissions()).data
       permissions = data
+      checkPBFPermission()
+      mspUser = useAuthStore.mspUser
+      pbfUser = useAuthStore.pbfUser
     }
   } catch (err) {
     // Check for network error
@@ -39,11 +44,44 @@ keycloak.onReady = async function (authenticated) {
       apiAvailable = false
     }
   } finally {
-    initApp(permissions, apiAvailable)
+    initApp(permissions, apiAvailable, mspUser, pbfUser)
   }
 }
 
-function initApp(permissions, apiAvailable) {
+function checkPBFPermission() {
+  console.log('inside')
+  console.log(keycloak.tokenParsed.hasOwnProperty('aud'))
+  console.log(keycloak.tokenParsed.resource_access)
+
+  console.log('insideeee')
+  var audience = ''
+  console.log(keycloak.tokenParsed.hasOwnProperty('aud'))
+  if (keycloak.tokenParsed.hasOwnProperty('aud')) {
+    const aud = keycloak.tokenParsed.aud
+    if (typeof aud === 'string') {
+      audience = aud.startsWith('MSPDIRECT-SERVICE') ? aud : ''
+    } else {
+      audience = aud.find((element) => element.startsWith('MSPDIRECT-SERVICE'))
+    }
+  }
+  console.log('hi' + audience)
+  if (keycloak.tokenParsed.hasOwnProperty('resource_access')) {
+    if (keycloak.tokenParsed.resource_access.hasOwnProperty(audience)) {
+      const mspDirect = keycloak.tokenParsed.resource_access[audience]
+
+      if (mspDirect.roles && mspDirect.roles.includes('PBFUSER')) {
+        useAuthStore.pbfUser = true
+      }
+      if (mspDirect.roles && mspDirect.roles.includes('TRAININGHEALTHAUTH')) {
+        useAuthStore.mspUser = true
+      }
+    }
+  }
+  console.log('useAuthStore.mspUser' + useAuthStore.mspUser)
+  console.log('useAuthStore.pbfUser' + useAuthStore.pbfUser)
+}
+
+function initApp(permissions, apiAvailable, pbfUser, mspUser) {
   const app = createApp(App)
 
   app.component('AppCol', AppCol)
@@ -60,6 +98,8 @@ function initApp(permissions, apiAvailable) {
   const auth = useAuthStore()
   auth.permissions = permissions
   auth.apiAvailable = apiAvailable
+  auth.pbfUser = pbfUser
+  auth.mspUser = mspUser
 
   const router = createRouter(app)
   app.use(router)
