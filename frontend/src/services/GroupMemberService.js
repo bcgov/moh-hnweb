@@ -16,7 +16,4 @@ export default {
   cancelDependent(request) {
     return apiRequest().then((axiosInstance) => axiosInstance.post(resources.groupMember.cancelDependent, request))
   },
-  reinstateOverAgeDependent(request) {
-    return apiRequest().then((axiosInstance) => axiosInstance.post(resources.groupMember.cancelDependent, request))
-  },
 }
