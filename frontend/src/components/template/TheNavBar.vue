@@ -30,7 +30,9 @@
         <li id="coverage-maintenance-link" :class="tabClass($route, 'CoverageMaintenance')" v-if="hasMaintenancePermission()">
           <div class="dropdown">
             <span>Coverage Maintenance</span>
-            <div class="dropdown-content"></div>
+            <div class="dropdown-content">
+              <router-link @click="resetAlert" :class="menuClass($route, 'ReinstateOverAgeDependent')" :to="{ name: 'ReinstateOverAgeDependent' }" v-if="hasPermission('ReinstateOverAgeDependent')">Reinstate OverAge Dependent</router-link>
+            </div>
           </div>
         </li>
         <li id="coverage-enrollment-link" :class="menuTabClass($route, '/coverage/enrollment')" v-if="hasEnrollmentPermission()">
