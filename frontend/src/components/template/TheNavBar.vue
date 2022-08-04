@@ -8,7 +8,7 @@
         <li id="home-link" :class="tabClass($route, 'Home')" v-if="authenticated">
           <router-link @click="resetAlert" :to="{ name: 'Home' }">Home</router-link>
         </li>
-        <li id="audit-report-link" :class="menuTabClass($route, '/reports')">
+        <li id="audit-report-link" :class="menuTabClass($route, '/reports')" v-if="hasReportsPermission()">
           <div class="dropdown">
             <span>Reports</span>
             <div class="dropdown-content">
@@ -32,6 +32,7 @@
             <span>Coverage Maintenance</span>
             <div class="dropdown-content">
               <router-link @click="changeEffectiveDate" :class="menuClass($route, 'ChangeEffectiveDate')" :to="{ name: 'ChangeEffectiveDate' }" v-if="hasPermission('ChangeEffectiveDate')">Change Effective Date</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'ReinstateOverAgeDependent')" :to="{ name: 'ReinstateOverAgeDependent' }" v-if="hasPermission('ReinstateOverAgeDependent')">Reinstate OverAge Dependent</router-link>
             </div>
           </div>
         </li>
@@ -109,6 +110,9 @@ export default {
     },
     hasPermission(permission) {
       return this.authStore.hasPermission(permission)
+    },
+    hasReportsPermission() {
+      return this.hasPermission('AuditReporting')
     },
     hasEligibilityPermission() {
       return this.hasPermission('MSPCoverageCheck') || this.hasPermission('CheckEligibility') || this.hasPermission('PHNInquiry') || this.hasPermission('PHNLookup')

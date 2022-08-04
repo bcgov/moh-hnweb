@@ -79,8 +79,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
     	assertEquals("Department Number or Group Number is required", exception.getReason());
     	
         assertTransactionCreated(TransactionType.UPDATE_NUMBER_AND_OR_DEPT);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 0);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 0);
     }
 
     @Test
@@ -110,8 +110,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.UPDATE_NUMBER_AND_OR_DEPT);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 4);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 4);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     
     @Test
@@ -141,8 +141,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.UPDATE_NUMBER_AND_OR_DEPT);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 4);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 4);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     
     @Test
@@ -169,8 +169,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.CANCEL_GROUP_MEMBER);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     
     @Test
@@ -198,8 +198,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.CANCEL_GROUP_MEMBER);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     
     @Test
@@ -227,8 +227,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.CANCEL_GROUP_MEMBER);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
 
     @Test
@@ -255,8 +255,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.CANCEL_GROUP_MEMBER);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     
     @Test
@@ -283,8 +283,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.CANCEL_GROUP_MEMBER);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     
     @Test
@@ -311,8 +311,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.CANCEL_GROUP_MEMBER);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 2);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     
     @Test
@@ -346,8 +346,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.ADD_GROUP_MEMBER);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 4);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 4);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     
     @Test
@@ -381,8 +381,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.ADD_GROUP_MEMBER);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 4);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 4);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     
     @Test
@@ -410,8 +410,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.ADD_DEPENDENT);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 3);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
 
     @Test
@@ -439,8 +439,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.ADD_DEPENDENT);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 3);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
 
     @Test
@@ -469,8 +469,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 	    assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.ADD_DEPENDENT);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 3);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
 	}
     
     @Test
@@ -498,8 +498,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 	    assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.ADD_DEPENDENT);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 3);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
 	}
 	
     @Test
@@ -527,8 +527,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.CANCEL_DEPENDENT);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 3);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     
     @Test
@@ -556,8 +556,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.CANCEL_DEPENDENT);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 3);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     
     @Test
@@ -585,8 +585,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.CANCEL_DEPENDENT);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 3);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     
     @Test
@@ -614,8 +614,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.CANCEL_DEPENDENT);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 3);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
 
     @Test
@@ -643,8 +643,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.CANCEL_DEPENDENT);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 3);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
 
     @Test
@@ -673,8 +673,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
 
         assertTransactionCreated(TransactionType.CANCEL_DEPENDENT);
-        assertAffectedParyCount(AffectedPartyDirection.INBOUND, 3);
-        assertAffectedParyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
    
     /**

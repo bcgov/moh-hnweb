@@ -13,6 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import ca.bc.gov.hlth.hnweb.exception.ExceptionType;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAJ0;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPRE0;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 
 /**
@@ -24,6 +25,9 @@ public class MaintenanceService extends BaseService {
 
 	private static final Logger logger = LoggerFactory.getLogger(MaintenanceService.class);
 
+	@Value("${rapid.r43Path}")
+	private String r43Path;
+	
 	@Value("${rapid.r46Path}")
 	private String r46Path;
 
@@ -58,10 +62,45 @@ public class MaintenanceService extends BaseService {
 
 		return rpbspaj0Response;
 	}
+	
+	/**
+	 * Reinstate an Over Age Dependent based on the R43/RPBSPRE0 request.
+	 * 
+	 * @param rpbspre0
+	 * @return The RPBSPRE0 response.
+	 * @throws HNWebException
+	 */
+	public RPBSPRE0 reinstateOverAgeDependent(RPBSPRE0 rpbspre0, Transaction transaction) throws HNWebException {
+		String rpbspre0Str = rpbspre0.serialize();
 
-	private ResponseEntity<String> postRapidRequest(String path, String body, String transactionId) {
-		return rapidWebClient.post().uri(path).contentType(MediaType.TEXT_PLAIN).header(TRANSACTION_ID, transactionId)
-				.bodyValue(body).retrieve().toEntity(String.class).block();
+		logger.info("Request {}", rpbspre0Str);
+
+		messageSent(transaction);
+		ResponseEntity<String> response = postRapidRequest(r43Path, rpbspre0Str, transaction.getTransactionId().toString());
+		
+		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
+		
+		logger.info("Response {}", response.getBody());
+
+		if (response.getStatusCode() != HttpStatus.OK) {
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
+		}
+
+		messageReceived(transaction);
+		return new RPBSPRE0(response.getBody());
 	}
-
+	
+	private ResponseEntity<String> postRapidRequest(String path, String body, String transactionId) {
+		return rapidWebClient
+				.post()
+				.uri(path)
+				.contentType(MediaType.TEXT_PLAIN)
+				.header(TRANSACTION_ID, transactionId)
+				.bodyValue(body)
+				.retrieve()
+				.toEntity(String.class)
+				.block();
+	}
+	
 }

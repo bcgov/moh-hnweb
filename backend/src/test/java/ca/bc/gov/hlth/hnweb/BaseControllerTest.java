@@ -91,7 +91,7 @@ public class BaseControllerTest {
 	 * 
 	 * @return The number of AffectedPartys found for the specified direction.
 	 */
-	protected int assertAffectedParyCount(AffectedPartyDirection direction, int count) {
+	protected int assertAffectedPartyCount(AffectedPartyDirection direction, int count) {
 		AffectedParty example = new AffectedParty();
 		example.setAffectedPartyId(0);
 		example.setDirection(direction.getValue());

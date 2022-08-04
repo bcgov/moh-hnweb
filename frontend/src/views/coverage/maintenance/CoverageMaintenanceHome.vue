@@ -1,6 +1,7 @@
 <template>
   <TheSubNav>
     <SubNavTab routeName="ChangeEffectiveDate" title="Change Effective Date" v-if="hasPermission('ChangeEffectiveDate')" />
+    <SubNavTab routeName="ReinstateOverAgeDependent" title="Reinstate OverAge Dependent" v-if="hasPermission('ReinstateOverAgeDependent')" />
   </TheSubNav>
   <router-view />
 </template>
@@ -9,6 +10,7 @@
 import TheSubNav from '../../../components/template/TheSubNav.vue'
 import SubNavTab from '../../../components/template/SubNavTab.vue'
 import { useAuthStore } from '../../../stores/auth'
+
 export default {
   name: 'Coverage Maintenance',
   components: { SubNavTab, TheSubNav },

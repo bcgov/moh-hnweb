@@ -19,6 +19,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.basic.DateConverter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
+import ca.bc.gov.hlth.hnweb.converter.hl7v3.LocalDateConverter;
 import ca.bc.gov.hlth.hnweb.model.v3.Address;
 import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesResponse;
@@ -123,6 +124,8 @@ public class HL7Serializer {
    * @return Deserialized object
    */
   public <T> T fromXml(String input, Class<T> clazz) {
+	LocalDateConverter conv = new LocalDateConverter();
+	xs.registerConverter(conv);
     input = input.replaceAll("xmlns=\"[^>]*", "");
     String xml = transform(input, clazz);
     return (T) xs.fromXML(xml);
