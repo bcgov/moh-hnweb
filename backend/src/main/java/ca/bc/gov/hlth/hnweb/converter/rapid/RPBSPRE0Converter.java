@@ -43,7 +43,7 @@ public class RPBSPRE0Converter extends BaseRapidConverter {
 		
 		handleStatus(header, response);
 		
-		response.setPhn(rpbspre0.getRe0().getSubscriberPHN());
+		response.setPhn(rpbspre0.getRe0().getDependentPHN());
 		
 		return response;
 	}

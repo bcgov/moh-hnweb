@@ -55,7 +55,7 @@ public class MaintenanceControllerTest extends BaseControllerTest {
 		assertEquals(StatusEnum.ERROR, reinstateResponse.getStatus());
         assertEquals("RPBS0111 STUDENT END DATE YEAR MUST BE GREATER THAN OR EQUAL TO CURRENT YEAR.", reinstateResponse.getMessage());
 
-        assertEquals("9332912486", reinstateResponse.getPhn());
+        assertEquals("9329279733", reinstateResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -81,7 +81,7 @@ public class MaintenanceControllerTest extends BaseControllerTest {
 		assertEquals(StatusEnum.ERROR, reinstateResponse.getStatus());
         assertEquals("RPBS0067 NO COVERAGE FOUND FOR THE PHN ENTERED. PLEASE CONTACT MSP", reinstateResponse.getMessage());
 
-        assertEquals("9332912486", reinstateResponse.getPhn());
+        assertEquals("9329279733", reinstateResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -107,7 +107,7 @@ public class MaintenanceControllerTest extends BaseControllerTest {
 		assertEquals(StatusEnum.ERROR, reinstateResponse.getStatus());
         assertEquals("RPBS0108 STUDENT NOT ATTENDING SCHOOL IN CANADA, MUST FORWARD DOCUMENTS TO MSP.", reinstateResponse.getMessage());
 
-        assertEquals("9332912486", reinstateResponse.getPhn());
+        assertEquals("9329279733", reinstateResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -133,7 +133,7 @@ public class MaintenanceControllerTest extends BaseControllerTest {
 		assertEquals(StatusEnum.ERROR, reinstateResponse.getStatus());
         assertEquals("RPBS1054 DEPENDENT CANNOT BE REINSTATED AS A STUDENT THIS TIME. PLS CONTACT MSP.", reinstateResponse.getMessage());
 
-        assertEquals("9387807484", reinstateResponse.getPhn());
+        assertEquals("9319079926", reinstateResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -159,7 +159,7 @@ public class MaintenanceControllerTest extends BaseControllerTest {
 		assertEquals(StatusEnum.SUCCESS, reinstateResponse.getStatus());
         assertEquals("RPBS9014 TRANSACTION COMPLETED", reinstateResponse.getMessage());
 
-        assertEquals("9873252394", reinstateResponse.getPhn());
+        assertEquals("9873252387", reinstateResponse.getPhn());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        

@@ -31,7 +31,7 @@
           <div class="dropdown">
             <span>Coverage Maintenance</span>
             <div class="dropdown-content">
-              <router-link @click="resetAlert" :class="menuClass($route, 'ReinstateOverAgeDependent')" :to="{ name: 'ReinstateOverAgeDependent' }" v-if="hasPermission('ReinstateOverAgeDependent')">Reinstate Over Age Dependent</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'ReinstateOverAgeDependent')" :to="{ name: 'ReinstateOverAgeDependent' }" v-if="hasPermission('ReinstateOverAgeDependent')">Reinstate OverAge Dependent</router-link>
             </div>
           </div>
         </li>
