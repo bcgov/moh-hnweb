@@ -42,6 +42,7 @@ import { required, helpers } from '@vuelidate/validators'
 import { API_DATE_FORMAT } from '../../../util/constants'
 import dayjs from 'dayjs'
 import { useAlertStore } from '../../../stores/alert'
+import { handleServiceError } from '../../../util/utils'
 
 export default {
   name: 'ChangeEffectiveDate',
@@ -103,7 +104,7 @@ export default {
 
         this.alertStore.setAlert({ message: this.result.message, type: this.result.status })
       } catch (err) {
-        this.alertStore.setErrorAlert(err)
+        handleServiceError(err, this.alertStore, this.$router)
         this.submitting = false
       } finally {
         this.submitting = false
