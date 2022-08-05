@@ -43,6 +43,15 @@ export default {
   margin-bottom: 0px;
 }
 
+.app-bulletin p p {
+  margin-bottom: 10px;
+}
+
+.app-bulletin p ul {
+  list-style-type: disc;
+  margin: 0px 0px 10px 40px
+}
+
 .bulletin-icon {
   padding: 5px;
 }
