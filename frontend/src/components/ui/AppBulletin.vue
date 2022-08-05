@@ -4,7 +4,7 @@
       <AppCol class="col1 bulletin-icon"><font-awesome-icon icon="bullhorn" size="2x" /></AppCol>
       <AppCol class="col9">
         <h3>Announcement</h3>
-        <p v-html="content"></p>
+        <div v-html="content"></div>
       </AppCol>
     </AppRow>
   </div>
@@ -30,24 +30,22 @@ export default {
   padding: 5px;
 }
 
-.app-bulletin a {
+.app-bulletin a,
+.app-bulletin h3,
+.app-bulletin div p{
   color: #ffffff;
 }
 
-.app-bulletin h3 {
-  color: #ffffff;
-}
-
-.app-bulletin p {
+.app-bulletin div {
   color: #ffffff;
   margin-bottom: 0px;
 }
 
-.app-bulletin p p {
+.app-bulletin div p {
   margin-bottom: 10px;
 }
 
-.app-bulletin p ul {
+.app-bulletin div ul {
   list-style-type: disc;
   margin: 0px 0px 10px 40px
 }
