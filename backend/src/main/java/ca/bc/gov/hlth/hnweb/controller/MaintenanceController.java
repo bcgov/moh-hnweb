@@ -71,6 +71,12 @@ public class MaintenanceController extends BaseController {
 		}
 	}
 
+	/**
+	 * Reinstates coverage for an overage dependent. Maps to the legacy R43.
+	 * 
+	 * @param changeEffectiveDateRequest
+	 * @return The result of the operation.
+	 */
 	@PostMapping("/reinstate-over-age-dependent")
 	public ResponseEntity<ReinstateOverAgeDependentResponse> reinstateOverAgeDependent(@Valid @RequestBody ReinstateOverAgeDependentRequest reinstateRequest, HttpServletRequest request) {
 

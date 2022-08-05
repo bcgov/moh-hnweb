@@ -17,12 +17,11 @@ public enum TransactionType {
 	CANCEL_GROUP_MEMBER("CancelGroupMember"),
 	CANCEL_DEPENDENT("CancelDependent"),
 	GET_CONTRACT_PERIODS("GetContractPeriods"),
-	CONTRACT_INQUIRY("ContractInquiry"),	//R40
-	GET_CONTRACT_ADDRESS("GetContractAddress"), //R37
-	UPDATE_CONTRACT_ADDRESS("UpdateContractAddress"), //R38
+	CONTRACT_INQUIRY("ContractInquiry"),	// R40
+	GET_CONTRACT_ADDRESS("GetContractAddress"), // R37
+	UPDATE_CONTRACT_ADDRESS("UpdateContractAddress"), // R38
 	REINSTATE_OVER_AGE_DEPENDENT("ReinstateOverAgeDependent"), // R43
-	CHANGE_EFFECTIVE_DATE("ChangeEffectiveDate"), //R46a
-	
+	CHANGE_EFFECTIVE_DATE("ChangeEffectiveDate"), // R46a	
 	UNKNOWN("Unknown");
 
 	private String value;

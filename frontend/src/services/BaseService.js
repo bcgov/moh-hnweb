@@ -15,9 +15,6 @@ export const resources = {
     inquirePhn: '/eligibility/inquire-phn',
     lookupPhn: '/eligibility/lookup-phn',
   },
-  maintenance: {
-    changeEffectiveDate: '/maintenance/change-effective-date',
-  },
   groupMember: {
     addGroupMember: '/group-member/add-group-member',
     addDependent: '/group-member/add-dependent',
@@ -26,6 +23,7 @@ export const resources = {
     cancelDependent: '/group-member/cancel-dependent',
   },
   maintenance: {
+    changeEffectiveDate: '/maintenance/change-effective-date',
     reinstateOverAgeDependent: '/maintenance/reinstate-over-age-dependent',
   },
   mspContracts: {

@@ -100,8 +100,8 @@ public class MaintenanceControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         
         assertTransactionCreated(TransactionType.CHANGE_EFFECTIVE_DATE);
-        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
-        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);  
 	}
 	
 	@Test
@@ -126,8 +126,8 @@ public class MaintenanceControllerTest extends BaseControllerTest {
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
         
         assertTransactionCreated(TransactionType.CHANGE_EFFECTIVE_DATE);
-        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
-        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1); 
 	}
 	
 	@Test

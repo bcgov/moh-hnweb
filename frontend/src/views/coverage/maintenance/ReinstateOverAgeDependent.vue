@@ -46,7 +46,7 @@
       </AppRow>
     </form>
   </div>
-  <div id="confirmation" v-if="!inputFormActive">
+  <div id="confirmation" v-else>
     <br />
     <p>PHN: {{ result?.phn }}</p>
     <AppButton @click="resetForm" mode="primary" type="button">Reinstate Another OverAge Dependent</AppButton>
