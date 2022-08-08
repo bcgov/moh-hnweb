@@ -423,6 +423,7 @@ export const createRouter = (app) => {
       return
     }
 
+    // PBFUser should be sent to Patient Registration page
     if (to.name === 'Home' && authStore.isPBFUser) {
       next({ name: 'ViewPatientRegistration' })
     }
@@ -435,6 +436,8 @@ export const createRouter = (app) => {
         next()
       } else {
         alertStore.setErrorAlert(`You are not authorized to access ${to.path}`)
+        //Go to home page only if user is not PBF User
+        //PBF user should not be able to view home page
         if (!authStore.isPBFUser) {
           next({ name: 'Home' })
         }
