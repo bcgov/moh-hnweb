@@ -1,5 +1,5 @@
 <template>
-  <div id="changeEffectiveDate" v-if="updateMode">
+  <div id="changeEffectiveDate" v-if="inputFormActive">
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
@@ -27,7 +27,7 @@
       </AppRow>
     </form>
   </div>
-  <div id="confirmation" v-if="updateOk">
+  <div id="confirmation" v-else>
     <p>PHN: {{ result?.phn }}</p>
     <AppButton @click="resetForm" mode="primary" type="button">Change Another Effective Date</AppButton>
   </div>
@@ -56,8 +56,7 @@ export default {
   data() {
     return {
       submitting: false,
-      updateOk: false,
-      updateMode: true,
+      inputFormActive: true,
       phn: '',
       groupNumber: '',
       existingEffectiveDate: null,
@@ -73,8 +72,6 @@ export default {
   methods: {
     async submitForm() {
       this.submitting = true
-      this.updateOk = false
-      this.updateMode = true
       this.alertStore.dismissAlert()
       try {
         const isValid = await this.v$.$validate()
@@ -96,8 +93,7 @@ export default {
           return
         }
         if (this.result?.status === 'success') {
-          this.updateMode = false
-          this.updateOk = true
+          this.inputFormActive = false
           this.alertStore.setSuccessAlert(this.result.message)
           return
         }
@@ -105,7 +101,6 @@ export default {
         this.alertStore.setAlert({ message: this.result.message, type: this.result.status })
       } catch (err) {
         handleServiceError(err, this.alertStore, this.$router)
-        this.submitting = false
       } finally {
         this.submitting = false
       }
@@ -113,7 +108,6 @@ export default {
     showError(error) {
       this.alertStore.setErrorAlert(error)
       this.result = {}
-      this.searching = false
     },
     resetForm() {
       this.groupNumber = ''
@@ -122,9 +116,8 @@ export default {
       this.newEffectiveDate = null
       this.result = null
       this.v$.$reset()
+      this.inputFormActive = true
       this.alertStore.dismissAlert()
-      this.updateMode = true
-      this.updateOk = false
     },
   },
   validations() {
