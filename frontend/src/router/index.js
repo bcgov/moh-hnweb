@@ -388,7 +388,7 @@ export const createRouter = (app) => {
     }
 
     // Login handling. Place here instead of Login beforeEnter to centralize access to authStore/authenticated
-    if (to.name === 'Login' || to.name === 'PBFLogin') {
+    if (to.name === 'Login') {
       // Authenticated users should never see the Login screen
       // Send them to Home instead
       if (authenticated) {
