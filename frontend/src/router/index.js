@@ -14,7 +14,9 @@ import Unauthorized from '../views/Unauthorized.vue'
 import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
 import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
 import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
+import ChangeEffectiveDate from '../views/coverage/maintenance/ChangeEffectiveDate.vue'
 import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
+import ReinstateOverAgeDependent from '../views/coverage/maintenance/ReinstateOverAgeDependent.vue'
 import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
 import PhnInquiry from '../views/eligibility/PhnInquiry.vue'
 import PhnLookup from '../views/eligibility/PhnLookup.vue'
@@ -116,8 +118,28 @@ const createRoutes = (app) => [
     name: 'CoverageMaintenance',
     component: CoverageMaintenanceHome,
     redirect: {
-      name: 'Home',
+      name: 'ChangeEffectiveDate',
     },
+    children: [
+      {
+        path: 'changeEffectiveDate',
+        name: 'ChangeEffectiveDate',
+        component: ChangeEffectiveDate,
+        meta: {
+          permission: 'ChangeEffectiveDate',
+          requiresAuth: true,
+        },
+      },
+      {
+        path: 'reinstateOverAgeDependent',
+        name: 'ReinstateOverAgeDependent',
+        component: ReinstateOverAgeDependent,
+        meta: {
+          permission: 'ReinstateOverAgeDependent',
+          requiresAuth: true,
+        },
+      },
+    ],
   },
   {
     path: '/coverage/enrollment',

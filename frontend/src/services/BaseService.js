@@ -22,6 +22,10 @@ export const resources = {
     cancelGroupMember: '/group-member/cancel-group-member',
     cancelDependent: '/group-member/cancel-dependent',
   },
+  maintenance: {
+    changeEffectiveDate: '/maintenance/change-effective-date',
+    reinstateOverAgeDependent: '/maintenance/reinstate-over-age-dependent',
+  },
   mspContracts: {
     getContractPeriods: '/msp-contracts/get-contract-periods',
     inquireContract: '/msp-contracts/inquire-contract',
