@@ -23,6 +23,7 @@ export const resources = {
     cancelDependent: '/group-member/cancel-dependent',
   },
   maintenance: {
+    changeEffectiveDate: '/maintenance/change-effective-date',
     reinstateOverAgeDependent: '/maintenance/reinstate-over-age-dependent',
   },
   mspContracts: {

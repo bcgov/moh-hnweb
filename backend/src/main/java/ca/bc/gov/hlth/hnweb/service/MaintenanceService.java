@@ -12,9 +12,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import ca.bc.gov.hlth.hnweb.exception.ExceptionType;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAJ0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPRE0;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
-
 
 /**
  * Service for processing Coverage Maintenance requests. 
@@ -27,9 +27,41 @@ public class MaintenanceService extends BaseService {
 
 	@Value("${rapid.r43Path}")
 	private String r43Path;
+	
+	@Value("${rapid.r46Path}")
+	private String r46Path;
 
 	@Autowired
 	private WebClient rapidWebClient;
+
+	/**
+	 * Changes Coverage Effective Date for the group member based on the R46/RPBSPAJ0 request.
+	 * 
+	 * @param rpbspaj0
+	 * @param transaction
+	 * @return The RPBSPAJ0 response.
+	 * @throws HNWebException
+	 */
+	public RPBSPAJ0 changeEffectiveDate(RPBSPAJ0 rpbspaj0, Transaction transaction) throws HNWebException {
+		String rpbspaj0Str = rpbspaj0.serialize();
+
+		logger.info("Request {}", rpbspaj0Str);
+
+		messageSent(transaction);
+		ResponseEntity<String> response = postRapidRequest(r46Path, rpbspaj0Str,
+				transaction.getTransactionId().toString());
+		messageReceived(transaction);
+		logger.info("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
+
+		if (response.getStatusCode() != HttpStatus.OK) {
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
+		}
+
+		RPBSPAJ0 rpbspaj0Response = new RPBSPAJ0(response.getBody());
+
+		return rpbspaj0Response;
+	}
 	
 	/**
 	 * Reinstate an Over Age Dependent based on the R43/RPBSPRE0 request.
@@ -49,7 +81,7 @@ public class MaintenanceService extends BaseService {
 		logger.debug("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
 		
 		logger.info("Response {}", response.getBody());
-		
+
 		if (response.getStatusCode() != HttpStatus.OK) {
 			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
 			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);

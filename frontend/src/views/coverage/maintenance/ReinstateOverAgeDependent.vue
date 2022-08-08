@@ -46,7 +46,7 @@
       </AppRow>
     </form>
   </div>
-  <div id="confirmation" v-if="!inputFormActive">
+  <div id="confirmation" v-else>
     <br />
     <p>PHN: {{ result?.phn }}</p>
     <AppButton @click="resetForm" mode="primary" type="button">Reinstate Another OverAge Dependent</AppButton>
@@ -63,6 +63,7 @@ import { API_DATE_FORMAT, RELATIONSHIPS } from '../../../util/constants'
 import MaintenanceService from '../../../services/MaintenanceService'
 import { useAlertStore } from '../../../stores/alert'
 import AppCol from '../../../components/grid/AppCol.vue'
+import { handleServiceError } from '../../../util/utils'
 
 export default {
   name: 'AddDependent',
@@ -135,7 +136,7 @@ export default {
           this.alertStore.setSuccessAlert(this.result.message)
         }
       } catch (err) {
-        this.alertStore.setErrorAlert(err)
+        handleServiceError(err, this.alertStore, this.$router)
       } finally {
         this.submitting = false
       }
