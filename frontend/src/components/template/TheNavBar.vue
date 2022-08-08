@@ -2,10 +2,10 @@
   <nav role="navigation">
     <div class="container">
       <ul>
-        <li id="welcome-link" :class="menuTabClass($route, '/welcome')" v-if="!authenticated">
+        <li id="welcome-link" :class="menuTabClass($route, '/welcome')" v-if="!authenticated && !isPBFLogin">
           <router-link @click="resetAlert" :to="{ name: 'Login' }">Welcome</router-link>
         </li>
-        <li id="home-link" :class="tabClass($route, 'Home')" v-if="authenticated">
+        <li id="home-link" :class="tabClass($route, 'Home')" v-if="authenticated && !isPBFUser">
           <router-link @click="resetAlert" :to="{ name: 'Home' }">Home</router-link>
         </li>
         <li id="audit-report-link" :class="menuTabClass($route, '/reports')" v-if="hasReportsPermission()">
@@ -16,8 +16,8 @@
             </div>
           </div>
         </li>
-        <li id="view-registartion-history-link" :class="tabClass($route, '/auditReporting')" v-if="hasPBFPermission()">
-          <router-link @click="resetAlert" :class="menuClass($route, 'AuditReporting')" :to="{ name: 'AuditReporting' }">Patient Registration</router-link>
+        <li id="pbf-link" :class="tabClass($route, '/patientRegistration')" v-if="hasPBFPermission('ViewPatientRegistration')">
+          <router-link @click="resetAlert" :class="menuClass($route, 'ViewPatientRegistration')" :to="{ name: 'ViewPatientRegistration' }">Patient Registration</router-link>
         </li>
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
           <div class="dropdown">
@@ -68,7 +68,7 @@
             </div>
           </div>
         </li>
-        <li id="help-link" :class="tabClass($route, 'Help')" v-if="authenticated">
+        <li id="help-link" :class="tabClass($route, 'Help')" v-if="authenticated && !isPBFUser">
           <router-link @click="resetAlert" :to="{ name: 'Help' }">Help</router-link>
         </li>
       </ul>
@@ -90,6 +90,12 @@ export default {
     authenticated() {
       return this.$keycloak.authenticated
     },
+    isPBFUser() {
+      return this.authStore.isPBFUser
+    },
+    isPBFLogin() {
+      return this.$route.name === 'PBFLogin'
+    },
   },
   methods: {
     resetCoverageEnrollment() {
@@ -109,13 +115,12 @@ export default {
       return route.path.startsWith(routePath) ? 'active' : 'inactive'
     },
     hasPermission(permission) {
-      return this.authStore.hasPermission(permission) && this.isMSPUser()
+      return this.authStore.hasPermission(permission) && !this.isPBFUser
     },
-    hasPBFPermission(permission) {
-      return this.authStore.hasPermission(permission) && this.isPBFUser()
+    hasPBFPermission() {
+      return this.authStore.hasPermission('ViewPatientRegistration')
     },
     hasReportsPermission() {
-      console.log('auditing' + this.isPBFUser())
       return this.hasPermission('AuditReporting')
     },
     hasEligibilityPermission() {
@@ -132,12 +137,6 @@ export default {
     },
     hasMSPContractsPermission() {
       return this.hasPermission('GetContractPeriods') || this.hasPermission('ContractInquiry') || this.hasPermission('UpdateContractAddress')
-    },
-    isPBFUser() {
-      return this.authStore.pbfUser
-    },
-    isMSPUser() {
-      return this.authStore.mspUser
     },
   },
 }

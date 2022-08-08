@@ -9,7 +9,7 @@ import { useAlertStore } from '../stores/alert'
 import { useAuthStore } from '../stores/auth'
 import { useStudyPermitHolderStore } from '../stores/studyPermitHolder'
 import NotFound from '../views/NotFound.vue'
-import pbf from '../views/PBFLogin.vue'
+import PBFLogin from '../views/PBFLogin.vue'
 import Unauthorized from '../views/Unauthorized.vue'
 import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
 import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
@@ -29,6 +29,8 @@ import GetContractPeriods from '../views/mspcontracts/GetContractPeriods.vue'
 import GetGroupMembersContractAddress from '../views/mspcontracts/GetGroupMembersContractAddress.vue'
 import MspContractsHome from '../views/mspcontracts/MspContractsHome.vue'
 import UpdateContractAddress from '../views/mspcontracts/UpdateContractAddress.vue'
+import ViewPatientRegistration from '../views/patientregistration/ViewPatientRegistration.vue'
+import ViewPatientRegistrationHome from '../views/patientregistration/ViewPatientRegistrationHome.vue'
 import AuditReportHome from '../views/reports/AuditReportHome.vue'
 import AuditReporting from '../views/reports/AuditReporting.vue'
 import CredentialsInfo from '../views/welcome/CredentialsInfo.vue'
@@ -44,8 +46,27 @@ const createRoutes = (app) => [
   },
   {
     path: '/pbf',
-    name: 'pbf',
-    component: pbf,
+    name: 'PBFLogin',
+    component: PBFLogin,
+  },
+  {
+    path: '/patientRegistration',
+    name: 'patientRegistration',
+    component: ViewPatientRegistrationHome,
+    redirect: {
+      name: 'ViewPatientRegistration',
+    },
+    children: [
+      {
+        path: 'viewPatientRegistration',
+        name: 'ViewPatientRegistration',
+        component: ViewPatientRegistration,
+        meta: {
+          permission: 'ViewPatientRegistration',
+          requiresAuth: true,
+        },
+      },
+    ],
   },
   {
     path: '/home',
@@ -345,7 +366,7 @@ export const createRouter = (app) => {
     }
 
     // Login handling. Place here instead of Login beforeEnter to centralize access to authStore/authenticated
-    if (to.name === 'Login') {
+    if (to.name === 'Login' || to.name === 'PBFLogin') {
       // Authenticated users should never see the Login screen
       // Send them to Home instead
       if (authenticated) {
@@ -380,6 +401,10 @@ export const createRouter = (app) => {
       return
     }
 
+    if (to.name === 'Home' && authStore.isPBFUser) {
+      next({ name: 'ViewPatientRegistration' })
+    }
+
     // Validate routes secured by permission
     const permission = to.meta.permission
     if (permission) {
@@ -388,11 +413,14 @@ export const createRouter = (app) => {
         next()
       } else {
         alertStore.setErrorAlert(`You are not authorized to access ${to.path}`)
-        next({ name: 'Home' })
+        if (!authStore.isPBFUser) {
+          next({ name: 'Home' })
+        }
       }
     } else {
       next()
     }
   })
+
   return router
 }

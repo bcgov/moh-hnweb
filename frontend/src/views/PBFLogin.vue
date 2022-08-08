@@ -14,12 +14,12 @@
 
 <script>
 export default {
-  name: 'pbf',
+  name: 'PBFLogin',
   methods: {
     login: function (idpHint) {
       const options = {
         idpHint,
-        redirectUri: location.origin + this.$router.resolve({ name: 'AuditReporting' }).path,
+        redirectUri: location.origin + this.$router.resolve({ name: 'ViewPatientRegistration' }).path,
       }
       this.$keycloak.login(options)
     },

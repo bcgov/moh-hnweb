@@ -4,8 +4,7 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     permissions: [],
     apiAvailable: null,
-    pbfUser: null,
-    mspUser: null,
+    isPBFUser: false,
   }),
   getters: {
     hasPermission: (state) => {
