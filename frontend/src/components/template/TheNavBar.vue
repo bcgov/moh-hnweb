@@ -8,14 +8,6 @@
         <li id="home-link" :class="tabClass($route, 'Home')" v-if="authenticated">
           <router-link @click="resetAlert" :to="{ name: 'Home' }">Home</router-link>
         </li>
-        <li id="audit-report-link" :class="menuTabClass($route, '/reports')" v-if="hasReportsPermission()">
-          <div class="dropdown">
-            <span>Reports</span>
-            <div class="dropdown-content">
-              <router-link @click="resetAlert" :class="menuClass($route, 'AuditReporting')" :to="{ name: 'AuditReporting' }" v-if="hasPermission('AuditReporting')">Audit Reporting</router-link>
-            </div>
-          </div>
-        </li>
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
           <div class="dropdown">
             <span>Eligibility & PHN</span>
@@ -27,7 +19,7 @@
             </div>
           </div>
         </li>
-        <li id="coverage-maintenance-link" :class="tabClass($route, 'CoverageMaintenance')" v-if="hasMaintenancePermission()">
+        <li id="coverage-maintenance-link" :class="menuTabClass($route, '/coverage/maintenance')" v-if="hasMaintenancePermission()">
           <div class="dropdown">
             <span>Coverage Maintenance</span>
             <div class="dropdown-content">
@@ -65,6 +57,14 @@
               <router-link @click="resetAlert" :class="menuClass($route, 'ContractInquiry')" :to="{ name: 'ContractInquiry' }">Contract Inquiry</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'GetGroupMembersContractAddress')" :to="{ name: 'GetGroupMembersContractAddress' }" v-if="hasPermission('GetContractAddress')">Get Contract Address</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'UpdateContractAddress')" :to="{ name: 'UpdateContractAddress' }" v-if="hasPermission('UpdateContractAddress')">Update Contract Address</router-link>
+            </div>
+          </div>
+        </li>
+        <li id="audit-report-link" :class="menuTabClass($route, '/reports')" v-if="hasReportsPermission()">
+          <div class="dropdown">
+            <span>Reports</span>
+            <div class="dropdown-content">
+              <router-link @click="resetAlert" :class="menuClass($route, 'AuditReporting')" :to="{ name: 'AuditReporting' }" v-if="hasPermission('AuditReporting')">Audit Reporting</router-link>
             </div>
           </div>
         </li>
@@ -140,10 +140,10 @@ nav {
   background-color: #38598a;
 }
 nav .container {
-  max-width: 1320px;
+  max-width: 1600px;
   min-width: 1100px;
   margin: 0 auto;
-  padding: 0 60px;
+  padding: 0 0 0 160px;
 }
 nav .container ul {
   padding: 0;
