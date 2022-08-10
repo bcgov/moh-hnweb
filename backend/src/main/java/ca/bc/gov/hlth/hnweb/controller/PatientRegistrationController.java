@@ -76,11 +76,12 @@ public class PatientRegistrationController extends BaseController {
 
 			// Retrieve patient registration history
 			List<PatientRegister> patientRegister = patientRegistrationService
-					.getPatientRegister(viewPatientRegistrationRequest.getPayee(), viewPatientRegistrationRequest.getPhn());
+					.getPatientRegistration(viewPatientRegistrationRequest.getPayee(), viewPatientRegistrationRequest.getPhn());
 
 
 			boolean isDiffPayeeOutsideGroup = false;
 			boolean isSamePayeeWithinGroup = false;
+			
 			// Check if patient registered with different payee within reporting group
 			if (patientRegister.size() > 0) {
 				isSamePayeeWithinGroup = patientRegister.stream()
@@ -90,7 +91,7 @@ public class PatientRegistrationController extends BaseController {
 				// Check if patient registered with different payee outside reporting group
 				List<String> payee = patientRegistrationService.getPayeeByPHN(viewPatientRegistrationRequest.getPhn());
 				if (payee.size() > 0) {
-					patientRegister = patientRegistrationService.getPatientRegister(payee.get(0),
+					patientRegister = patientRegistrationService.getPatientRegistration(payee.get(0),
 							viewPatientRegistrationRequest.getPhn());
 					if (patientRegister.size() > 0) {
 						isDiffPayeeOutsideGroup = true;
