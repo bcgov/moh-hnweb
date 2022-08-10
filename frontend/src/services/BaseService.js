@@ -16,7 +16,7 @@ export const resources = {
     lookupPhn: '/eligibility/lookup-phn',
   },
   patientRegistration: {
-    getRegistrationHistory: '/patient-registration/registration-history',
+    getRegistrationHistory: '/patient-registration/view-patient-registration',
   },
   groupMember: {
     addGroupMember: '/group-member/add-group-member',

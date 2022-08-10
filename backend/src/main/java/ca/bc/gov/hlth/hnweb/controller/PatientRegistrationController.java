@@ -26,8 +26,8 @@ import ca.bc.gov.hlth.hnweb.converter.hl7v3.GetDemographicsConverter;
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegisterModel;
-import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.ViewPatientRegisterRequest;
-import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.ViewPatientRegisterResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.ViewPatientRegistrationRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.ViewPatientRegistrationResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
@@ -53,37 +53,59 @@ public class PatientRegistrationController extends BaseController {
 	@Autowired
 	private PatientRegistrationService patientRegistrationService;
 
-	@PostMapping("/registration-history")
-	public ResponseEntity<ViewPatientRegisterResponse> getPatientRegistrationHistory(
-			@Valid @RequestBody ViewPatientRegisterRequest viewPatientRegisterRequest, HttpServletRequest request) {
+	@PostMapping("/view-patient-registration")
+	public ResponseEntity<ViewPatientRegistrationResponse> getPatientRegistrationHistory(
+			@Valid @RequestBody ViewPatientRegistrationRequest viewPatientRegistrationRequest, HttpServletRequest request) {
 
-		logger.info("View Patient Register request: {} ", viewPatientRegisterRequest.getPhn());
+		logger.info("View Patient Register request: {} ", viewPatientRegistrationRequest.getPhn());
 
 		Transaction transaction = transactionStart(request, TransactionType.GET_PATIENT_REGISTRATION_HISTORY);
-		addAffectedParty(transaction, IdentifierType.PHN, viewPatientRegisterRequest.getPhn(),
+		addAffectedParty(transaction, IdentifierType.PHN, viewPatientRegistrationRequest.getPhn(),
 				AffectedPartyDirection.INBOUND);
 
 		try {
 			// Retrieve demographic details
 			GetDemographicsConverter converter = new GetDemographicsConverter();
-			GetDemographicsRequest demographicsRequest = converter.convertRequest(viewPatientRegisterRequest.getPhn());
+			GetDemographicsRequest demographicsRequest = converter.convertRequest(viewPatientRegistrationRequest.getPhn());
 			GetDemographicsResponse demoGraphicsResponse = enrollmentService.getDemographics(demographicsRequest,
 					transaction);
 			GetPersonDetailsResponse personDetailsResponse = converter.convertResponse(demoGraphicsResponse);
 
-			ViewPatientRegisterResponse response = new ViewPatientRegisterResponse();
+			ViewPatientRegistrationResponse response = new ViewPatientRegistrationResponse();
 			response.setPersonDetail(personDetailsResponse);
 
 			// Retrieve patient registration history
-			List<PatientRegisterModel> registrationHistory = convertPatientRegister(
-					patientRegistrationService.getPatientRegister(viewPatientRegisterRequest.getPayee()));
+			List<PatientRegister> patientRegister = patientRegistrationService
+					.getPatientRegister(viewPatientRegistrationRequest.getPayee(), viewPatientRegistrationRequest.getPhn());
+
+
+			boolean isDiffPayeeOutsideGroup = false;
+			boolean isSamePayeeWithinGroup = false;
+			// Check if patient registered with different payee within reporting group
+			if (patientRegister.size() > 0) {
+				isSamePayeeWithinGroup = patientRegister.stream()
+						.anyMatch(p -> viewPatientRegistrationRequest.getPayee().contentEquals(p.getPayeeNumber()));
+
+			} else {
+				// Check if patient registered with different payee outside reporting group
+				List<String> payee = patientRegistrationService.getPayeeByPHN(viewPatientRegistrationRequest.getPhn());
+				if (payee.size() > 0) {
+					patientRegister = patientRegistrationService.getPatientRegister(payee.get(0),
+							viewPatientRegistrationRequest.getPhn());
+					if (patientRegister.size() > 0) {
+						isDiffPayeeOutsideGroup = true;
+					}
+				}
+			}
+
+			List<PatientRegisterModel> registrationHistory = convertPatientRegistration(patientRegister);
 			response.setPatientRegistrationHistory(registrationHistory);
 
-			handlePatientRegistrationResponse(response);
+			handlePatientRegistrationResponse(response, isSamePayeeWithinGroup, isDiffPayeeOutsideGroup);
 
-			ResponseEntity<ViewPatientRegisterResponse> responseEntity = ResponseEntity.ok(response);
+			ResponseEntity<ViewPatientRegistrationResponse> responseEntity = ResponseEntity.ok(response);
 
-			auditvViewPatientRegisterComplete(transaction, personDetailsResponse);
+			auditViewPatientRegistrationComplete(transaction, personDetailsResponse);
 
 			return responseEntity;
 		} catch (Exception e) {
@@ -92,45 +114,51 @@ public class PatientRegistrationController extends BaseController {
 		}
 	}
 
-	private ViewPatientRegisterResponse handlePatientRegistrationResponse(
-			ViewPatientRegisterResponse patientRegistrationResponse) {
+	private ViewPatientRegistrationResponse handlePatientRegistrationResponse(
+			ViewPatientRegistrationResponse patientRegistrationResponse, boolean isSamePayeeWithinGroup,
+			boolean isDiffPayeeOutsideGroup) {
+
 		Set<String> messages = new HashSet<>();
 		patientRegistrationResponse.setStatus(StatusEnum.SUCCESS);
+		patientRegistrationResponse.setMessage("Transaction completed successfully");
 
 		GetPersonDetailsResponse personDetailsResponse = patientRegistrationResponse.getPersonDetail();
-		//Person detail error will be considered as warning for patient register response
-		if (personDetailsResponse.getStatus() == StatusEnum.ERROR) {
-			patientRegistrationResponse.setPersonDetail(null);
-			patientRegistrationResponse.setStatus(StatusEnum.WARNING);
-			messages.add(personDetailsResponse.getMessage());
-		}
-		if (personDetailsResponse.getStatus() == StatusEnum.WARNING) {
-			patientRegistrationResponse.setStatus(StatusEnum.WARNING);
-			messages.add(personDetailsResponse.getMessage());
+		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse
+				.getPatientRegistrationHistory();
+		
+		if (patientRegistrationHistory.size() == 0) {
+			if (personDetailsResponse.getStatus() == StatusEnum.ERROR) {
+				patientRegistrationResponse.setStatus(StatusEnum.WARNING);
+				patientRegistrationResponse.setMessage("Patient could not be found in the EMPI or in the PBF. ");
+			} else {
+				messages.add("No registration information is found in the system for given PHN");
+			}
+		} else if (!isSamePayeeWithinGroup && !isDiffPayeeOutsideGroup) {
+			messages.add("Patient is registered with a different MSP Payee number within the reporting group");
+		} else if (isDiffPayeeOutsideGroup) {
+			patientRegistrationResponse.setPatientRegistrationHistory(new ArrayList<>());
+			messages.add("Patient is registered with different MSP payee number outside of reporting group");
 		}
 
-		if (patientRegistrationResponse.getPatientRegistrationHistory().size() > 0) {
-			if (personDetailsResponse.getStatus() == StatusEnum.SUCCESS) {
-				messages.add("Transaction completed successfully");
-			}
-		} else {
-			messages.add(
-					"No Patient Register History were returned. Please refine your search criteria, and try again");
-			patientRegistrationResponse.setStatus(StatusEnum.WARNING);
+		if (personDetailsResponse.getStatus() == StatusEnum.WARNING
+				|| personDetailsResponse.getStatus() == StatusEnum.ERROR) {
+			patientRegistrationResponse.setAdditionalInfoMessage(personDetailsResponse.getMessage());
 		}
-		patientRegistrationResponse.setMessage(String.join("\n", messages));
+
+		messages.add(personDetailsResponse.getMessage());
+		patientRegistrationResponse.setAdditionalInfoMessage(String.join("\n", messages));
 
 		return patientRegistrationResponse;
 	}
 
-	private List<PatientRegisterModel> convertPatientRegister(List<PatientRegister> patientRegistrations) {
+	private List<PatientRegisterModel> convertPatientRegistration(List<PatientRegister> patientRegistrations) {
 		List<PatientRegisterModel> pateintRegisterModels = new ArrayList<>();
 		patientRegistrations.forEach(patientRegistration -> {
 			PatientRegisterModel model = new PatientRegisterModel();
 
-			model.setEffectiveDate(convertDate(patientRegistration.getEffectiveDate()));			
+			model.setEffectiveDate(convertDate(patientRegistration.getEffectiveDate()));
 			model.setCancelDate(convertDate(patientRegistration.getCancelDate()));
-			model.setCurrentStatus(setStatus(model.getCancelDate(), model.getEffectiveDate()));
+			model.setCurrentStatus(setPatientRegistrationStatus(model.getCancelDate(), model.getEffectiveDate()));
 			model.setAdministrativeCode(patientRegistration.getAdministrativeCode());
 			model.setRegistrationReasonCode(StringUtils.isEmpty(patientRegistration.getRegistrationReasonCode()) ? "N/A"
 					: patientRegistration.getRegistrationReasonCode());
@@ -150,7 +178,8 @@ public class PatientRegistrationController extends BaseController {
 
 	}
 
-	private void auditvViewPatientRegisterComplete(Transaction transaction, GetPersonDetailsResponse personDetailsResponse) {
+	private void auditViewPatientRegistrationComplete(Transaction transaction,
+			GetPersonDetailsResponse personDetailsResponse) {
 		transactionComplete(transaction);
 		if (StringUtils.isNotBlank(personDetailsResponse.getPhn())) {
 			addAffectedParty(transaction, IdentifierType.PHN, personDetailsResponse.getPhn(),
@@ -162,24 +191,25 @@ public class PatientRegistrationController extends BaseController {
 		return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
 	}
 
-	private String setStatus(LocalDate cancelDate, LocalDate effectiveDate) {
+	private String setPatientRegistrationStatus(LocalDate cancelDate, LocalDate effectiveDate) {
 		String currentStatus = "";
 		LocalDate today = LocalDate.now();
-		
-		//“Registered” when the current date is greater than or equal to the effective date and less than or equal to the cancel date.
-		//“De-Registered” when the current date is later than the registration cancel date
-		//“Future Registration” when the registration date is in the future
-		
-		if (today.compareTo(effectiveDate)>= 0 && today.compareTo(cancelDate)<= 0 ) {
+
+		// “Registered” when the current date is greater than or equal to the effective
+		// date and less than or equal to the cancel date.
+		// “De-Registered” when the current date is later than the registration cancel
+		// date
+		// “Future Registration” when the registration date is in the future
+
+		if (today.compareTo(effectiveDate) >= 0 && today.compareTo(cancelDate) <= 0) {
 			currentStatus = "Registered";
 		} else if (today.compareTo(cancelDate) > 0) {
 			currentStatus = "De-Registered";
-		} else if (effectiveDate.compareTo(today)> 0 ) {
+		} else if (effectiveDate.compareTo(today) > 0) {
 			currentStatus = "Future Registration";
 		}
-		
+
 		return currentStatus;
-		
 
 	}
 

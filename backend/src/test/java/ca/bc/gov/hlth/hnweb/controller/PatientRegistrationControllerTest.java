@@ -16,8 +16,9 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import ca.bc.gov.hlth.hnweb.BaseControllerTest;
-import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.ViewPatientRegisterRequest;
-import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.ViewPatientRegisterResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegisterModel;
+import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.ViewPatientRegistrationRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.ViewPatientRegistrationResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.PBFClinicPayee;
 import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.PatientRegister;
 import ca.bc.gov.hlth.hnweb.persistence.repository.pbf.PBFClinicPayeeRepository;
@@ -49,17 +50,19 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_Error.xml"))
 				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
-		ViewPatientRegisterRequest viewPatientRegisterRequest = new ViewPatientRegisterRequest();
+		ViewPatientRegistrationRequest viewPatientRegisterRequest = new ViewPatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("9879869673");
 		viewPatientRegisterRequest.setPayee("A0053");
-		ResponseEntity<ViewPatientRegisterResponse> response = pbfController
-				.getRegistrationHistory(viewPatientRegisterRequest, createHttpServletRequest());
+		ResponseEntity<ViewPatientRegistrationResponse> response = pbfController
+				.getPatientRegistrationHistory(viewPatientRegisterRequest, createHttpServletRequest());
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		ViewPatientRegisterResponse patientRegistrationResponse = response.getBody();
-
+		ViewPatientRegistrationResponse patientRegistrationResponse = response.getBody();
+		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse.getPatientRegistrationHistory();
 		// Check the number of valid records
-		assertEquals(2, patientRegistrationResponse.getPatientRegistrationHistory());
+		System.out.println(patientRegistrationResponse.getAdditionalInfoMessage());
+		System.out.println(patientRegistrationResponse.getMessage());
+		assertEquals(1, patientRegistrationHistory.size());
 	}
 
 	private void createPatientRegister() {
@@ -71,10 +74,10 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		Date cancelDate1 = new GregorianCalendar(9999, 12, 31).getTime();
 		patientRegister1.setCancelDate(cancelDate1);
 		patientRegister1.setRegistrationReasonCode("SL");
-		patientRegister1.setPayeeNumber("A0053");
+		patientRegister1.setPayeeNumber("A0055");
 		patientRegister1.setRegisteredPractitionerNumber("X2753");
 		patientRegister1.setArchived(Boolean.FALSE);
-		patientRegister1.setPhn("898083201");
+		patientRegister1.setPhn("9879869673");
 
 		patientRegisterRepository.save(patientRegister1);
 
@@ -117,6 +120,15 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		Date effectiveDate1 = new GregorianCalendar(2021, 7, 5).getTime();
 		payee1.setEffectiveDate(effectiveDate1);
 		payee1.setReportGroup("18579");
+		
+		PBFClinicPayee payee2 = new PBFClinicPayee();
+		payee1.setArchived(Boolean.FALSE);
+		Date cancelDate2 = new GregorianCalendar(9999, 12, 31).getTime();
+		payee1.setCancelDate(cancelDate2);
+		payee1.setPayeeNumber("A0055");
+		Date effectiveDate2 = new GregorianCalendar(2021, 7, 5).getTime();
+		payee2.setEffectiveDate(effectiveDate2);
+		payee2.setReportGroup("18579");
 
 		pbfClinicPayeeRepository.save(payee1);
 		List<PBFClinicPayee> findAll = pbfClinicPayeeRepository.findAll();

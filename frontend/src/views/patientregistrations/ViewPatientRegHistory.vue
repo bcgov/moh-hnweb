@@ -53,7 +53,7 @@
     </AppCard>
   </div>
   <br />
-  <div v-if="searchOk && result.patientRegistrationHistory.length > 0">
+  <div v-if="searchOk">
     <AppRow>
       <AppCol class="col2">
         <AppLabel><b>Payee</b></AppLabel>
@@ -71,16 +71,22 @@
         <AppLabel><b>Registration Data</b></AppLabel>
       </AppCol>
     </AppRow>
-    <AppRow v-for="registration in result.patientRegistrationHistory">
-      <PatientRegistration :registration="registration" />
-    </AppRow>
+    <div v-if="result.patientRegistrationHistory.length > 0">
+      <AppRow v-for="registration in result.patientRegistrationHistory">
+        <PatientRegistration :registration="registration" />
+      </AppRow>
+    </div>
   </div>
   <br />
+  <Transition>
+    <AppErrorPanel :visible="displayError" :message="additionalErrorMessage" @close="handleClose()" />
+  </Transition>
 </template>
 
 <script>
 import AppCard from '../../components/ui/AppCard.vue'
 import AppHelp from '../../components/ui/AppHelp.vue'
+import AppErrorPanel from '../../components/ui/AppErrorPanel.vue'
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
 import PatientRegistration from '../../components/patientregistration/PatientRegistration.vue'
 import PatientRegistrationService from '../../services/PatientRegistrationService'
@@ -97,6 +103,7 @@ export default {
     AppHelp,
     AppSimpleTable,
     PatientRegistration,
+    AppErrorPanel,
   },
   setup() {
     return {
@@ -110,13 +117,14 @@ export default {
       payee: '',
       searching: false,
       searchOk: false,
-      patientFound: false,
+      displayError: false,
       result: {
         phn: '',
         payee: '',
         clientInstructions: '',
         status: '',
         message: '',
+        additionalErrorMessage: '',
         patientRegistrationHistory: [],
       },
       showModal: false,
@@ -131,7 +139,8 @@ export default {
       this.result = null
       this.searching = true
       this.searchOk = false
-      this.patientFound = false
+      this.displayError = false
+      this.additionalErrorMessage = ''
       this.alertStore.dismissAlert()
       try {
         const isValid = await this.v$.$validate()
@@ -146,12 +155,13 @@ export default {
           })
         ).data
 
-        if (this.result.status === 'error') {
-          this.alertStore.setErrorAlert(this.result.message)
-          return
+        this.searchOk = true
+        this.alertStore.setAlertWithInfoForSuccess(this.result.message)
+        if ((this.result.additionalInfoMessage != '' || this.result.additionalInfoMessage != null) && this.result.status != 'warning') {
+          this.displayError = true
+          this.additionalErrorMessage = this.result.additionalInfoMessage
         }
 
-        this.searchOk = true
         this.alertStore.setAlertWithInfoForSuccess(this.result.message, this.result.status)
       } catch (err) {
         handleServiceError(err, this.alertStore, this.$router)
@@ -172,14 +182,15 @@ export default {
       this.alertStore.dismissAlert()
       this.searchOk = false
       this.searching = false
-      this.patientFound = false
+      this.displayError = false
+      this.additionalErrorMessage = ''
     },
   },
   validations() {
     return {
       phn: {
         required,
-        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
+        //validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
       },
     }
   },

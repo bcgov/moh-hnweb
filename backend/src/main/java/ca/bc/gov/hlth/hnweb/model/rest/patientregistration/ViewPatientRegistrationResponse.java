@@ -6,9 +6,13 @@ import java.util.List;
 import ca.bc.gov.hlth.hnweb.model.rest.BaseResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.GetPersonDetailsResponse;
 
-public class ViewPatientRegisterResponse extends BaseResponse {
+public class ViewPatientRegistrationResponse extends BaseResponse {
  
 	private GetPersonDetailsResponse personDetail;
+	
+	private List<PatientRegisterModel> patientRegistrationHistory = new ArrayList<>();
+	
+	private String additionalInfoMessage;
 	
 	public GetPersonDetailsResponse getPersonDetail() {
 		return personDetail;
@@ -16,10 +20,7 @@ public class ViewPatientRegisterResponse extends BaseResponse {
 
 	public void setPersonDetail(GetPersonDetailsResponse personDetail) {
 		this.personDetail = personDetail;
-	}
-
-	private List<PatientRegisterModel> patientRegistrationHistory = new ArrayList<>();
-	
+	}	
 	
 	public List<PatientRegisterModel> getPatientRegistrationHistory() {
 		return patientRegistrationHistory;
@@ -27,6 +28,14 @@ public class ViewPatientRegisterResponse extends BaseResponse {
 
 	public void setPatientRegistrationHistory(List<PatientRegisterModel> patientRegistrationHistory) {
 		this.patientRegistrationHistory = patientRegistrationHistory;
+	}
+
+	public String getAdditionalInfoMessage() {
+		return additionalInfoMessage;
+	}
+
+	public void setAdditionalInfoMessage(String additionalInfoMessage) {
+		this.additionalInfoMessage = additionalInfoMessage;
 	}
 	
 }
