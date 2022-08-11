@@ -30,7 +30,17 @@ export default {
       return decodeRelationship(this.contractPeriod.relationship)
     },
     cancelReason() {
-      return this.contractPeriod.cancelReason === 'E' ? 'Eligible' : ''
+      const cancelReason = ''
+      switch (this.contractPeriod.cancelReason) {
+        case 'E':
+          return 'Eligible'
+        case 'I':
+          return 'Ineligible'
+        case 'D':
+          return 'Deceased'
+        default:
+          return cancelReason
+      }
     },
   },
 }
