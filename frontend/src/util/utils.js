@@ -32,11 +32,7 @@ export function handlePBFServiceError(err, alertStore, isPBFUser, router) {
     // Keycloak refresh token expiry causes Boolean err
     // Warn and return to login
     alertStore.setWarningAlert('Session expired. Please login.')
-    if (isPBFUser) {
-      router.push({ name: 'PBFLogin' })
-    } else {
-      router.push({ name: 'Login' })
-    }
+    isPBFUser ? router.push({ name: 'PBFLogin' }) : router.push({ name: 'Login' })
   } else {
     alertStore.setErrorAlert(err)
   }

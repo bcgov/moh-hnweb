@@ -26,12 +26,13 @@ keycloak.onReady = async function (authenticated) {
   // otherwise the router won't have the correct authentication
   // info to work with
   let apiAvailable = true
+  let isPBFUser = false
   let permissions = []
   try {
     if (authenticated) {
       const data = (await UserService.getPermissions()).data
       permissions = data
-      checkUserRoles()
+      isPBFUser = checkForPBFUser()
     }
   } catch (err) {
     // Check for network error
@@ -40,12 +41,13 @@ keycloak.onReady = async function (authenticated) {
       apiAvailable = false
     }
   } finally {
-    initApp(permissions, apiAvailable, useAuthStore.isPBFUser)
+    initApp(permissions, apiAvailable, isPBFUser)
   }
 }
 
-function checkUserRoles() {
+function checkForPBFUser() {
   var audience = ''
+
   if (keycloak.tokenParsed.hasOwnProperty('aud')) {
     const aud = keycloak.tokenParsed.aud
     if (typeof aud === 'string') {
@@ -58,12 +60,10 @@ function checkUserRoles() {
   if (keycloak.tokenParsed.hasOwnProperty('resource_access')) {
     if (keycloak.tokenParsed.resource_access.hasOwnProperty(audience)) {
       const mspDirect = keycloak.tokenParsed.resource_access[audience]
-
-      if (mspDirect.roles.length === 1 && mspDirect.roles.includes('PBFUSER')) {
-        useAuthStore.isPBFUser = true
-      }
+      return mspDirect.roles.length === 1 && mspDirect.roles.includes('PBFUSER')
     }
   }
+  return false
 }
 
 function initApp(permissions, apiAvailable, isPBFUser) {

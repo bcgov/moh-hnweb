@@ -19,7 +19,7 @@ export default {
     login: function (idpHint) {
       const options = {
         idpHint,
-        redirectUri: location.origin + this.$router.resolve({ name: 'ViewPatientRegistration' }).path,
+        redirectUri: location.origin + this.$router.resolve({ name: 'PatientRegistration' }).path,
       }
       this.$keycloak.login(options)
     },

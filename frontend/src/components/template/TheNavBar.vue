@@ -16,8 +16,8 @@
             </div>
           </div>
         </li>
-        <li id="pbf-link" :class="tabClass($route, '/patientRegistration')" v-if="hasPBFPermission('ViewPatientRegistration')">
-          <router-link @click="resetAlert" :class="menuClass($route, 'ViewPatientRegistration')" :to="{ name: 'ViewPatientRegistration' }">Patient Registration</router-link>
+        <li id="pbf-link" :class="menuTabClass($route, '/patientRegistration')" v-if="hasPBFPermission('PatientRegistration')">
+          <router-link @click="resetAlert" :to="{ name: 'PatientRegistration' }">Patient Registration</router-link>
         </li>
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
           <div class="dropdown">
@@ -118,10 +118,10 @@ export default {
       return route.path.startsWith(routePath) ? 'active' : 'inactive'
     },
     hasPermission(permission) {
-      return this.authStore.hasPermission(permission) && !this.isPBFUser
+      return this.authStore.hasPermission(permission)
     },
     hasPBFPermission() {
-      return this.authStore.hasPermission('ViewPatientRegistration')
+      return this.authStore.hasPermission('PatientRegistration')
     },
     hasReportsPermission() {
       return this.hasPermission('AuditReporting')

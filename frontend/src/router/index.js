@@ -32,7 +32,6 @@ import GetGroupMembersContractAddress from '../views/mspcontracts/GetGroupMember
 import MspContractsHome from '../views/mspcontracts/MspContractsHome.vue'
 import UpdateContractAddress from '../views/mspcontracts/UpdateContractAddress.vue'
 import ViewPatientRegistration from '../views/patientregistration/ViewPatientRegistration.vue'
-import ViewPatientRegistrationHome from '../views/patientregistration/ViewPatientRegistrationHome.vue'
 import AuditReportHome from '../views/reports/AuditReportHome.vue'
 import AuditReporting from '../views/reports/AuditReporting.vue'
 import CredentialsInfo from '../views/welcome/CredentialsInfo.vue'
@@ -53,22 +52,11 @@ const createRoutes = (app) => [
   },
   {
     path: '/patientRegistration',
-    name: 'patientRegistration',
-    component: ViewPatientRegistrationHome,
-    redirect: {
-      name: 'ViewPatientRegistration',
+    name: 'PatientRegistration',
+    component: ViewPatientRegistration,
+    meta: {
+      requiresAuth: true,
     },
-    children: [
-      {
-        path: 'viewPatientRegistration',
-        name: 'ViewPatientRegistration',
-        component: ViewPatientRegistration,
-        meta: {
-          permission: 'ViewPatientRegistration',
-          requiresAuth: true,
-        },
-      },
-    ],
   },
   {
     path: '/home',
@@ -379,7 +367,6 @@ export const createRouter = (app) => {
     const authStore = useAuthStore()
 
     const authenticated = app.config.globalProperties.$keycloak.authenticated
-
     // Check if the API is available
     if (!authStore.apiAvailable && to.name !== 'Error' && to.name !== 'Help') {
       alertStore.setErrorAlert('MSP Direct API is unavailable.')
@@ -394,6 +381,13 @@ export const createRouter = (app) => {
       if (authenticated) {
         next({ name: 'Home' })
         return
+      }
+    } else if (to.name === 'PBFLogin') {
+      // Authenticated users should never see the PBF Login screen
+      // Send them to Patient Registration instead
+      if (authenticated) {
+        next({ name: 'PatientRegistration' })
+        return
       } else {
         // If the user is unauthenticated and attempting to Login, remove any existing permissions
         // This handles session expiry where a user's permissions have been retrieved but the refreshToken is invalid
@@ -404,7 +398,7 @@ export const createRouter = (app) => {
     }
 
     // Always navigate to pages that don't require auth
-    if (!to.meta.requiresAuth) {
+    if (!to.meta.requiresAuth && !authStore.isPBFUser) {
       next()
       return
     }
@@ -424,8 +418,9 @@ export const createRouter = (app) => {
     }
 
     // PBFUser should be sent to Patient Registration page
-    if (to.name === 'Home' && authStore.isPBFUser) {
-      next({ name: 'ViewPatientRegistration' })
+    if ((to.name === 'Home' || to.name === 'Help' || to.name === 'CredentialsInfo') && authStore.isPBFUser) {
+      next({ name: 'PatientRegistration' })
+      return
     }
 
     // Validate routes secured by permission
@@ -436,11 +431,9 @@ export const createRouter = (app) => {
         next()
       } else {
         alertStore.setErrorAlert(`You are not authorized to access ${to.path}`)
-        //Go to home page only if user is not PBF User
-        //PBF user should not be able to view home page
-        if (!authStore.isPBFUser) {
-          next({ name: 'Home' })
-        }
+        // Go to home page only if user is not PBF User
+        // PBF user should not be able to view home page
+        !authStore.isPBFUser ? next({ name: 'Home' }) : next({ name: 'PatientRegistration' })
       }
     } else {
       next()
