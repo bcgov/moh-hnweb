@@ -1,5 +1,6 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
@@ -16,6 +17,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import ca.bc.gov.hlth.hnweb.BaseControllerTest;
+import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegisterModel;
 import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.ViewPatientRegistrationRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.ViewPatientRegistrationResponse;
@@ -27,22 +29,47 @@ import ca.bc.gov.hlth.hnweb.utils.TestUtil;
 import okhttp3.mockwebserver.MockResponse;
 
 /**
- * JUnit test class for PBFController
+ * JUnit test class for PatientRegistrationController
  *
  */
 public class PatientRegistrationControllerTest extends BaseControllerTest {
-	
+
 	@Autowired
-	private PatientRegistrationController pbfController;
+	private PatientRegistrationController patientRegistrationController;
 
 	@Autowired
 	private PatientRegisterRepository patientRegisterRepository;
 
 	@Autowired
 	private PBFClinicPayeeRepository pbfClinicPayeeRepository;
-   
-    @Test
-	public void testRegistrationHistory() throws Exception {
+	
+		@Test
+	public void testRegistrationHistory_success_payeeWithinGroup_DemoRecord() throws Exception {
+		createPBFClinicPayee();
+		createPatientRegister();
+		mockBackEnd.enqueue(new MockResponse()
+				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse.xml"))
+				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+
+		ViewPatientRegistrationRequest viewPatientRegisterRequest = new ViewPatientRegistrationRequest();
+		viewPatientRegisterRequest.setPhn("9879869673");
+		viewPatientRegisterRequest.setPayee("T0055");
+		ResponseEntity<ViewPatientRegistrationResponse> response = patientRegistrationController
+				.getPatientRegistrationHistory(viewPatientRegisterRequest, createHttpServletRequest());
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		ViewPatientRegistrationResponse patientRegistrationResponse = response.getBody();
+		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse
+				.getPatientRegistrationHistory();
+		// Check the additional message , status and number of valid records
+
+		assertEquals(StatusEnum.SUCCESS, patientRegistrationResponse.getStatus());
+		assertEquals(1, patientRegistrationHistory.size());
+		assertTrue(patientRegistrationResponse.getPersonDetail().getGivenName().equals("Robert"));
+	}
+
+	@Test
+	public void testRegistrationHistory_success_payeeWithinGroup_NoDemoRecord() throws Exception {
 		createPBFClinicPayee();
 		createPatientRegister();
 
@@ -52,17 +79,98 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 
 		ViewPatientRegistrationRequest viewPatientRegisterRequest = new ViewPatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("9879869673");
-		viewPatientRegisterRequest.setPayee("A0053");
-		ResponseEntity<ViewPatientRegistrationResponse> response = pbfController
+		viewPatientRegisterRequest.setPayee("T0055");
+		ResponseEntity<ViewPatientRegistrationResponse> response = patientRegistrationController
 				.getPatientRegistrationHistory(viewPatientRegisterRequest, createHttpServletRequest());
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		ViewPatientRegistrationResponse patientRegistrationResponse = response.getBody();
-		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse.getPatientRegistrationHistory();
-		// Check the number of valid records
-		System.out.println(patientRegistrationResponse.getAdditionalInfoMessage());
-		System.out.println(patientRegistrationResponse.getMessage());
+		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse
+				.getPatientRegistrationHistory();
+		// Check the additional message , status and number of valid records
+
+		assertEquals(StatusEnum.SUCCESS, patientRegistrationResponse.getStatus());
 		assertEquals(1, patientRegistrationHistory.size());
+		assertEquals(StatusEnum.ERROR, patientRegistrationResponse.getPersonDetail().getStatus());
+		assertEquals(null, patientRegistrationResponse.getPersonDetail().getGivenName());
+	}
+
+	@Test
+	public void testRegistrationHistory_success_diffPayeeWithinGroup() throws Exception {
+		createPBFClinicPayee();
+		createPatientRegister();
+
+		mockBackEnd.enqueue(new MockResponse()
+				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_Error.xml"))
+				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+
+		ViewPatientRegistrationRequest viewPatientRegisterRequest = new ViewPatientRegistrationRequest();
+		viewPatientRegisterRequest.setPhn("9879869673");
+		viewPatientRegisterRequest.setPayee("T0053");
+		ResponseEntity<ViewPatientRegistrationResponse> response = patientRegistrationController
+				.getPatientRegistrationHistory(viewPatientRegisterRequest, createHttpServletRequest());
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		ViewPatientRegistrationResponse patientRegistrationResponse = response.getBody();
+		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse
+				.getPatientRegistrationHistory();
+		
+		// Check the additional message , status and number of valid records
+		String additionalMessage = "Patient is registered with a different MSP Payee number within the reporting group";
+		assertTrue(patientRegistrationResponse.getAdditionalInfoMessage().contains(additionalMessage));
+		assertEquals(StatusEnum.SUCCESS, patientRegistrationResponse.getStatus());
+		assertEquals(1, patientRegistrationHistory.size());
+	}
+
+	@Test
+	public void testRegistrationHistory_success_diffPayeeOutsideGroup() throws Exception {
+		createPBFClinicPayee();
+		createPatientRegister();
+
+		mockBackEnd.enqueue(new MockResponse()
+				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_Error.xml"))
+				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+
+		ViewPatientRegistrationRequest viewPatientRegisterRequest = new ViewPatientRegistrationRequest();
+		viewPatientRegisterRequest.setPhn("7363117301");
+		viewPatientRegisterRequest.setPayee("T0053");
+		ResponseEntity<ViewPatientRegistrationResponse> response = patientRegistrationController
+				.getPatientRegistrationHistory(viewPatientRegisterRequest, createHttpServletRequest());
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		ViewPatientRegistrationResponse patientRegistrationResponse = response.getBody();
+		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse
+				.getPatientRegistrationHistory();
+		
+		// Check the additional message , status and number of valid records
+		String additionalMessage = "Patient is registered with a different MSP payee number outside of reporting group";
+		assertTrue(patientRegistrationResponse.getAdditionalInfoMessage().contains(additionalMessage));
+		assertEquals(StatusEnum.SUCCESS, patientRegistrationResponse.getStatus());
+		assertEquals(0, patientRegistrationHistory.size());
+	}
+
+	@Test
+	public void testRegistrationHistory_warning_NoPBFAndDemographicsRecord() throws Exception {
+		createPBFClinicPayee();
+		createPatientRegister();
+
+		mockBackEnd.enqueue(new MockResponse()
+				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_Error.xml"))
+				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+
+		ViewPatientRegistrationRequest viewPatientRegisterRequest = new ViewPatientRegistrationRequest();
+		viewPatientRegisterRequest.setPhn("7363117302");
+		viewPatientRegisterRequest.setPayee("X0053");
+		ResponseEntity<ViewPatientRegistrationResponse> response = patientRegistrationController
+				.getPatientRegistrationHistory(viewPatientRegisterRequest, createHttpServletRequest());
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		ViewPatientRegistrationResponse patientRegistrationResponse = response.getBody();
+		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse
+				.getPatientRegistrationHistory();
+		// Check the additional message , status and number of valid records
+		assertEquals(StatusEnum.WARNING, patientRegistrationResponse.getStatus());
+		assertEquals(0, patientRegistrationHistory.size());
 	}
 
 	private void createPatientRegister() {
@@ -74,7 +182,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		Date cancelDate1 = new GregorianCalendar(9999, 12, 31).getTime();
 		patientRegister1.setCancelDate(cancelDate1);
 		patientRegister1.setRegistrationReasonCode("SL");
-		patientRegister1.setPayeeNumber("A0055");
+		patientRegister1.setPayeeNumber("T0055");
 		patientRegister1.setRegisteredPractitionerNumber("X2753");
 		patientRegister1.setArchived(Boolean.FALSE);
 		patientRegister1.setPhn("9879869673");
@@ -88,15 +196,51 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		Date cancelDate2 = new GregorianCalendar(9999, 12, 31).getTime();
 		patientRegister2.setCancelDate(cancelDate2);
 		patientRegister2.setRegistrationReasonCode("SL");
-		patientRegister2.setPayeeNumber("A0053");
+		patientRegister2.setPayeeNumber("T0053");
 		patientRegister2.setRegisteredPractitionerNumber("X2753");
 		patientRegister2.setArchived(Boolean.FALSE);
-		patientRegister2.setPhn("8108641380");
+		patientRegister2.setPhn("7108641380");
 
+		PatientRegister patientRegister3 = new PatientRegister();
+		patientRegister3.setAdministrativeCode("0");
+		Date effectiveDate3 = new GregorianCalendar(2021, 7, 5).getTime();
+		patientRegister3.setEffectiveDate(effectiveDate3);
+		Date cancelDate3 = new GregorianCalendar(9999, 12, 31).getTime();
+		patientRegister3.setCancelDate(cancelDate3);
+		patientRegister3.setRegistrationReasonCode("SL");
+		patientRegister3.setPayeeNumber("T0053");
+		patientRegister3.setRegisteredPractitionerNumber("X2753");
+		patientRegister3.setArchived(Boolean.FALSE);
+		patientRegister3.setPhn("7980823201");
+
+		PatientRegister patientRegister4 = new PatientRegister();
+		patientRegister4.setAdministrativeCode("0");
+		Date effectiveDate4 = new GregorianCalendar(2021, 7, 5).getTime();
+		patientRegister4.setEffectiveDate(effectiveDate4);
+		Date cancelDate4 = new GregorianCalendar(9999, 12, 31).getTime();
+		patientRegister4.setCancelDate(cancelDate4);
+		patientRegister4.setRegistrationReasonCode("SL");
+		patientRegister4.setPayeeNumber("X0058");
+		patientRegister4.setRegisteredPractitionerNumber("X2753");
+		patientRegister4.setArchived(Boolean.FALSE);
+		patientRegister4.setPhn("7363117301");
+
+		PatientRegister patientRegister5 = new PatientRegister();
+		patientRegister5.setAdministrativeCode("0");
+		Date effectiveDate5 = new GregorianCalendar(2021, 7, 5).getTime();
+		patientRegister5.setEffectiveDate(effectiveDate5);
+		Date cancelDate5 = new GregorianCalendar(9999, 12, 31).getTime();
+		patientRegister5.setCancelDate(cancelDate5);
+		patientRegister5.setRegistrationReasonCode("SL");
+		patientRegister5.setPayeeNumber("X0059");
+		patientRegister5.setRegisteredPractitionerNumber("X2753");
+		patientRegister5.setArchived(Boolean.FALSE);
+		patientRegister5.setPhn("7363117302");
+
+		patientRegisterRepository.save(patientRegister1);
 		patientRegisterRepository.save(patientRegister2);
-		
-		List<PatientRegister> findAll = patientRegisterRepository.findAll();
-		System.out.println(findAll.size());
+		patientRegisterRepository.save(patientRegister3);
+		patientRegisterRepository.save(patientRegister4);
 
 	}
 
@@ -105,46 +249,48 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		payee.setArchived(Boolean.FALSE);
 		Date cancelDate = new GregorianCalendar(9999, 12, 31).getTime();
 		payee.setCancelDate(cancelDate);
-		payee.setPayeeNumber("A0053");
+		payee.setPayeeNumber("T0053");
 		Date effectiveDate = new GregorianCalendar(2021, 7, 5).getTime();
 		payee.setEffectiveDate(effectiveDate);
 		payee.setReportGroup("18579");
 
 		pbfClinicPayeeRepository.save(payee);
-		
+
 		PBFClinicPayee payee1 = new PBFClinicPayee();
 		payee1.setArchived(Boolean.FALSE);
 		Date cancelDate1 = new GregorianCalendar(9999, 12, 31).getTime();
 		payee1.setCancelDate(cancelDate1);
-		payee1.setPayeeNumber("A0053");
+		payee1.setPayeeNumber("T0055");
 		Date effectiveDate1 = new GregorianCalendar(2021, 7, 5).getTime();
 		payee1.setEffectiveDate(effectiveDate1);
 		payee1.setReportGroup("18579");
-		
+
 		PBFClinicPayee payee2 = new PBFClinicPayee();
-		payee1.setArchived(Boolean.FALSE);
+		payee2.setArchived(Boolean.FALSE);
 		Date cancelDate2 = new GregorianCalendar(9999, 12, 31).getTime();
-		payee1.setCancelDate(cancelDate2);
-		payee1.setPayeeNumber("A0055");
+		payee2.setCancelDate(cancelDate2);
+		payee2.setPayeeNumber("X0058");
 		Date effectiveDate2 = new GregorianCalendar(2021, 7, 5).getTime();
 		payee2.setEffectiveDate(effectiveDate2);
-		payee2.setReportGroup("18579");
+		payee2.setReportGroup("28579");
 
+		pbfClinicPayeeRepository.save(payee);
 		pbfClinicPayeeRepository.save(payee1);
-		List<PBFClinicPayee> findAll = pbfClinicPayeeRepository.findAll();
-		System.out.println(findAll.size());
-
+		pbfClinicPayeeRepository.save(payee2);
+		
 	}
-	
-	   /**
-     * The URL property used by the mocked endpoint needs to be set after the MockWebServer starts as the port it uses is 
-     * created dynamically on start up to ensure it uses an available port so it is not known before then. 
-     * @param registry
-     */
-    @DynamicPropertySource
-    static void registerMockUrlProperty(DynamicPropertyRegistry registry) {
-        registry.add("hcim.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
-        registry.add("hibc.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
-    }
+
+	/**
+	 * The URL property used by the mocked endpoint needs to be set after the
+	 * MockWebServer starts as the port it uses is created dynamically on start up
+	 * to ensure it uses an available port so it is not known before then.
+	 * 
+	 * @param registry
+	 */
+	@DynamicPropertySource
+	static void registerMockUrlProperty(DynamicPropertyRegistry registry) {
+		registry.add("hcim.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
+		registry.add("hibc.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
+	}
 
 }

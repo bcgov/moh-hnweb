@@ -138,7 +138,7 @@ public class PatientRegistrationController extends BaseController {
 			messages.add("Patient is registered with a different MSP Payee number within the reporting group");
 		} else if (isDiffPayeeOutsideGroup) {
 			patientRegistrationResponse.setPatientRegistrationHistory(new ArrayList<>());
-			messages.add("Patient is registered with different MSP payee number outside of reporting group");
+			messages.add("Patient is registered with a different MSP payee number outside of reporting group");
 		}
 
 		if (personDetailsResponse.getStatus() == StatusEnum.WARNING
