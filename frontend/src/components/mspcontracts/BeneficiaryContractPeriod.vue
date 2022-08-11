@@ -30,7 +30,6 @@ export default {
       return decodeRelationship(this.contractPeriod.relationship)
     },
     cancelReason() {
-      const cancelReason = ''
       switch (this.contractPeriod.cancelReason) {
         case 'E':
           return 'Eligible'
@@ -39,7 +38,7 @@ export default {
         case 'D':
           return 'Deceased'
         default:
-          return cancelReason
+          return ''
       }
     },
   },
