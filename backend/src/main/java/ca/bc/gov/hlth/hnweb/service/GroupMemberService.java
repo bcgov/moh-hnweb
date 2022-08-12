@@ -30,19 +30,19 @@ public class GroupMemberService extends BaseService {
 
 	private static final Logger logger = LoggerFactory.getLogger(GroupMemberService.class);
 
-	@Value("${rapid.r30Path}")
+	@Value("${rapid.r30Path:}")
 	private String r30Path;
 	
-	@Value("${rapid.r31Path}")
+	@Value("${rapid.r31Path:}")
 	private String r31Path;
 
-	@Value("${rapid.r34Path}")
+	@Value("${rapid.r34Path:}")
 	private String r34Path;
 
-	@Value("${rapid.r35Path}")
+	@Value("${rapid.r35Path:}")
 	private String r35Path;
 	
-	@Value("${rapid.r36Path}")
+	@Value("${rapid.r36Path:}")
 	private String r36Path;
 	
 	@Autowired

@@ -25,10 +25,10 @@ public class MaintenanceService extends BaseService {
 
 	private static final Logger logger = LoggerFactory.getLogger(MaintenanceService.class);
 
-	@Value("${rapid.r43Path}")
+	@Value("${rapid.r43Path:}")
 	private String r43Path;
 	
-	@Value("${rapid.r46Path}")
+	@Value("${rapid.r46Path:}")
 	private String r46Path;
 
 	@Autowired
