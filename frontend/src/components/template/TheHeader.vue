@@ -33,16 +33,12 @@ export default {
     },
 
     title() {
-      let title = ''
-      /**
-    The header is not impacted by which login page was used. It is only impacted by which permission the user has.
-    */
+      // The header is not impacted by which login page was used. It is only impacted by which permission the user has.
       if (this.$route.name == 'PBFLogin' || this.authStore.isPBFUser) {
-        title = config.PBF_APP_TITLE || import.meta.env.VITE_PBF_APP_TITLE
+        return config.PBF_APP_TITLE || import.meta.env.VITE_PBF_APP_TITLE
       } else {
-        title = config.APP_TITLE || import.meta.env.VITE_APP_TITLE
+        return config.APP_TITLE || import.meta.env.VITE_APP_TITLE
       }
-      return title
     },
   },
 

@@ -375,18 +375,11 @@ export const createRouter = (app) => {
     }
 
     // Login handling. Place here instead of Login beforeEnter to centralize access to authStore/authenticated
-    if (to.name === 'Login') {
+    if (to.name === 'Login' || to.name === 'PBFLogin') {
       // Authenticated users should never see the Login screen
-      // Send them to Home instead
+      // Send them to Home or PatienRegistration instead
       if (authenticated) {
-        next({ name: 'Home' })
-        return
-      }
-    } else if (to.name === 'PBFLogin') {
-      // Authenticated users should never see the PBF Login screen
-      // Send them to Patient Registration instead
-      if (authenticated) {
-        next({ name: 'PatientRegistration' })
+        to.name === 'Login' ? next({ name: 'Home' }) : next({ name: 'PatientRegistration' })
         return
       } else {
         // If the user is unauthenticated and attempting to Login, remove any existing permissions
