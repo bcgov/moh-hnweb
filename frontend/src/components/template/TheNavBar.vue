@@ -2,22 +2,11 @@
   <nav role="navigation">
     <div class="container">
       <ul>
-        <li id="welcome-link" :class="menuTabClass($route, '/welcome')" v-if="!authenticated && !isPBFLogin">
+        <li id="welcome-link" :class="menuTabClass($route, '/welcome')" v-if="!authenticated">
           <router-link @click="resetAlert" :to="{ name: 'Login' }">Welcome</router-link>
         </li>
-        <li id="home-link" :class="tabClass($route, 'Home')" v-if="authenticated && !isPBFUser">
+        <li id="home-link" :class="tabClass($route, 'Home')" v-if="authenticated">
           <router-link @click="resetAlert" :to="{ name: 'Home' }">Home</router-link>
-        </li>
-        <li id="audit-report-link" :class="menuTabClass($route, '/reports')" v-if="hasReportsPermission()">
-          <div class="dropdown">
-            <span>Reports</span>
-            <div class="dropdown-content">
-              <router-link @click="resetAlert" :class="menuClass($route, 'AuditReporting')" :to="{ name: 'AuditReporting' }" v-if="hasPermission('AuditReporting')">Audit Reporting</router-link>
-            </div>
-          </div>
-        </li>
-        <li id="pbf-link" :class="menuTabClass($route, '/patientRegistration')" v-if="hasPBFPermission('PatientRegistration')">
-          <router-link @click="resetAlert" :to="{ name: 'PatientRegistration' }">Patient Registration</router-link>
         </li>
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
           <div class="dropdown">
@@ -30,7 +19,7 @@
             </div>
           </div>
         </li>
-        <li id="coverage-maintenance-link" :class="tabClass($route, 'CoverageMaintenance')" v-if="hasMaintenancePermission()">
+        <li id="coverage-maintenance-link" :class="menuTabClass($route, '/coverage/maintenance')" v-if="hasMaintenancePermission()">
           <div class="dropdown">
             <span>Coverage Maintenance</span>
             <div class="dropdown-content">
@@ -71,7 +60,15 @@
             </div>
           </div>
         </li>
-        <li id="help-link" :class="tabClass($route, 'Help')" v-if="authenticated && !isPBFUser">
+        <li id="audit-report-link" :class="menuTabClass($route, '/reports')" v-if="hasReportsPermission()">
+          <div class="dropdown">
+            <span>Reports</span>
+            <div class="dropdown-content">
+              <router-link @click="resetAlert" :class="menuClass($route, 'AuditReporting')" :to="{ name: 'AuditReporting' }" v-if="hasPermission('AuditReporting')">Audit Reporting</router-link>
+            </div>
+          </div>
+        </li>
+        <li id="help-link" :class="tabClass($route, 'Help')" v-if="authenticated">
           <router-link @click="resetAlert" :to="{ name: 'Help' }">Help</router-link>
         </li>
       </ul>
@@ -93,12 +90,6 @@ export default {
     authenticated() {
       return this.$keycloak.authenticated
     },
-    isPBFUser() {
-      return this.authStore.isPBFUser
-    },
-    isPBFLogin() {
-      return this.$route.name === 'PBFLogin'
-    },
   },
   methods: {
     resetCoverageEnrollment() {
@@ -119,9 +110,6 @@ export default {
     },
     hasPermission(permission) {
       return this.authStore.hasPermission(permission)
-    },
-    hasPBFPermission() {
-      return this.authStore.hasPermission('PatientRegistration')
     },
     hasReportsPermission() {
       return this.hasPermission('AuditReporting')
@@ -152,10 +140,10 @@ nav {
   background-color: #38598a;
 }
 nav .container {
-  max-width: 1320px;
+  max-width: 1600px;
   min-width: 1100px;
   margin: 0 auto;
-  padding: 0 60px;
+  padding: 0 0 0 160px;
 }
 nav .container ul {
   padding: 0;
