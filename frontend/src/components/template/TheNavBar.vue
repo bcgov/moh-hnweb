@@ -2,11 +2,14 @@
   <nav role="navigation">
     <div class="container">
       <ul>
-        <li id="welcome-link" :class="menuTabClass($route, '/welcome')" v-if="!authenticated">
+        <li id="welcome-link" :class="menuTabClass($route, '/welcome')" v-if="!authenticated && !isPBFLogin">
           <router-link @click="resetAlert" :to="{ name: 'Login' }">Welcome</router-link>
         </li>
-        <li id="home-link" :class="tabClass($route, 'Home')" v-if="authenticated">
+        <li id="home-link" :class="tabClass($route, 'Home')" v-if="authenticated && !isPBFUser">
           <router-link @click="resetAlert" :to="{ name: 'Home' }">Home</router-link>
+        </li>
+        <li id="pbf-link" :class="menuTabClass($route, '/patientRegistration')" v-if="hasPBFPermission('PatientRegistration')">
+          <router-link @click="resetAlert" :to="{ name: 'PatientRegistration' }">Patient Registration</router-link>
         </li>
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
           <div class="dropdown">
@@ -68,7 +71,7 @@
             </div>
           </div>
         </li>
-        <li id="help-link" :class="tabClass($route, 'Help')" v-if="authenticated">
+        <li id="help-link" :class="tabClass($route, 'Help')" v-if="authenticated && !isPBFUser">
           <router-link @click="resetAlert" :to="{ name: 'Help' }">Help</router-link>
         </li>
       </ul>
@@ -90,6 +93,12 @@ export default {
     authenticated() {
       return this.$keycloak.authenticated
     },
+    isPBFUser() {
+      return this.authStore.isPBFUser
+    },
+    isPBFLogin() {
+      return this.$route.name === 'PBFLogin'
+    },
   },
   methods: {
     resetCoverageEnrollment() {
@@ -110,6 +119,9 @@ export default {
     },
     hasPermission(permission) {
       return this.authStore.hasPermission(permission)
+    },
+    hasPBFPermission() {
+      return this.authStore.hasPermission('PatientRegistration')
     },
     hasReportsPermission() {
       return this.hasPermission('AuditReporting')
