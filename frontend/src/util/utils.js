@@ -27,6 +27,17 @@ export function decodeRelationship(relationshipCode) {
   }
 }
 
+export function handlePBFServiceError(err, alertStore, isPBFUser, router) {
+  if (typeof err === 'boolean') {
+    // Keycloak refresh token expiry causes Boolean err
+    // Warn and return to login
+    alertStore.setWarningAlert('Session expired. Please login.')
+    isPBFUser ? router.push({ name: 'PBFLogin' }) : router.push({ name: 'Login' })
+  } else {
+    alertStore.setErrorAlert(err)
+  }
+}
+
 export function handleServiceError(err, alertStore, router) {
   if (typeof err === 'boolean') {
     // Keycloak refresh token expiry causes Boolean err

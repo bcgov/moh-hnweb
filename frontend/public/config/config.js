@@ -3,6 +3,7 @@
 const config = (() => {
   return {
     // APP_TITLE: '',
+    // PBF_APP_TITLE: '',
     // KEYCLOAK_URL: '',
     // SERVICE_URL: '',
     // KEYCLOAK_CLIENT_ID:,

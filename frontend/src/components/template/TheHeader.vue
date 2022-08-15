@@ -17,25 +17,45 @@
 </template>
 
 <script>
+import { useAuthStore } from '../../stores/auth'
+
 export default {
   name: 'TheHeader',
-  data() {
+
+  setup() {
     return {
-      title: config.APP_TITLE || import.meta.env.VITE_APP_TITLE,
+      authStore: useAuthStore(),
     }
   },
   computed: {
     authenticated() {
       return this.$keycloak.authenticated
     },
+
+    title() {
+      // The header is not impacted by which login page was used. It is only impacted by which permission the user has.
+      if (this.$route.name == 'PBFLogin' || this.authStore.isPBFUser) {
+        return config.PBF_APP_TITLE || import.meta.env.VITE_PBF_APP_TITLE
+      } else {
+        return config.APP_TITLE || import.meta.env.VITE_APP_TITLE
+      }
+    },
   },
+
   methods: {
     logout() {
       let logoutUri = ''
-      const redirectUri = location.origin + this.$router.resolve({ name: 'Login' }).path
+      let redirectUri = ''
+
       const siteMinderLogoutUri = config.SITE_MINDER_LOGOUT_URI || import.meta.env.VITE_SITE_MINDER_LOGOUT_URI
       const phsaLogoutUri = config.PHSA_LOGOUT_URI || import.meta.env.VITE_PHSA_LOGOUT_URI
       const idp = this.$keycloak.tokenParsed.identity_provider
+
+      if (this.authStore.isPBFUser) {
+        redirectUri = location.origin + this.$router.resolve({ name: 'PBFLogin' }).path
+      } else {
+        redirectUri = location.origin + this.$router.resolve({ name: 'Login' }).path
+      }
 
       if (confirm('Please confirm you want to sign out. ' + '\nThis will also end all other active Keycloak or SiteMinder sessions you have open.')) {
         switch (idp) {

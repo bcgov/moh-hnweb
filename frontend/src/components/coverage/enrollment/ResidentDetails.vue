@@ -15,6 +15,11 @@
         <AppOutput label="Date of Birth" :value="resident?.dateOfBirth" />
       </AppCol>
     </AppRow>
+    <AppRow>
+      <AppCol class="col3">
+        <AppOutput label="Gender" :value="resident?.gender" />
+      </AppCol>
+    </AppRow>
     <form @submit.prevent="registerVisaResident">
       <AppRow>
         <AppCol class="col4">
