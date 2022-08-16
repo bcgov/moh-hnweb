@@ -27,13 +27,13 @@ public class MspContractsService extends BaseService {
 
 	private static final Logger logger = LoggerFactory.getLogger(MspContractsService.class);
 
-	@Value("${rapid.r32Path}")
+	@Value("${rapid.r32Path:}")
 	private String r32Path;
 
-	@Value("${rapid.r40Path}")
+	@Value("${rapid.r40Path:}")
 	private String r40Path;
 
-	@Value("${rapid.r38Path}")
+	@Value("${rapid.r38Path:}")
 	private String r38Path;
 
 	@Autowired

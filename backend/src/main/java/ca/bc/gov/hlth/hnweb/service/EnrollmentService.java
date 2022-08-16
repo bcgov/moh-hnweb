@@ -43,13 +43,13 @@ public class EnrollmentService extends BaseService {
 	private static final String SOURCE_SYSTEM_OVERRIDE = "MOH_CRS";
 	private static final String ORGANIZATION = "MSPD";
 
-	@Value("${hibc.r50.path}")
+	@Value("${hibc.r50.path:}")
 	private String r50Path;
 
-	@Value("${hibc.r50.username}")
+	@Value("${hibc.r50.username:}")
 	private String r50Username;
 	
-	@Value("${hibc.r50.password}")
+	@Value("${hibc.r50.password:}")
 	private String r50Password;
 
 	@Autowired
