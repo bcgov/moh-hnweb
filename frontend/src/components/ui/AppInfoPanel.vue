@@ -1,11 +1,11 @@
 <template>
-  <div class="error-container bc-gov-alertbanner bc-gov-alertbanner-error" v-if="visible">
-    <div class="error-message">
+  <div class="info-container bc-gov-alertbanner bc-gov-alertbanner-info" v-if="visible">
+    <div class="info-message">
       <p>
         <span style="white-space: pre-line">{{ message }}</span>
       </p>
     </div>
-    <div class="error-close">
+    <div class="info-close">
       <a @click="$emit('close')">
         <font-awesome-icon icon="times" />
       </a>
@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  name: 'AppErrorPanel',
+  name: 'AppinfoPanel',
   data() {
     return {}
   },
@@ -34,35 +34,35 @@ export default {
 </script>
 
 <style scoped>
-.error-container {
+.info-container {
   align-items: center;
   display: flex;
 }
 
-.error-icon {
+.info-icon {
   display: flex;
   flex: 0;
   justify-content: flex-start;
   width: 150px;
 }
-.error-message {
+.info-message {
   flex: 1;
   justify-content: flex-start;
   vertical-align: middle;
   /* white-space: pre-wrap; */
 }
 
-.error-additional-info {
+.info-additional-info {
   font-weight: normal;
 }
 
-.error-close {
+.info-close {
   display: flex;
   flex: 0;
   justify-content: flex-end;
   width: 150px;
 }
-.error-close a {
+.info-close a {
   cursor: pointer;
 }
 
@@ -79,17 +79,17 @@ export default {
   padding-left: 35px;
 }
 
-.bc-gov-alertbanner-error {
+.bc-gov-alertbanner-info {
   background-color: #ece4e4;
   border-color: #c7c1c2;
   color: #0c0c0c;
 }
 
-.bc-gov-alertbanner-error a {
+.bc-gov-alertbanner-info a {
   color: #c8bebe;
 }
 
-.bc-gov-alertbanner-error p {
+.bc-gov-alertbanner-info p {
   color: #0f0e0e;
 }
 </style>

@@ -40,7 +40,7 @@
           <AppOutput label="BirthDate" :value="result.personDetail.dateOfBirth" />
         </AppCol>
         <AppCol class="col3">
-          <AppOutput label="DeathDatee" :value="result.personDetail.dateOfDeath" />
+          <AppOutput label="DeathDate" :value="result.personDetail.dateOfDeath" />
         </AppCol>
         <AppCol class="col2">
           <AppOutput label="Gender" :value="result.personDetail.gender" />
@@ -51,27 +51,27 @@
     <AppCard id="clientInstructions" v-if="result.clientInstructions">
       <p>{{ result.clientInstructions }}</p>
     </AppCard>
-  </div>
-  <br />
-  <div v-if="searchOk">
-    <AppRow>
-      <AppCol class="col2">
-        <AppLabel><b>Payee</b></AppLabel>
-      </AppCol>
-      <AppCol class="col2">
-        <AppLabel><b>Reg/DeReg Date</b></AppLabel>
-      </AppCol>
-      <AppCol class="col2">
-        <AppLabel><b>Current Status</b></AppLabel>
-      </AppCol>
-      <AppCol class="col3">
-        <AppLabel><b>Administration Code</b></AppLabel>
-      </AppCol>
-      <AppCol class="col2">
-        <AppLabel><b>Registration Data</b></AppLabel>
-      </AppCol>
-    </AppRow>
-    <div v-if="result.patientRegistrationHistory.length > 0">
+    <br />
+    <div id="registrationResult">
+      <AppRow>
+        <AppCol class="col2">
+          <AppOutput label="Payee" />
+        </AppCol>
+        <AppCol class="col2">
+          <AppOutput label="Reg/DeReg Date" />
+        </AppCol>
+        <AppCol class="col2">
+          <AppOutput label="Current Status" />
+        </AppCol>
+        <AppCol class="col3">
+          <AppOutput label="Administration Code" />
+        </AppCol>
+        <AppCol class="col2">
+          <AppOutput label="Registration Data" />
+        </AppCol>
+      </AppRow>
+    </div>
+    <div id="registrationData" v-if="result.patientRegistrationHistory.length > 0">
       <AppRow v-for="registration in result.patientRegistrationHistory">
         <PatientRegistration :registration="registration" />
       </AppRow>
@@ -79,14 +79,14 @@
   </div>
   <br />
   <Transition>
-    <AppErrorPanel :visible="displayError" :message="additionalErrorMessage" @close="handleClose()" />
+    <AppInfoPanel :visible="displayMessage" :message="additionalInfoMessage" @close="handleClose()" />
   </Transition>
 </template>
 
 <script>
 import AppCard from '../../components/ui/AppCard.vue'
 import AppHelp from '../../components/ui/AppHelp.vue'
-import AppErrorPanel from '../../components/ui/AppErrorPanel.vue'
+import AppInfoPanel from '../../components/ui/AppInfoPanel.vue'
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
 import PatientRegistration from '../../components/patientregistration/PatientRegistration.vue'
 import PatientRegistrationService from '../../services/PatientRegistrationService'
@@ -97,13 +97,13 @@ import { useAlertStore } from '../../stores/alert'
 import { handleServiceError } from '../../util/utils'
 
 export default {
-  name: 'ViewPatientRegHistory',
+  name: 'ViewPatientRegistration',
   components: {
     AppCard,
     AppHelp,
     AppSimpleTable,
     PatientRegistration,
-    AppErrorPanel,
+    AppInfoPanel,
   },
   setup() {
     return {
@@ -117,14 +117,14 @@ export default {
       payee: '',
       searching: false,
       searchOk: false,
-      displayError: false,
+      displayMessage: false,
       result: {
         phn: '',
         payee: '',
         clientInstructions: '',
         status: '',
         message: '',
-        additionalErrorMessage: '',
+        additionalInfoMessage: '',
         patientRegistrationHistory: [],
       },
       showModal: false,
@@ -139,8 +139,8 @@ export default {
       this.result = null
       this.searching = true
       this.searchOk = false
-      this.displayError = false
-      this.additionalErrorMessage = ''
+      this.displayMessage = false
+      this.additionalInfoMessage = ''
       this.alertStore.dismissAlert()
       try {
         const isValid = await this.v$.$validate()
@@ -154,12 +154,13 @@ export default {
             payee: this.payee,
           })
         ).data
-
-        this.searchOk = true
+        if (this.result.status != 'warning') {
+          this.searchOk = true
+        }
         this.alertStore.setAlertWithInfoForSuccess(this.result.message)
         if ((this.result.additionalInfoMessage != '' || this.result.additionalInfoMessage != null) && this.result.status != 'warning') {
-          this.displayError = true
-          this.additionalErrorMessage = this.result.additionalInfoMessage
+          this.displayMessage = true
+          this.additionalInfoMessage = this.result.additionalInfoMessage
         }
 
         this.alertStore.setAlertWithInfoForSuccess(this.result.message, this.result.status)
@@ -182,15 +183,15 @@ export default {
       this.alertStore.dismissAlert()
       this.searchOk = false
       this.searching = false
-      this.displayError = false
-      this.additionalErrorMessage = ''
+      this.displayMessage = false
+      this.additionalInfoMessage = ''
     },
   },
   validations() {
     return {
       phn: {
         required,
-        //validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
+        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
       },
     }
   },

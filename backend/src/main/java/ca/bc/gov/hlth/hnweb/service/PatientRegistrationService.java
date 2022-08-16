@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.PBFClinicPayee;
 import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.PatientRegister;
+import ca.bc.gov.hlth.hnweb.persistence.repository.pbf.PBFClinicPayeeRepository;
 import ca.bc.gov.hlth.hnweb.persistence.repository.pbf.PatientRegisterRepository;
 
 /**
@@ -17,6 +19,9 @@ public class PatientRegistrationService extends BaseService {
 
 	@Autowired
 	private PatientRegisterRepository patientRegisterRepository;
+	
+	@Autowired
+	private PBFClinicPayeeRepository pbfClinicPayeeRepository;
 
 	public List<PatientRegister> getPatientRegistration(String payee, String phn) {
 		return patientRegisterRepository.findPatientRegisterByPayeeClinic(payee, phn);
@@ -24,6 +29,10 @@ public class PatientRegistrationService extends BaseService {
 
 	public List<String> getPayeeByPHN(String phn) {
 		return patientRegisterRepository.findPayeeByphn(phn);
+	}
+	
+	public List<String> getPBFClinicPayeeByPayee(List<String> payeeList) {
+		return pbfClinicPayeeRepository.findPBFClinicPayeeByPayeeNumber(payeeList);
 	}
 
 }

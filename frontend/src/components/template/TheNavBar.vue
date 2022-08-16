@@ -11,6 +11,9 @@
         <li id="pbf-link" :class="menuTabClass($route, '/patientRegistration')" v-if="hasPBFPermission('PatientRegistration')">
           <router-link @click="resetAlert" :to="{ name: 'PatientRegistration' }">Patient Registration</router-link>
         </li>
+        <li id="hcim-link" :class="menuTabClass($route, '/hcim')" v-if="hasPBFPermission('HCIMWeb')">
+          <span>HCIM Web</span>
+        </li>
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
           <div class="dropdown">
             <span>Eligibility & PHN</span>
@@ -121,7 +124,7 @@ export default {
       return this.authStore.hasPermission(permission)
     },
     hasPBFPermission() {
-      return this.authStore.hasPermission('PatientRegistration')
+      return this.authStore.hasPermission('PatientRegistration') || this.authStore.hasPermission('HCIMWeb')
     },
     hasReportsPermission() {
       return this.hasPermission('AuditReporting')
