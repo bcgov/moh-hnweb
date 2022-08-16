@@ -16,12 +16,14 @@
   </div>
 </template>
 <script>
+import { useAlertStore } from '../../../stores/alert'
 import { useStudyPermitHolderStore } from '../../../stores/studyPermitHolder'
 
 export default {
   name: 'NameSearchCandidate',
   setup() {
     return {
+      alertStore: useAlertStore(),
       studyPermitHolderStore: useStudyPermitHolderStore(),
     }
   },
@@ -38,9 +40,7 @@ export default {
   },
   computed: {
     formatDetailsLine1() {
-      let details = ''
-      details = this.fullName + ' (' + this.resolveNameStatus + ')'
-      return details
+      return this.fullName + ' (' + this.resolveNameStatus + ')'
     },
     resolveNameStatus() {
       switch (this.candidate.nameTypeCode) {
@@ -111,6 +111,7 @@ export default {
     selectCandidate() {
       this.submitting = true
       this.studyPermitHolderStore.resident = this.candidate
+      this.alertStore.dismissAlert()
       this.$router.push({ name: 'AddVisaResidentWithPHN', query: { pageAction: 'REGISTRATION' } })
       this.submitting = false
     },
