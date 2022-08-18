@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import ca.bc.gov.hlth.hnweb.exception.ExceptionType;
 import ca.bc.gov.hlth.hnweb.exception.HNWebException;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAG0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAJ0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPRE0;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
@@ -61,6 +62,35 @@ public class MaintenanceService extends BaseService {
 		RPBSPAJ0 rpbspaj0Response = new RPBSPAJ0(response.getBody());
 
 		return rpbspaj0Response;
+	}
+	
+	/**
+	 * Changes Coverage Cancellation Date for the group member based on the R46/RPBSPAG0 request.
+	 * 
+	 * @param rpbspag0
+	 * @param transaction
+	 * @return The RPBSPAG0 response.
+	 * @throws HNWebException
+	 */
+	public RPBSPAG0 changeCancelDate(RPBSPAG0 rpbspag0, Transaction transaction) throws HNWebException {
+		String rpbspag0Str = rpbspag0.serialize();
+
+		logger.info("Request {}", rpbspag0Str);
+
+		messageSent(transaction);
+		ResponseEntity<String> response = postRapidRequest(r46Path, rpbspag0Str,
+				transaction.getTransactionId().toString());
+		messageReceived(transaction);
+		logger.info("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
+
+		if (response.getStatusCode() != HttpStatus.OK) {
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
+		}
+
+		RPBSPAG0 rpbspag0Response = new RPBSPAG0(response.getBody());
+
+		return rpbspag0Response;
 	}
 	
 	/**
