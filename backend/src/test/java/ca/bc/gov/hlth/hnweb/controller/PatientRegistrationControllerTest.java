@@ -19,8 +19,8 @@ import org.springframework.test.context.DynamicPropertySource;
 import ca.bc.gov.hlth.hnweb.BaseControllerTest;
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegisterModel;
-import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.ViewPatientRegistrationRequest;
-import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.ViewPatientRegistrationResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegistrationRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegistrationResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.PBFClinicPayee;
 import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.PatientRegister;
 import ca.bc.gov.hlth.hnweb.persistence.repository.pbf.PBFClinicPayeeRepository;
@@ -51,14 +51,14 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse.xml"))
 				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
-		ViewPatientRegistrationRequest viewPatientRegisterRequest = new ViewPatientRegistrationRequest();
+		PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("9879869673");
 		viewPatientRegisterRequest.setPayee("T0055");
-		ResponseEntity<ViewPatientRegistrationResponse> response = patientRegistrationController
-				.getPatientRegistrationHistory(viewPatientRegisterRequest, createHttpServletRequest());
+		ResponseEntity<PatientRegistrationResponse> response = patientRegistrationController
+				.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest());
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		ViewPatientRegistrationResponse patientRegistrationResponse = response.getBody();
+		PatientRegistrationResponse patientRegistrationResponse = response.getBody();
 		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse
 				.getPatientRegistrationHistory();
 		// Check the additional message , status and number of valid records
@@ -77,14 +77,14 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_Error.xml"))
 				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
-		ViewPatientRegistrationRequest viewPatientRegisterRequest = new ViewPatientRegistrationRequest();
+		PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("9879869673");
 		viewPatientRegisterRequest.setPayee("T0055");
-		ResponseEntity<ViewPatientRegistrationResponse> response = patientRegistrationController
-				.getPatientRegistrationHistory(viewPatientRegisterRequest, createHttpServletRequest());
+		ResponseEntity<PatientRegistrationResponse> response = patientRegistrationController
+				.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest());
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		ViewPatientRegistrationResponse patientRegistrationResponse = response.getBody();
+		PatientRegistrationResponse patientRegistrationResponse = response.getBody();
 		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse
 				.getPatientRegistrationHistory();
 		// Check the additional message , status and number of valid records
@@ -104,14 +104,14 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_Error.xml"))
 				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
-		ViewPatientRegistrationRequest viewPatientRegisterRequest = new ViewPatientRegistrationRequest();
+		PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("9879869673");
 		viewPatientRegisterRequest.setPayee("T0053");
-		ResponseEntity<ViewPatientRegistrationResponse> response = patientRegistrationController
-				.getPatientRegistrationHistory(viewPatientRegisterRequest, createHttpServletRequest());
+		ResponseEntity<PatientRegistrationResponse> response = patientRegistrationController
+				.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest());
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		ViewPatientRegistrationResponse patientRegistrationResponse = response.getBody();
+		PatientRegistrationResponse patientRegistrationResponse = response.getBody();
 		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse
 				.getPatientRegistrationHistory();
 		
@@ -131,14 +131,14 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_Error.xml"))
 				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
-		ViewPatientRegistrationRequest viewPatientRegisterRequest = new ViewPatientRegistrationRequest();
+		PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("7363117301");
 		viewPatientRegisterRequest.setPayee("T0053");
-		ResponseEntity<ViewPatientRegistrationResponse> response = patientRegistrationController
-				.getPatientRegistrationHistory(viewPatientRegisterRequest, createHttpServletRequest());
+		ResponseEntity<PatientRegistrationResponse> response = patientRegistrationController
+				.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest());
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		ViewPatientRegistrationResponse patientRegistrationResponse = response.getBody();
+		PatientRegistrationResponse patientRegistrationResponse = response.getBody();
 		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse
 				.getPatientRegistrationHistory();
 		
@@ -158,14 +158,14 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_Error.xml"))
 				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
-		ViewPatientRegistrationRequest viewPatientRegisterRequest = new ViewPatientRegistrationRequest();
+		PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("7363117302");
 		viewPatientRegisterRequest.setPayee("X0053");
-		ResponseEntity<ViewPatientRegistrationResponse> response = patientRegistrationController
-				.getPatientRegistrationHistory(viewPatientRegisterRequest, createHttpServletRequest());
+		ResponseEntity<PatientRegistrationResponse> response = patientRegistrationController
+				.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest());
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		ViewPatientRegistrationResponse patientRegistrationResponse = response.getBody();
+		PatientRegistrationResponse patientRegistrationResponse = response.getBody();
 		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse
 				.getPatientRegistrationHistory();
 		// Check the additional message , status and number of valid records

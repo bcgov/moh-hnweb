@@ -6,7 +6,7 @@ import java.util.List;
 import ca.bc.gov.hlth.hnweb.model.rest.BaseResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.GetPersonDetailsResponse;
 
-public class ViewPatientRegistrationResponse extends BaseResponse {
+public class PatientRegistrationResponse extends BaseResponse {
  
 	private GetPersonDetailsResponse personDetail;
 	

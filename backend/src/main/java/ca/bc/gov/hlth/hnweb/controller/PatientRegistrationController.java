@@ -26,8 +26,8 @@ import ca.bc.gov.hlth.hnweb.converter.hl7v3.GetDemographicsConverter;
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegisterModel;
-import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.ViewPatientRegistrationRequest;
-import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.ViewPatientRegistrationResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegistrationRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegistrationResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
@@ -53,15 +53,15 @@ public class PatientRegistrationController extends BaseController {
 	@Autowired
 	private PatientRegistrationService patientRegistrationService;
 
-	@PostMapping("/view-patient-registration")
-	public ResponseEntity<ViewPatientRegistrationResponse> getPatientRegistrationHistory(
-			@Valid @RequestBody ViewPatientRegistrationRequest viewPatientRegistrationRequest,
+	@PostMapping("/get-patient-registration")
+	public ResponseEntity<PatientRegistrationResponse> getPatientRegistration(
+			@Valid @RequestBody PatientRegistrationRequest patientRegistrationRequest,
 			HttpServletRequest request) {
 
-		logger.info("View Patient Registration request: {} ", viewPatientRegistrationRequest.getPhn());
+		logger.info("Patient Registration request: {} ", patientRegistrationRequest.getPhn());
 
 		Transaction transaction = transactionStart(request, TransactionType.GET_PATIENT_REGISTRATION);
-		addAffectedParty(transaction, IdentifierType.PHN, viewPatientRegistrationRequest.getPhn(),
+		addAffectedParty(transaction, IdentifierType.PHN, patientRegistrationRequest.getPhn(),
 				AffectedPartyDirection.INBOUND);
 
 		try {
@@ -70,17 +70,17 @@ public class PatientRegistrationController extends BaseController {
 			// Retrieve demographic details
 			GetDemographicsConverter converter = new GetDemographicsConverter();
 			GetDemographicsRequest demographicsRequest = converter
-					.convertRequest(viewPatientRegistrationRequest.getPhn());
+					.convertRequest(patientRegistrationRequest.getPhn());
 			GetDemographicsResponse demoGraphicsResponse = enrollmentService.getDemographics(demographicsRequest,
 					transaction);
 			GetPersonDetailsResponse personDetailsResponse = converter.convertResponse(demoGraphicsResponse);
 
-			ViewPatientRegistrationResponse response = new ViewPatientRegistrationResponse();
+			PatientRegistrationResponse response = new PatientRegistrationResponse();
 			response.setPersonDetail(personDetailsResponse);
 
 			// Retrieve patient registration history
 			registrationRecords = patientRegistrationService.getPatientRegistration(
-					viewPatientRegistrationRequest.getPayee(), viewPatientRegistrationRequest.getPhn());
+					patientRegistrationRequest.getPayee(), patientRegistrationRequest.getPhn());
 
 			String registrationMessage = "";
 			boolean patientRegisrationExist = false;
@@ -88,7 +88,7 @@ public class PatientRegistrationController extends BaseController {
 			if (registrationRecords.size() > 0) {
 				patientRegisrationExist = true;
 				boolean isSamePayeeWithinGroup = registrationRecords.stream()
-						.anyMatch(p -> viewPatientRegistrationRequest.getPayee().contentEquals(p.getPayeeNumber()));
+						.anyMatch(p -> patientRegistrationRequest.getPayee().contentEquals(p.getPayeeNumber()));
 
 				// Check if patient registered with different payee within reporting group
 				if (!isSamePayeeWithinGroup) {
@@ -98,7 +98,7 @@ public class PatientRegistrationController extends BaseController {
 			} else {
 				// Check if patient registered with different payee outside of reporting group
 				List<String> payeeList = patientRegistrationService
-						.getPayeeByPHN(viewPatientRegistrationRequest.getPhn());
+						.getPayeeByPHN(patientRegistrationRequest.getPhn());
 
 				if (payeeList.size() > 0) {
 					// Check if payee exists in PBFClinic
@@ -115,7 +115,7 @@ public class PatientRegistrationController extends BaseController {
 
 			handlePatientRegistrationResponse(response, patientRegisrationExist, registrationMessage);
 
-			ResponseEntity<ViewPatientRegistrationResponse> responseEntity = ResponseEntity.ok(response);
+			ResponseEntity<PatientRegistrationResponse> responseEntity = ResponseEntity.ok(response);
 
 			transactionComplete(transaction);
 			registrationRecords.forEach(record -> addAffectedParty(transaction, IdentifierType.PHN, record.getPhn(), AffectedPartyDirection.OUTBOUND));
@@ -127,8 +127,8 @@ public class PatientRegistrationController extends BaseController {
 		}
 	}
 
-	private ViewPatientRegistrationResponse handlePatientRegistrationResponse(
-			ViewPatientRegistrationResponse patientRegistrationResponse, boolean registrationExist,
+	private PatientRegistrationResponse handlePatientRegistrationResponse(
+			PatientRegistrationResponse patientRegistrationResponse, boolean registrationExist,
 			String infoMessage) {
 
 		Set<String> messages = new HashSet<>();

@@ -146,7 +146,7 @@ export default {
           return
         }
         this.result = (
-          await PatientRegistrationService.getRegistrationHistory({
+          await PatientRegistrationService.getPatientRegistration({
             phn: this.phn,
             payee: this.payee,
           })

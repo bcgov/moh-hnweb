@@ -16,9 +16,7 @@
 <script>
 export default {
   name: 'AppinfoPanel',
-  data() {
-    return {}
-  },
+
   props: {
     message: {
       type: String,

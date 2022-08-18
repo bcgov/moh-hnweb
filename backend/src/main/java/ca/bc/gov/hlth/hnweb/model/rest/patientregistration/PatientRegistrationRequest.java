@@ -1,6 +1,6 @@
 package ca.bc.gov.hlth.hnweb.model.rest.patientregistration;
 
-public class ViewPatientRegistrationRequest {
+public class PatientRegistrationRequest {
 
 	private String phn;
 

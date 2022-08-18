@@ -16,7 +16,7 @@ export const resources = {
     lookupPhn: '/eligibility/lookup-phn',
   },
   patientRegistration: {
-    getRegistrationHistory: '/patient-registration/view-patient-registration',
+    getPatientRegistration: '/patient-registration/get-patient-registration',
   },
   groupMember: {
     addGroupMember: '/group-member/add-group-member',
@@ -24,10 +24,6 @@ export const resources = {
     updateNumberAndDept: '/group-member/update-number-and-dept',
     cancelGroupMember: '/group-member/cancel-group-member',
     cancelDependent: '/group-member/cancel-dependent',
-  },
-  maintenance: {
-    changeEffectiveDate: '/maintenance/change-effective-date',
-    reinstateOverAgeDependent: '/maintenance/reinstate-over-age-dependent',
   },
   mspContracts: {
     getContractPeriods: '/msp-contracts/get-contract-periods',
