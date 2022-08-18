@@ -44,11 +44,11 @@
           <div class="dropdown">
             <span>Manage Group Member</span>
             <div class="dropdown-content">
-              <router-link @click="resetAlert" :class="menuClass($route, 'AddGroupMember')" :to="{ name: 'AddGroupMember' }">Add Group Member</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'AddDependent')" :to="{ name: 'AddDependent' }">Add Dependent</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'UpdateNumberAndDept')" :to="{ name: 'UpdateNumberAndDept' }">Update Number and/or Department</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'CancelGroupMember')" :to="{ name: 'CancelGroupMember' }">Cancel Group Member</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'CancelDependent')" :to="{ name: 'CancelDependent' }">Cancel Dependent</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'AddGroupMember')" :to="{ name: 'AddGroupMember' }" v-if="hasPermission('AddGroupMember')">Add Group Member</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'AddDependent')" :to="{ name: 'AddDependent' }" v-if="hasPermission('AddDependent')">Add Dependent</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'UpdateNumberAndDept')" :to="{ name: 'UpdateNumberAndDept' }" v-if="hasPermission('UpdateNumberAndDept')">Update Number and/or Department</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'CancelGroupMember')" :to="{ name: 'CancelGroupMember' }" v-if="hasPermission('CancelGroupMember')">Cancel Group Member</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'CancelDependent')" :to="{ name: 'CancelDependent' }" v-if="hasPermission('CancelDependent')">Cancel Dependent</router-link>
             </div>
           </div>
         </li>
