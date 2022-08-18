@@ -12,10 +12,10 @@ import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedParty;
 
 public interface AffectedPartyPageableRepository extends PagingAndSortingRepository<AffectedParty, Long> {
 
-	@Query("SELECT af from AffectedParty af where "	 
+	@Query("SELECT af from AffectedParty af where "	
 		      +"(COALESCE(:organizations, null) is null or af.transaction.organization IN (:organizations)) and "
 		      +"(COALESCE(:type, null) is null or af.transaction.type IN (:type)) and "
-		      +"(upper(af.transaction.userId)= upper(:userId)) and "
+		      +"(COALESCE(:userId, null) is null or upper(af.transaction.userId)= upper(:userId)) and "
 		      +"(af.direction=:direction) and "
 		      +"(date_trunc('day', af.transaction.startTime) between :startDate and :endDate) "
 		      + "order by af.transaction.startTime desc")

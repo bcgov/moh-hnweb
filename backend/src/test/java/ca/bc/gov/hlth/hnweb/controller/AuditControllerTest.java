@@ -60,7 +60,6 @@ public class AuditControllerTest extends BaseControllerTest {
 	public void testGetAuditReport_withoutOptionalParam() {;
 		createAuditReport();
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
-		auditReportRequest.setUserId("hnweb1");
 		auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
 		auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
 
@@ -68,7 +67,7 @@ public class AuditControllerTest extends BaseControllerTest {
 				createHttpServletRequest());
 
 		assertEquals(HttpStatus.OK, auditReport.getStatusCode());
-		assertEquals(1, auditReport.getBody().getRecords().size());
+		assertEquals(2, auditReport.getBody().getRecords().size());
 
 	}
 
@@ -125,8 +124,28 @@ public class AuditControllerTest extends BaseControllerTest {
 		affectedParty.setIdentifierType(IdentifierType.PHN.getValue());
 		affectedParty.setDirection(AffectedPartyDirection.INBOUND.getValue());
 		affectedParty.setTransaction(transaction);
-	
 		affectedPartyRepository.save(affectedParty);
+		
+		Transaction transaction1 = new Transaction();
+
+		transaction1.setOrganization("00000010");
+		transaction1.setServer("server1");
+		transaction1.setSessionId("123456");
+		transaction1.setSourceIp("0:0:0:0:0:0:0:1");
+		transaction1.setTransactionId(UUID.randomUUID());
+		Date transactionDate1 = new GregorianCalendar(2022, 7, 5).getTime();
+		transaction1.setStartTime(transactionDate1);
+		transaction1.setType(TransactionType.CHECK_ELIGIBILITY.name());
+		transaction1.setUserId("test_user");
+		transactionRepository.save(transaction1);
+
+		AffectedParty affectedParty1 = new AffectedParty();
+		affectedParty1.setIdentifier(IdentifierType.PHN.name());
+		affectedParty1.setIdentifierType(IdentifierType.PHN.getValue());
+		affectedParty1.setDirection(AffectedPartyDirection.INBOUND.getValue());
+		affectedParty1.setTransaction(transaction1);
+	
+		affectedPartyRepository.save(affectedParty1);
 	}
 
 }

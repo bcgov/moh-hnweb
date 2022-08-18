@@ -74,7 +74,7 @@ import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
 import AuditReportRecord from '../../components/reports/AuditReportRecord.vue'
 import AuditService from '../../services/AuditService'
 import useVuelidate from '@vuelidate/core'
-import { required } from '@vuelidate/validators'
+import { required, maxLength } from '@vuelidate/validators'
 import { useAlertStore } from '../../stores/alert'
 import { handleServiceError } from '../../util/utils'
 import AppLabel from '../../components/ui/AppLabel.vue'
@@ -171,7 +171,7 @@ export default {
   validations() {
     return {
       userId: {
-        required,
+        maxLength: maxLength(100),
       },
       startDate: {
         required,
