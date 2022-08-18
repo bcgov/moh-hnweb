@@ -59,6 +59,13 @@ const createRoutes = (app) => [
     },
   },
   {
+    path: '/hcim',
+    name: 'HCIM',
+    beforeEnter(to, from, next) {
+      window.location.href = config.HCIM_WEB_URL || import.meta.env.VITE_HCIM_WEB_URL
+    },
+  },
+  {
     path: '/home',
     name: 'Home',
     component: Home,

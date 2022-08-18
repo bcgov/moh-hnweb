@@ -28,7 +28,7 @@
   <br />
   <div id="result" v-if="searchOk">
     <hr />
-    <div id="patientDetail" v-if="result.personDetail !== null">
+    <div id="patientDetail" v-if="result.personDetail">
       <AppRow>
         <AppCol class="col2">
           <AppOutput label="PHN" :value="result.personDetail.phn" />
@@ -87,7 +87,6 @@
 import AppCard from '../../components/ui/AppCard.vue'
 import AppHelp from '../../components/ui/AppHelp.vue'
 import AppInfoPanel from '../../components/ui/AppInfoPanel.vue'
-import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
 import PatientRegistration from '../../components/patientregistration/PatientRegistration.vue'
 import PatientRegistrationService from '../../services/PatientRegistrationService'
 import useVuelidate from '@vuelidate/core'
@@ -101,7 +100,6 @@ export default {
   components: {
     AppCard,
     AppHelp,
-    AppSimpleTable,
     PatientRegistration,
     AppInfoPanel,
   },
@@ -118,12 +116,12 @@ export default {
       searching: false,
       searchOk: false,
       displayMessage: false,
+      additionalInfoMessage: '',
       result: {
-        phn: '',
-        payee: '',
         clientInstructions: '',
         status: '',
         message: '',
+        personDetail: '',
         additionalInfoMessage: '',
         patientRegistrationHistory: [],
       },
@@ -140,7 +138,6 @@ export default {
       this.searching = true
       this.searchOk = false
       this.displayMessage = false
-      this.additionalInfoMessage = ''
       this.alertStore.dismissAlert()
       try {
         const isValid = await this.v$.$validate()
@@ -158,7 +155,8 @@ export default {
           this.searchOk = true
         }
         this.alertStore.setAlertWithInfoForSuccess(this.result.message)
-        if ((this.result.additionalInfoMessage != '' || this.result.additionalInfoMessage != null) && this.result.status != 'warning') {
+
+        if (this.result.additionalInfoMessage != '' && this.result.status != 'warning') {
           this.displayMessage = true
           this.additionalInfoMessage = this.result.additionalInfoMessage
         }
@@ -184,7 +182,6 @@ export default {
       this.searchOk = false
       this.searching = false
       this.displayMessage = false
-      this.additionalInfoMessage = ''
     },
   },
   validations() {

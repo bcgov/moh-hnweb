@@ -65,8 +65,8 @@ public class PatientRegistrationController extends BaseController {
 				AffectedPartyDirection.INBOUND);
 
 		try {
-			List<PatientRegister> patientRegister = new ArrayList<>();
-			
+			List<PatientRegister> registrationRecords = new ArrayList<>();
+
 			// Retrieve demographic details
 			GetDemographicsConverter converter = new GetDemographicsConverter();
 			GetDemographicsRequest demographicsRequest = converter
@@ -79,38 +79,46 @@ public class PatientRegistrationController extends BaseController {
 			response.setPersonDetail(personDetailsResponse);
 
 			// Retrieve patient registration history
-			patientRegister = patientRegistrationService.getPatientRegistration(
+			registrationRecords = patientRegistrationService.getPatientRegistration(
 					viewPatientRegistrationRequest.getPayee(), viewPatientRegistrationRequest.getPhn());
 
-			boolean isDiffPayeeOutsideGroup = false;
-			boolean isSamePayeeWithinGroup = false;
+			String registrationMessage = "";
+			boolean patientRegisrationExist = false;
 
-			// Check if patient registered with different payee within reporting group
-			if (patientRegister.size() > 0) {
-				isSamePayeeWithinGroup = patientRegister.stream()
+			if (registrationRecords.size() > 0) {
+				patientRegisrationExist = true;
+				boolean isSamePayeeWithinGroup = registrationRecords.stream()
 						.anyMatch(p -> viewPatientRegistrationRequest.getPayee().contentEquals(p.getPayeeNumber()));
 
+				// Check if patient registered with different payee within reporting group
+				if (!isSamePayeeWithinGroup) {
+					registrationMessage = "Patient is registered with a different MSP Payee number within the reporting group";
+				}
+
 			} else {
-				// Check if patient registered with different payee outside reporting group
+				// Check if patient registered with different payee outside of reporting group
 				List<String> payeeList = patientRegistrationService
 						.getPayeeByPHN(viewPatientRegistrationRequest.getPhn());
 
-				// Check if patient record found outside group
-				if (patientRegistrationService.getPBFClinicPayeeByPayee(payeeList).size() > 0) {
-					patientRegister = patientRegistrationService.getPatientRegistration(payeeList.get(0), viewPatientRegistrationRequest.getPhn());
-					isDiffPayeeOutsideGroup = true;
+				if (payeeList.size() > 0) {
+					// Check if payee exists in PBFClinic
+					if (patientRegistrationService.getPBFClinicPayeeByPayee(payeeList).size() > 0) {
+						patientRegisrationExist = true;
+						registrationMessage = "Patient is registered with a different MSP Payee number outside of reporting group";
+					}
 				}
 
 			}
 
-			List<PatientRegisterModel> registrationHistory = convertPatientRegistration(patientRegister);
+			List<PatientRegisterModel> registrationHistory = convertPatientRegistration(registrationRecords);
 			response.setPatientRegistrationHistory(registrationHistory);
 
-			handlePatientRegistrationResponse(response, isSamePayeeWithinGroup, isDiffPayeeOutsideGroup);
+			handlePatientRegistrationResponse(response, patientRegisrationExist, registrationMessage);
 
 			ResponseEntity<ViewPatientRegistrationResponse> responseEntity = ResponseEntity.ok(response);
 
-			auditViewPatientRegistrationComplete(transaction, personDetailsResponse);
+			transactionComplete(transaction);
+			registrationRecords.forEach(record -> addAffectedParty(transaction, IdentifierType.PHN, record.getPhn(), AffectedPartyDirection.OUTBOUND));
 
 			return responseEntity;
 		} catch (Exception e) {
@@ -120,39 +128,32 @@ public class PatientRegistrationController extends BaseController {
 	}
 
 	private ViewPatientRegistrationResponse handlePatientRegistrationResponse(
-			ViewPatientRegistrationResponse patientRegistrationResponse, boolean isSamePayeeWithinGroup,
-			boolean isDiffPayeeOutsideGroup) {
+			ViewPatientRegistrationResponse patientRegistrationResponse, boolean registrationExist,
+			String infoMessage) {
 
 		Set<String> messages = new HashSet<>();
 		patientRegistrationResponse.setStatus(StatusEnum.SUCCESS);
 		patientRegistrationResponse.setMessage("Transaction completed successfully");
 
 		GetPersonDetailsResponse personDetailsResponse = patientRegistrationResponse.getPersonDetail();
-		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse
-				.getPatientRegistrationHistory();
 
-		if (patientRegistrationHistory.size() == 0) {
+		if (registrationExist && !StringUtils.isEmpty(infoMessage)) {
+			messages.add(infoMessage);
+		} else if (!registrationExist) {
 			// Check if demographics record found
 			if (personDetailsResponse.getStatus() == StatusEnum.ERROR) {
 				// If no demographics record found, set status as WARNING
 				patientRegistrationResponse.setStatus(StatusEnum.WARNING);
-				patientRegistrationResponse.setMessage("Patient could not be found in the EMPI or in the PBF. ");
+				patientRegistrationResponse.setMessage("Patient could not be found in the EMPI or in the PBF.");
 			} else {
+				// Patient exists in EMPI but not in PBF
 				messages.add("No registration information is found in the system for given PHN");
 			}
-		} else if (!isSamePayeeWithinGroup && !isDiffPayeeOutsideGroup) {
-			messages.add("Patient is registered with a different MSP Payee number within the reporting group");
-		} else if (isDiffPayeeOutsideGroup) {
-			patientRegistrationResponse.setPatientRegistrationHistory(new ArrayList<>());
-			messages.add("Patient is registered with a different MSP Payee number outside of reporting group");
 		}
 
-		if (personDetailsResponse.getStatus() == StatusEnum.WARNING
-				|| personDetailsResponse.getStatus() == StatusEnum.ERROR) {
-			patientRegistrationResponse.setAdditionalInfoMessage(personDetailsResponse.getMessage());
+		if (personDetailsResponse.getStatus() != StatusEnum.SUCCESS) {
+			messages.add(personDetailsResponse.getMessage());
 		}
-
-		messages.add(personDetailsResponse.getMessage());
 		patientRegistrationResponse.setAdditionalInfoMessage(String.join("\n", messages));
 
 		return patientRegistrationResponse;
@@ -183,15 +184,6 @@ public class PatientRegistrationController extends BaseController {
 		});
 		return pateintRegisterModels;
 
-	}
-
-	private void auditViewPatientRegistrationComplete(Transaction transaction,
-			GetPersonDetailsResponse personDetailsResponse) {
-		transactionComplete(transaction);
-		if (StringUtils.isNotBlank(personDetailsResponse.getPhn())) {
-			addAffectedParty(transaction, IdentifierType.PHN, personDetailsResponse.getPhn(),
-					AffectedPartyDirection.OUTBOUND);
-		}
 	}
 
 	private LocalDate convertDate(Date date) {

@@ -143,7 +143,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 				.getPatientRegistrationHistory();
 		
 		// Check the additional message , status and number of valid records
-		String additionalMessage = "Patient is registered with a different MSP payee number outside of reporting group";
+		String additionalMessage = "Patient is registered with a different MSP Payee number outside of reporting group\nBCHCIM.GD.2.0006 The HL7 message is invalid. Please correct the HL7 message, and resubmit it.Results from Schematron validation";
 		assertTrue(patientRegistrationResponse.getAdditionalInfoMessage().contains(additionalMessage));
 		assertEquals(StatusEnum.SUCCESS, patientRegistrationResponse.getStatus());
 		assertEquals(0, patientRegistrationHistory.size());

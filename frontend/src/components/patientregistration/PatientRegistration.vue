@@ -14,7 +14,7 @@ import { required } from '@vuelidate/validators'
 
 export default {
   props: {
-    registration: Array,
+    registration: Object,
     type: required,
   },
   computed: {

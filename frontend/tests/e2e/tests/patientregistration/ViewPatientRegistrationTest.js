@@ -8,9 +8,8 @@ const PHN_REQUIRED_MESSAGE = 'PHN is required'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'
 const SUCCESS_MESSAGE = 'Transaction completed successfully'
 const WARNING_MESSAGE = 'Patient could not be found in the EMPI or in the PBF'
-
 const POTENTIAL_DUPLICATE_EMPI = 'BCHCIM.GD.0.0020  A potential duplicate task exists on the CRS members'
-const PATIENT_NOT_EXISTS_EMPI = 'BCHCIM.GD.2.0018  The identifier you used in the Get Demographics transaction does not exist in the EMPI.'
+const PATIENT_NOT_EXISTS_PBF = 'No registration information is found in the system for given PHN'
 const DIFFERENT_MSP_PAYEE_WITHIN_GROUP = 'Patient is registered with a different MSP Payee number within the reporting group'
 const DIFFERENT_MSP_PAYEE_OUTSIDE_GROUP = 'Patient is registered with a different MSP Payee number outside of reporting group'
 
@@ -30,7 +29,7 @@ test('Check required fields validation', async (t) => {
     // I expect an error message stating the page had errors and individual error messages for each required field
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
-    .expect(ViewPatientRegistrationPage.errorText.nth(1).textContent)
+    .expect(ViewPatientRegistrationPage.errorText.nth(0).textContent)
     .contains(PHN_REQUIRED_MESSAGE)
 })
 
@@ -47,7 +46,7 @@ test('Check invalid phn format validation', async (t) => {
     .contains(INVALID_PHN_ERROR_MESSAGE)
 })
 
-test('Check Patient Registration Warning Message', async (t) => {
+test('Check Patient Registration Warning Message when no EMPI, PBF records found', async (t) => {
   await t
     // Given a PHN entered with an invalid format
     .typeText(ViewPatientRegistrationPage.phnInput, '9331926919')
@@ -56,6 +55,35 @@ test('Check Patient Registration Warning Message', async (t) => {
     // I expect an error message stating the page had errors and an individual error message for the PHN format
     .expect(AlertPage.alertBannerText.textContent)
     .contains(WARNING_MESSAGE)
+    .expect(ViewPatientRegistrationPage.patientDemoDetail.exists)
+    .notOk()
+    .expect(ViewPatientRegistrationPage.registrationResult.exists)
+    .notOk()
+    .expect(ViewPatientRegistrationPage.registrationData.exists)
+    .notOk()
+    .expect(ViewPatientRegistrationPage.additionalInfoMessage.exists)
+    .notOk()
+})
+
+test('Check Patient Registration Success Message when EMPI exists but no PBF records found', async (t) => {
+  await t
+    // Given a PHN entered with an invalid format
+    .typeText(ViewPatientRegistrationPage.phnInput, '9878259011')
+    // When I click the submit button
+    .click(ViewPatientRegistrationPage.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the PHN format
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(SUCCESS_MESSAGE)
+    .expect(ViewPatientRegistrationPage.patientDemoDetail.exists)
+    .ok()
+    .expect(ViewPatientRegistrationPage.registrationResult.exists)
+    .ok()
+    .expect(ViewPatientRegistrationPage.registrationData.exists)
+    .notOk()
+    .expect(ViewPatientRegistrationPage.additionalInfoMessage.exists)
+    .ok()
+    .expect(ViewPatientRegistrationPage.additionalInfoMessage.textContent)
+    .contains(PATIENT_NOT_EXISTS_PBF)
 })
 
 test('Check properly filled form passes validation and validate results', async (t) => {
@@ -68,10 +96,11 @@ test('Check properly filled form passes validation and validate results', async 
     // I expect a success message
     .expect(AlertPage.alertBannerText.textContent)
     .contains(SUCCESS_MESSAGE)
+    // Both EMPI and PBF record found
     .expect(ViewPatientRegistrationPage.patientDemoDetail.exists)
     .ok()
-    //.expect(ViewPatientRegistrationPage.registrationResult.exists)
-    //.ok()
+    .expect(ViewPatientRegistrationPage.registrationResult.exists)
+    .ok()
     .expect(ViewPatientRegistrationPage.registrationData.exists)
     .ok()
     .expect(ViewPatientRegistrationPage.additionalInfoMessage.exists)
@@ -111,8 +140,8 @@ test('Check Patient registered with a different msp payee within group', async (
     .contains(SUCCESS_MESSAGE)
     .expect(ViewPatientRegistrationPage.patientDemoDetail.exists)
     .ok()
-    //.expect(ViewPatientRegistrationPage.registrationResult.exists)
-    //.ok()
+    .expect(ViewPatientRegistrationPage.registrationResult.exists)
+    .ok()
     .expect(ViewPatientRegistrationPage.registrationData.exists)
     .ok()
     .expect(ViewPatientRegistrationPage.additionalInfoMessage.exists)
@@ -123,8 +152,6 @@ test('Check Patient registered with a different msp payee within group', async (
     .contains('PURPLE')
     .expect(ViewPatientRegistrationPage.resultRow1.nth(2).textContent)
     .contains('19400606')
-    //.expect(ViewPatientRegistrationPage.resultRow1.nth(3).textContent)
-    //.contains('')
     .expect(ViewPatientRegistrationPage.resultRow1.nth(3).textContent)
     .contains('M')
     //Registration details
@@ -134,8 +161,6 @@ test('Check Patient registered with a different msp payee within group', async (
     .contains('2020-01-01\n2020-01-01')
     .expect(ViewPatientRegistrationPage.resultRow1.nth(10).textContent)
     .contains('De-Registered')
-    //.expect(ViewPatientRegistrationPage.resultRow1.nth(8).textContent)
-    //.contains('0')
     .expect(ViewPatientRegistrationPage.resultRow1.nth(11).textContent)
     .contains(' Practioner No: X2731\n Reg Reason: SL\n DeReg Reason: N/A\n Cancel Reason: N/A\n')
     .expect(ViewPatientRegistrationPage.additionalInfoMessage.textContent)
@@ -156,9 +181,7 @@ test('Check Patient registered with a different msp payee outside group', async 
     .contains(SUCCESS_MESSAGE)
     .expect(ViewPatientRegistrationPage.patientDemoDetail.exists)
     .ok()
-    //.expect(ViewPatientRegistrationPage.registrationResult.exists)
-    //.ok()
-    .expect(ViewPatientRegistrationPage.registrationData.exists)
+    .expect(ViewPatientRegistrationPage.registrationResult.exists)
     .ok()
     .expect(ViewPatientRegistrationPage.additionalInfoMessage.exists)
     .ok()
@@ -168,11 +191,8 @@ test('Check Patient registered with a different msp payee outside group', async 
     .contains('PURPLE')
     .expect(ViewPatientRegistrationPage.resultRow1.nth(2).textContent)
     .contains('19400606')
-    //.expect(ViewPatientRegistrationPage.resultRow1.nth(3).textContent)
-    //.contains('')
     .expect(ViewPatientRegistrationPage.resultRow1.nth(3).textContent)
     .contains('M')
-
     .expect(ViewPatientRegistrationPage.additionalInfoMessage.textContent)
     .contains(DIFFERENT_MSP_PAYEE_OUTSIDE_GROUP + '\n' + POTENTIAL_DUPLICATE_EMPI)
 })
