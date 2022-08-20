@@ -74,7 +74,9 @@ import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
 import AuditReportRecord from '../../components/reports/AuditReportRecord.vue'
 import AuditService from '../../services/AuditService'
 import useVuelidate from '@vuelidate/core'
-import { required, maxLength } from '@vuelidate/validators'
+import { required, helpers } from '@vuelidate/validators'
+import { DEFAULT_ERROR_MESSAGE } from '../../util/constants.js'
+import { validateUserIdLength, VALIDATE_USER_ID_MESSAGE } from '../../util/validators'
 import { useAlertStore } from '../../stores/alert'
 import { handleServiceError } from '../../util/utils'
 import AppLabel from '../../components/ui/AppLabel.vue'
@@ -93,8 +95,8 @@ export default {
     return {
       userId: '',
       organizations: [],
-      endDate: new Date(),
-      startDate: dayjs().subtract(1, 'month').toDate(),
+      endDate: dayjs(dayjs().startOf('month', 0).toDate()).subtract(1, 'month').toDate(),
+      startDate: dayjs(dayjs().startOf('month').toDate()).subtract(1, 'month').toDate(),
       organizationOptions: [],
       transactionTypes: [],
       searchOk: false,
@@ -115,11 +117,26 @@ export default {
       this.alertStore.dismissAlert()
 
       try {
-        const isValid = await this.v$.$validate()
-        if (!isValid) {
-          this.showError()
+        const errors = []
+        const isFormValid = await this.v$.$validate()
+        if (!isFormValid) {
+          errors.push(DEFAULT_ERROR_MESSAGE)
+        }
+        const isStartDateBeforeEndDate = this.validateDate()
+        if (isFormValid && !isStartDateBeforeEndDate) {
+          errors.push('Start Date should not be after End Date')
+        }
+
+        const isDateWithinRange = this.validateDateRange()
+        if (isStartDateBeforeEndDate && !isDateWithinRange) {
+          errors.push('End Date should not be more than 3 months from Start Date')
+        }
+
+        if (!isFormValid || !isStartDateBeforeEndDate || !isDateWithinRange) {
+          this.showError(errors)
           return
         }
+
         this.result = (
           await AuditService.getAuditReport({
             organizations: this.organizations,
@@ -150,28 +167,42 @@ export default {
         this.searching = false
       }
     },
-    showError(error) {
-      this.alertStore.setErrorAlert(error)
+    showError(errors) {
+      this.alertStore.setErrorAlerts(errors)
       this.result = {}
-      this.searching = false
+      this.submitting = false
     },
     resetForm() {
       this.userId = ''
       this.organizations = []
       this.transactionTypes = []
-      this.endDate = new Date()
-      this.startDate = dayjs().subtract(1, 'month').toDate()
+      this.endDate = dayjs(dayjs().startOf('month', 0).toDate()).subtract(1, 'month').toDate()
+      this.startDate = dayjs(dayjs().startOf('month').toDate()).subtract(1, 'month').toDate()
       this.result = null
       this.searchOk = false
       this.searching = false
       this.v$.$reset()
       this.alertStore.dismissAlert()
     },
+    /**
+     * Validates that End Date is after Start Date
+     */
+    validateDate() {
+      return dayjs(this.endDate).isAfter(this.startDate)
+    },
+
+    /**
+     * Validates that End Date is not more than 3 months from Start Date
+     */
+    validateDateRange() {
+      var diff = dayjs(this.endDate).diff(dayjs(this.startDate), 'month')
+      return diff <= 3
+    },
   },
   validations() {
     return {
       userId: {
-        maxLength: maxLength(100),
+        validateUserIdLength: helpers.withMessage(VALIDATE_USER_ID_MESSAGE, validateUserIdLength),
       },
       startDate: {
         required,
