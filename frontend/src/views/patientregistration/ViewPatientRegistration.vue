@@ -1,9 +1,9 @@
 <template>
   <AppHelp>
-    <p>This shows a patient registration history using a pateint's PHN and MSP Payee information.</p>
-    <p>Enter the individuals 10 digit PHN. The PHN is a mandatory field, if you leave it blank or enter invalid characters, an edit error message will be displayed.</p>
-    <p>The MSP Payee number is automatically assigned as part of the permissions the user is given during account creation</p>
-    <p>It returns patient demographic and registration history, including registration and de-registration dates, and additional information</p>
+    <p>This shows a patient registration history using a patient's PHN and MSP Payee information.</p>
+    <p>Enter the individual's 10 digit PHN. The PHN is a mandatory field, if you leave it blank or enter invalid characters, an edit error message will be displayed.</p>
+    <p>The MSP Payee number is automatically assigned as part of the permissions the user is given during account creation.</p>
+    <p>It returns patient demographic and registration history, including registration and de-registration dates, and additional information.</p>
   </AppHelp>
   <div>
     <form @submit.prevent="submitForm">
@@ -73,7 +73,7 @@
     </div>
     <div id="registrationData" v-if="result.patientRegistrationHistory.length > 0">
       <AppRow v-for="registration in result.patientRegistrationHistory">
-        <PatientRegistration :registration="registration" />
+        <PatientRegistrationDetails :registration="registration" />
       </AppRow>
     </div>
   </div>
@@ -87,7 +87,7 @@
 import AppCard from '../../components/ui/AppCard.vue'
 import AppHelp from '../../components/ui/AppHelp.vue'
 import AppInfoPanel from '../../components/ui/AppInfoPanel.vue'
-import PatientRegistration from '../../components/patientregistration/PatientRegistration.vue'
+import PatientRegistrationDetails from '../../components/patientregistration/PatientRegistrationDetails.vue'
 import PatientRegistrationService from '../../services/PatientRegistrationService'
 import useVuelidate from '@vuelidate/core'
 import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
@@ -100,7 +100,7 @@ export default {
   components: {
     AppCard,
     AppHelp,
-    PatientRegistration,
+    PatientRegistrationDetails,
     AppInfoPanel,
   },
   setup() {

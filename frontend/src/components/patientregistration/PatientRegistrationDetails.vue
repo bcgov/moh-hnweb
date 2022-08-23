@@ -1,41 +1,42 @@
 <template>
   <AppCol class="col2"> <AppOutput :value="registration.payeeNumber" /></AppCol>
   <AppCol class="col2">
-    <span style="white-space: pre-line"><AppOutput :value="regDeRegDate" /></span>
+    <div v-html="regDeRegDate" />
   </AppCol>
   <AppCol class="col2"><AppOutput :value="registration.currentStatus" /></AppCol>
   <AppCol class="col3"><AppOutput :value="registration.administrativeCode" /></AppCol>
   <AppCol class="col2">
-    <span style="white-space: pre-line"><AppOutput :value="data" /></span>
+    <div v-html="registrationData" />
   </AppCol>
 </template>
 <script>
-import { required } from '@vuelidate/validators'
-
 export default {
   props: {
-    registration: Object,
-    type: required,
+    registration: {
+      required: true,
+      type: Object,
+    },
   },
   computed: {
-    data() {
+    registrationData() {
       let data = ''
       if (this.registration.registeredPractitionerNumber) {
-        data = data + ' Practioner No: ' + this.registration.registeredPractitionerNumber + '\n'
+        data = `Practitioner No: ${this.registration.registeredPractitionerNumber}<br/>`
       }
       if (this.registration.registrationReasonCode) {
-        data = data + ' Reg Reason: ' + this.registration.registrationReasonCode + '\n'
+        data = `${data} Reg Reason: ${this.registration.registrationReasonCode}<br/>`
       }
       if (this.registration.deregistrationReasonCode) {
-        data = data + ' DeReg Reason: ' + this.registration.deregistrationReasonCode + '\n'
+        data = `${data} DeReg Reason: ${this.registration.deregistrationReasonCode}<br/>`
       }
       if (this.registration.cancelReasonCode) {
-        data = data + ' Cancel Reason: ' + this.registration.cancelReasonCode + '\n'
+        data = `${data} Cancel Reason: ${this.registration.cancelReasonCode}<br/>`
       }
       return data
     },
+
     regDeRegDate() {
-      return this.registration.effectiveDate + '\n' + this.registration.cancelDate
+      return `${this.registration.effectiveDate} <br/> ${this.registration.cancelDate} `
     },
   },
 }

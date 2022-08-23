@@ -45,6 +45,14 @@ import ca.bc.gov.hlth.hnweb.service.PatientRegistrationService;
 @RestController
 public class PatientRegistrationController extends BaseController {
 
+	private static final String FUTURE_REGISTRATION = "Future Registration";
+
+	private static final String DE_REGISTERED = "De-Registered";
+
+	private static final String REGISTERED = "Registered";
+
+	private static final String NOT_APPLICABLE = "N/A";
+
 	private static final Logger logger = LoggerFactory.getLogger(PatientRegistrationController.class);
 
 	@Autowired
@@ -55,8 +63,7 @@ public class PatientRegistrationController extends BaseController {
 
 	@PostMapping("/get-patient-registration")
 	public ResponseEntity<PatientRegistrationResponse> getPatientRegistration(
-			@Valid @RequestBody PatientRegistrationRequest patientRegistrationRequest,
-			HttpServletRequest request) {
+			@Valid @RequestBody PatientRegistrationRequest patientRegistrationRequest, HttpServletRequest request) {
 
 		logger.info("Patient Registration request: {} ", patientRegistrationRequest.getPhn());
 
@@ -65,12 +72,9 @@ public class PatientRegistrationController extends BaseController {
 				AffectedPartyDirection.INBOUND);
 
 		try {
-			List<PatientRegister> registrationRecords = new ArrayList<>();
-
 			// Retrieve demographic details
 			GetDemographicsConverter converter = new GetDemographicsConverter();
-			GetDemographicsRequest demographicsRequest = converter
-					.convertRequest(patientRegistrationRequest.getPhn());
+			GetDemographicsRequest demographicsRequest = converter.convertRequest(patientRegistrationRequest.getPhn());
 			GetDemographicsResponse demoGraphicsResponse = enrollmentService.getDemographics(demographicsRequest,
 					transaction);
 			GetPersonDetailsResponse personDetailsResponse = converter.convertResponse(demoGraphicsResponse);
@@ -79,46 +83,29 @@ public class PatientRegistrationController extends BaseController {
 			response.setPersonDetail(personDetailsResponse);
 
 			// Retrieve patient registration history
-			registrationRecords = patientRegistrationService.getPatientRegistration(
+			boolean patientRegistrationExist = false;
+
+			List<PatientRegister> registrationRecords = patientRegistrationService
+					.getPatientRegistration(patientRegistrationRequest.getPayee(), patientRegistrationRequest.getPhn());
+
+			String registrationMessage = patientRegistrationService.checktRegistrationDetails(registrationRecords,
 					patientRegistrationRequest.getPayee(), patientRegistrationRequest.getPhn());
 
-			String registrationMessage = "";
-			boolean patientRegisrationExist = false;
-
-			if (registrationRecords.size() > 0) {
-				patientRegisrationExist = true;
-				boolean isSamePayeeWithinGroup = registrationRecords.stream()
-						.anyMatch(p -> patientRegistrationRequest.getPayee().contentEquals(p.getPayeeNumber()));
-
-				// Check if patient registered with different payee within reporting group
-				if (!isSamePayeeWithinGroup) {
-					registrationMessage = "Patient is registered with a different MSP Payee number within the reporting group";
-				}
-
-			} else {
-				// Check if patient registered with different payee outside of reporting group
-				List<String> payeeList = patientRegistrationService
-						.getPayeeByPHN(patientRegistrationRequest.getPhn());
-
-				if (payeeList.size() > 0) {
-					// Check if payee exists in PBFClinic
-					if (patientRegistrationService.getPBFClinicPayeeByPayee(payeeList).size() > 0) {
-						patientRegisrationExist = true;
-						registrationMessage = "Patient is registered with a different MSP Payee number outside of reporting group";
-					}
-				}
+			if (!registrationRecords.isEmpty() || StringUtils.isNotBlank(registrationMessage)) {
+				patientRegistrationExist = true;
 
 			}
 
 			List<PatientRegisterModel> registrationHistory = convertPatientRegistration(registrationRecords);
 			response.setPatientRegistrationHistory(registrationHistory);
 
-			handlePatientRegistrationResponse(response, patientRegisrationExist, registrationMessage);
+			handlePatientRegistrationResponse(response, patientRegistrationExist, registrationMessage);
 
 			ResponseEntity<PatientRegistrationResponse> responseEntity = ResponseEntity.ok(response);
 
 			transactionComplete(transaction);
-			registrationRecords.forEach(record -> addAffectedParty(transaction, IdentifierType.PHN, record.getPhn(), AffectedPartyDirection.OUTBOUND));
+			registrationRecords.forEach(record -> addAffectedParty(transaction, IdentifierType.PHN, record.getPhn(),
+					AffectedPartyDirection.OUTBOUND));
 
 			return responseEntity;
 		} catch (Exception e) {
@@ -128,8 +115,7 @@ public class PatientRegistrationController extends BaseController {
 	}
 
 	private PatientRegistrationResponse handlePatientRegistrationResponse(
-			PatientRegistrationResponse patientRegistrationResponse, boolean registrationExist,
-			String infoMessage) {
+			PatientRegistrationResponse patientRegistrationResponse, boolean registrationExist, String infoMessage) {
 
 		Set<String> messages = new HashSet<>();
 		patientRegistrationResponse.setStatus(StatusEnum.SUCCESS);
@@ -168,12 +154,13 @@ public class PatientRegistrationController extends BaseController {
 			model.setCancelDate(convertDate(patientRegistration.getCancelDate()));
 			model.setCurrentStatus(setPatientRegistrationStatus(model.getCancelDate(), model.getEffectiveDate()));
 			model.setAdministrativeCode(patientRegistration.getAdministrativeCode());
-			model.setRegistrationReasonCode(StringUtils.isEmpty(patientRegistration.getRegistrationReasonCode()) ? "N/A"
-					: patientRegistration.getRegistrationReasonCode());
-			model.setCancelReasonCode(StringUtils.isEmpty(patientRegistration.getCancelReasonCode()) ? "N/A"
+			model.setRegistrationReasonCode(
+					StringUtils.isEmpty(patientRegistration.getRegistrationReasonCode()) ? NOT_APPLICABLE
+							: patientRegistration.getRegistrationReasonCode());
+			model.setCancelReasonCode(StringUtils.isEmpty(patientRegistration.getCancelReasonCode()) ? NOT_APPLICABLE
 					: patientRegistration.getCancelReasonCode());
 			model.setDeregistrationReasonCode(
-					StringUtils.isEmpty(patientRegistration.getDeregistrationReasonCode()) ? "N/A"
+					StringUtils.isEmpty(patientRegistration.getDeregistrationReasonCode()) ? NOT_APPLICABLE
 							: patientRegistration.getDeregistrationReasonCode());
 			model.setPayeeNumber(patientRegistration.getPayeeNumber());
 			model.setRegisteredPractitionerNumber(patientRegistration.getRegisteredPractitionerNumber());
@@ -201,11 +188,11 @@ public class PatientRegistrationController extends BaseController {
 		// “Future Registration” when the registration date is in the future
 
 		if (today.compareTo(effectiveDate) >= 0 && today.compareTo(cancelDate) <= 0) {
-			currentStatus = "Registered";
+			currentStatus = REGISTERED;
 		} else if (today.compareTo(cancelDate) > 0) {
-			currentStatus = "De-Registered";
+			currentStatus = DE_REGISTERED;
 		} else if (effectiveDate.compareTo(today) > 0) {
-			currentStatus = "Future Registration";
+			currentStatus = FUTURE_REGISTRATION;
 		}
 
 		return currentStatus;

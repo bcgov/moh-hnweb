@@ -290,7 +290,6 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 	@DynamicPropertySource
 	static void registerMockUrlProperty(DynamicPropertyRegistry registry) {
 		registry.add("hcim.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
-		registry.add("hibc.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
 	}
 
 }
