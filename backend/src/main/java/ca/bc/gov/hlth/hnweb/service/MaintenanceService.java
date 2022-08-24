@@ -75,13 +75,13 @@ public class MaintenanceService extends BaseService {
 	public RPBSPAG0 changeCancelDate(RPBSPAG0 rpbspag0, Transaction transaction) throws HNWebException {
 		String rpbspag0Str = rpbspag0.serialize();
 
-		logger.info("Request {}", rpbspag0Str);
+		logger.info("Request:\n{}", rpbspag0Str);
 
 		messageSent(transaction);
 		ResponseEntity<String> response = postRapidRequest(r46Path, rpbspag0Str,
 				transaction.getTransactionId().toString());
 		messageReceived(transaction);
-		logger.info("Response Status: {} ; Message:\n{}", response.getStatusCode(), response.getBody());
+		logger.info("Response Status: {}; Message:\n{}", response.getStatusCode(), response.getBody());
 
 		if (response.getStatusCode() != HttpStatus.OK) {
 			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
