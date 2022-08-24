@@ -95,8 +95,8 @@ export default {
     return {
       userId: '',
       organizations: [],
-      endDate: dayjs(dayjs().startOf('month', 0).toDate()).subtract(1, 'month').toDate(),
-      startDate: dayjs(dayjs().startOf('month').toDate()).subtract(1, 'month').toDate(),
+      startDate: dayjs(dayjs().startOf('month')).subtract(1, 'month'),
+      endDate: dayjs(dayjs().endOf('month')).subtract(1, 'month'),
       organizationOptions: [],
       transactionTypes: [],
       searchOk: false,
@@ -176,8 +176,8 @@ export default {
       this.userId = ''
       this.organizations = []
       this.transactionTypes = []
-      this.endDate = dayjs(dayjs().startOf('month', 0).toDate()).subtract(1, 'month').toDate()
-      this.startDate = dayjs(dayjs().startOf('month').toDate()).subtract(1, 'month').toDate()
+      this.startDate = dayjs(dayjs().startOf('month')).subtract(1, 'month')
+      this.endDate = dayjs(dayjs().endOf('month')).subtract(1, 'month')
       this.result = null
       this.searchOk = false
       this.searching = false
@@ -188,7 +188,7 @@ export default {
      * Validates that End Date is after Start Date
      */
     validateDate() {
-      return dayjs(this.endDate).isAfter(this.startDate)
+      return dayjs(this.endDate).isAfter(this.startDate) || dayjs(this.startDate).isSame(this.endDate)
     },
 
     /**
@@ -196,7 +196,10 @@ export default {
      */
     validateDateRange() {
       var diff = dayjs(this.endDate).diff(dayjs(this.startDate), 'month')
-      return diff <= 3
+      var startDate = dayjs(this.startDate).get('date')
+      var endDate = dayjs(this.endDate).get('date')
+
+      return diff < 3 || (diff == 3 && startDate == endDate)
     },
   },
   validations() {
