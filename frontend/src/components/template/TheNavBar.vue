@@ -12,7 +12,7 @@
           <router-link @click="resetAlert" :to="{ name: 'PatientRegistration' }">Patient Registration</router-link>
         </li>
         <li id="hcim-link" v-if="isPBFUser">
-          <a :href="getHCIMURL" target="_blank"> HCIMWeb</a>
+          <a :href="hcimURL" target="_blank">HCIMWeb</a>
         </li>
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
           <div class="dropdown">
@@ -94,7 +94,7 @@ export default {
   },
   data() {
     return {
-      getHCIMURL: config.HCIM_WEB_URL || import.meta.env.VITE_HCIM_WEB_URL,
+      hcimURL: config.HCIM_WEB_URL || import.meta.env.VITE_HCIM_WEB_URL,
     }
   },
   computed: {
