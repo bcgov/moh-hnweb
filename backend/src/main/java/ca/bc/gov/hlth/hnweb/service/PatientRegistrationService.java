@@ -33,7 +33,7 @@ public class PatientRegistrationService extends BaseService {
 	 * @param phn
 	 * @return message if not registerd with assigned user payee.
 	 */
-	public String checktRegistrationDetails(List<PatientRegister> registrationRecords, String payee, String phn) {
+	public String checkRegistrationDetails(List<PatientRegister> registrationRecords, String payee, String phn) {
 		String registrationMessage = "";
 
 		if (!registrationRecords.isEmpty()) {

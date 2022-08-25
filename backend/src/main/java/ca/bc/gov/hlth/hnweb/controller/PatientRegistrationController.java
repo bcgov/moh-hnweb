@@ -88,7 +88,7 @@ public class PatientRegistrationController extends BaseController {
 			List<PatientRegister> registrationRecords = patientRegistrationService
 					.getPatientRegistration(patientRegistrationRequest.getPayee(), patientRegistrationRequest.getPhn());
 
-			String registrationMessage = patientRegistrationService.checktRegistrationDetails(registrationRecords,
+			String registrationMessage = patientRegistrationService.checkRegistrationDetails(registrationRecords,
 					patientRegistrationRequest.getPayee(), patientRegistrationRequest.getPhn());
 
 			if (!registrationRecords.isEmpty() || StringUtils.isNotBlank(registrationMessage)) {
