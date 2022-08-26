@@ -199,9 +199,7 @@ export default {
      */
     validateDateRange() {
       dayjs.extend(isSameOrBefore)
-      var startDate = dayjs(this.startDate).add(3, 'month').toDate()
-
-      return dayjs(this.endDate).isSameOrBefore(startDate)
+      return dayjs(this.endDate).isSameOrBefore(dayjs(this.startDate).add(3, 'month'))
     },
   },
   validations() {
