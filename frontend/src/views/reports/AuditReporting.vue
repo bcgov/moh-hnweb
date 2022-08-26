@@ -83,7 +83,6 @@ import AppLabel from '../../components/ui/AppLabel.vue'
 import dayjs from 'dayjs'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
-import duration from 'dayjs/plugin/duration'
 
 export default {
   components: { AppLabel, AppSimpleTable, AuditReportRecord },
