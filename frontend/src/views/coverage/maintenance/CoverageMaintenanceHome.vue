@@ -1,6 +1,7 @@
 <template>
   <TheSubNav>
     <SubNavTab routeName="ChangeEffectiveDate" title="Change Effective Date" v-if="hasPermission('ChangeEffectiveDate')" />
+    <SubNavTab routeName="ChangeCancelDate" title="Change Cancel Date" v-if="hasPermission('ChangeCancelDate')" />
     <SubNavTab routeName="ReinstateOverAgeDependent" title="Reinstate OverAge Dependent" v-if="hasPermission('ReinstateOverAgeDependent')" />
   </TheSubNav>
   <router-view />

@@ -13,12 +13,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPAG0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPAJ0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPRE0Converter;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAG0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAJ0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPRE0;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.ChangeEffectiveDateRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.ChangeEffectiveDateResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ChangeCancelDateRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ChangeCancelDateResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ReinstateOverAgeDependentRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ReinstateOverAgeDependentResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
@@ -63,6 +67,38 @@ public class MaintenanceController extends BaseController {
 			logger.info("changeEffectiveDateResponse response: {} ", changeEffectiveDateResponse);
 
 			auditChangeEffectiveDateComplete(transaction, changeEffectiveDateResponse);
+
+			return response;
+		} catch (Exception e) {
+			handleException(transaction, e);
+			return null;
+		}
+	}
+
+	/**
+	 * Change the coverage cancellation date of an employee. 
+	 * Maps to the legacy R46b (z26).
+	 * 
+	 * @param changeCancelDateRequest
+	 * @return The result of the operation.
+	 */
+	@PostMapping("/change-cancel-date")
+	public ResponseEntity<ChangeCancelDateResponse> changeCancelDate(
+			@Valid @RequestBody ChangeCancelDateRequest changeCancelDateRequest, HttpServletRequest request) {
+
+		Transaction transaction = auditChangeCancelDateStart(changeCancelDateRequest.getPhn(), request);
+
+		try {
+			RPBSPAG0Converter converter = new RPBSPAG0Converter();
+			RPBSPAG0 rpbspag0Request = converter.convertRequest(changeCancelDateRequest);
+			RPBSPAG0 rpbspag0Response = maintenanceService.changeCancelDate(rpbspag0Request, transaction);
+			ChangeCancelDateResponse changeCancelDateResponse = converter.convertResponse(rpbspag0Response);
+
+			ResponseEntity<ChangeCancelDateResponse> response = ResponseEntity.ok(changeCancelDateResponse);
+
+			logger.info("changeCancelDateResponse response: {} ", changeCancelDateResponse);
+
+			auditChangeCancelDateComplete(transaction, changeCancelDateResponse.getPhn());
 
 			return response;
 		} catch (Exception e) {
@@ -125,6 +161,25 @@ public class MaintenanceController extends BaseController {
 		if (StringUtils.isNotBlank(changeEffectiveDateResponse.getPhn())) {
 			addAffectedParty(transaction, IdentifierType.PHN, changeEffectiveDateResponse.getPhn(),
 					AffectedPartyDirection.OUTBOUND);
+		}
+	}
+
+	private Transaction auditChangeCancelDateStart(String phn, HttpServletRequest request) {
+
+		Transaction transaction = transactionStart(request, TransactionType.CHANGE_CANCEL_DATE);
+
+		if (StringUtils.isNotBlank(phn)) {
+			addAffectedParty(transaction, IdentifierType.PHN, phn, AffectedPartyDirection.INBOUND);
+		}
+		return transaction;
+	}
+
+	private void auditChangeCancelDateComplete(Transaction transaction, String phn) {
+
+		transactionComplete(transaction);
+
+		if (StringUtils.isNotBlank(phn)) {
+			addAffectedParty(transaction, IdentifierType.PHN, phn, AffectedPartyDirection.OUTBOUND);
 		}
 	}
 
