@@ -1,6 +1,6 @@
 <template>
+  <h1>Patient Registration</h1>
   <AppHelp>
-    <h1>Patient Registration</h1>
     <p>This shows a patient registration history using a patient's PHN and MSP Payee information.</p>
     <p>Enter the individual's 10 digit PHN. The PHN is a mandatory field, if you leave it blank or enter invalid characters, an edit error message will be displayed.</p>
     <p>The MSP Payee number is automatically assigned as part of the permissions the user is given during account creation.</p>
