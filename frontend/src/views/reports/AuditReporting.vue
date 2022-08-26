@@ -81,6 +81,9 @@ import { useAlertStore } from '../../stores/alert'
 import { handleServiceError } from '../../util/utils'
 import AppLabel from '../../components/ui/AppLabel.vue'
 import dayjs from 'dayjs'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+import duration from 'dayjs/plugin/duration'
 
 export default {
   components: { AppLabel, AppSimpleTable, AuditReportRecord },
@@ -95,8 +98,8 @@ export default {
     return {
       userId: '',
       organizations: [],
-      startDate: dayjs(dayjs().startOf('month')).subtract(1, 'month'),
-      endDate: dayjs(dayjs().endOf('month')).subtract(1, 'month'),
+      startDate: dayjs().subtract(1, 'month').startOf('month').toDate(),
+      endDate: dayjs().subtract(1, 'month').endOf('month').toDate(),
       organizationOptions: [],
       transactionTypes: [],
       searchOk: false,
@@ -176,8 +179,8 @@ export default {
       this.userId = ''
       this.organizations = []
       this.transactionTypes = []
-      this.startDate = dayjs(dayjs().startOf('month')).subtract(1, 'month')
-      this.endDate = dayjs(dayjs().endOf('month')).subtract(1, 'month')
+      this.startDate = dayjs().subtract(1, 'month').startOf('month').toDate()
+      this.endDate = dayjs().subtract(1, 'month').endOf('month').toDate()
       this.result = null
       this.searchOk = false
       this.searching = false
@@ -188,18 +191,18 @@ export default {
      * Validates that End Date is after Start Date
      */
     validateDate() {
-      return dayjs(this.endDate).isAfter(this.startDate) || dayjs(this.startDate).isSame(this.endDate)
+      dayjs.extend(isSameOrAfter)
+      return dayjs(this.endDate).isSameOrAfter(this.startDate)
     },
 
     /**
      * Validates that End Date is not more than 3 months from Start Date
      */
     validateDateRange() {
-      var diff = dayjs(this.endDate).diff(dayjs(this.startDate), 'month')
-      var startDate = dayjs(this.startDate).get('date')
-      var endDate = dayjs(this.endDate).get('date')
+      dayjs.extend(isSameOrBefore)
+      var startDate = dayjs(this.startDate).add(3, 'month').toDate()
 
-      return diff < 3 || (diff == 3 && startDate == endDate)
+      return dayjs(this.endDate).isSameOrBefore(startDate)
     },
   },
   validations() {
