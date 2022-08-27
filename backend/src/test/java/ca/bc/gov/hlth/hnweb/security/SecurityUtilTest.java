@@ -45,7 +45,7 @@ public class SecurityUtilTest {
 		Jwt jwt = createToken("TRAININGHEALTHAUTH");
 		
 		List<String> permissions = SecurityUtil.loadPermissions(jwt, securityProperties.getRolePermissions());
-		assertEquals(22, permissions.size());
+		assertEquals(23, permissions.size());
 		assertEquals("MSPCoverageCheck", permissions.get(0));
 		assertEquals("CheckEligibility", permissions.get(1));
 		assertEquals("AddGroupMember", permissions.get(2));
