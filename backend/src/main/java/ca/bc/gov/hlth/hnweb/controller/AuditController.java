@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,14 +48,22 @@ public class AuditController extends BaseController {
 	@PostMapping("/audit-report")
 	public ResponseEntity<AuditReportResponse> getAuditReport(@Valid @RequestBody AuditReportRequest auditReportRequest,
 			HttpServletRequest request) {
-		List<AuditRecord> auditReport = convertReport(auditService.getAffectedParties(
+		
+		// Convert from first/rows to page/rows
+		int page = (auditReportRequest.getFirst() / auditReportRequest.getRows()); 
+		
+		logger.info("page {} rows {}", page, auditReportRequest.getRows());
+		
+		Page<AffectedParty> pageable = auditService.getAffectedParties(
 				auditReportRequest.getTransactionTypes(), auditReportRequest.getOrganizations(),
-				auditReportRequest.getUserId(), auditReportRequest.getStartDate(), auditReportRequest.getEndDate()));
+				auditReportRequest.getUserId(), auditReportRequest.getStartDate(), auditReportRequest.getEndDate(), page, auditReportRequest.getRows());
+		List<AuditRecord> auditReport = convertReport(pageable.getContent());
 
 		logger.info("Audit Report size : {}", auditReport.size());
 
 		AuditReportResponse auditReportingResponse = new AuditReportResponse();
 		auditReportingResponse.setRecords(auditReport);
+		auditReportingResponse.setTotalRecords(pageable.getTotalElements());
 		auditReportingResponse.setStatus(StatusEnum.SUCCESS);
 
 		ResponseEntity<AuditReportResponse> responseEntity = ResponseEntity.ok(auditReportingResponse);

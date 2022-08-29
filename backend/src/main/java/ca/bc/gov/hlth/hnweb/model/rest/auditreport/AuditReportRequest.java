@@ -14,6 +14,10 @@ public class AuditReportRequest {
 	private LocalDate startDate;
 
 	private LocalDate endDate;
+	
+	private Integer first;
+	
+	private Integer rows;
 
 	public String getUserId() {
 		return userId;
@@ -53,6 +57,24 @@ public class AuditReportRequest {
 
 	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
+	}
+	
+	
+
+	public Integer getFirst() {
+		return first;
+	}
+
+	public void setFirst(Integer first) {
+		this.first = first;
+	}
+
+	public Integer getRows() {
+		return rows;
+	}
+
+	public void setRows(Integer rows) {
+		this.rows = rows;
 	}
 
 	@Override

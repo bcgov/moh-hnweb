@@ -3,6 +3,7 @@ package ca.bc.gov.hlth.hnweb.persistence.repository;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -19,7 +20,7 @@ public interface AffectedPartyPageableRepository extends PagingAndSortingReposit
 		      +"(af.direction=:direction) and "
 		      +"(date_trunc('day', af.transaction.startTime) between :startDate and :endDate) "
 		      + "order by af.transaction.startTime desc")
-	List<AffectedParty> findByTransactionAndDirection(@Param("type") List<String> type,
+	Page<AffectedParty> findByTransactionAndDirection(@Param("type") List<String> type,
 			@Param("organizations") List<String> organizations, @Param("userId") String userId, @Param("direction") String direction, @Param("startDate") Date startDate, @Param("endDate") Date endDate, Pageable pageable);
 
 }

@@ -12,6 +12,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -205,15 +206,15 @@ public class AuditService {
 	 * @param endDate
 	 * @return
 	 */
-	public List<AffectedParty> getAffectedParties(List<String> types, List<String> organizations, String userId, LocalDate startDate,
-			LocalDate endDate) {
+	public Page<AffectedParty> getAffectedParties(List<String> types, List<String> organizations, String userId, LocalDate startDate,
+			LocalDate endDate, int page, int size) {
 		try {
 			Date formattedStartDate = convertLocalDateToDate(startDate);
 			Date formattedendDate = convertLocalDateToDate(endDate);
 			// XXX Limit the results to 1000 until we implement pagination
-			Pageable page = PageRequest.of(0, 1000);
+			Pageable pageable = PageRequest.of(page, size);
 			return affectedPartyPageableRepository.findByTransactionAndDirection(types, organizations, userId, AffectedPartyDirection.INBOUND.getValue(), formattedStartDate,
-					formattedendDate, page);
+					formattedendDate, pageable);
 		} catch (ParseException e) {
 			logger.error(e.getLocalizedMessage());
 			return null;
