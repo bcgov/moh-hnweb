@@ -11,6 +11,9 @@
         <li id="pbf-link" :class="menuTabClass($route, '/patientRegistration')" v-if="hasPBFPermission('PatientRegistration')">
           <router-link @click="resetAlert" :to="{ name: 'PatientRegistration' }">Patient Registration</router-link>
         </li>
+        <li id="hcim-link" v-if="isPBFUser">
+          <a :href="hcimURL" target="_blank">HCIMWeb</a>
+        </li>
         <li id="eligibility-link" :class="menuTabClass($route, '/eligibility')" v-if="hasEligibilityPermission()">
           <div class="dropdown">
             <span>Eligibility & PHN</span>
@@ -27,6 +30,7 @@
             <span>Coverage Maintenance</span>
             <div class="dropdown-content">
               <router-link @click="resetAlert" :class="menuClass($route, 'ChangeEffectiveDate')" :to="{ name: 'ChangeEffectiveDate' }" v-if="hasPermission('ChangeEffectiveDate')">Change Effective Date</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'ChangeCancelDate')" :to="{ name: 'ChangeCancelDate' }" v-if="hasPermission('ChangeCancelDate')">Change Cancel Date</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'ReinstateOverAgeDependent')" :to="{ name: 'ReinstateOverAgeDependent' }" v-if="hasPermission('ReinstateOverAgeDependent')">Reinstate OverAge Dependent</router-link>
             </div>
           </div>
@@ -44,11 +48,11 @@
           <div class="dropdown">
             <span>Manage Group Member</span>
             <div class="dropdown-content">
-              <router-link @click="resetAlert" :class="menuClass($route, 'AddGroupMember')" :to="{ name: 'AddGroupMember' }">Add Group Member</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'AddDependent')" :to="{ name: 'AddDependent' }">Add Dependent</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'UpdateNumberAndDept')" :to="{ name: 'UpdateNumberAndDept' }">Update Number and/or Department</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'CancelGroupMember')" :to="{ name: 'CancelGroupMember' }">Cancel Group Member</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'CancelDependent')" :to="{ name: 'CancelDependent' }">Cancel Dependent</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'AddGroupMember')" :to="{ name: 'AddGroupMember' }" v-if="hasPermission('AddGroupMember')">Add Group Member</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'AddDependent')" :to="{ name: 'AddDependent' }" v-if="hasPermission('AddDependent')">Add Dependent</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'UpdateNumberAndDept')" :to="{ name: 'UpdateNumberAndDept' }" v-if="hasPermission('UpdateNumberAndDept')">Update Number and/or Department</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'CancelGroupMember')" :to="{ name: 'CancelGroupMember' }" v-if="hasPermission('CancelGroupMember')">Cancel Group Member</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'CancelDependent')" :to="{ name: 'CancelDependent' }" v-if="hasPermission('CancelDependent')">Cancel Dependent</router-link>
             </div>
           </div>
         </li>
@@ -56,8 +60,8 @@
           <div class="dropdown">
             <span>MSP Contracts</span>
             <div class="dropdown-content">
-              <router-link @click="resetAlert" :class="menuClass($route, 'GetContractPeriods')" :to="{ name: 'GetContractPeriods' }">Get Contract Periods</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'ContractInquiry')" :to="{ name: 'ContractInquiry' }">Contract Inquiry</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'GetContractPeriods')" :to="{ name: 'GetContractPeriods' }" v-if="hasPermission('GetContractPeriods')">Get Contract Periods</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'ContractInquiry')" :to="{ name: 'ContractInquiry' }" v-if="hasPermission('ContractInquiry')">Contract Inquiry</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'GetGroupMembersContractAddress')" :to="{ name: 'GetGroupMembersContractAddress' }" v-if="hasPermission('GetContractAddress')">Get Contract Address</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'UpdateContractAddress')" :to="{ name: 'UpdateContractAddress' }" v-if="hasPermission('UpdateContractAddress')">Update Contract Address</router-link>
             </div>
@@ -88,6 +92,11 @@ export default {
   name: 'TheNavBar',
   setup() {
     return { alertStore: useAlertStore(), authStore: useAuthStore(), studyPermitHolderStore: useStudyPermitHolderStore() }
+  },
+  data() {
+    return {
+      hcimURL: config.HCIM_WEB_URL || import.meta.env.VITE_HCIM_WEB_URL,
+    }
   },
   computed: {
     authenticated() {
@@ -136,7 +145,7 @@ export default {
       return this.hasPermission('AddGroupMember') || this.hasPermission('AddDependent') || this.hasPermission('UpdateNumberAndDept') || this.hasPermission('CancelGroupMember') || this.hasPermission('CancelDependent')
     },
     hasMaintenancePermission() {
-      return this.hasPermission('ReinstateOverAgeDependent') || this.hasPermission('ChangeEffectiveDate') || this.hasPermission('ExtendCancelDate')
+      return this.hasPermission('ReinstateOverAgeDependent') || this.hasPermission('ChangeEffectiveDate') || this.hasPermission('ChangeCancelDate') || this.hasPermission('ExtendCancelDate')
     },
     hasMSPContractsPermission() {
       return this.hasPermission('GetContractPeriods') || this.hasPermission('ContractInquiry') || this.hasPermission('UpdateContractAddress')

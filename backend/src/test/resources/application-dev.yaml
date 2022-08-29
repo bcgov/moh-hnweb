@@ -109,6 +109,7 @@ security:
       - RenewCancelledCoverage
       - ChangeEffectiveDate
       - ChangeCancelDate
+      - ChangeCancelDate
       - ExtendCancelDate
       - AddPermitHolderWOPHN
       - AddPermitHolderWithPHN

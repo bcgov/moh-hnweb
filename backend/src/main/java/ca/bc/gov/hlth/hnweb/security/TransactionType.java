@@ -22,6 +22,8 @@ public enum TransactionType {
 	UPDATE_CONTRACT_ADDRESS("UpdateContractAddress"), // R38
 	REINSTATE_OVER_AGE_DEPENDENT("ReinstateOverAgeDependent"), // R43
 	CHANGE_EFFECTIVE_DATE("ChangeEffectiveDate"), // R46a	
+	CHANGE_CANCEL_DATE("ChangeCancelDate"), // R46b	
+	GET_PATIENT_REGISTRATION("GetPatientRegistration"), // R70
 	UNKNOWN("Unknown");
 
 	private String value;
