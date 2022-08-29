@@ -7,7 +7,7 @@ import AuditReportingPage from '../../pages/reports/AuditReportingPage'
 import { regularAccUser } from '../../roles/roles'
 
 const ERROR_MESSAGE = 'Please correct errors before submitting'
-const USER_ID_EXCEEDS_LENGTH = 'UserId cannot be longer than 100 characters'
+const USER_ID_EXCEEDS_LENGTH = 'User ID cannot be longer than 100 characters'
 const START_DATE_REQUIRED_MESSAGE = 'Start Date is required'
 const END_DATE_REQUIRED_MESSAGE = 'End Date is required'
 const START_DATE_AFTER_END_DATE = 'Start Date should not be after End Date'
