@@ -18,6 +18,8 @@ import ca.bc.gov.hlth.hnweb.BaseControllerTest;
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.ChangeEffectiveDateRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.ChangeEffectiveDateResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ChangeCancelDateRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ChangeCancelDateResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ReinstateOverAgeDependentRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ReinstateOverAgeDependentResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
@@ -46,6 +48,14 @@ public class MaintenanceControllerTest extends BaseControllerTest {
 	private static final String R46_SUBSCRIBER_NOT_COVERED = "        RPBSPAJ000000010                                ERRORMSGRPBS9109SUBSCRIBER NOT COVERED UNDER THIS GROUP                                 633710993319269192022-07-012022-09-01";
 	
 	private static final String R46_SUCCESS = "        RPBSPAJ000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  484190498732516932022-01-012022-03-01";
+	
+	private static final String R46_B_SUCCESS = "        RPBSPAG000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  484190498732516932022-07-312022-08-31                     ";
+	
+	private static final String R46_B_NEW_CANCELLATION_DATE_EQUALS_OLD = "        RPBSPAG000000010                                ERRORMSGRPBS0138NEW CANCEL DATE CANNOT EQUAL OLD CANCEL DATE                            484190498732516932022-08-312022-08-31                     ";
+	
+	private static final String R46_B_INVALID_COVERAGE_CANCELLATION_DATE = "        RPBSPAG000000010                                ERRORMSGRPBS1016COVERAGE CANCEL DAY INVALID                                             484190498732516932022-08-012022-08-02                     ";
+	
+	private static final String R46_B_SUBSCRIBER_NOT_COVERED = "        RPBSPAG000000010                                ERRORMSGRPBS9109SUBSCRIBER NOT COVERED UNDER THIS GROUP                                 484190493319269192022-07-312022-08-31                     ";
 	
 	protected static DateTimeFormatter dateOnlyFormatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_FORMAT_DATE_ONLY);
 	
@@ -106,6 +116,7 @@ public class MaintenanceControllerTest extends BaseControllerTest {
 	
 	@Test
 	public void testChangeEffectiveDate_error_SubscriberNotCovered() throws Exception {
+
         mockBackEnd.enqueue(new MockResponse()
         		.setBody(R46_SUBSCRIBER_NOT_COVERED)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
@@ -154,6 +165,111 @@ public class MaintenanceControllerTest extends BaseControllerTest {
         assertTransactionCreated(TransactionType.CHANGE_EFFECTIVE_DATE);
         assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
         assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+	}
+	
+	@Test
+	public void testChangeCancelDate_success() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R46_B_SUCCESS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        ChangeCancelDateRequest changeCancelDateRequest = createChangeCancelDateRequest("9873251693", LocalDate.of(2022, 7, 31),LocalDate.of(2022, 8, 31));
+		
+        ResponseEntity<ChangeCancelDateResponse> response = maintenanceController.changeCancelDate(changeCancelDateRequest, createHttpServletRequest());
+		
+        ChangeCancelDateResponse changeCancelDateResponse = response.getBody();
+		assertEquals(StatusEnum.SUCCESS, changeCancelDateResponse.getStatus());
+        assertEquals("RPBS9014 TRANSACTION COMPLETED", changeCancelDateResponse.getMessage());
+
+        assertEquals("9873251693", changeCancelDateResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.CHANGE_CANCEL_DATE);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+	}
+	
+	@Test
+	public void testChangeCancelDate_error_NewDateCannotEqualOldDate() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R46_B_NEW_CANCELLATION_DATE_EQUALS_OLD)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        ChangeCancelDateRequest changeCancelDateRequest = createChangeCancelDateRequest("9873251693", LocalDate.of(2022, 7, 31),LocalDate.of(2022, 7, 31));
+		
+        ResponseEntity<ChangeCancelDateResponse> response = maintenanceController.changeCancelDate(changeCancelDateRequest, createHttpServletRequest());
+		
+        ChangeCancelDateResponse changeCancelDateResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, changeCancelDateResponse.getStatus());
+        assertEquals("RPBS0138 NEW CANCEL DATE CANNOT EQUAL OLD CANCEL DATE", changeCancelDateResponse.getMessage());
+
+        assertEquals("9873251693", changeCancelDateResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.CHANGE_CANCEL_DATE);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);  
+	}
+	
+	@Test
+	public void testChangeCancelDate_error_InvalidCoverageCancelDate() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R46_B_INVALID_COVERAGE_CANCELLATION_DATE)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        ChangeCancelDateRequest changeCancelDateRequest = createChangeCancelDateRequest("9873251693", LocalDate.of(2021, 7, 1),LocalDate.of(2022, 8, 31));
+		
+        ResponseEntity<ChangeCancelDateResponse> response = maintenanceController.changeCancelDate(changeCancelDateRequest, createHttpServletRequest());
+		
+        ChangeCancelDateResponse changeCancelDateResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, changeCancelDateResponse.getStatus());
+        assertEquals("RPBS1016 COVERAGE CANCEL DAY INVALID", changeCancelDateResponse.getMessage());
+
+        assertEquals("9873251693", changeCancelDateResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.CHANGE_CANCEL_DATE);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);  
+	}
+	
+	@Test
+	public void testChangeCancelDate_error_SubscriberNotCovered() throws Exception {
+
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R46_B_SUBSCRIBER_NOT_COVERED)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        ChangeCancelDateRequest changeCancelDateRequest = createChangeCancelDateRequest("9331926919", LocalDate.of(2022, 7, 31),LocalDate.of(2022, 8, 31));
+		
+        ResponseEntity<ChangeCancelDateResponse> response = maintenanceController.changeCancelDate(changeCancelDateRequest, createHttpServletRequest());
+		
+        ChangeCancelDateResponse changeCancelDateResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, changeCancelDateResponse.getStatus());
+        assertEquals("RPBS9109 SUBSCRIBER NOT COVERED UNDER THIS GROUP", changeCancelDateResponse.getMessage());
+
+        assertEquals("9331926919", changeCancelDateResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.CHANGE_CANCEL_DATE);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1); 
 	}
 	
 	public void testReinstateOverAgeDependent_error_invalidStudentEndDate() throws Exception {
@@ -308,6 +424,17 @@ public class MaintenanceControllerTest extends BaseControllerTest {
 	}
 
 	
+	private ChangeCancelDateRequest createChangeCancelDateRequest(String phn, LocalDate existingCancellationDate, LocalDate newCancellationDate) {
+		ChangeCancelDateRequest changeCancelDateRequest = new ChangeCancelDateRequest();
+		changeCancelDateRequest.setGroupNumber("6337109");
+		changeCancelDateRequest.setPhn(phn);
+		
+		changeCancelDateRequest.setExistingCancellationDate(existingCancellationDate);
+		changeCancelDateRequest.setNewCancellationDate(newCancellationDate);
+		
+		return changeCancelDateRequest;
+	}
+
 	private ReinstateOverAgeDependentRequest createReinstateOverAgeDependentRequest(String phn, LocalDate studentEndDate) {
 		ReinstateOverAgeDependentRequest reinstateRequest = new ReinstateOverAgeDependentRequest();
 		reinstateRequest.setGroupNumber("6337109");

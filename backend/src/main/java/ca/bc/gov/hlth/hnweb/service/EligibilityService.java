@@ -34,28 +34,28 @@ public class EligibilityService extends BaseService {
 
 	private static final Logger logger = LoggerFactory.getLogger(EligibilityService.class);
 
-	@Value("${hibc.e45.path}")
+	@Value("${hibc.e45.path:}")
 	private String e45Path;
 
-	@Value("${hibc.e45.username}")
+	@Value("${hibc.e45.username:}")
 	private String e45Username;
 	
-	@Value("${hibc.e45.password}")
+	@Value("${hibc.e45.password:}")
 	private String e45Password;
 
-	@Value("${hibc.r15.path}")
+	@Value("${hibc.r15.path:}")
 	private String r15Path;
 	
-	@Value("${hibc.r15.username}")
+	@Value("${hibc.r15.username:}")
 	private String r15Username;
 	
-	@Value("${hibc.r15.password}")
+	@Value("${hibc.r15.password:}")
 	private String r15Password;
 	
-	@Value("${rapid.r41Path}")
+	@Value("${rapid.r41Path:}")
 	private String r41Path;
 	
-	@Value("${rapid.r42Path}")
+	@Value("${rapid.r42Path:}")
 	private String r42Path;
 	
 	@Autowired

@@ -14,6 +14,7 @@ import Unauthorized from '../views/Unauthorized.vue'
 import AddVisaResidentWithPHN from '../views/coverage/enrollment/AddVisaResidentWithPHN.vue'
 import AddVisaResidentWithoutPHN from '../views/coverage/enrollment/AddVisaResidentWithoutPHN.vue'
 import CoverageEnrollmentHome from '../views/coverage/enrollment/CoverageEnrollmentHome.vue'
+import ChangeCancelDate from '../views/coverage/maintenance/ChangeCancelDate.vue'
 import ChangeEffectiveDate from '../views/coverage/maintenance/ChangeEffectiveDate.vue'
 import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
 import ReinstateOverAgeDependent from '../views/coverage/maintenance/ReinstateOverAgeDependent.vue'
@@ -115,6 +116,15 @@ const createRoutes = (app) => [
         component: ChangeEffectiveDate,
         meta: {
           permission: 'ChangeEffectiveDate',
+          requiresAuth: true,
+        },
+      },
+      {
+        path: 'changeCancelDate',
+        name: 'ChangeCancelDate',
+        component: ChangeCancelDate,
+        meta: {
+          permission: 'ChangeCancelDate',
           requiresAuth: true,
         },
       },

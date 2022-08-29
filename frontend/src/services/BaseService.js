@@ -27,6 +27,7 @@ export const resources = {
   },
   maintenance: {
     changeEffectiveDate: '/maintenance/change-effective-date',
+    changeCancelDate: '/maintenance/change-cancel-date',
     reinstateOverAgeDependent: '/maintenance/reinstate-over-age-dependent',
   },
   mspContracts: {
