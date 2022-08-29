@@ -49,7 +49,7 @@
   <br />
   <div id="searchResults" v-if="searchOk && result.records.length > 0">
     <div>
-      <download-csv :data="result.records">
+      <download-csv :data="result.records" :name="fileName">
         <a href="#" id="downloadLink" class="download">Export To CSV</a>
       </download-csv>
     </div>
@@ -87,6 +87,7 @@ import { required } from '@vuelidate/validators'
 import { useAlertStore } from '../../stores/alert'
 import { handleServiceError } from '../../util/utils'
 import AppLabel from '../../components/ui/AppLabel.vue'
+import { API_DATE_TIME_FORMAT } from '../../util/constants'
 import dayjs from 'dayjs'
 
 export default {
@@ -117,7 +118,12 @@ export default {
       transactionOptions: ['CheckEligibility', 'PHNInquiry', 'PHNLookup', 'EnrollSubscriber', 'GetPersonDetails', 'NameSearch', 'AddGroupMember', 'AddDependent', 'UpdateNumberAndDept', 'CancelDependent', 'ContractInquiry', 'GetContractAddress', 'UpdateContractAddress'],
     }
   },
-
+  computed: {
+    fileName() {
+      const now = dayjs().format(API_DATE_TIME_FORMAT)
+      return 'auditreport_' + now + '.csv'
+    },
+  },
   methods: {
     async submitForm() {
       this.result = null
