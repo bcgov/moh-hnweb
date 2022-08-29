@@ -159,7 +159,7 @@ export default {
         } else if (this.result.records.length > 0) {
           this.alertStore.setSuccessAlert('Transaction completed successfully')
         } else {
-          this.alertStore.setErrorAlert('No results were returned. Please refine your search criteria and try again.')
+          this.alertStore.setWarningAlert('No results were returned. Please refine your search criteria and try again.')
         }
 
         this.searchOk = true

@@ -306,4 +306,4 @@ export const VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE = 'Group Member Number is inva
 export const VALIDATE_DEPARTMENT_NUMBER_MESSAGE = 'Department Number is invalid'
 export const VALIDATE_POSTAL_CODE_MESSAGE = 'Postal Code is invalid'
 export const VALIDATE_TELEPHONE_MESSAGE = 'Telephone is invalid. Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
-export const VALIDATE_USER_ID_MESSAGE = 'UserId cannot be longer than 100 characters'
+export const VALIDATE_USER_ID_MESSAGE = 'User Id cannot be longer than 100 characters'
