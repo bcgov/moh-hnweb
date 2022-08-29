@@ -48,30 +48,39 @@
   </div>
   <br />
   <div id="searchResults" v-if="searchOk && result.records.length > 0">
-    <AppSimpleTable id="resultsTable">
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Organization</th>
-          <th>User ID</th>
-          <th>Transaction Start Time</th>
-          <th>Affected Party ID</th>
-          <th>Affected Party ID Type</th>
-          <th>Transaction ID</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="record in result.records">
-          <AuditReportRecord :record="record" />
-        </tr>
-      </tbody>
-    </AppSimpleTable>
+    <div>
+      <download-csv :data="result.records">
+        <a href="#" id="downloadLink" class="download">Export To CSV</a>
+      </download-csv>
+    </div>
+
+    <div>
+      <AppSimpleTable id="resultsTable">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Organization</th>
+            <th>User ID</th>
+            <th>Transaction Start Time</th>
+            <th>Affected Party ID</th>
+            <th>Affected Party ID Type</th>
+            <th>Transaction ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="record in result.records">
+            <AuditReportRecord :record="record" />
+          </tr>
+        </tbody>
+      </AppSimpleTable>
+    </div>
   </div>
 </template>
 
 <script>
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
 import AuditReportRecord from '../../components/reports/AuditReportRecord.vue'
+import JsonCSV from '../../components/reports/JsonCSV.vue'
 import AuditService from '../../services/AuditService'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
@@ -81,7 +90,7 @@ import AppLabel from '../../components/ui/AppLabel.vue'
 import dayjs from 'dayjs'
 
 export default {
-  components: { AppLabel, AppSimpleTable, AuditReportRecord },
+  components: { AppLabel, AppSimpleTable, AuditReportRecord, 'download-csv': JsonCSV },
   name: 'auditReporting',
   setup() {
     return {
@@ -89,6 +98,7 @@ export default {
       v$: useVuelidate(),
     }
   },
+
   data() {
     return {
       userId: '',
@@ -107,6 +117,7 @@ export default {
       transactionOptions: ['CheckEligibility', 'PHNInquiry', 'PHNLookup', 'EnrollSubscriber', 'GetPersonDetails', 'NameSearch', 'AddGroupMember', 'AddDependent', 'UpdateNumberAndDept', 'CancelDependent', 'ContractInquiry', 'GetContractAddress', 'UpdateContractAddress'],
     }
   },
+
   methods: {
     async submitForm() {
       this.result = null
@@ -192,6 +203,9 @@ export default {
 </script>
 
 <style scoped>
+.download {
+  float: right;
+}
 .checkbox-wrapper {
   max-height: 125px;
   width: 400px;
