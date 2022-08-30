@@ -47,31 +47,38 @@
     </form>
   </div>
   <br />
-  <div id="searchResults" v-if="searchOk && result.records.length > 0">
-    <AppSimpleTable id="resultsTable">
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Organization</th>
-          <th>User ID</th>
-          <th>Transaction Start Time</th>
-          <th>Affected Party ID</th>
-          <th>Affected Party ID Type</th>
-          <th>Transaction ID</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="record in result.records">
-          <AuditReportRecord :record="record" />
-        </tr>
-      </tbody>
-    </AppSimpleTable>
+  <div id="searchResults" v-show="searchOk && result.records.length > 0">
+    <!-- && result?.records.length > 0 -->
+    <DataTable
+      id="resultsTable"
+      :key="dataTableKey"
+      :value="result.records"
+      :totalRecords="result.totalRecords"
+      :lazy="true"
+      ref="dt"
+      @page="onPage($event)"
+      stripedRows
+      :paginator="true"
+      :rows="10"
+      :first="firstRecordIndex"
+      :loading="loading"
+      paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+      :rowsPerPageOptions="[5, 10, 20]"
+      responsiveLayout="scroll"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+    >
+      <Column field="type" header="Type"></Column>
+      <Column field="organization" header="Organization"></Column>
+      <Column field="userId" header="User ID"></Column>
+      <Column field="transactionStartTime" header="Transaction Start Time"></Column>
+      <Column field="affectedPartyId" header="Affected Party ID"></Column>
+      <Column field="affectedPartyType" header="Affected Party ID Type"></Column>
+      <Column field="transactionId" header="Transaction ID"></Column>
+    </DataTable>
   </div>
 </template>
 
 <script>
-import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
-import AuditReportRecord from '../../components/reports/AuditReportRecord.vue'
 import AuditService from '../../services/AuditService'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
@@ -79,9 +86,11 @@ import { useAlertStore } from '../../stores/alert'
 import { handleServiceError } from '../../util/utils'
 import AppLabel from '../../components/ui/AppLabel.vue'
 import dayjs from 'dayjs'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
 
 export default {
-  components: { AppLabel, AppSimpleTable, AuditReportRecord },
+  components: { AppLabel, Column, DataTable },
   name: 'auditReporting',
   setup() {
     return {
@@ -101,25 +110,45 @@ export default {
       searching: false,
       result: {
         records: [],
+        totalResults: 0,
         message: '',
         status: '',
       },
+      dataTableKey: 0,
+      firstRecordIndex: 0,
+      loading: false,
+      lazyParams: {},
       transactionOptions: ['CheckEligibility', 'PHNInquiry', 'PHNLookup', 'EnrollSubscriber', 'GetPersonDetails', 'NameSearch', 'AddGroupMember', 'AddDependent', 'UpdateNumberAndDept', 'CancelDependent', 'ContractInquiry', 'GetContractAddress', 'UpdateContractAddress'],
+    }
+  },
+  mounted() {
+    this.lazyParams = {
+      first: 0,
+      rows: this.$refs.dt.rows,
+      sortField: null,
+      sortOrder: null,
     }
   },
   methods: {
     async submitForm() {
-      this.result = null
+      this.resetResult()
       this.searching = true
       this.searchOk = false
       this.alertStore.dismissAlert()
 
+      const isValid = await this.v$.$validate()
+      if (!isValid) {
+        this.showError()
+        return
+      }
+
+      this.loadLazyData()
+
+      this.searchOk = true
+    },
+    async loadLazyData() {
+      this.loading = true
       try {
-        const isValid = await this.v$.$validate()
-        if (!isValid) {
-          this.showError()
-          return
-        }
         this.result = (
           await AuditService.getAuditReport({
             organizations: this.organizations,
@@ -127,6 +156,8 @@ export default {
             userId: this.userId,
             startDate: this.startDate,
             endDate: this.endDate,
+            first: this.lazyParams.first,
+            rows: this.lazyParams.rows,
           })
         ).data
 
@@ -134,25 +165,28 @@ export default {
           this.alertStore.setErrorAlert(this.result.message)
           return
         }
-        const maxResults = 1000
-        if (this.result.records.length >= maxResults) {
-          this.alertStore.setWarningAlert(`Maximum results (${maxResults}) returned. Please refine your search criteria and try again.`)
-        } else if (this.result.records.length > 0) {
-          this.alertStore.setSuccessAlert('Transaction completed successfully')
-        } else {
-          this.alertStore.setErrorAlert('No results were returned. Please refine your search criteria and try again.')
-        }
 
-        this.searchOk = true
+        // Only display a message on the initial submit
+        if (this.searching) {
+          if (this.result.records.length > 0) {
+            this.alertStore.setSuccessAlert('Transaction completed successfully')
+          } else {
+            this.alertStore.setErrorAlert('No results were returned. Please refine your search criteria and try again.')
+          }
+        }
       } catch (err) {
         handleServiceError(err, this.alertStore, this.$router)
       } finally {
+        this.loading = false
         this.searching = false
       }
     },
+    onPage(event) {
+      this.lazyParams = event
+      this.loadLazyData()
+    },
     showError(error) {
       this.alertStore.setErrorAlert(error)
-      this.result = {}
       this.searching = false
     },
     resetForm() {
@@ -161,11 +195,23 @@ export default {
       this.transactionTypes = []
       this.endDate = new Date()
       this.startDate = dayjs().subtract(1, 'month').toDate()
-      this.result = null
+      this.resetResult()
       this.searchOk = false
       this.searching = false
       this.v$.$reset()
       this.alertStore.dismissAlert()
+      this.firstRecordIndex = 0
+      // This is a workaround to ensure that the paginator is reset by forcing the component to reload
+      // Technically this can be handled with firstRecordIndex but there appears to be an issue. See https://github.com/primefaces/primevue/issues/2253.
+      this.dataTableKey++
+    },
+    resetResult() {
+      this.result = {
+        records: [],
+        totalResults: 0,
+        message: '',
+        status: '',
+      }
     },
   },
   validations() {
@@ -252,13 +298,5 @@ export default {
 /* Show the checkmark when checked */
 .checkbox input:checked ~ .checkmark:after {
   display: block;
-}
-
-#searchResults {
-  overflow: auto;
-  height: 800px;
-}
-
-#resultsTable {
 }
 </style>

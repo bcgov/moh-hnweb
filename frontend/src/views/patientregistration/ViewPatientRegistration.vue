@@ -61,9 +61,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="record in result.records">
-          <AuditReportRecord :record="record" />
-        </tr>
+        <tr v-for="record in result.records"></tr>
       </tbody>
     </AppSimpleTable>
   </div>
@@ -71,7 +69,7 @@
 
 <script>
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
-import AuditReportRecord from '../../components/reports/AuditReportRecord.vue'
+
 import AuditService from '../../services/AuditService'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
@@ -81,7 +79,7 @@ import AppLabel from '../../components/ui/AppLabel.vue'
 import dayjs from 'dayjs'
 
 export default {
-  components: { AppLabel, AppSimpleTable, AuditReportRecord },
+  components: { AppLabel, AppSimpleTable },
   name: 'viewPatientRegistration',
   setup() {
     return {

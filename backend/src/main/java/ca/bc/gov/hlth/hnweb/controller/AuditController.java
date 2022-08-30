@@ -52,14 +52,12 @@ public class AuditController extends BaseController {
 		// Convert from first/rows to page/rows
 		int page = (auditReportRequest.getFirst() / auditReportRequest.getRows()); 
 		
-		logger.info("page {} rows {}", page, auditReportRequest.getRows());
-		
 		Page<AffectedParty> pageable = auditService.getAffectedParties(
 				auditReportRequest.getTransactionTypes(), auditReportRequest.getOrganizations(),
 				auditReportRequest.getUserId(), auditReportRequest.getStartDate(), auditReportRequest.getEndDate(), page, auditReportRequest.getRows());
 		List<AuditRecord> auditReport = convertReport(pageable.getContent());
 
-		logger.info("Audit Report size : {}", auditReport.size());
+		logger.info("Returning {}-{} of {} audit records", auditReportRequest.getFirst(), auditReportRequest.getFirst() + pageable.getNumberOfElements(), pageable.getTotalElements());
 
 		AuditReportResponse auditReportingResponse = new AuditReportResponse();
 		auditReportingResponse.setRecords(auditReport);

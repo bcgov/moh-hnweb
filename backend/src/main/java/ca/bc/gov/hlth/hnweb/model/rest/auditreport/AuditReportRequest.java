@@ -15,9 +15,9 @@ public class AuditReportRequest {
 
 	private LocalDate endDate;
 	
-	private Integer first;
+	private Integer first = 0;
 	
-	private Integer rows;
+	private Integer rows = 10;
 
 	public String getUserId() {
 		return userId;

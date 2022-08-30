@@ -210,8 +210,8 @@ public class AuditService {
 			LocalDate endDate, int page, int size) {
 		try {
 			Date formattedStartDate = convertLocalDateToDate(startDate);
-			Date formattedendDate = convertLocalDateToDate(endDate);
-			// XXX Limit the results to 1000 until we implement pagination
+			Date formattedendDate = convertLocalDateToDate(endDate);			
+			logger.info("Querying page {} with {} rows", page, size);
 			Pageable pageable = PageRequest.of(page, size);
 			return affectedPartyPageableRepository.findByTransactionAndDirection(types, organizations, userId, AffectedPartyDirection.INBOUND.getValue(), formattedStartDate,
 					formattedendDate, pageable);
