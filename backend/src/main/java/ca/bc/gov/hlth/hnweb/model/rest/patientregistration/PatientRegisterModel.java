@@ -1,7 +1,5 @@
 package ca.bc.gov.hlth.hnweb.model.rest.patientregistration;
 
-import java.time.LocalDate;
-
 public class PatientRegisterModel {
 
 	private String phn;
@@ -10,9 +8,9 @@ public class PatientRegisterModel {
 
 	private String registeredPractitionerNumber;
 
-	private LocalDate effectiveDate;
+	private String effectiveDate;
 
-	private LocalDate cancelDate;
+	private String cancelDate;
 
 	private String administrativeCode;
 
@@ -48,19 +46,19 @@ public class PatientRegisterModel {
 		this.registeredPractitionerNumber = registeredPractitionerNumber;
 	}
 
-	public LocalDate getEffectiveDate() {
+	public String getEffectiveDate() {
 		return effectiveDate;
 	}
 
-	public void setEffectiveDate(LocalDate effectiveDate) {
+	public void setEffectiveDate(String effectiveDate) {
 		this.effectiveDate = effectiveDate;
 	}
 
-	public LocalDate getCancelDate() {
+	public String getCancelDate() {
 		return cancelDate;
 	}
 
-	public void setCancelDate(LocalDate cancelDate) {
+	public void setCancelDate(String cancelDate) {
 		this.cancelDate = cancelDate;
 	}
 

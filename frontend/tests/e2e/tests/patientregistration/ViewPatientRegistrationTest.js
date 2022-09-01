@@ -128,9 +128,10 @@ test('Check properly filled form passes validation and validate results', async 
 
 test('Check Patient registered with a different msp payee within group', async (t) => {
   await t
-    .click(ViewPatientRegistrationPage.clearButton)
     // Given the page is filled out correctly
     .typeText(ViewPatientRegistrationPage.phnInput, '9879869673')
+    .selectText(ViewPatientRegistrationPage.payeeInput)
+    .pressKey('delete')
     .typeText(ViewPatientRegistrationPage.payeeInput, 'A0248')
     // When I click the submit button
     .click(ViewPatientRegistrationPage.submitButton)
@@ -208,5 +209,5 @@ test('Check clear button clears the form', async (t) => {
     .expect(ViewPatientRegistrationPage.phnInput.value)
     .eql('')
     .expect(ViewPatientRegistrationPage.payeeInput.value)
-    .eql('')
+    .notEql('')
 })
