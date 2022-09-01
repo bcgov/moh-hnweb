@@ -82,11 +82,15 @@
 <script>
 import AuditService from '../../services/AuditService'
 import useVuelidate from '@vuelidate/core'
-import { required } from '@vuelidate/validators'
+import { required, helpers } from '@vuelidate/validators'
+import { DEFAULT_ERROR_MESSAGE } from '../../util/constants.js'
+import { validateUserIdLength, VALIDATE_USER_ID_MESSAGE } from '../../util/validators'
 import { useAlertStore } from '../../stores/alert'
 import { handleServiceError } from '../../util/utils'
 import AppLabel from '../../components/ui/AppLabel.vue'
 import dayjs from 'dayjs'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 
@@ -103,8 +107,8 @@ export default {
     return {
       userId: '',
       organizations: [],
-      endDate: new Date(),
-      startDate: dayjs().subtract(1, 'month').toDate(),
+      startDate: dayjs().subtract(1, 'month').startOf('month').toDate(),
+      endDate: dayjs().subtract(1, 'month').endOf('month').toDate(),
       organizationOptions: [],
       transactionTypes: [],
       searchOk: false,
@@ -132,9 +136,24 @@ export default {
       this.searchOk = false
       this.alertStore.dismissAlert()
 
-      const isValid = await this.v$.$validate()
-      if (!isValid) {
-        this.showError()
+      const errors = []
+      const isFormValid = await this.v$.$validate()
+      if (!isFormValid) {
+        errors.push(DEFAULT_ERROR_MESSAGE)
+      }
+      const isStartDateBeforeEndDate = this.validateDate()
+      if (isFormValid && !isStartDateBeforeEndDate) {
+        errors.push('Start Date should not be after End Date')
+      }
+
+      const isDateWithinRange = this.validateDateRange()
+      console.log('isDateWithinRange ' + isDateWithinRange)
+      if (isStartDateBeforeEndDate && !isDateWithinRange) {
+        errors.push('End Date should not be more than 3 months from Start Date')
+      }
+
+      if (!isFormValid || !isStartDateBeforeEndDate || !isDateWithinRange) {
+        this.showError(errors)
         return
       }
 
@@ -187,16 +206,16 @@ export default {
       this.lazyParams = event
       this.loadLazyData()
     },
-    showError(error) {
-      this.alertStore.setErrorAlert(error)
+    showError(errors) {
+      this.alertStore.setErrorAlerts(errors)
       this.searching = false
     },
     resetForm() {
       this.userId = ''
       this.organizations = []
       this.transactionTypes = []
-      this.endDate = new Date()
-      this.startDate = dayjs().subtract(1, 'month').toDate()
+      this.startDate = dayjs().subtract(1, 'month').startOf('month').toDate()
+      this.endDate = dayjs().subtract(1, 'month').endOf('month').toDate()
       this.resetResult()
       this.searchOk = false
       this.searching = false
@@ -224,11 +243,26 @@ export default {
         status: '',
       }
     },
+    /**
+     * Validates that End Date is after Start Date
+     */
+    validateDate() {
+      dayjs.extend(isSameOrAfter)
+      return dayjs(this.endDate).isSameOrAfter(this.startDate)
+    },
+
+    /**
+     * Validates that End Date is not more than 3 months from Start Date
+     */
+    validateDateRange() {
+      dayjs.extend(isSameOrBefore)
+      return dayjs(this.endDate).isSameOrBefore(dayjs(this.startDate).add(3, 'month'))
+    },
   },
   validations() {
     return {
       userId: {
-        required,
+        validateUserIdLength: helpers.withMessage(VALIDATE_USER_ID_MESSAGE, validateUserIdLength),
       },
       startDate: {
         required,

@@ -11,5 +11,6 @@ const config = (() => {
     // SITE_MINDER_LOGOUT_URI: '',
     // PHSA_LOGOUT_URI: '',
     // ENABLE_KC_LOGIN: true,
+    // HCIM_WEB_URL,
   }
 })()

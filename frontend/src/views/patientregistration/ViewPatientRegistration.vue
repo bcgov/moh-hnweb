@@ -1,43 +1,23 @@
 <template>
-  <div id="viewAuditReport">
+  <h1>Patient Registration</h1>
+  <AppHelp>
+    <p>This shows a patient registration history using a patient's PHN and MSP Payee information.</p>
+    <p>Enter the individual's 10 digit PHN. The PHN is a mandatory field, if you leave it blank or enter invalid characters, an edit error message will be displayed.</p>
+    <p>The MSP Payee number is automatically assigned as part of the permissions the user is given during account creation.</p>
+    <p>It returns patient demographic and registration history, including registration and de-registration dates, and additional information.</p>
+  </AppHelp>
+  <div>
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.userId" id="userId" label="User ID" type="text" v-model.trim="userId" />
+          <AppInput :e-model="v$.phn" id="phn" label="PHN" type="text" v-model.trim="phn">
+            <template #tooltip>Enter the individual’s 10 digit PHN. PHN is a mandatory field. If you leave it blank or enter invalid characters, an edit error message box will be displayed on the input screen.</template>
+          </AppInput>
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppLabel>Organization</AppLabel>
-          <div class="checkbox-wrapper">
-            <label class="checkbox" :for="option" v-for="option in organizationOptions" :key="option">
-              {{ option }}
-              <input type="checkbox" :id="option" :value="option" v-model="organizations" />
-              <span class="checkmark"></span>
-            </label>
-          </div>
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppLabel>Transaction Types</AppLabel>
-          <div class="checkbox-wrapper">
-            <label class="checkbox" :for="option" v-for="option in transactionOptions" :key="option">
-              {{ option }}
-              <input type="checkbox" :id="option" :value="option" v-model="transactionTypes" />
-              <span class="checkmark"></span>
-            </label>
-          </div>
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppDateInput :e-model="v$.startDate" id="startDate" label="Start Date" v-model="startDate" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppDateInput :e-model="v$.endDate" id="endDate" label="End Date" v-model="endDate" />
+          <AppInput :e-model="v$.payee" id="payee" label="MSP Payee" type="text" v-model.trim="payee" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -47,40 +27,83 @@
     </form>
   </div>
   <br />
-  <div id="searchResults" v-if="searchOk && result.records.length > 0">
-    <AppSimpleTable id="resultsTable">
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Organization</th>
-          <th>User ID</th>
-          <th>Transaction Start Time</th>
-          <th>Affected Party ID</th>
-          <th>Affected Party ID Type</th>
-          <th>Transaction ID</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="record in result.records"></tr>
-      </tbody>
-    </AppSimpleTable>
+  <div id="result" v-if="searchOk">
+    <hr />
+    <div id="patientDetail" v-if="result.personDetail">
+      <AppRow>
+        <AppCol class="col2">
+          <AppOutput label="PHN" :value="result.personDetail.phn" />
+        </AppCol>
+        <AppCol class="col2">
+          <AppOutput label="Patient" :value="result.personDetail.givenName" />
+        </AppCol>
+        <AppCol class="col2">
+          <AppOutput label="BirthDate" :value="result.personDetail.dateOfBirth" />
+        </AppCol>
+        <AppCol class="col3">
+          <AppOutput label="DeathDate" :value="result.personDetail.dateOfDeath" />
+        </AppCol>
+        <AppCol class="col2">
+          <AppOutput label="Gender" :value="result.personDetail.gender" />
+        </AppCol>
+      </AppRow>
+    </div>
+
+    <AppCard id="clientInstructions" v-if="result.clientInstructions">
+      <p>{{ result.clientInstructions }}</p>
+    </AppCard>
+    <br />
+    <div id="registrationResult">
+      <AppRow>
+        <AppCol class="col2">
+          <AppOutput label="Payee" />
+        </AppCol>
+        <AppCol class="col2">
+          <AppOutput label="Reg/DeReg Date" />
+        </AppCol>
+        <AppCol class="col2">
+          <AppOutput label="Current Status" />
+        </AppCol>
+        <AppCol class="col3">
+          <AppOutput label="Administration Code" />
+        </AppCol>
+        <AppCol class="col2">
+          <AppOutput label="Registration Data" />
+        </AppCol>
+      </AppRow>
+    </div>
+    <div id="registrationData" v-if="result.patientRegistrationHistory.length > 0">
+      <AppRow v-for="registration in result.patientRegistrationHistory">
+        <PatientRegistrationDetails :registration="registration" />
+      </AppRow>
+    </div>
   </div>
+  <br />
+  <Transition>
+    <AppInfoPanel :visible="displayMessage" :message="additionalInfoMessage" @close="handleClose()" />
+  </Transition>
 </template>
 
 <script>
-import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
-
-import AuditService from '../../services/AuditService'
+import AppCard from '../../components/ui/AppCard.vue'
+import AppHelp from '../../components/ui/AppHelp.vue'
+import AppInfoPanel from '../../components/ui/AppInfoPanel.vue'
+import PatientRegistrationDetails from '../../components/patientregistration/PatientRegistrationDetails.vue'
+import PatientRegistrationService from '../../services/PatientRegistrationService'
 import useVuelidate from '@vuelidate/core'
-import { required } from '@vuelidate/validators'
+import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../util/validators'
+import { required, helpers } from '@vuelidate/validators'
 import { useAlertStore } from '../../stores/alert'
 import { handleServiceError } from '../../util/utils'
-import AppLabel from '../../components/ui/AppLabel.vue'
-import dayjs from 'dayjs'
 
 export default {
-  components: { AppLabel, AppSimpleTable },
-  name: 'viewPatientRegistration',
+  name: 'ViewPatientRegistration',
+  components: {
+    AppCard,
+    AppHelp,
+    PatientRegistrationDetails,
+    AppInfoPanel,
+  },
   setup() {
     return {
       alertStore: useAlertStore(),
@@ -89,29 +112,28 @@ export default {
   },
   data() {
     return {
-      userId: '',
-      organizations: [],
-      endDate: new Date(),
-      startDate: dayjs().subtract(1, 'month').toDate(),
-      organizationOptions: [],
-      transactionTypes: [],
-      searchOk: false,
+      phn: '',
+      payee: '',
       searching: false,
+      searchOk: false,
+      displayMessage: false,
+      additionalInfoMessage: '',
       result: {
-        records: [],
-        message: '',
-        status: '',
+        additionalInfoMessage: '',
+        patientRegistrationHistory: [],
       },
-      transactionOptions: ['CheckEligibility', 'PHNInquiry', 'PHNLookup', 'EnrollSubscriber', 'GetPersonDetails', 'NameSearch', 'AddGroupMember', 'AddDependent', 'UpdateNumberAndDept', 'CancelDependent', 'ContractInquiry', 'GetContractAddress', 'UpdateContractAddress'],
+      showModal: false,
     }
   },
+  created() {},
+
   methods: {
     async submitForm() {
       this.result = null
       this.searching = true
       this.searchOk = false
+      this.displayMessage = false
       this.alertStore.dismissAlert()
-
       try {
         const isValid = await this.v$.$validate()
         if (!isValid) {
@@ -119,29 +141,22 @@ export default {
           return
         }
         this.result = (
-          await AuditService.getAuditReport({
-            organizations: this.organizations,
-            transactionTypes: this.transactionTypes,
-            userId: this.userId,
-            startDate: this.startDate,
-            endDate: this.endDate,
+          await PatientRegistrationService.getPatientRegistration({
+            phn: this.phn,
+            payee: this.payee,
           })
         ).data
-
-        if (this.result.status === 'error') {
-          this.alertStore.setErrorAlert(this.result.message)
-          return
+        if (this.result.status != 'warning') {
+          this.searchOk = true
         }
-        const maxResults = 1000
-        if (this.result.records.length >= maxResults) {
-          this.alertStore.setWarningAlert(`Maximum results (${maxResults}) returned. Please refine your search criteria and try again.`)
-        } else if (this.result.records.length > 0) {
-          this.alertStore.setSuccessAlert('Transaction completed successfully')
-        } else {
-          this.alertStore.setErrorAlert('No results were returned. Please refine your search criteria and try again.')
+        this.alertStore.setAlertWithInfoForSuccess(this.result.message)
+
+        if (this.result.additionalInfoMessage != '' && this.result.status != 'warning') {
+          this.displayMessage = true
+          this.additionalInfoMessage = this.result.additionalInfoMessage
         }
 
-        this.searchOk = true
+        this.alertStore.setAlertWithInfoForSuccess(this.result.message, this.result.status)
       } catch (err) {
         handleServiceError(err, this.alertStore, this.$router)
       } finally {
@@ -154,109 +169,24 @@ export default {
       this.searching = false
     },
     resetForm() {
-      this.userId = ''
-      this.organizations = []
-      this.transactionTypes = []
-      this.endDate = new Date()
-      this.startDate = dayjs().subtract(1, 'month').toDate()
+      this.phn = ''
+      this.payee = ''
       this.result = null
-      this.searchOk = false
-      this.searching = false
       this.v$.$reset()
       this.alertStore.dismissAlert()
+      this.searchOk = false
+      this.searching = false
+      this.displayMessage = false
     },
   },
   validations() {
     return {
-      userId: {
+      phn: {
         required,
+        validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
       },
-      startDate: {
-        required,
-      },
-      endDate: {
-        required,
-      },
-    }
-  },
-  async created() {
-    try {
-      this.organizationOptions = (await AuditService.getOrganizations()).data
-    } catch (err) {
-      handleServiceError(err, this.alertStore, this.$router)
     }
   },
 }
 </script>
-
-<style scoped>
-.checkbox-wrapper {
-  max-height: 125px;
-  width: 400px;
-  overflow: auto;
-  padding-left: 10px;
-  padding-top: 10px;
-}
-.checkbox {
-  display: block;
-  position: relative;
-  padding-left: 25px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  font-family: ‘BCSans’, ‘Noto Sans’, Verdana, Arial, sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-/* Hide the browser's default checkbox */
-.checkbox input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-
-/* Create a custom checkbox */
-.checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 16px;
-  width: 16px;
-  outline: 2px solid #606060;
-}
-
-/* When the checkbox is checked, add a blue background */
-.checkbox input:checked ~ .checkmark {
-  background-color: #606060;
-}
-
-/* Create the checkmark/indicator (hidden when not checked) */
-.checkmark:after {
-  content: '\2713';
-  color: white;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  display: none;
-}
-
-/* Show the checkmark when checked */
-.checkbox input:checked ~ .checkmark:after {
-  display: block;
-}
-
-#searchResults {
-  overflow: auto;
-  height: 800px;
-}
-
-#resultsTable {
-}
-</style>
+<style></style>

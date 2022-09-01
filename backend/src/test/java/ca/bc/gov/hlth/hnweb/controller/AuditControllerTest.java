@@ -59,9 +59,8 @@ public class AuditControllerTest extends BaseControllerTest {
 
 	@Test
 	public void testGetAuditReport_withoutOptionalParam() {;
-		createAuditReports(1, TransactionType.CHECK_ELIGIBILITY);
+		createAuditReports(2, TransactionType.CHECK_ELIGIBILITY);
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
-		auditReportRequest.setUserId("hnweb1");
 		auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
 		auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
 		auditReportRequest.setPage(0);
@@ -71,7 +70,7 @@ public class AuditControllerTest extends BaseControllerTest {
 				createHttpServletRequest());
 
 		assertEquals(HttpStatus.OK, auditReport.getStatusCode());
-		assertEquals(1, auditReport.getBody().getRecords().size());
+		assertEquals(2, auditReport.getBody().getRecords().size());
 
 	}
 
@@ -241,7 +240,6 @@ public class AuditControllerTest extends BaseControllerTest {
 		
 			affectedPartyRepository.save(affectedParty);
 		}
-
 	}
 
 }
