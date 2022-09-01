@@ -78,7 +78,8 @@ public class AuditService {
 		sortMap.put("organization", "transaction.organization");
 		sortMap.put("organization", "transaction.organization");
 		sortMap.put("transactionStartTime", "transaction.startTime");
-		sortMap.put("type", "transaction.type");		
+		sortMap.put("type", "transaction.type");
+		sortMap.put("userId", "transaction.userId");
 	}
 
 	/**

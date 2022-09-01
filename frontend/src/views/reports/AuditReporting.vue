@@ -70,7 +70,7 @@
     >
       <Column field="type" header="Type" :sortable="true"></Column>
       <Column field="organization" header="Organization" :sortable="true"></Column>
-      <Column field="userId" header="User ID"></Column>
+      <Column field="userId" header="User ID" :sortable="true"></Column>
       <Column field="transactionStartTime" header="Transaction Start Time" :sortable="true"></Column>
       <Column field="affectedPartyId" header="Affected Party ID" :sortable="true"></Column>
       <Column field="affectedPartyType" header="Affected Party ID Type" :sortable="true"></Column>
