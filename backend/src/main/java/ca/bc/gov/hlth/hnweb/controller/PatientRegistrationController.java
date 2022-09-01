@@ -55,6 +55,8 @@ public class PatientRegistrationController extends BaseController {
 	private static final String NOT_APPLICABLE = "N/A";
 
 	private static final String DATE_FORMAT = "yyyyMMdd";
+	
+	private static final DateTimeFormatter DATE_TIME_FORMATTER_yyyyMMdd = DateTimeFormatter.ofPattern(DATE_FORMAT);
 
 	private static final Logger logger = LoggerFactory.getLogger(PatientRegistrationController.class);
 
@@ -178,10 +180,8 @@ public class PatientRegistrationController extends BaseController {
 	}
 
 	private String formatDate(Date date) {
-		LocalDate localDate = Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
-		DateTimeFormatter formatters = DateTimeFormatter.ofPattern(DATE_FORMAT);
-		String formattedDate = localDate.format(formatters);
-		return formattedDate;
+		LocalDate localDate = convertDate(date);
+		return localDate.format(DATE_TIME_FORMATTER_yyyyMMdd);
 	}
 
 	private LocalDate convertDate(Date date) {

@@ -110,8 +110,7 @@ public class GetDemographicsConverter {
 
 			String birthDate = V3MessageUtil.convertDateToString(demographicsResponse.getPerson().getBirthDate());
 			String deathDate = demographicsResponse.getPerson().getDeathDate() != null ? V3MessageUtil.convertDateToString(demographicsResponse.getPerson().getDeathDate()) :"N/A";
-			personDetailsResponse.setDateOfBirth(birthDate);
-			
+			personDetailsResponse.setDateOfBirth(birthDate);			
 			personDetailsResponse.setDateOfDeath(deathDate);
 			personDetailsResponse.setGender(demographicsResponse.getPerson().getGender());
 		}
