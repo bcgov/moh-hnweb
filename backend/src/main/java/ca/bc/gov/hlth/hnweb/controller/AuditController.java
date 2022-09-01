@@ -48,16 +48,15 @@ public class AuditController extends BaseController {
 	@PostMapping("/audit-report")
 	public ResponseEntity<AuditReportResponse> getAuditReport(@Valid @RequestBody AuditReportRequest auditReportRequest,
 			HttpServletRequest request) {
-		
-		// Convert from first/rows to page/rows
-		int page = (auditReportRequest.getFirst() / auditReportRequest.getRows()); 
-		
+
 		Page<AffectedParty> pageable = auditService.getAffectedParties(
 				auditReportRequest.getTransactionTypes(), auditReportRequest.getOrganizations(),
-				auditReportRequest.getUserId(), auditReportRequest.getStartDate(), auditReportRequest.getEndDate(), page, auditReportRequest.getRows());
+				auditReportRequest.getUserId(), auditReportRequest.getStartDate(), auditReportRequest.getEndDate(),
+				auditReportRequest.getPage(), auditReportRequest.getRows(), auditReportRequest.getSortField(), auditReportRequest.getSortDirection());
 		List<AuditRecord> auditReport = convertReport(pageable.getContent());
 
-		logger.info("Returning {}-{} of {} audit records", auditReportRequest.getFirst(), auditReportRequest.getFirst() + pageable.getNumberOfElements(), pageable.getTotalElements());
+		int first = auditReportRequest.getPage() * auditReportRequest.getRows();
+		logger.info("Returning {}-{} of {} audit records", first, first + pageable.getNumberOfElements(), pageable.getTotalElements());
 
 		AuditReportResponse auditReportingResponse = new AuditReportResponse();
 		auditReportingResponse.setRecords(auditReport);

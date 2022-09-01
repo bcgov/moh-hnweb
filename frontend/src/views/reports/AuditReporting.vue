@@ -57,6 +57,7 @@
       :lazy="true"
       ref="dt"
       @page="onPage($event)"
+      @sort="onSort($event)"
       stripedRows
       :paginator="true"
       :rows="10"
@@ -67,12 +68,12 @@
       responsiveLayout="scroll"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
     >
-      <Column field="type" header="Type"></Column>
-      <Column field="organization" header="Organization"></Column>
+      <Column field="type" header="Type" :sortable="true"></Column>
+      <Column field="organization" header="Organization" :sortable="true"></Column>
       <Column field="userId" header="User ID"></Column>
-      <Column field="transactionStartTime" header="Transaction Start Time"></Column>
-      <Column field="affectedPartyId" header="Affected Party ID"></Column>
-      <Column field="affectedPartyType" header="Affected Party ID Type"></Column>
+      <Column field="transactionStartTime" header="Transaction Start Time" :sortable="true"></Column>
+      <Column field="affectedPartyId" header="Affected Party ID" :sortable="true"></Column>
+      <Column field="affectedPartyType" header="Affected Party ID Type" :sortable="true"></Column>
       <Column field="transactionId" header="Transaction ID"></Column>
     </DataTable>
   </div>
@@ -91,7 +92,7 @@ import Column from 'primevue/column'
 
 export default {
   components: { AppLabel, Column, DataTable },
-  name: 'auditReporting',
+  name: 'AuditReporting',
   setup() {
     return {
       alertStore: useAlertStore(),
@@ -122,12 +123,7 @@ export default {
     }
   },
   mounted() {
-    this.lazyParams = {
-      first: 0,
-      rows: this.$refs.dt.rows,
-      sortField: null,
-      sortOrder: null,
-    }
+    this.resetLazyParams()
   },
   methods: {
     async submitForm() {
@@ -156,8 +152,10 @@ export default {
             userId: this.userId,
             startDate: this.startDate,
             endDate: this.endDate,
-            first: this.lazyParams.first,
+            page: this.lazyParams.first / this.lazyParams.rows,
             rows: this.lazyParams.rows,
+            sortField: this.lazyParams.sortField,
+            sortDirection: this.lazyParams.sortOrder === 1 ? 'ASC' : 'DESC',
           })
         ).data
 
@@ -185,6 +183,10 @@ export default {
       this.lazyParams = event
       this.loadLazyData()
     },
+    onSort(event) {
+      this.lazyParams = event
+      this.loadLazyData()
+    },
     showError(error) {
       this.alertStore.setErrorAlert(error)
       this.searching = false
@@ -204,6 +206,15 @@ export default {
       // This is a workaround to ensure that the paginator is reset by forcing the component to reload
       // Technically this can be handled with firstRecordIndex but there appears to be an issue. See https://github.com/primefaces/primevue/issues/2253.
       this.dataTableKey++
+      this.resetLazyParams()
+    },
+    resetLazyParams() {
+      this.lazyParams = {
+        first: 0,
+        rows: this.$refs.dt.rows,
+        sortField: null,
+        sortOrder: null,
+      }
     },
     resetResult() {
       this.result = {

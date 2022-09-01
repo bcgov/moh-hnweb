@@ -6,15 +6,20 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +49,8 @@ import ca.bc.gov.hlth.hnweb.security.UserInfo;
 public class AuditService {
 	private static final Logger logger = LoggerFactory.getLogger(AuditService.class);
 	
+	private static final String DEFAULT_SORT = "transaction.startTime";
+	
 	@Autowired
 	private AffectedPartyRepository affectedPartyRepository;
 	
@@ -61,6 +68,19 @@ public class AuditService {
 		
 	@Autowired
 	private OrganizationRepository organizationRepository;
+	
+	/** Maps simple sort names to their JPA equivalent */
+	private static Map<String, String> sortMap = new HashMap<>();
+	
+	static {
+		sortMap.put("affectedPartyId", "identifier");
+		sortMap.put("affectedPartyType", "identifierType");
+		sortMap.put("organization", "transaction.organization");
+		sortMap.put("organization", "transaction.organization");
+		sortMap.put("transactionStartTime", "transaction.startTime");
+		sortMap.put("type", "transaction.type");		
+	}
+
 	/**
 	 * Creates a new {@link Transaction}.
 	 * 
@@ -207,12 +227,21 @@ public class AuditService {
 	 * @return
 	 */
 	public Page<AffectedParty> getAffectedParties(List<String> types, List<String> organizations, String userId, LocalDate startDate,
-			LocalDate endDate, int page, int size) {
+			LocalDate endDate, int page, int rows, String sortField, String sortDirection) {
+		logger.info("Querying page {} with {} rows", page, rows);
 		try {
 			Date formattedStartDate = convertLocalDateToDate(startDate);
 			Date formattedendDate = convertLocalDateToDate(endDate);			
-			logger.info("Querying page {} with {} rows", page, size);
-			Pageable pageable = PageRequest.of(page, size);
+
+			String property = sortMap.get(sortField);
+			if (StringUtils.isBlank(property)) {
+				property = DEFAULT_SORT;
+			}
+			Direction direction = StringUtils.isNotEmpty(sortDirection) ? Direction.valueOf(sortDirection) : Direction.DESC;
+			Sort sort = Sort.by(direction, property);
+			
+			Pageable pageable = PageRequest.of(page, rows, sort);
+			
 			return affectedPartyPageableRepository.findByTransactionAndDirection(types, organizations, userId, AffectedPartyDirection.INBOUND.getValue(), formattedStartDate,
 					formattedendDate, pageable);
 		} catch (ParseException e) {
