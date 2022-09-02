@@ -48,9 +48,11 @@ import ca.bc.gov.hlth.hnweb.security.UserInfo;
 @Service
 public class AuditService {
 	private static final Logger logger = LoggerFactory.getLogger(AuditService.class);
-	
+
 	private static final String DEFAULT_SORT = "transaction.startTime";
-	
+
+	private static final String LOCAL_DATE_FORMAT = "yyyy-MM-dd";
+
 	@Autowired
 	private AffectedPartyRepository affectedPartyRepository;
 	
@@ -75,7 +77,6 @@ public class AuditService {
 	static {
 		sortMap.put("affectedPartyId", "identifier");
 		sortMap.put("affectedPartyType", "identifierType");
-		sortMap.put("organization", "transaction.organization");
 		sortMap.put("organization", "transaction.organization");
 		sortMap.put("transactionStartTime", "transaction.startTime");
 		sortMap.put("type", "transaction.type");
@@ -253,7 +254,7 @@ public class AuditService {
 	}
 
 	private Date convertLocalDateToDate(LocalDate date) throws ParseException {
-		return new SimpleDateFormat("yyyy-MM-dd").parse(date.toString());
+		return new SimpleDateFormat(LOCAL_DATE_FORMAT).parse(date.toString());
 	}
 	
 }
