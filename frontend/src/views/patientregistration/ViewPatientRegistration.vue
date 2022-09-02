@@ -2,9 +2,8 @@
   <h1>Patient Registration</h1>
   <AppHelp>
     <p>This shows a patient registration history using a patient's PHN and MSP Payee information.</p>
-    <p>Enter the individual's 10 digit PHN. The PHN is a mandatory field, if you leave it blank or enter invalid characters, an edit error message will be displayed.</p>
     <p>The MSP Payee number is automatically assigned as part of the permissions the user is given during account creation.</p>
-    <p>It returns patient demographic and registration history, including registration and de-registration dates, and additional information.</p>
+    <p>It returns patient demographic and the registration history, including registration and de-registration dates, and additional information.</p>
   </AppHelp>
   <div>
     <form @submit.prevent="submitForm">
@@ -35,16 +34,18 @@
           <AppOutput label="PHN" :value="result.personDetail.phn" />
         </AppCol>
         <AppCol class="col2">
-          <AppOutput label="Patient" :value="result.personDetail.givenName" />
+          <AppOutput label="Patient" :value="fullName" />
         </AppCol>
         <AppCol class="col2">
-          <AppOutput label="BirthDate" :value="result.personDetail.dateOfBirth" />
+          <AppOutput label="Birth Date" :value="result.personDetail.dateOfBirth" />
         </AppCol>
         <AppCol class="col3">
-          <AppOutput label="DeathDate" :value="result.personDetail.dateOfDeath" />
+          <AppOutput label="Death Date" :value="result.personDetail.dateOfDeath">
+            <template #tooltip>Will display death date in ccyymmdd format, or N/A if person is living.</template>
+          </AppOutput>
         </AppCol>
         <AppCol class="col2">
-          <AppOutput label="Gender" :value="result.personDetail.gender" />
+          <AppOutput label="Gender" :value="gender" />
         </AppCol>
       </AppRow>
     </div>
@@ -59,7 +60,9 @@
           <AppOutput label="Payee" />
         </AppCol>
         <AppCol class="col2">
-          <AppOutput label="Reg/DeReg Date" />
+          <AppOutput label="Reg/DeReg Date">
+            <template #tooltip>ccyymmdd</template>
+          </AppOutput>
         </AppCol>
         <AppCol class="col2">
           <AppOutput label="Current Status" />
@@ -133,6 +136,31 @@ export default {
     this.payee = 'A0053'
   },
 
+  computed: {
+    fullName() {
+      let name = ''
+      if (this.result.personDetail.surname) {
+        name = name + this.result.personDetail.surname
+      }
+      if (this.result.personDetail.givenName) {
+        name = name + ', ' + this.result.personDetail.givenName
+      }
+      return name
+    },
+
+    gender() {
+      switch (this.result.personDetail.gender) {
+        case 'M':
+          return 'Male'
+        case 'F':
+          return 'Female'
+        case 'U':
+          return 'Unknown'
+        default:
+          return ''
+      }
+    },
+  },
   methods: {
     async submitForm() {
       this.result = null

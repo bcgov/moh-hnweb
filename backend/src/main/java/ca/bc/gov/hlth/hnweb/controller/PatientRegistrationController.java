@@ -3,6 +3,7 @@ package ca.bc.gov.hlth.hnweb.controller;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -52,6 +53,10 @@ public class PatientRegistrationController extends BaseController {
 	private static final String REGISTERED = "Registered";
 
 	private static final String NOT_APPLICABLE = "N/A";
+
+	private static final String DATE_FORMAT = "yyyyMMdd";
+	
+	private static final DateTimeFormatter DATE_TIME_FORMATTER_yyyyMMdd = DateTimeFormatter.ofPattern(DATE_FORMAT);
 
 	private static final Logger logger = LoggerFactory.getLogger(PatientRegistrationController.class);
 
@@ -150,9 +155,10 @@ public class PatientRegistrationController extends BaseController {
 		patientRegistrations.forEach(patientRegistration -> {
 			PatientRegisterModel model = new PatientRegisterModel();
 
-			model.setEffectiveDate(convertDate(patientRegistration.getEffectiveDate()));
-			model.setCancelDate(convertDate(patientRegistration.getCancelDate()));
-			model.setCurrentStatus(setPatientRegistrationStatus(model.getCancelDate(), model.getEffectiveDate()));
+			model.setEffectiveDate(formatDate(patientRegistration.getEffectiveDate()));
+			model.setCancelDate(formatDate(patientRegistration.getCancelDate()));
+			model.setCurrentStatus(setPatientRegistrationStatus(patientRegistration.getCancelDate(),
+					patientRegistration.getEffectiveDate()));
 			model.setAdministrativeCode(patientRegistration.getAdministrativeCode());
 			model.setRegistrationReasonCode(
 					StringUtils.isEmpty(patientRegistration.getRegistrationReasonCode()) ? NOT_APPLICABLE
@@ -173,13 +179,20 @@ public class PatientRegistrationController extends BaseController {
 
 	}
 
+	private String formatDate(Date date) {
+		LocalDate localDate = convertDate(date);
+		return localDate.format(DATE_TIME_FORMATTER_yyyyMMdd);
+	}
+
 	private LocalDate convertDate(Date date) {
 		return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
 	}
 
-	private String setPatientRegistrationStatus(LocalDate cancelDate, LocalDate effectiveDate) {
+	private String setPatientRegistrationStatus(Date cancelDate, Date effectiveDate) {
 		String currentStatus = "";
 		LocalDate today = LocalDate.now();
+		LocalDate convertedCancelDate = convertDate(cancelDate);
+		LocalDate convertedEffectiveDate = convertDate(effectiveDate);
 
 		// “Registered” when the current date is greater than or equal to the effective
 		// date and less than or equal to the cancel date.
@@ -187,11 +200,11 @@ public class PatientRegistrationController extends BaseController {
 		// date
 		// “Future Registration” when the registration date is in the future
 
-		if (today.compareTo(effectiveDate) >= 0 && today.compareTo(cancelDate) <= 0) {
+		if (today.compareTo(convertedEffectiveDate) >= 0 && today.compareTo(convertedCancelDate) <= 0) {
 			currentStatus = REGISTERED;
-		} else if (today.compareTo(cancelDate) > 0) {
+		} else if (today.compareTo(convertedCancelDate) > 0) {
 			currentStatus = DE_REGISTERED;
-		} else if (effectiveDate.compareTo(today) > 0) {
+		} else if (convertedEffectiveDate.compareTo(today) > 0) {
 			currentStatus = FUTURE_REGISTRATION;
 		}
 

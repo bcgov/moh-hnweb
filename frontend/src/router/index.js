@@ -56,6 +56,7 @@ const createRoutes = (app) => [
     name: 'PatientRegistration',
     component: ViewPatientRegistration,
     meta: {
+      permission: 'PatientRegistration',
       requiresAuth: true,
     },
   },
