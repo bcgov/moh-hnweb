@@ -204,6 +204,7 @@ export default {
     },
     resetForm() {
       this.phn = ''
+      this.payee = ''
       this.result = null
       this.v$.$reset()
       this.alertStore.dismissAlert()
