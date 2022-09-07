@@ -57,7 +57,7 @@
     <div id="registrationResult">
       <AppRow>
         <AppCol class="col2">
-          <AppOutput label="Payee" />
+          <AppOutput label="Payee No" />
         </AppCol>
         <AppCol class="col2">
           <AppOutput label="Reg/DeReg Date">
