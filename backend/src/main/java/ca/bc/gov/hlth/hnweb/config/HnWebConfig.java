@@ -2,6 +2,7 @@ package ca.bc.gov.hlth.hnweb.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import ca.uhn.hl7v2.DefaultHapiContext;
 import ca.uhn.hl7v2.HapiContext;
@@ -12,6 +13,7 @@ import ca.uhn.hl7v2.parser.Parser;
  *
  */
 @Configuration
+@EnableScheduling
 public class HnWebConfig {
 
 	@Bean

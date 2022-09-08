@@ -215,7 +215,7 @@ public class AuditService {
 	 * @return list of organization.
 	 */
 	public List<Organization> getOrganizations() {
-		return organizationRepository.findAll();
+		return organizationRepository.findAll(Sort.by("organization"));
 	}
 
 	/**

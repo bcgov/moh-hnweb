@@ -8,7 +8,8 @@ AS
 select DISTINCT
     t.organization as organization
 from 
-    mspdirect.transaction t  
+    mspdirect.transaction t
+where organization is not null
 WITH DATA
 
 -- Refresh 
