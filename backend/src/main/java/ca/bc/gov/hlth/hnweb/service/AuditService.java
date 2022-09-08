@@ -233,7 +233,7 @@ public class AuditService {
 		logger.info("Querying page {} with {} rows", page, rows);
 		try {
 			Date formattedStartDate = convertLocalDateToDate(startDate);
-			Date formattedendDate = convertLocalDateToDate(endDate);			
+			Date formattedEndDate = convertLocalDateToDate(endDate);			
 
 			String property = sortMap.get(sortField);
 			if (StringUtils.isBlank(property)) {
@@ -245,7 +245,7 @@ public class AuditService {
 			Pageable pageable = PageRequest.of(page, rows, sort);
 			
 			return affectedPartyPageableRepository.findByTransactionAndDirection(types, organizations, userId, AffectedPartyDirection.INBOUND.getValue(), formattedStartDate,
-					formattedendDate, pageable);
+					formattedEndDate, pageable);
 		} catch (ParseException e) {
 			logger.error(e.getLocalizedMessage());
 			return null;
