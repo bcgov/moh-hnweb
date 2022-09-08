@@ -23,6 +23,10 @@ spring:
       hibernate:
         defaults_chema: mspdirect
         dialect: org.hibernate.dialect.H2Dialect
+        
+# Cron schedules
+cron:
+  refresh-org-view: 
    
 # Configuration for RAPID (R32, R40, R41, R42) endpoint
 rapid:
