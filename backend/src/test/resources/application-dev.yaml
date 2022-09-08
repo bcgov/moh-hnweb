@@ -26,7 +26,7 @@ spring:
         
 # Cron schedules
 cron:
-  refresh-org-view: 
+  refresh-org-view:  0 0 0 * * *
    
 # Configuration for RAPID (R32, R40, R41, R42) endpoint
 rapid:
