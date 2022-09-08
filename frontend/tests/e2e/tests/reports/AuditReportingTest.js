@@ -137,7 +137,7 @@ test('Check properly filled form passes validation and validate results', async 
     .expect(AuditReportingPage.resultsRow1.child('td').nth(2).textContent)
     .eql('hnweb1')
     .expect(AuditReportingPage.resultsRow1.child('td').nth(3).textContent)
-    .contains('2022-07-06T23:23:27.699')
+    .eql('2022-07-06T22:23:27.699')
     .expect(AuditReportingPage.resultsRow1.child('td').nth(4).textContent)
     .eql('9331926919')
     .expect(AuditReportingPage.resultsRow1.child('td').nth(5).textContent)

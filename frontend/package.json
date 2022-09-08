@@ -21,12 +21,14 @@
     "dayjs": "^1.10.7",
     "keycloak-js": "^15.0.2",
     "pinia": "next",
+    "primeicons": "^5.0.0",
+    "primevue": "^3.16.2",
     "vue": "^3.2.13",
     "vue-router": "4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.9.0",
-    "testcafe": "^1.16.0",
+    "testcafe": "^2.0.0",
     "testcafe-vue-selectors": "^3.1.1",
     "vite": "^2.5.10"
   }

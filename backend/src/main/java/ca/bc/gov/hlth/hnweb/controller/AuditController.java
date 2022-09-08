@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,14 +48,19 @@ public class AuditController extends BaseController {
 	@PostMapping("/audit-report")
 	public ResponseEntity<AuditReportResponse> getAuditReport(@Valid @RequestBody AuditReportRequest auditReportRequest,
 			HttpServletRequest request) {
-		List<AuditRecord> auditReport = convertReport(auditService.getAffectedParties(
-				auditReportRequest.getTransactionTypes(), auditReportRequest.getOrganizations(),
-				auditReportRequest.getUserId(), auditReportRequest.getStartDate(), auditReportRequest.getEndDate()));
 
-		logger.info("Audit Report size : {}", auditReport.size());
+		Page<AffectedParty> pageable = auditService.getAffectedParties(
+				auditReportRequest.getTransactionTypes(), auditReportRequest.getOrganizations(),
+				auditReportRequest.getUserId(), auditReportRequest.getStartDate(), auditReportRequest.getEndDate(),
+				auditReportRequest.getPage(), auditReportRequest.getRows(), auditReportRequest.getSortField(), auditReportRequest.getSortDirection());
+		List<AuditRecord> auditReport = convertReport(pageable.getContent());
+
+		int first = auditReportRequest.getPage() * auditReportRequest.getRows();
+		logger.info("Returning {}-{} of {} audit records", first, first + pageable.getNumberOfElements(), pageable.getTotalElements());
 
 		AuditReportResponse auditReportingResponse = new AuditReportResponse();
 		auditReportingResponse.setRecords(auditReport);
+		auditReportingResponse.setTotalRecords(pageable.getTotalElements());
 		auditReportingResponse.setStatus(StatusEnum.SUCCESS);
 
 		ResponseEntity<AuditReportResponse> responseEntity = ResponseEntity.ok(auditReportingResponse);

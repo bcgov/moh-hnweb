@@ -122,19 +122,13 @@ export default {
       displayMessage: false,
       additionalInfoMessage: '',
       result: {
-        clientInstructions: '',
-        status: '',
-        message: '',
-        personDetail: '',
         additionalInfoMessage: '',
         patientRegistrationHistory: [],
       },
       showModal: false,
     }
   },
-  created() {
-    this.payee = 'A0053'
-  },
+  created() {},
 
   computed: {
     fullName() {

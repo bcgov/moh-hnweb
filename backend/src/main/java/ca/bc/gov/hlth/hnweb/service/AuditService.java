@@ -6,14 +6,20 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +48,11 @@ import ca.bc.gov.hlth.hnweb.security.UserInfo;
 @Service
 public class AuditService {
 	private static final Logger logger = LoggerFactory.getLogger(AuditService.class);
-	
+
+	private static final String DEFAULT_SORT = "transaction.startTime";
+
+	private static final String LOCAL_DATE_FORMAT = "yyyy-MM-dd";
+
 	@Autowired
 	private AffectedPartyRepository affectedPartyRepository;
 	
@@ -60,6 +70,19 @@ public class AuditService {
 		
 	@Autowired
 	private OrganizationRepository organizationRepository;
+	
+	/** Maps simple sort names to their JPA equivalent */
+	private static Map<String, String> sortMap = new HashMap<>();
+	
+	static {
+		sortMap.put("affectedPartyId", "identifier");
+		sortMap.put("affectedPartyType", "identifierType");
+		sortMap.put("organization", "transaction.organization");
+		sortMap.put("transactionStartTime", "transaction.startTime");
+		sortMap.put("type", "transaction.type");
+		sortMap.put("userId", "transaction.userId");
+	}
+
 	/**
 	 * Creates a new {@link Transaction}.
 	 * 
@@ -205,15 +228,24 @@ public class AuditService {
 	 * @param endDate
 	 * @return
 	 */
-	public List<AffectedParty> getAffectedParties(List<String> types, List<String> organizations, String userId, LocalDate startDate,
-			LocalDate endDate) {
+	public Page<AffectedParty> getAffectedParties(List<String> types, List<String> organizations, String userId, LocalDate startDate,
+			LocalDate endDate, int page, int rows, String sortField, String sortDirection) {
+		logger.info("Querying page {} with {} rows", page, rows);
 		try {
 			Date formattedStartDate = convertLocalDateToDate(startDate);
-			Date formattedendDate = convertLocalDateToDate(endDate);
-			// XXX Limit the results to 1000 until we implement pagination
-			Pageable page = PageRequest.of(0, 1000);
+			Date formattedEndDate = convertLocalDateToDate(endDate);			
+
+			String property = sortMap.get(sortField);
+			if (StringUtils.isBlank(property)) {
+				property = DEFAULT_SORT;
+			}
+			Direction direction = StringUtils.isNotEmpty(sortDirection) ? Direction.valueOf(sortDirection) : Direction.DESC;
+			Sort sort = Sort.by(direction, property);
+			
+			Pageable pageable = PageRequest.of(page, rows, sort);
+			
 			return affectedPartyPageableRepository.findByTransactionAndDirection(types, organizations, userId, AffectedPartyDirection.INBOUND.getValue(), formattedStartDate,
-					formattedendDate, page);
+					formattedEndDate, pageable);
 		} catch (ParseException e) {
 			logger.error(e.getLocalizedMessage());
 			return null;
@@ -222,7 +254,7 @@ public class AuditService {
 	}
 
 	private Date convertLocalDateToDate(LocalDate date) throws ParseException {
-		return new SimpleDateFormat("yyyy-MM-dd").parse(date.toString());
+		return new SimpleDateFormat(LOCAL_DATE_FORMAT).parse(date.toString());
 	}
 	
 }

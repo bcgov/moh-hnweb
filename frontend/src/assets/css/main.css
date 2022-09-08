@@ -79,3 +79,19 @@ input {
 .flex {
   display: flex;
 }
+
+/* PrimeVue overrides */
+.p-datatable {
+  font-family: 'BCSans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: normal;
+  border-collapse: collapse;
+  border-radius: 5px 5px 0 0;
+  margin: 25px 0;
+  min-width: 400px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+.p-datatable .p-datatable-thead > tr > th {
+  background-color: #38598a;
+  color: #ffffff;
+}
