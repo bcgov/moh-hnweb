@@ -8,7 +8,6 @@ import CoverageStatusCheck from './../views/eligibility/CoverageStatusCheck.vue'
 import { useAlertStore } from '../stores/alert'
 import { useAuthStore } from '../stores/auth'
 import { useStudyPermitHolderStore } from '../stores/studyPermitHolder'
-import DataTableDemo from '../views/DataTableDemo.vue'
 import NotFound from '../views/NotFound.vue'
 import PBFLogin from '../views/PBFLogin.vue'
 import Unauthorized from '../views/Unauthorized.vue'
@@ -40,14 +39,6 @@ import CredentialsInfo from '../views/welcome/CredentialsInfo.vue'
 import Login from '../views/welcome/Login.vue'
 
 const createRoutes = (app) => [
-  {
-    path: '/datatable',
-    name: 'DataTableDemo',
-    component: DataTableDemo,
-    meta: {
-      requiresAuth: true,
-    },
-  },
   {
     path: '/',
     name: 'Landing',
