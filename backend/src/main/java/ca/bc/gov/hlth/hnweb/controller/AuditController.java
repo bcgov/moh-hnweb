@@ -6,6 +6,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.nimbusds.oauth2.sdk.util.StringUtils;
 
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditRecord;
@@ -69,14 +73,14 @@ public class AuditController extends BaseController {
 	}
 
 	/**
-	 * Retrieves distinct organization
+	 * Retrieves distinct organizations.
 	 * 
 	 * @return list of organization
 	 */
 	@GetMapping("/organizations")
 	public ResponseEntity<List<String>> getOrganizations() {
-		List<String> organization = convertOrganization(auditService.getOrganizations());
-		ResponseEntity<List<String>> responseEntity = ResponseEntity.ok(organization);
+		List<String> organizations = convertOrganization(auditService.getOrganizations());
+		ResponseEntity<List<String>> responseEntity = ResponseEntity.ok(organizations);
 		return responseEntity;
 	}
 
@@ -99,14 +103,7 @@ public class AuditController extends BaseController {
 	}
 
 	private List<String> convertOrganization(List<Organization> organizations) {
-		List<String> orgianizations = new ArrayList<>();
-
-		organizations.forEach(organization -> {
-			if (organization != null) {
-				orgianizations.add(organization.getOrganization());
-			}
-		});
-		return orgianizations;
+		return organizations.stream().filter(org -> StringUtils.isNotBlank(org.getOrganization())).map(org -> org.getOrganization()).collect(Collectors.toList());
 	}
 
 	private LocalDateTime convertDate(Date date) {
