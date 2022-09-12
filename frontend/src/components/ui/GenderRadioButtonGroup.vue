@@ -1,5 +1,7 @@
 <template>
-  <AppRadioButtonGroup :e-model="eModel" id="gender" :label="label" :group="this.GENDER_RADIO_BUTTON_GROUP" v-model="modelValue" />
+  <AppRadioButtonGroup :e-model="eModel" id="gender" :label="label" :group="this.GENDER_RADIO_BUTTON_GROUP" v-model="modelValue">
+    <template #tooltip><slot name="tooltip"></slot></template>
+  </AppRadioButtonGroup>
 </template>
 
 <script>

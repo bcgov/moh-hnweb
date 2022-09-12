@@ -1,5 +1,11 @@
 <template>
   <div>
+    <AppHelp>
+      <p>The purpose of this screen is to search the Health Registry database to determine if a person already has a Personal Health Number (PHN). It is very important that the person is not assigned a new PHN if they already have one.</p>
+      <p>Results displayed include Surname, First Name or Initial, Second Name or Initial, Current or Previous Record, Gender, Birthdate (year month day), Personal Health Number, BC PH, Address.</p>
+      <p>Current Record means that the demographic details displayed are the most current for the person.</p>
+      <p>Previous Record means that the demographic details displayed have been changed by a more recent update. Use the Get Person Demographics to view the most current information for the person.</p>
+    </AppHelp>
     <form @submit.prevent="registerResident">
       <AppRow>
         <AppCol class="col4">
@@ -143,6 +149,7 @@
 </template>
 <script>
 import AppSelect from '../../ui/AppSelect.vue'
+import AppHelp from '../../../components/ui/AppHelp.vue'
 import GenderRadioButtonGroup from '../../ui/GenderRadioButtonGroup.vue'
 import useVuelidate from '@vuelidate/core'
 import {
@@ -194,6 +201,7 @@ export default {
   },
   components: {
     AppSelect,
+    AppHelp,
     GenderRadioButtonGroup,
   },
   setup() {
