@@ -147,7 +147,7 @@ export default {
       }
 
       const isDateWithinRange = this.validateDateRange()
-      console.log('isDateWithinRange ' + isDateWithinRange)
+
       if (isStartDateBeforeEndDate && !isDateWithinRange) {
         errors.push('End Date should not be more than 3 months from Start Date')
       }
