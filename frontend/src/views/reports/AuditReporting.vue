@@ -47,13 +47,9 @@
     </form>
   </div>
   <br />
-  <div id="searchResults" v-if="searchOk && result.records.length > 0">
-    <div>
-      <download-csv :data="result.records" :name="fileName">
-        <a href="#" id="downloadLink" class="download">Export To CSV</a>
-      </download-csv>
-    </div>
 
+  <div id="searchResults" v-if="searchOk && result.records.length > 0">
+    <DownloadLink href="#" :downloading="downloading" @click="downloadReport">Export To CSV</DownloadLink>
     <div>
       <AppSimpleTable id="resultsTable">
         <thead>
@@ -78,20 +74,19 @@
 </template>
 
 <script>
+import DownloadLink from '../../components/ui/DownloadLink.vue'
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
 import AuditReportRecord from '../../components/reports/AuditReportRecord.vue'
-import JsonCSV from '../../components/reports/JsonCSV.vue'
 import AuditService from '../../services/AuditService'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import { useAlertStore } from '../../stores/alert'
 import { handleServiceError } from '../../util/utils'
 import AppLabel from '../../components/ui/AppLabel.vue'
-import { API_DATE_TIME_FORMAT } from '../../util/constants'
 import dayjs from 'dayjs'
 
 export default {
-  components: { AppLabel, AppSimpleTable, AuditReportRecord, 'download-csv': JsonCSV },
+  components: { AppLabel, AppSimpleTable, AuditReportRecord, DownloadLink },
   name: 'auditReporting',
   setup() {
     return {
@@ -110,6 +105,7 @@ export default {
       transactionTypes: [],
       searchOk: false,
       searching: false,
+      downloading: false,
       result: {
         records: [],
         message: '',
@@ -117,12 +113,6 @@ export default {
       },
       transactionOptions: ['CheckEligibility', 'PHNInquiry', 'PHNLookup', 'EnrollSubscriber', 'GetPersonDetails', 'NameSearch', 'AddGroupMember', 'AddDependent', 'UpdateNumberAndDept', 'CancelDependent', 'ContractInquiry', 'GetContractAddress', 'UpdateContractAddress'],
     }
-  },
-  computed: {
-    fileName() {
-      const now = dayjs().format(API_DATE_TIME_FORMAT)
-      return 'auditreport_' + now + '.csv'
-    },
   },
   methods: {
     async submitForm() {
@@ -166,6 +156,38 @@ export default {
       } finally {
         this.searching = false
       }
+    },
+    async downloadReport() {
+      this.downloading = true
+      try {
+        await AuditService.downloadAuditReport({
+          organizations: this.organizations,
+          transactionTypes: this.transactionTypes,
+          userId: this.userId,
+          startDate: this.startDate,
+          endDate: this.endDate,
+        }).then((response) => {
+          this.exportToCSV(response.data)
+        })
+      } catch (err) {
+        handleServiceError(err, this.alertStore, this.$router)
+      } finally {
+        this.downloading = false
+      }
+    },
+    exportToCSV(response) {
+      const now = dayjs().format('YYYYMMDDhhmmss')
+      let filename = 'auditreport_' + now + '.csv'
+
+      let element = document.createElement('a')
+      element.setAttribute('href', 'data:text/csv;charset=utf-8,' + response)
+      element.setAttribute('download', filename)
+
+      element.style.display = 'none'
+      document.body.appendChild(element)
+
+      element.click()
+      document.body.removeChild(element)
     },
     showError(error) {
       this.alertStore.setErrorAlert(error)

@@ -7,4 +7,7 @@ export default {
   getOrganizations() {
     return apiRequest().then((axiosInstance) => axiosInstance.get(resources.reports.getOrganizations))
   },
+  downloadAuditReport(request) {
+    return apiRequest().then((axiosInstance) => axiosInstance.post(resources.reports.downloadAuditReport, request))
+  },
 }
