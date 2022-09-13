@@ -47,6 +47,9 @@
     </form>
   </div>
   <br />
+  <div id="downloadCSV" v-show="searchOk && result.records.length > 0">
+    <DownloadLink href="#" :downloading="downloading" @click="downloadReport">Export To CSV</DownloadLink>
+  </div>
   <div id="searchResults" v-show="searchOk && result.records.length > 0">
     <!-- && result?.records.length > 0 -->
     <DataTable
@@ -81,6 +84,7 @@
 
 <script>
 import AuditService from '../../services/AuditService'
+import DownloadLink from '../../components/ui/DownloadLink.vue'
 import useVuelidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 import { DEFAULT_ERROR_MESSAGE } from '../../util/constants.js'
@@ -95,7 +99,7 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 
 export default {
-  components: { AppLabel, Column, DataTable },
+  components: { AppLabel, Column, DataTable, DownloadLink },
   name: 'AuditReporting',
   setup() {
     return {
@@ -113,6 +117,7 @@ export default {
       transactionTypes: [],
       searchOk: false,
       searching: false,
+      downloading: false,
       result: {
         records: [],
         totalResults: 0,
@@ -209,6 +214,38 @@ export default {
     showError(errors) {
       this.alertStore.setErrorAlerts(errors)
       this.searching = false
+    },
+    async downloadReport() {
+      this.downloading = true
+      try {
+        await AuditService.downloadAuditReport({
+          organizations: this.organizations,
+          transactionTypes: this.transactionTypes,
+          userId: this.userId,
+          startDate: this.startDate,
+          endDate: this.endDate,
+        }).then((response) => {
+          this.exportToCSV(response.data)
+        })
+      } catch (err) {
+        handleServiceError(err, this.alertStore, this.$router)
+      } finally {
+        this.downloading = false
+      }
+    },
+    exportToCSV(response) {
+      const now = dayjs().format('YYYYMMDDhhmmss')
+      let filename = 'auditreport_' + now + '.csv'
+
+      let element = document.createElement('a')
+      element.setAttribute('href', 'data:text/csv;charset=utf-8,' + response)
+      element.setAttribute('download', filename)
+
+      element.style.display = 'none'
+      document.body.appendChild(element)
+
+      element.click()
+      document.body.removeChild(element)
     },
     resetForm() {
       this.userId = ''

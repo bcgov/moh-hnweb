@@ -3,6 +3,8 @@ package ca.bc.gov.hlth.hnweb.controller;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +14,7 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -209,6 +212,68 @@ public class AuditControllerTest extends BaseControllerTest {
 		assertEquals(10, records.size());
 		assertEquals(TransactionType.PHN_INQUIRY.name(), records.get(0).getType());
 	}
+	
+	@Test
+	public void testGetAuditReport_downloadCSV() throws IOException {
+		createAuditReports(20, TransactionType.CHECK_ELIGIBILITY);
+		createAuditReports(20, TransactionType.PHN_INQUIRY);
+		
+		List<String> orgs = new ArrayList<>();
+		orgs.add("00000010");
+		orgs.add("00000020");
+
+		AuditReportRequest auditReportRequest = new AuditReportRequest();
+		auditReportRequest.setUserId("hnweb1");
+		auditReportRequest.setOrganizations(orgs);		
+		auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
+		auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
+		
+		 ResponseEntity<Resource> downloadReport = auditReportController.downloadReport(auditReportRequest,
+				createHttpServletRequest());
+		 
+		 List<String> reportData = new ArrayList<String>();
+		 InputStream downloadData = downloadReport.getBody().getInputStream();
+		 read(downloadData, reportData);
+				 
+		 assertEquals(HttpStatus.OK, downloadReport.getStatusCode());
+
+		 //Check csv headers and data
+		 assertEquals("Type", reportData.get(0));
+		 assertEquals("Organization", reportData.get(1));
+		 assertEquals("User ID", reportData.get(2));
+		 assertEquals("Transaction Start Time", reportData.get(3));
+		 assertEquals("Affected Party ID", reportData.get(4));
+		 assertEquals("Affected Party ID Type", reportData.get(5));
+		 assertEquals("Transaction ID\r\n" + 
+		 		"CHECK_ELIGIBILITY", reportData.get(6));		 		 
+		 assertEquals("00000010", reportData.get(7));
+		 assertEquals("hnweb1", reportData.get(8));
+		 assertEquals("2022-08-05 00:00:00", reportData.get(9));
+		 assertEquals("PHN", reportData.get(10));
+		 
+		 //Check the last (40th) record
+		 assertEquals("00000010", reportData.get(241));
+		 assertEquals("hnweb1", reportData.get(242));
+		 assertEquals("2022-08-05 00:00:00", reportData.get(243));
+		 assertEquals("PHN", reportData.get(244));
+	}
+
+	 private void read(InputStream input, List<String> reportData ) throws IOException {
+			
+	        StringBuilder builder = new StringBuilder();
+
+	        int data = input.read();
+	        while(data != -1){
+	            if(((char)data) != ','){
+	                builder.append((char) data);
+	            } else {
+	            	reportData.add(builder.toString().trim());
+	                builder.delete(0, builder.length());
+	            }
+
+	            data = input.read();
+	        }
+	    }
 
 	private void createOrganization() {
 		Organization org = new Organization();

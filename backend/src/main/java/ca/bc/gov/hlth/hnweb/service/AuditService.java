@@ -1,16 +1,25 @@
 package ca.bc.gov.hlth.hnweb.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +32,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditRecord;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedParty;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.persistence.entity.ErrorLevel;
@@ -41,6 +51,7 @@ import ca.bc.gov.hlth.hnweb.persistence.repository.TransactionRepository;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
+import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
 
 /**
  * Service for working with Auditing via Transaction tables.
@@ -52,6 +63,11 @@ public class AuditService {
 	private static final String DEFAULT_SORT = "transaction.startTime";
 
 	private static final String LOCAL_DATE_FORMAT = "yyyy-MM-dd";
+	
+	private static final String[] HEADERS = { "Type", "Organization", "User ID", "Transaction Start Time",
+			"Affected Party ID", "Affected Party ID Type", "Transaction ID" };
+
+	private static final CSVFormat FORMAT = CSVFormat.DEFAULT.withHeader(HEADERS);
 
 	@Autowired
 	private AffectedPartyRepository affectedPartyRepository;
@@ -251,6 +267,71 @@ public class AuditService {
 			return null;
 		}		
 
+	}
+	
+	/**
+	 * This method loads data into csv format
+	 * @param auditReport
+	 * @return
+	 */
+	public ByteArrayInputStream load(final List<AuditRecord> auditReport) {
+		return writeDataToCsv(auditReport);
+	}
+
+	/**
+	 * This method writes audit report data into csv
+	 * @param auditReport
+	 * @return
+	 */
+	private ByteArrayInputStream writeDataToCsv(final List<AuditRecord> auditReports) {
+		logger.info("Writing data to the csv format");
+		
+		try (final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+				final CSVPrinter printer = new CSVPrinter(new PrintWriter(stream), FORMAT)) {
+			for (final AuditRecord auditRecord : auditReports) {
+				final List<String> auditData = Arrays.asList(String.valueOf(auditRecord.getType()),
+						auditRecord.getOrganization(), auditRecord.getUserId(),
+						ConvertLocalDateTime(auditRecord.getTransactionStartTime()), auditRecord.getAffectedPartyId(),
+						auditRecord.getAffectedPartyType(), auditRecord.getTransactionId());
+
+				printer.printRecord(auditData);
+			}
+
+			printer.flush();
+			return new ByteArrayInputStream(stream.toByteArray());
+		} catch (final IOException e) {
+			logger.error("Csv writing error: " + e.getMessage());
+			return null;
+		}
+	}
+
+	/**
+	 * @param types
+	 * @param organizations
+	 * @param userId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<AffectedParty> getAffectedPartiesForDownload(List<String> types, List<String> organizations,
+			String userId, LocalDate startDate, LocalDate endDate) {
+		try {
+			Date formattedStartDate = convertLocalDateToDate(startDate);
+			Date formattedendDate = convertLocalDateToDate(endDate);
+
+			return affectedPartyPageableRepository.findByTransactionAndDirection(types, organizations,
+					userId, AffectedPartyDirection.INBOUND.getValue(), formattedStartDate, formattedendDate, null).getContent();
+		} catch (ParseException e) {
+			logger.error(e.getLocalizedMessage());
+			return null;
+		}
+
+	}
+
+	private String ConvertLocalDateTime(LocalDateTime dateTime) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_TIME_FORMAT);
+		// Format LocalDateTime
+		return dateTime.format(formatter);
 	}
 
 	private Date convertLocalDateToDate(LocalDate date) throws ParseException {
