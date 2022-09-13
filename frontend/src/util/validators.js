@@ -152,6 +152,13 @@ export function validateOptionalAddress(address) {
 }
 
 /**
+ * Validate that input is allowed length
+ */
+export function validateUserIdLength(input) {
+  return input.length <= 100
+}
+
+/**
  * Validate that input is allowed length and that it contains no invalid characters
  */
 export function validateAddress(address) {
@@ -299,3 +306,4 @@ export const VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE = 'Group Member Number is inva
 export const VALIDATE_DEPARTMENT_NUMBER_MESSAGE = 'Department Number is invalid'
 export const VALIDATE_POSTAL_CODE_MESSAGE = 'Postal Code is invalid'
 export const VALIDATE_TELEPHONE_MESSAGE = 'Telephone is invalid. Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
+export const VALIDATE_USER_ID_MESSAGE = 'User ID cannot be longer than 100 characters'

@@ -47,86 +47,123 @@
     </form>
   </div>
   <br />
-
-  <div id="searchResults" v-if="searchOk && result.records.length > 0">
-    <DownloadLink href="#" :downloading="downloading" @click="downloadReport">Export To CSV</DownloadLink>
-    <div>
-      <AppSimpleTable id="resultsTable">
-        <thead>
-          <tr>
-            <th>Type</th>
-            <th>Organization</th>
-            <th>User ID</th>
-            <th>Transaction Start Time</th>
-            <th>Affected Party ID</th>
-            <th>Affected Party ID Type</th>
-            <th>Transaction ID</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="record in result.records">
-            <AuditReportRecord :record="record" />
-          </tr>
-        </tbody>
-      </AppSimpleTable>
-    </div>
+  <div id="searchResults" v-show="searchOk && result.records.length > 0">
+    <!-- && result?.records.length > 0 -->
+    <DataTable
+      id="resultsTable"
+      :key="dataTableKey"
+      :value="result.records"
+      :totalRecords="result.totalRecords"
+      :lazy="true"
+      ref="dt"
+      @page="onPage($event)"
+      @sort="onSort($event)"
+      stripedRows
+      :paginator="true"
+      :rows="10"
+      :first="firstRecordIndex"
+      :loading="loading"
+      paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+      :rowsPerPageOptions="[5, 10, 20]"
+      responsiveLayout="scroll"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+    >
+      <Column field="type" header="Type" :sortable="true"></Column>
+      <Column field="organization" header="Organization" :sortable="true"></Column>
+      <Column field="userId" header="User ID" :sortable="true"></Column>
+      <Column field="transactionStartTime" header="Transaction Start Time" :sortable="true"></Column>
+      <Column field="affectedPartyId" header="Affected Party ID" :sortable="true"></Column>
+      <Column field="affectedPartyType" header="Affected Party ID Type" :sortable="true"></Column>
+      <Column field="transactionId" header="Transaction ID"></Column>
+    </DataTable>
   </div>
 </template>
 
 <script>
-import DownloadLink from '../../components/ui/DownloadLink.vue'
-import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
-import AuditReportRecord from '../../components/reports/AuditReportRecord.vue'
 import AuditService from '../../services/AuditService'
 import useVuelidate from '@vuelidate/core'
-import { required } from '@vuelidate/validators'
+import { required, helpers } from '@vuelidate/validators'
+import { DEFAULT_ERROR_MESSAGE } from '../../util/constants.js'
+import { validateUserIdLength, VALIDATE_USER_ID_MESSAGE } from '../../util/validators'
 import { useAlertStore } from '../../stores/alert'
 import { handleServiceError } from '../../util/utils'
 import AppLabel from '../../components/ui/AppLabel.vue'
 import dayjs from 'dayjs'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
 
 export default {
-  components: { AppLabel, AppSimpleTable, AuditReportRecord, DownloadLink },
-  name: 'auditReporting',
+  components: { AppLabel, Column, DataTable },
+  name: 'AuditReporting',
   setup() {
     return {
       alertStore: useAlertStore(),
       v$: useVuelidate(),
     }
   },
-
   data() {
     return {
       userId: '',
       organizations: [],
-      endDate: new Date(),
-      startDate: dayjs().subtract(1, 'month').toDate(),
+      startDate: dayjs().subtract(1, 'month').startOf('month').toDate(),
+      endDate: dayjs().subtract(1, 'month').endOf('month').toDate(),
       organizationOptions: [],
       transactionTypes: [],
       searchOk: false,
       searching: false,
-      downloading: false,
       result: {
         records: [],
+        totalResults: 0,
         message: '',
         status: '',
       },
+      dataTableKey: 0,
+      firstRecordIndex: 0,
+      loading: false,
+      lazyParams: {},
       transactionOptions: ['CheckEligibility', 'PHNInquiry', 'PHNLookup', 'EnrollSubscriber', 'GetPersonDetails', 'NameSearch', 'AddGroupMember', 'AddDependent', 'UpdateNumberAndDept', 'CancelDependent', 'ContractInquiry', 'GetContractAddress', 'UpdateContractAddress'],
     }
   },
+  mounted() {
+    this.resetLazyParams()
+  },
   methods: {
     async submitForm() {
-      this.result = null
+      this.resetResult()
       this.searching = true
       this.searchOk = false
       this.alertStore.dismissAlert()
 
+      const errors = []
+      const isFormValid = await this.v$.$validate()
+      if (!isFormValid) {
+        errors.push(DEFAULT_ERROR_MESSAGE)
+      }
+      const isStartDateBeforeEndDate = this.validateDate()
+      if (isFormValid && !isStartDateBeforeEndDate) {
+        errors.push('Start Date should not be after End Date')
+      }
+
+      const isDateWithinRange = this.validateDateRange()
+
+      if (isStartDateBeforeEndDate && !isDateWithinRange) {
+        errors.push('End Date should not be more than 3 months from Start Date')
+      }
+
+      if (!isFormValid || !isStartDateBeforeEndDate || !isDateWithinRange) {
+        this.showError(errors)
+        return
+      }
+
+      this.loadLazyData()
+
+      this.searchOk = true
+    },
+    async loadLazyData() {
+      this.loading = true
       try {
-        const isValid = await this.v$.$validate()
-        if (!isValid) {
-          this.showError()
-          return
-        }
         this.result = (
           await AuditService.getAuditReport({
             organizations: this.organizations,
@@ -134,6 +171,10 @@ export default {
             userId: this.userId,
             startDate: this.startDate,
             endDate: this.endDate,
+            page: this.lazyParams.first / this.lazyParams.rows,
+            rows: this.lazyParams.rows,
+            sortField: this.lazyParams.sortField,
+            sortDirection: this.lazyParams.sortOrder === 1 ? 'ASC' : 'DESC',
           })
         ).data
 
@@ -141,76 +182,87 @@ export default {
           this.alertStore.setErrorAlert(this.result.message)
           return
         }
-        const maxResults = 1000
-        if (this.result.records.length >= maxResults) {
-          this.alertStore.setWarningAlert(`Maximum results (${maxResults}) returned. Please refine your search criteria and try again.`)
-        } else if (this.result.records.length > 0) {
-          this.alertStore.setSuccessAlert('Transaction completed successfully')
-        } else {
-          this.alertStore.setErrorAlert('No results were returned. Please refine your search criteria and try again.')
-        }
 
-        this.searchOk = true
+        // Only display a message on the initial submit
+        if (this.searching) {
+          if (this.result.records.length > 0) {
+            this.alertStore.setSuccessAlert('Transaction completed successfully')
+          } else {
+            this.alertStore.setErrorAlert('No results were returned. Please refine your search criteria and try again.')
+          }
+        }
       } catch (err) {
         handleServiceError(err, this.alertStore, this.$router)
       } finally {
+        this.loading = false
         this.searching = false
       }
     },
-    async downloadReport() {
-      this.downloading = true
-      try {
-        await AuditService.downloadAuditReport({
-          organizations: this.organizations,
-          transactionTypes: this.transactionTypes,
-          userId: this.userId,
-          startDate: this.startDate,
-          endDate: this.endDate,
-        }).then((response) => {
-          this.exportToCSV(response.data)
-        })
-      } catch (err) {
-        handleServiceError(err, this.alertStore, this.$router)
-      } finally {
-        this.downloading = false
-      }
+    onPage(event) {
+      this.lazyParams = event
+      this.loadLazyData()
     },
-    exportToCSV(response) {
-      const now = dayjs().format('YYYYMMDDhhmmss')
-      let filename = 'auditreport_' + now + '.csv'
-
-      let element = document.createElement('a')
-      element.setAttribute('href', 'data:text/csv;charset=utf-8,' + response)
-      element.setAttribute('download', filename)
-
-      element.style.display = 'none'
-      document.body.appendChild(element)
-
-      element.click()
-      document.body.removeChild(element)
+    onSort(event) {
+      this.lazyParams = event
+      this.loadLazyData()
     },
-    showError(error) {
-      this.alertStore.setErrorAlert(error)
-      this.result = {}
+    showError(errors) {
+      this.alertStore.setErrorAlerts(errors)
       this.searching = false
     },
     resetForm() {
       this.userId = ''
       this.organizations = []
       this.transactionTypes = []
-      this.endDate = new Date()
-      this.startDate = dayjs().subtract(1, 'month').toDate()
-      this.result = null
+      this.startDate = dayjs().subtract(1, 'month').startOf('month').toDate()
+      this.endDate = dayjs().subtract(1, 'month').endOf('month').toDate()
+      this.resetResult()
       this.searchOk = false
       this.searching = false
       this.v$.$reset()
       this.alertStore.dismissAlert()
+      this.firstRecordIndex = 0
+      // This is a workaround to ensure that the paginator is reset by forcing the component to reload
+      // Technically this can be handled with firstRecordIndex but there appears to be an issue. See https://github.com/primefaces/primevue/issues/2253.
+      this.dataTableKey++
+      this.resetLazyParams()
+    },
+    resetLazyParams() {
+      this.lazyParams = {
+        first: 0,
+        rows: this.$refs.dt.rows,
+        sortField: null,
+        sortOrder: null,
+      }
+    },
+    resetResult() {
+      this.result = {
+        records: [],
+        totalResults: 0,
+        message: '',
+        status: '',
+      }
+    },
+    /**
+     * Validates that End Date is after Start Date
+     */
+    validateDate() {
+      dayjs.extend(isSameOrAfter)
+      return dayjs(this.endDate).isSameOrAfter(this.startDate)
+    },
+
+    /**
+     * Validates that End Date is not more than 3 months from Start Date
+     */
+    validateDateRange() {
+      dayjs.extend(isSameOrBefore)
+      return dayjs(this.endDate).isSameOrBefore(dayjs(this.startDate).add(3, 'month'))
     },
   },
   validations() {
     return {
       userId: {
-        required,
+        validateUserIdLength: helpers.withMessage(VALIDATE_USER_ID_MESSAGE, validateUserIdLength),
       },
       startDate: {
         required,
@@ -231,9 +283,6 @@ export default {
 </script>
 
 <style scoped>
-.download {
-  float: right;
-}
 .checkbox-wrapper {
   max-height: 125px;
   width: 400px;
@@ -294,13 +343,5 @@ export default {
 /* Show the checkmark when checked */
 .checkbox input:checked ~ .checkmark:after {
   display: block;
-}
-
-#searchResults {
-  overflow: auto;
-  height: 800px;
-}
-
-#resultsTable {
 }
 </style>

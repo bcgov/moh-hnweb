@@ -9,6 +9,8 @@ public class AuditReportResponse extends BaseResponse {
 
 	private List<AuditRecord> records = new ArrayList<>();
 
+	private Long totalRecords;
+
 	public List<AuditRecord> getRecords() {
 		return records;
 	}
@@ -16,7 +18,15 @@ public class AuditReportResponse extends BaseResponse {
 	public void setRecords(List<AuditRecord> auditReports) {
 		this.records = auditReports;
 	}
-	
+
+	public Long getTotalRecords() {
+		return totalRecords;
+	}
+
+	public void setTotalRecords(Long totalRecords) {
+		this.totalRecords = totalRecords;
+	}
+
 	@Override
 	public String toString() {
 		return "AuditReportResponse [auditReport=" + records + "]";

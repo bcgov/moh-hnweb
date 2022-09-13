@@ -17,6 +17,8 @@ public class GetPersonDetailsResponse extends BaseResponse {
 
 	private String dateOfBirth;
 	
+	private String dateOfDeath;
+	
 	private String gender;
 
 	public String getPhn() {
@@ -57,6 +59,14 @@ public class GetPersonDetailsResponse extends BaseResponse {
 
 	public void setDateOfBirth(String dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getDateOfDeath() {
+		return dateOfDeath;
+	}
+
+	public void setDateOfDeath(String dateOfDeath) {
+		this.dateOfDeath = dateOfDeath;
 	}
 
 	public String getGender() {
