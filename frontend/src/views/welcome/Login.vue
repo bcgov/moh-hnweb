@@ -11,8 +11,8 @@
         <AppButton @click="login('phsa')" class="btn-xxl" id="phsaLogin">Health Authority ID</AppButton>
         <AppButton @click="login('idir')" class="btn-xxl" id="idirLogin">IDIR</AppButton>
         <AppButton @click="login('moh_idp')" class="btn-xxl" id="moh_idpLogin" v-if="enableKcLogin">Keycloak</AppButton>
-        <AppButton @click="login('bcsc')" class="btn-xxl" id="bcscLogin" v-if="false">BC Services Card</AppButton>
-        <AppButton @click="login('bceid_business')" id="bceid_businessLogin" class="btn-xxl" v-if="false">BCeID Business</AppButton>
+        <AppButton @click="login('bcsc')" class="btn-xxl" id="bcscLogin">BC Services Card</AppButton>
+        <AppButton @click="login('bceid_business')" id="bceid_businessLogin" class="btn-xxl">BCeID Business</AppButton>
       </section>
     </AppCol>
   </AppRow>
