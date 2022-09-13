@@ -85,6 +85,7 @@
 <script>
 import AuditService from '../../services/AuditService'
 import DownloadLink from '../../components/ui/DownloadLink.vue'
+import { API_DATE_TIME_FORMAT } from '../../util/constants'
 import useVuelidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 import { DEFAULT_ERROR_MESSAGE } from '../../util/constants.js'
@@ -234,7 +235,7 @@ export default {
       }
     },
     exportToCSV(response) {
-      const now = dayjs().format('YYYYMMDDhhmmss')
+      const now = dayjs().format(API_DATE_TIME_FORMAT)
       let filename = 'auditreport_' + now + '.csv'
 
       let element = document.createElement('a')
