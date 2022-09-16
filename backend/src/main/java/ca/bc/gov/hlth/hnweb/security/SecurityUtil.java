@@ -26,6 +26,7 @@ public class SecurityUtil {
 	private static final String CLAIM_RESOURCE_ACCESS = "resource_access";
 	private static final String CLAIM_SESSION_STATE = "session_state";
 	public static final String CLAIM_USERNAME = "preferred_username";
+	private static final String CLAIM_SUB = "sub";	//the Subject claim identifies the principal that is the subject of the JWT
 	public static final String CLAIM_ORGANIZATION = "org_details";
 	
 	private static final String ORGANIZATION_ID = "id";
@@ -51,6 +52,7 @@ public class SecurityUtil {
 
 		userInfo.setSessionState(jwt.getClaim(CLAIM_SESSION_STATE));
 		userInfo.setUsername(jwt.getClaim(CLAIM_USERNAME));
+		userInfo.setUserId(jwt.getClaim(CLAIM_SUB));
 		
 		return userInfo;
 	}
