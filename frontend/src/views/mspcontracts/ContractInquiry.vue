@@ -1,4 +1,19 @@
 <template>
+    <AppHelp>
+    <p>Use this screen to view a group member's MSP coverage under your Group. This screen returns the demographics and coverage information of every person on the MSP Contract, and the group member's Address, Phone Number, and any Group Member or Department Numbers.</p> 
+    <p>If you do not know the PHN, the PHN Lookup can be used to find a the group member's PHN from their MSP Contract Number.</p>
+    <p>If the transaction was successful, the current Contract Address(s) will be displayed - Home, and then Mailing. The Phone Number, Group Member Number, and Department Numbers, if present, are displayed under titles.</p>
+    <p>
+      Persons on the contract are then returned in this order: 
+      <ul>
+        <li>the person whose PHN was entered on the input screen</li>
+        <li>the spouse(s), if present, active and cancelled</li>
+        <li>the child(ren), if present, active and cancelled</li>    
+      </ul>  
+    </p>
+    <p>If more than 20 persons, active and cancelled, are on a contract, information for the first 20 persons will be displayed along with a message telling you that not all the information could be returned.</p>
+    <p>Cancel Reasons, if applicable, are either "ELIGIBLE" (means coverage is cancelled under your Group but the person is still an MSP beneficiary), or "INELIGIBLE" (means the person is no longer an MSP beneficiary), or "DECEASED".</p>
+  </AppHelp>
   <div>
     <form @submit.prevent="submitForm">
       <AppRow>
@@ -106,6 +121,7 @@
   </div>
 </template>
 <script>
+import AppHelp from '../../components/ui/AppHelp.vue'
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
 import ContractInquiryBeneficiary from '../../components/mspcontracts/ContractInquiryBeneficiary.vue'
 import useVuelidate from '@vuelidate/core'
@@ -118,6 +134,7 @@ import { handleServiceError } from '../../util/utils'
 export default {
   name: 'ContractInquiry',
   components: {
+    AppHelp,
     AppSimpleTable,
     ContractInquiryBeneficiary,
   },

@@ -1,4 +1,12 @@
 <template>
+  <AppHelp>
+    <p>Use this screen to add, change or delete the Group Member Number or Department Number recorded for an group member.</p>
+    <p>The Contract Inquiry shows you the Group Member and Department Numbers on your Group Members contracts.</p>
+    <p>Group Number and Group Member PHN are required fields. At least one of Group Member Number or Department Number must be populated.</p>
+    <p>To ADD or CHANGE an Group Member Number, enter the new number of up to nine letters or numbers.</p>
+    <p>To DELETE a Group Member Number, enter 6 or more dashes ( "------") in the field.</p>
+    <p>To ADD or CHANGE a Department Number, enter the new number of up to six letters or numbers. To DELETE a Department Number, enter 6 dashes ( "------" ) in the field.</p>
+  </AppHelp>
   <div id="updateNumberAndDept" v-if="searchMode">
     <form @submit.prevent="submitForm">
       <AppRow>
@@ -36,6 +44,7 @@
 
 <script>
 import GroupMemberService from '../../services/GroupMemberService'
+import AppHelp from '../../components/ui/AppHelp.vue'
 import useVuelidate from '@vuelidate/core'
 import { validateGroupNumber, validateGroupMemberNumber, validateDepartmentNumber, validatePHN, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE, VALIDATE_DEPARTMENT_NUMBER_MESSAGE } from '../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
@@ -45,6 +54,9 @@ import { handleServiceError } from '../../util/utils'
 
 export default {
   name: 'updateNumberAndDept',
+  components: {
+    AppHelp,
+  },
   setup() {
     return {
       alertStore: useAlertStore(),
