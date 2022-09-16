@@ -28,7 +28,7 @@ import ca.bc.gov.hlth.hnweb.service.BcscPayeeMappingService;
  * Controller to handle CRUD requests for maintaining BC Services Card (BCSC) Users to their PBF MSP Payee Number mappings.
  *   
  */
-@RequestMapping("/payee-mappings")
+@RequestMapping("/bcsc-payee-mappings")
 @RestController
 public class BcscPayeeMappingController {
 
