@@ -1,5 +1,6 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -7,6 +8,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.BaseControllerTest;
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
@@ -25,6 +29,8 @@ import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.PBFClinicPayee;
 import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.PatientRegister;
 import ca.bc.gov.hlth.hnweb.persistence.repository.pbf.PBFClinicPayeeRepository;
 import ca.bc.gov.hlth.hnweb.persistence.repository.pbf.PatientRegisterRepository;
+import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
+import ca.bc.gov.hlth.hnweb.security.UserInfo;
 import ca.bc.gov.hlth.hnweb.utils.TestUtil;
 import okhttp3.mockwebserver.MockResponse;
 
@@ -32,6 +38,7 @@ import okhttp3.mockwebserver.MockResponse;
  * JUnit test class for PatientRegistrationController
  *
  */
+@Sql({ "classpath:scripts/bcsc_payee_mapping.sql" })
 public class PatientRegistrationControllerTest extends BaseControllerTest {
 
 	@Autowired
@@ -43,7 +50,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 	@Autowired
 	private PBFClinicPayeeRepository pbfClinicPayeeRepository;
 	
-		@Test
+	@Test
 	public void testRegistrationHistory_success_payeeWithinGroup_DemoRecord() throws Exception {
 		createPBFClinicPayee();
 		createPatientRegister();
@@ -51,7 +58,10 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse.xml"))
 				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
-		PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
+		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "3c0fc3b5-45f8-4745-afa9-b7b04978023d", "00000010", "hnweb-user", UUID.randomUUID().toString()));
+
+        PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("9879869673");
 		viewPatientRegisterRequest.setPayee("T0055");
 		ResponseEntity<PatientRegistrationResponse> response = patientRegistrationController
@@ -77,7 +87,10 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_Error.xml"))
 				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
-		PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
+		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "3c0fc3b5-45f8-4745-afa9-b7b04978023d", "00000010", "hnweb-user", UUID.randomUUID().toString()));
+
+        PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("9879869673");
 		viewPatientRegisterRequest.setPayee("T0055");
 		ResponseEntity<PatientRegistrationResponse> response = patientRegistrationController
@@ -104,7 +117,10 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_Error.xml"))
 				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
-		PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
+		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "e4414a89-8974-4cff-9677-d9d2df6f9cfb", "00000010", "hnweb-user", UUID.randomUUID().toString()));
+
+        PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("9879869673");
 		viewPatientRegisterRequest.setPayee("T0053");
 		ResponseEntity<PatientRegistrationResponse> response = patientRegistrationController
@@ -130,6 +146,9 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		mockBackEnd.enqueue(new MockResponse()
 				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_Error.xml"))
 				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+
+		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "e4414a89-8974-4cff-9677-d9d2df6f9cfb", "00000010", "hnweb-user", UUID.randomUUID().toString()));
 
 		PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("7363117301");
@@ -158,7 +177,10 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_Error.xml"))
 				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
-		PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
+		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "924917e3-970a-482d-88b5-244be4c19d70", "00000010", "hnweb-user", UUID.randomUUID().toString()));
+
+        PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("7363117302");
 		viewPatientRegisterRequest.setPayee("X0053");
 		ResponseEntity<PatientRegistrationResponse> response = patientRegistrationController
@@ -171,6 +193,44 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		// Check the additional message , status and number of valid records
 		assertEquals(StatusEnum.WARNING, patientRegistrationResponse.getStatus());
 		assertEquals(0, patientRegistrationHistory.size());
+	}
+
+	@Test
+	public void testRegistrationHistory_failure_no_payee_mapping_found() {
+		createPBFClinicPayee();
+		createPatientRegister();
+
+		//Note, don't enqueue a response as it is never requested and so will remain queued for next test when they are run together.
+		
+		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "1b85225b-58cc-4430-9dc9-0199057afdff", "00000010", "hnweb-user", UUID.randomUUID().toString()));
+        
+        PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
+		viewPatientRegisterRequest.setPhn("9879869673");
+		viewPatientRegisterRequest.setPayee("T0055");
+
+		assertThatExceptionOfType(ResponseStatusException.class)
+		.isThrownBy(() -> patientRegistrationController.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest()))
+		.withMessage("400 BAD_REQUEST \"No Payee Number mapping was found for the current user\"; nested exception is ca.bc.gov.hlth.hnweb.exception.HNWebException: No Payee Number mapping was found for the current user");
+	}
+
+	@Test
+	public void testRegistrationHistory_failure_incorrect_payee_mapping_found() throws Exception {
+		createPBFClinicPayee();
+		createPatientRegister();
+
+		//Note, don't enqueue a response as it is never requested and so will remain queued for next test when they are run together.
+
+		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "3c0fc3b5-45f8-4745-afa9-b7b04978023d", "00000010", "hnweb-user", UUID.randomUUID().toString()));
+        
+        PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
+		viewPatientRegisterRequest.setPhn("9879869673");
+		viewPatientRegisterRequest.setPayee("T0053");
+
+		assertThatExceptionOfType(ResponseStatusException.class)
+		.isThrownBy(() -> patientRegistrationController.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest()))
+		.withMessage("400 BAD_REQUEST \"Payee field value does not match the Payee Number mapped to this user\"; nested exception is ca.bc.gov.hlth.hnweb.exception.HNWebException: Payee field value does not match the Payee Number mapped to this user");
 	}
 
 	private void createPatientRegister() {

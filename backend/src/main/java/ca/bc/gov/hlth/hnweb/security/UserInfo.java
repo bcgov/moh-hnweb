@@ -21,9 +21,10 @@ public class UserInfo {
 		this.role = role;
 	}
 	
-	public UserInfo(String username, String organization, String role, String sessionState) {
+	public UserInfo(String username, String userId, String organization, String role, String sessionState) {
 		super();
 		this.username = username;
+		this.userId = userId;
 		this.organization = organization;
 		this.role = role;
 		this.sessionState = sessionState;
