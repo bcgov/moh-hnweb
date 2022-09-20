@@ -9,7 +9,7 @@
 
 <script>
 export default {
-  name: 'DownloadLink',
+  name: 'AppDownloadLink',
   props: {
     href: {
       type: String,

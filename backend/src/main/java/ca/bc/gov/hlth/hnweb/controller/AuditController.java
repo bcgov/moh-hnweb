@@ -42,7 +42,7 @@ import ca.bc.gov.hlth.hnweb.service.AuditService;
 @RestController
 public class AuditController extends BaseController {
 
-	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd_HH-mm-ss";
+	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
 	private static final Logger logger = LoggerFactory.getLogger(AuditController.class);
 
@@ -106,7 +106,7 @@ public class AuditController extends BaseController {
 
 		List<AffectedParty> affectedPartiesForDownload = auditService.getAffectedPartiesForDownload(
 				auditReportRequest.getTransactionTypes(), auditReportRequest.getOrganizations(),
-				auditReportRequest.getUserId(), auditReportRequest.getStartDate(), auditReportRequest.getEndDate());
+				auditReportRequest.getUserId(), auditReportRequest.getStartDate(), auditReportRequest.getEndDate(), auditReportRequest.getSortField(), auditReportRequest.getSortDirection());
 		List<AuditRecord> auditReport = convertReport(affectedPartiesForDownload);
 		logger.info("Number of records returned for download : {}", auditReport.size());
 

@@ -30,8 +30,6 @@ public class V2MessageUtil {
 	
 	public static final String DATE_FORMAT_DATE_ONLY = "yyyyMMdd";
 	
-	public static final String  DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-	
 	public static final String  DEFAULT_VERSION_ID = "2.4";
 
 	private static final String VISA_ISSUE = "VISA_ISSUE";

@@ -4,7 +4,7 @@ export const INPUT_DATE_FORMAT = 'yyyyMMdd'
 
 export const API_DATE_FORMAT = 'YYYY-MM-DD'
 
-export const API_DATE_TIME_FORMAT = 'YYYYMMDDhhmmss'
+export const API_DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
 
 export const DEFAULT_ERROR_MESSAGE = 'Please correct errors before submitting'
 

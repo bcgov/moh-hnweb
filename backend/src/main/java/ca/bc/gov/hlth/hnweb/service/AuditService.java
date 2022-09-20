@@ -51,7 +51,6 @@ import ca.bc.gov.hlth.hnweb.persistence.repository.TransactionRepository;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
-import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
 
 /**
  * Service for working with Auditing via Transaction tables.
@@ -63,6 +62,8 @@ public class AuditService {
 	private static final String DEFAULT_SORT = "transaction.startTime";
 
 	private static final String LOCAL_DATE_FORMAT = "yyyy-MM-dd";
+	
+	private static final String  DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 	
 	private static final String[] HEADERS = { "Type", "Organization", "User ID", "Transaction Start Time",
 			"Affected Party ID", "Affected Party ID Type", "Transaction ID" };
@@ -286,12 +287,12 @@ public class AuditService {
 	private ByteArrayInputStream writeDataToCsv(final List<AuditRecord> auditReports) {
 		logger.info("Writing data to the csv format");
 		
-		try (final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-				final CSVPrinter printer = new CSVPrinter(new PrintWriter(stream), FORMAT)) {
-			for (final AuditRecord auditRecord : auditReports) {
-				final List<String> auditData = Arrays.asList(String.valueOf(auditRecord.getType()),
+		try (ByteArrayOutputStream stream = new ByteArrayOutputStream();
+				CSVPrinter printer = new CSVPrinter(new PrintWriter(stream), FORMAT)) {
+			for (AuditRecord auditRecord : auditReports) {
+				 List<String> auditData = Arrays.asList(String.valueOf(auditRecord.getType()),
 						auditRecord.getOrganization(), auditRecord.getUserId(),
-						ConvertLocalDateTime(auditRecord.getTransactionStartTime()), auditRecord.getAffectedPartyId(),
+						convertLocalDateTime(auditRecord.getTransactionStartTime()), auditRecord.getAffectedPartyId(),
 						auditRecord.getAffectedPartyType(), auditRecord.getTransactionId());
 
 				printer.printRecord(auditData);
@@ -314,13 +315,20 @@ public class AuditService {
 	 * @return
 	 */
 	public List<AffectedParty> getAffectedPartiesForDownload(List<String> types, List<String> organizations,
-			String userId, LocalDate startDate, LocalDate endDate) {
+			String userId, LocalDate startDate, LocalDate endDate, String sortField, String sortDirection) {
 		try {
 			Date formattedStartDate = convertLocalDateToDate(startDate);
-			Date formattedendDate = convertLocalDateToDate(endDate);
-
+			Date formattedEndDate = convertLocalDateToDate(endDate);
+			
+			String property = sortMap.get(sortField);
+			if (StringUtils.isBlank(property)) {
+				property = DEFAULT_SORT;
+			}
+			Direction direction = StringUtils.isNotEmpty(sortDirection) ? Direction.valueOf(sortDirection) : Direction.DESC;
+			Sort sort = Sort.by(direction, property);
+			
 			return affectedPartyPageableRepository.findByTransactionAndDirection(types, organizations,
-					userId, AffectedPartyDirection.INBOUND.getValue(), formattedStartDate, formattedendDate, null).getContent();
+					userId, AffectedPartyDirection.INBOUND.getValue(), formattedStartDate, formattedEndDate, sort);
 		} catch (ParseException e) {
 			logger.error(e.getLocalizedMessage());
 			return null;
@@ -328,8 +336,8 @@ public class AuditService {
 
 	}
 
-	private String ConvertLocalDateTime(LocalDateTime dateTime) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_TIME_FORMAT);
+	private String convertLocalDateTime(LocalDateTime dateTime) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
 		// Format LocalDateTime
 		return dateTime.format(formatter);
 	}

@@ -48,7 +48,7 @@
   </div>
   <br />
   <div id="downloadCSV" v-show="searchOk && result.records.length > 0">
-    <DownloadLink href="#" :downloading="downloading" @click="downloadReport">Export To CSV</DownloadLink>
+    <AppDownloadLink href="#" :downloading="downloading" @click="downloadReport">Export To CSV</AppDownloadLink>
   </div>
   <div id="searchResults" v-show="searchOk && result.records.length > 0">
     <!-- && result?.records.length > 0 -->
@@ -84,13 +84,14 @@
 
 <script>
 import AuditService from '../../services/AuditService'
-import DownloadLink from '../../components/ui/DownloadLink.vue'
+import AppDownloadLink from '../../components/ui/AppDownloadLink.vue'
 import { API_DATE_TIME_FORMAT } from '../../util/constants'
 import useVuelidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 import { DEFAULT_ERROR_MESSAGE } from '../../util/constants.js'
 import { validateUserIdLength, VALIDATE_USER_ID_MESSAGE } from '../../util/validators'
 import { useAlertStore } from '../../stores/alert'
+import { useAuditReportStore } from '../../stores/auditReport'
 import { handleServiceError } from '../../util/utils'
 import AppLabel from '../../components/ui/AppLabel.vue'
 import dayjs from 'dayjs'
@@ -100,11 +101,12 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 
 export default {
-  components: { AppLabel, Column, DataTable, DownloadLink },
+  components: { AppLabel, Column, DataTable, AppDownloadLink },
   name: 'AuditReporting',
   setup() {
     return {
       alertStore: useAlertStore(),
+      auditStore: useAuditReportStore(),
       v$: useVuelidate(),
     }
   },
@@ -166,6 +168,12 @@ export default {
       this.loadLazyData()
 
       this.searchOk = true
+
+      this.auditStore.userId = this.userId
+      this.auditStore.organizations = this.organizations
+      this.auditStore.transactionTypes = this.transactionTypes
+      this.auditStore.startDate = this.startDate
+      this.auditStore.endDate = this.endDate
     },
     async loadLazyData() {
       this.loading = true
@@ -220,11 +228,13 @@ export default {
       this.downloading = true
       try {
         await AuditService.downloadAuditReport({
-          organizations: this.organizations,
-          transactionTypes: this.transactionTypes,
-          userId: this.userId,
-          startDate: this.startDate,
-          endDate: this.endDate,
+          organizations: this.auditStore.organizations,
+          transactionTypes: this.auditStore.transactionTypes,
+          userId: this.auditStore.userId,
+          startDate: this.auditStore.startDate,
+          endDate: this.auditStore.endDate,
+          sortField: this.lazyParams.sortField,
+          sortDirection: this.lazyParams.sortOrder === 1 ? 'ASC' : 'DESC',
         }).then((response) => {
           this.exportToCSV(response.data)
         })
@@ -259,6 +269,7 @@ export default {
       this.searching = false
       this.v$.$reset()
       this.alertStore.dismissAlert()
+      this.auditStore.$reset()
       this.firstRecordIndex = 0
       // This is a workaround to ensure that the paginator is reset by forcing the component to reload
       // Technically this can be handled with firstRecordIndex but there appears to be an issue. See https://github.com/primefaces/primevue/issues/2253.
