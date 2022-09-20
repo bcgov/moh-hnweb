@@ -1,5 +1,7 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
@@ -48,10 +50,14 @@ public class BcscPayeeMappingController {
 		logger.info("Adding a new BCSC User to Payee Mapping:\n{}", bcscPayeeMappingRequest.toString());
 		
 		if (StringUtils.isBlank(bcscPayeeMappingRequest.getBcscGuid())) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing value in required request field bcscGuid");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing value in required request field bcscGuid.");
 		}
 		if (StringUtils.isBlank(bcscPayeeMappingRequest.getPayeeNumber())) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing value in required request field payeeNumber");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing value in required request field payeeNumber.");
+		}
+		List<BcscPayeeMapping> payeeNumberMappings = bcscPayeeMappingService.findByPayeeNumber(bcscPayeeMappingRequest.getPayeeNumber());
+		if (!payeeNumberMappings.isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "A mapping already exists for this Payee Number.");
 		}
 		
 		try {

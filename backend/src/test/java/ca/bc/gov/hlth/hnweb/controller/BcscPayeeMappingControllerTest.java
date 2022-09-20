@@ -34,7 +34,7 @@ public class BcscPayeeMappingControllerTest {
 	public void testAddBcscPayeeMapping_success() {
 		
 		String bcscGuid = UUID.randomUUID().toString();		
-		String payeeNumber = "00053";
+		String payeeNumber = "00063";
 		
 		BcscPayeeMappingRequest bcscPayeeMappingRequest = createBcscPayeeMappingRequest(bcscGuid, payeeNumber);
 		
@@ -59,26 +59,26 @@ public class BcscPayeeMappingControllerTest {
 	public void testAddBcscPayeeMapping_fail_missing_bcsc_guid() {
 
 		String bcscGuid = null;		
-		String payeeNumber = "00053";
+		String payeeNumber = "00063";
 		
 		BcscPayeeMappingRequest bcscPayeeMappingRequest = createBcscPayeeMappingRequest(bcscGuid, payeeNumber);
 		
 		assertThatExceptionOfType(ResponseStatusException.class)
 		.isThrownBy(() -> bcscPayeeMappingController.addBcscPayeeMapping(bcscPayeeMappingRequest))
-		.withMessage("400 BAD_REQUEST \"Missing value in required request field bcscGuid\"");
+		.withMessage("400 BAD_REQUEST \"Missing value in required request field bcscGuid.\"");
 	}
 	
 	@Test
 	public void testAddBcscPayeeMapping_fail_missing_bcsc_guid_empty_value() {
 
 		String bcscGuid = " "; //Should fail for anything except a populated String		
-		String payeeNumber = "00053";
+		String payeeNumber = "00063";
 		
 		BcscPayeeMappingRequest bcscPayeeMappingRequest = createBcscPayeeMappingRequest(bcscGuid, payeeNumber);
 		
 		assertThatExceptionOfType(ResponseStatusException.class)
 		.isThrownBy(() -> bcscPayeeMappingController.addBcscPayeeMapping(bcscPayeeMappingRequest))
-		.withMessage("400 BAD_REQUEST \"Missing value in required request field bcscGuid\"");		
+		.withMessage("400 BAD_REQUEST \"Missing value in required request field bcscGuid.\"");		
 	}
 	
 	@Test
@@ -91,26 +91,33 @@ public class BcscPayeeMappingControllerTest {
 		
 		assertThatExceptionOfType(ResponseStatusException.class)
 		.isThrownBy(() -> bcscPayeeMappingController.addBcscPayeeMapping(bcscPayeeMappingRequest))
-		.withMessage("400 BAD_REQUEST \"Missing value in required request field payeeNumber\"");		
+		.withMessage("400 BAD_REQUEST \"Missing value in required request field payeeNumber.\"");		
 	}
 	
 	@Test
 	public void testAddBcscPayeeMapping_fail_bcsc_already_exists() {
 		
 		String bcscGuid = "a9c3b536-4598-411a-bda2-4068d6b5cc20";		
-		String payeeNumber = "00023";
+		String payeeNumber = "00063";
 		
 		BcscPayeeMappingRequest bcscPayeeMappingRequest = createBcscPayeeMappingRequest(bcscGuid, payeeNumber);
 		
 		assertThatExceptionOfType(ResponseStatusException.class)
 		.isThrownBy(() -> bcscPayeeMappingController.addBcscPayeeMapping(bcscPayeeMappingRequest))
 		.withMessage("409 CONFLICT \"Entity already exists.\"; nested exception is ca.bc.gov.hlth.hnweb.exception.BcscPayeeMappingException: Entity already exists.");
-		
 	}
 	
 	@Test
 	public void testAddBcscPayeeMapping_fail_payee_number_already_mapped() {
-		//TODO (dbarrett) Check if need to restrict already mapped payee numbers from being assigned to new BCSC Guid
+		
+		String bcscGuid = UUID.randomUUID().toString();		
+		String payeeNumber = "00023";
+		
+		BcscPayeeMappingRequest bcscPayeeMappingRequest = createBcscPayeeMappingRequest(bcscGuid, payeeNumber);
+		
+		assertThatExceptionOfType(ResponseStatusException.class)
+		.isThrownBy(() -> bcscPayeeMappingController.addBcscPayeeMapping(bcscPayeeMappingRequest))
+		.withMessage("409 CONFLICT \"A mapping already exists for this Payee Number.\"");
 		
 	}
 		
