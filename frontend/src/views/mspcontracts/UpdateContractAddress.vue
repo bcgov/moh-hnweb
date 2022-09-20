@@ -1,7 +1,7 @@
 <template>
   <AppHelp>
     <p>Use this screen to update the Home or Mailing Address and/or the telephone number recorded by MSP for a group member.</p>
-    <p>NOTE: this screen does not call any postal validation software</p>
+    <p>NOTE: this screen does not call any postal validation software.</p>
     <p>The Home Address must be in British Columbia and the Postal Code must start with V. The Mailing Address is optional, it can be filled out if it differs from the Home Address.</p>
     <p>A complete transaction will display the PHN. You may wish to copy the PHN and click on the "Get Contract Address" menu option to verify that the correct address or phone number has been added.</p>
   </AppHelp>

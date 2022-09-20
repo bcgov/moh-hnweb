@@ -31,7 +31,7 @@
       <AppRow>
         <AppCol class="col3">
           <GenderRadioButtonGroup :e-model="v$.gender" id="gender" v-model="gender">
-            <template #tooltip>If you know the gender the client is registered with, select the Male or Female radio button. Or, leave as "Unknown" </template>
+            <template #tooltip>If you know the gender the client is registered with, select the Male or Female radio button. Or, leave as "Unknown".</template>
           </GenderRadioButtonGroup>
         </AppCol>
       </AppRow>
@@ -45,7 +45,6 @@
 
 <script>
 import AppHelp from '../../../components/ui/AppHelp.vue'
-import AppCard from '../../../components/ui/AppCard.vue'
 import GenderRadioButtonGroup from '../../ui/GenderRadioButtonGroup.vue'
 import useVuelidate from '@vuelidate/core'
 import dayjs from 'dayjs'
@@ -59,7 +58,6 @@ export default {
   components: {
     GenderRadioButtonGroup,
     AppHelp,
-    AppCard,
   },
   setup() {
     return {

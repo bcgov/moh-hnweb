@@ -15,7 +15,7 @@
     </p>
     <p>Coverage periods are returned in descending order of effective date, for each person.</p>
     <p>A maximum of 10 persons and 5 coverage periods per person can be returned.</p>
-    <p>The Cancel Reason, if applicable, is either "ELIGIBLE" (means coverage is cancelled under that Group but the person is still an MSP beneficiary), or "INELIGIBLE" (means the person is no longer an MSP beneficiary), or "DECEASED</p>
+    <p>The Cancel Reason, if applicable, is either "ELIGIBLE" (means coverage is cancelled under that Group but the person is still an MSP beneficiary), "INELIGIBLE" (means the person is no longer an MSP beneficiary), or "DECEASED</p>
   </AppHelp>
   <div>
     <form @submit.prevent="submitForm">
