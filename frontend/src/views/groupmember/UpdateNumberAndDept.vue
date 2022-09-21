@@ -1,7 +1,7 @@
 <template>
   <AppHelp>
     <p>Use this screen to add, change or delete the Group Member Number or Department Number recorded for an group member.</p>
-    <p>The Contract Inquiry shows you the Group Member and Department Numbers on your Group Members contracts.</p>
+    <p>The Contract Inquiry shows you the Group Member and Department Numbers on your Group Member's contracts.</p>
     <p>Group Number and Group Member PHN are required fields. At least one of Group Member Number or Department Number must be populated.</p>
     <p>To ADD or CHANGE an Group Member Number, enter the new number of up to nine letters or numbers.</p>
     <p>To DELETE a Group Member Number, enter 6 or more dashes ( "------") in the field.</p>
