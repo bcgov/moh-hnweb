@@ -1,4 +1,9 @@
 <template>
+  <AppHelp>
+    <p>The purpose of this screen is to retrieve a person's name, address, gender, date of birth, and verify this is the correct person you want to enroll in MSP and add to your group.</p>
+    <p>Results displayed include the client's Personal Health Number, name, birthdate, gender, and date of death (if applicable). Enter the additional required information about the person you wish to enroll in MSP and add to your group.</p>
+    <p>Once additional information has been added and submitted, the completed transaction will display the PHN and give the option to add another Study Permit Holder.</p>
+  </AppHelp>
   <ResidentPHN v-if="isPhnSearch" @update-resident="updateResident" :searching="searching" />
   <ResidentDetails v-else-if="isStudentRegistration" @register-resident="registerResident" :submitting="submitting" />
   <RegistrationConfirmation v-else-if="isConfirmation" :resident="this.getPersonDetailsResult?.person" />
@@ -14,10 +19,12 @@ import RegistrationConfirmation from '../../../components/coverage/enrollment/Re
 import { useAlertStore } from '../../../stores/alert'
 import { useStudyPermitHolderStore } from '../../../stores/studyPermitHolder'
 import { handleServiceError } from '../../../util/utils'
+import AppHelp from '../../../components/ui/AppHelp.vue'
 
 export default {
   name: 'AddVisaResidentWithPHN',
   components: {
+    AppHelp,
     ResidentPHN,
     ResidentDetails,
     RegistrationConfirmation,

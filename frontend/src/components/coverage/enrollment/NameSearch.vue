@@ -9,6 +9,7 @@
       <AppRow>
         <AppCol class="col3">
           <AppInput :e-model="v$.firstName" id="firstName" label="First Name" type="text" v-model.trim="firstName" />
+          <template #tooltip>If you know the gender the client is registered with, select the Male or Female radio button. Or, leave as "Unknown" </template>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -23,7 +24,9 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <GenderRadioButtonGroup :e-model="v$.gender" id="gender" v-model="gender" />
+          <GenderRadioButtonGroup :e-model="v$.gender" id="gender" v-model="gender">
+            <template #tooltip>If you know the gender the client is registered with, select the Male or Female radio button. Or, leave as "Unknown".</template>
+          </GenderRadioButtonGroup>
         </AppCol>
       </AppRow>
       <AppRow>

@@ -1,4 +1,10 @@
 <template>
+  <AppHelp>
+    <p>Use the Change Cancel Date screen to change the coverage cancel date of an employee on your MSP group account. Any dependents with the same existing cancel date will automatically have their cancel dates changed along with the employee.</p>
+    <p>NOTE - if you do not know the PHN, the PHN Lookup transaction can be used to find an employee's PHN from their MSP Contract Number.</p>
+    <p>You must enter the cancel date that is currently on file. Use the Get Contract Periods business service first to be sure you have the correct date.</p>
+    <p>The employee's Personal Health Number is displayed. You may wish to use the PHN to verify, with the Get Contract Periods business service, that the cancel date has been changed correctly.</p>
+  </AppHelp>
   <div id="changeCancelDate" v-if="inputFormActive">
     <form @submit.prevent="submitForm">
       <AppRow>
@@ -35,7 +41,7 @@
 
 <script>
 import MaintenanceService from '../../../services/MaintenanceService'
-
+import AppHelp from '../../../components/ui/AppHelp.vue'
 import useVuelidate from '@vuelidate/core'
 import { validatePHN, validateGroupNumber, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
@@ -46,6 +52,10 @@ import { handleServiceError } from '../../../util/utils'
 
 export default {
   name: 'ChangeCancelDate',
+
+  components: {
+    AppHelp,
+  },
 
   setup() {
     return {

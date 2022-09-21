@@ -1,4 +1,22 @@
 <template>
+  <AppHelp>
+    <p>
+      Use this screen to retrieve the persons and coverage periods associated with a group member’s MSP contract. This can be used to verify that a particular business service has been correctly submitted, for example whether an individual was canceled from the group account. The PHN Lookup screen
+      can be used to find a group member or dependent's PHN.
+    </p>
+    <p>
+      If the transaction was successful, persons will be returned in this order: 
+      <ul>
+        <li>the spouse(s), active and cancelled ·</li>
+        <li>the dependent(s)</li>
+        <li>the person whose PHN was entered on the input screen</li>
+        <li>the group member.</li>      
+      </ul>  
+    </p>
+    <p>Coverage periods are returned in descending order of effective date, for each person.</p>
+    <p>A maximum of 10 persons and 5 coverage periods per person can be returned.</p>
+    <p>The Cancel Reason, if applicable, is either "ELIGIBLE" (means coverage is cancelled under that Group but the person is still an MSP beneficiary), "INELIGIBLE" (means the person is no longer an MSP beneficiary), or "DECEASED</p>
+  </AppHelp>
   <div>
     <form @submit.prevent="submitForm">
       <AppRow>
@@ -39,6 +57,7 @@
 
 <script>
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
+import AppHelp from '../../components/ui/AppHelp.vue'
 import MspContractsService from '../../services/MspContractsService'
 import BeneficiaryContractPeriod from '../../components/mspcontracts/BeneficiaryContractPeriod.vue'
 import useVuelidate from '@vuelidate/core'
@@ -51,6 +70,7 @@ export default {
   name: 'GetContractPeriods',
   components: {
     AppSimpleTable,
+    AppHelp,
     BeneficiaryContractPeriod,
   },
   setup() {

@@ -1,4 +1,8 @@
 <template>
+  <AppHelp>
+    <p>Use this screen to retrieve the address and telephone number recorded by MSP for a group member.</p>
+    <p>If the transaction was successful, the group member’s PHN, name, and contract home address and mailing address will be displayed.</p>
+  </AppHelp>
   <div>
     <form @submit.prevent="submitForm">
       <AppRow>
@@ -94,6 +98,7 @@
 </template>
 <script>
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
+import AppHelp from '../../components/ui/AppHelp.vue'
 import GroupMemberContractBeneficiary from '../../components/mspcontracts/GroupMemberContractBeneficiary.vue'
 import useVuelidate from '@vuelidate/core'
 import { validateOptionalPHN, validateGroupNumber, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE } from '../../util/validators'
@@ -105,6 +110,7 @@ import { handleServiceError } from '../../util/utils'
 export default {
   name: 'GetGroupMembersContractAddress',
   components: {
+    AppHelp,
     AppSimpleTable,
     GroupMemberContractBeneficiary,
   },
@@ -170,7 +176,7 @@ export default {
         }
 
         this.searchOk = true
-        this.alertStore.setAlertWithInfoForSuccess( this.result.message, this.result.status )
+        this.alertStore.setAlertWithInfoForSuccess(this.result.message, this.result.status)
         if (this.result.message === 'RPBS0059 MORE THAN 20 PERSONS. PLEASE CONTACT MSP') {
           // in legacy no results are shown the > 20 message is returned so clear result info
           this.result.contractInquiryBeneficiaries = []
