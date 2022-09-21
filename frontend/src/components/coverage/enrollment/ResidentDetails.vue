@@ -1,8 +1,4 @@
 <template>
-  <AppHelp>
-    <p>The purpose of this screen is to retrieve a persons information to enroll in MSP, and then to add to your group.</p>
-    <p>When searching by PHN, the person’s PHN, name, address, gender, date of birth, and date of death (if applicable) will be displayed. Verify this is the correct person you want to enroll in MSP, and then to add to your group.</p>
-  </AppHelp>
   <div>
     <AppRow>
       <AppCol class="col3">
@@ -146,7 +142,6 @@
 </template>
 <script>
 import AppSelect from '../../ui/AppSelect.vue'
-import AppHelp from '../../../components/ui/AppHelp.vue'
 import useVuelidate from '@vuelidate/core'
 import {
   validateGroupNumber,
@@ -181,7 +176,6 @@ export default {
   name: 'ResidentDetails',
   components: {
     AppSelect,
-    AppHelp,
   },
   setup() {
     return {

@@ -1,8 +1,4 @@
 <template>
-  <AppHelp>
-    <p>The purpose of this screen is to retrieve a person's name, address, gender, date of birth, and verify this is the correct person you want to enroll in MSP and add to your group. .</p>
-    <p>Results displayed include the client's Personal Health Number, name, birthdate, gender, and date of death (if applicable). </p>
-  </AppHelp>
   <div>
     <form @submit.prevent="submitForm">
       <AppRow>
@@ -19,7 +15,6 @@
 </template>
 
 <script>
-import AppHelp from '../../../components/ui/AppHelp.vue'
 import useVuelidate from '@vuelidate/core'
 import { validatePHN, VALIDATE_PHN_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
@@ -27,9 +22,6 @@ import { useAlertStore } from '../../../stores/alert'
 
 export default {
   name: 'ResidentPHN',
-  components: {
-    AppHelp,
-  },
   setup() {
     return {
       alertStore: useAlertStore(),
