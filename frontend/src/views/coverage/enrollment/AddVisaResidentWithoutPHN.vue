@@ -1,4 +1,12 @@
 <template>
+  <AppHelp>
+    <p>The purpose of this screen is to search the Health Registry database to determine if a person already has a Personal Health Number (PHN). It is very important that the person is not assigned a new PHN if they already have one.</p>
+    <p>
+      Enter the Surname, First Name, Date of Birth and Gender of the person you wish to add. The screen will either return a list of people to chose from based on the search criteria, with the option to "Add" on the right. When you select "Add" you will be directed to Add Study Permit Holder with
+      PHN to fill out the required information.
+    </p>
+    <p>If no matches are found based on the search criteria, enter the information about the person you wish to add. This will create a PHN for the person and give the option to add another Study Permit Holder.</p>
+  </AppHelp>
   <NameSearch v-if="isNameSearch" @search-for-candidates="searchForCandidates" :searching="searching" />
   <NameSearchResults v-else-if="isNameSearchResults" :candidates="this.nameSearchResult.candidates" />
   <ResidentDetailsWithoutPHN v-else-if="isStudentRegistration" :resident="this.registrationPerson" @register-resident="registerResident" :submitting="submitting" />
@@ -14,10 +22,12 @@ import RegistrationConfirmation from '../../../components/coverage/enrollment/Re
 import { useAlertStore } from '../../../stores/alert'
 import { useStudyPermitHolderStore } from '../../../stores/studyPermitHolder'
 import { handleServiceError } from '../../../util/utils.js'
+import AppHelp from '../../../components/ui/AppHelp.vue'
 
 export default {
   name: 'AddVisaResidentWithoutPHN',
   components: {
+    AppHelp,
     NameSearch,
     NameSearchResults,
     ResidentDetailsWithoutPHN,
@@ -125,7 +135,7 @@ export default {
           return
         }
 
-        this.alertStore.setAlertWithInfoForSuccess( this.registrationResult?.message, this.registrationResult?.status )
+        this.alertStore.setAlertWithInfoForSuccess(this.registrationResult?.message, this.registrationResult?.status)
 
         this.registrationPerson = { ...personDetails, phn: this.registrationResult.phn }
         this.pageAction = this.PAGE_ACTION.CONFIRMATION

@@ -1,4 +1,11 @@
 <template>
+  <AppHelp>
+    <p>Use this screen to find the Personal Health Numbers (PHNs) for a group member and their dependents. Once found, the PHN is used to submit other web business services, such as Cancel Group Member.</p>
+    <p><b>Fields</b></p>
+    <p>Group member: The group member must have coverage, currently or in the past, under this group number. If a group member or dependent has not yet been added to your group, please collect their PHNs from an MSP application or change form completed by the group member.</p>
+    <p>MSP Contract Number: This is found on the MSP monthly Summary of MSP Group Account Enrolment (listed as “Account Number”) . If you have a Contract Number that appears to have only 8 digits, you must enter it with a leading zero i.e., as 012345678.</p>
+    <p>If the transaction was successful, the Personal Health Numbers of your group member and all dependents covered on that contract, currently and in the past, will be returned, along with their demographic details.</p>
+  </AppHelp>
   <div>
     <form @submit.prevent="submitForm">
       <AppRow>
@@ -39,6 +46,7 @@
 </template>
 
 <script>
+import AppHelp from '../../components/ui/AppHelp.vue'
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
 import EligibilityService from '../../services/EligibilityService'
 import PhnLookupBeneficiary from '../../components/eligibility/PhnLookupBeneficiary.vue'
@@ -51,6 +59,7 @@ import { handleServiceError } from '../../util/utils'
 export default {
   name: 'PhnInquiry',
   components: {
+    AppHelp,
     AppSimpleTable,
     PhnLookupBeneficiary,
   },
@@ -92,7 +101,7 @@ export default {
         }
 
         this.searchOk = true
-        this.alertStore.setAlertWithInfoForSuccess( this.result.message, this.result.status )
+        this.alertStore.setAlertWithInfoForSuccess(this.result.message, this.result.status)
       } catch (err) {
         handleServiceError(err, this.alertStore, this.$router)
       } finally {
