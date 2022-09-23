@@ -91,7 +91,6 @@ import { required, helpers } from '@vuelidate/validators'
 import { DEFAULT_ERROR_MESSAGE } from '../../util/constants.js'
 import { validateUserIdLength, VALIDATE_USER_ID_MESSAGE } from '../../util/validators'
 import { useAlertStore } from '../../stores/alert'
-import { useAuditReportStore } from '../../stores/auditReport'
 import { handleServiceError } from '../../util/utils'
 import AppLabel from '../../components/ui/AppLabel.vue'
 import dayjs from 'dayjs'
@@ -106,7 +105,6 @@ export default {
   setup() {
     return {
       alertStore: useAlertStore(),
-      auditStore: useAuditReportStore(),
       v$: useVuelidate(),
     }
   },
@@ -127,6 +125,7 @@ export default {
         message: '',
         status: '',
       },
+      auditReportRequest: {},
       dataTableKey: 0,
       firstRecordIndex: 0,
       loading: false,
@@ -169,11 +168,11 @@ export default {
 
       this.searchOk = true
 
-      this.auditStore.userId = this.userId
-      this.auditStore.organizations = this.organizations
-      this.auditStore.transactionTypes = this.transactionTypes
-      this.auditStore.startDate = this.startDate
-      this.auditStore.endDate = this.endDate
+      this.auditReportRequest.userId = this.userId
+      this.auditReportRequest.organizations = this.organizations
+      this.auditReportRequest.transactionTypes = this.transactionTypes
+      this.auditReportRequest.startDate = this.startDate
+      this.auditReportRequest.endDate = this.endDate
     },
     async loadLazyData() {
       this.loading = true
@@ -228,11 +227,11 @@ export default {
       this.downloading = true
       try {
         await AuditService.downloadAuditReport({
-          organizations: this.auditStore.organizations,
-          transactionTypes: this.auditStore.transactionTypes,
-          userId: this.auditStore.userId,
-          startDate: this.auditStore.startDate,
-          endDate: this.auditStore.endDate,
+          organizations: this.auditReportRequest.organizations,
+          transactionTypes: this.auditReportRequest.transactionTypes,
+          userId: this.auditReportRequest.userId,
+          startDate: this.auditReportRequest.startDate,
+          endDate: this.auditReportRequest.endDate,
           sortField: this.lazyParams.sortField,
           sortDirection: this.lazyParams.sortOrder === 1 ? 'ASC' : 'DESC',
         }).then((response) => {
@@ -246,9 +245,9 @@ export default {
     },
     exportToCSV(response) {
       const now = dayjs().format(API_DATE_TIME_FORMAT)
-      let filename = 'auditreport_' + now + '.csv'
+      const filename = 'auditreport_' + now + '.csv'
 
-      let element = document.createElement('a')
+      const element = document.createElement('a')
       element.setAttribute('href', 'data:text/csv;charset=utf-8,' + response)
       element.setAttribute('download', filename)
 
@@ -275,6 +274,7 @@ export default {
       // Technically this can be handled with firstRecordIndex but there appears to be an issue. See https://github.com/primefaces/primevue/issues/2253.
       this.dataTableKey++
       this.resetLazyParams()
+      this.auditReportRequest = {}
     },
     resetLazyParams() {
       this.lazyParams = {

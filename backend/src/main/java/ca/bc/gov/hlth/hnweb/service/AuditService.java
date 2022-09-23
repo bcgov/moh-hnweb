@@ -63,7 +63,7 @@ public class AuditService {
 
 	private static final String LOCAL_DATE_FORMAT = "yyyy-MM-dd";
 	
-	private static final String  DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+	public static final String  DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 	
 	private static final String[] HEADERS = { "Type", "Organization", "User ID", "Transaction Start Time",
 			"Affected Party ID", "Affected Party ID Type", "Transaction ID" };

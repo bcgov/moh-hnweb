@@ -230,7 +230,7 @@ public class AuditControllerTest extends BaseControllerTest {
 		auditReportRequest.setSortDirection("ASC");
 		auditReportRequest.setSortField("type");
 		
-		 ResponseEntity<Resource> downloadReport = auditReportController.downloadReport(auditReportRequest,
+		 ResponseEntity<Resource> downloadReport = auditReportController.downloadAuditReport(auditReportRequest,
 				createHttpServletRequest());
 		 
 		 List<String> reportData = new ArrayList<String>();
@@ -250,13 +250,13 @@ public class AuditControllerTest extends BaseControllerTest {
 		 		"CHECK_ELIGIBILITY", reportData.get(6));		 		 
 		 assertEquals("00000010", reportData.get(7));
 		 assertEquals("hnweb1", reportData.get(8));
-		 assertEquals("2022-08-05 00:00:00", reportData.get(9));
+		 assertEquals("2022-08-05T00:00:00", reportData.get(9));
 		 assertEquals("PHN", reportData.get(10));
 		 
 		 //Check the last (40th) record
 		 assertEquals("00000010", reportData.get(241));
 		 assertEquals("hnweb1", reportData.get(242));
-		 assertEquals("2022-08-05 00:00:00", reportData.get(243));
+		 assertEquals("2022-08-05T00:00:00", reportData.get(243));
 		 assertEquals("PHN", reportData.get(244));
 	}
 	
@@ -277,7 +277,7 @@ public class AuditControllerTest extends BaseControllerTest {
 		auditReportRequest.setSortDirection("DESC");
 		auditReportRequest.setSortField("type");
 		
-		 ResponseEntity<Resource> downloadReport = auditReportController.downloadReport(auditReportRequest,
+		 ResponseEntity<Resource> downloadReport = auditReportController.downloadAuditReport(auditReportRequest,
 				createHttpServletRequest());
 		 
 		 List<String> reportData = new ArrayList<String>();
@@ -297,13 +297,13 @@ public class AuditControllerTest extends BaseControllerTest {
 		 		"PHN_INQUIRY", reportData.get(6));		 		 
 		 assertEquals("00000010", reportData.get(7));
 		 assertEquals("hnweb1", reportData.get(8));
-		 assertEquals("2022-08-05 00:00:00", reportData.get(9));
+		 assertEquals("2022-08-05T00:00:00", reportData.get(9));
 		 assertEquals("PHN", reportData.get(10));
 		 
 		 //Check the last (40th) record
 		 assertEquals("00000010", reportData.get(241));
 		 assertEquals("hnweb1", reportData.get(242));
-		 assertEquals("2022-08-05 00:00:00", reportData.get(243));
+		 assertEquals("2022-08-05T00:00:00", reportData.get(243));
 		 assertEquals("PHN", reportData.get(244));
 	}
 

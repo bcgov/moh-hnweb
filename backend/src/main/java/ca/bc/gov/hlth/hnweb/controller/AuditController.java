@@ -1,6 +1,7 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
-import java.text.DateFormat;
+import static ca.bc.gov.hlth.hnweb.service.AuditService.DATE_TIME_FORMAT;
+
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -41,8 +42,10 @@ import ca.bc.gov.hlth.hnweb.service.AuditService;
 @RequestMapping("/audit")
 @RestController
 public class AuditController extends BaseController {
-
-	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+	
+	private static final String AUDIT_REPORT_PREFIX = "auditreport_";
+			
+	private static final String AUDIT_REPORT_EXTENSION = ".csv";
 
 	private static final Logger logger = LoggerFactory.getLogger(AuditController.class);
 
@@ -98,11 +101,8 @@ public class AuditController extends BaseController {
 	 * @return
 	 */
 	@PostMapping("/download-report")
-	public ResponseEntity<Resource> downloadReport(@Valid @RequestBody AuditReportRequest auditReportRequest,
+	public ResponseEntity<Resource> downloadAuditReport(@Valid @RequestBody AuditReportRequest auditReportRequest,
 			HttpServletRequest request) {
-
-		DateFormat dateFormatter = new SimpleDateFormat(DATE_TIME_FORMAT);
-		String currentDateTime = dateFormatter.format(new Date());
 
 		List<AffectedParty> affectedPartiesForDownload = auditService.getAffectedPartiesForDownload(
 				auditReportRequest.getTransactionTypes(), auditReportRequest.getOrganizations(),
@@ -110,9 +110,13 @@ public class AuditController extends BaseController {
 		List<AuditRecord> auditReport = convertReport(affectedPartiesForDownload);
 		logger.info("Number of records returned for download : {}", auditReport.size());
 
-		final InputStreamResource resource = new InputStreamResource(auditService.load(auditReport));
+		InputStreamResource resource = new InputStreamResource(auditService.load(auditReport));
+
+		String currentDateTime = new SimpleDateFormat(DATE_TIME_FORMAT).format(new Date());
+		String fileName = AUDIT_REPORT_PREFIX + currentDateTime + AUDIT_REPORT_EXTENSION;
+
 		return ResponseEntity.ok()
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=audit_" + currentDateTime + ".csv")
+				.header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=%s", fileName))
 				.contentType(MediaType.parseMediaType("application/csv")).body(resource);
 
 	}
