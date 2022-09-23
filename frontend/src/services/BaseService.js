@@ -38,6 +38,7 @@ export const resources = {
   reports: {
     getAuditReport: '/audit/audit-report',
     getOrganizations: '/audit/organizations',
+    downloadAuditReport: '/audit/download-report',
   },
   user: {
     permissions: '/user/permissions',
