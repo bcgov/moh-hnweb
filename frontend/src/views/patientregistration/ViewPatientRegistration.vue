@@ -227,6 +227,9 @@ export default {
         required,
         validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
       },
+      payee: {
+        required,
+      },
     }
   },
 }
