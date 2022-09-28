@@ -50,6 +50,7 @@ test('Check Patient Registration Warning Message when no EMPI, PBF records found
   await t
     // Given a PHN entered with an invalid format
     .typeText(ViewPatientRegistrationPage.phnInput, '9331926919')
+    .wait(3000)
     // When I click the submit button
     .click(ViewPatientRegistrationPage.submitButton)
     // I expect an error message stating the page had errors and an individual error message for the PHN format
@@ -90,6 +91,7 @@ test('Check properly filled form passes validation and validate results', async 
   await t
     // Given the page is filled out correctly
     .typeText(ViewPatientRegistrationPage.phnInput, '9879869673')
+    .wait(3000)
     // When I click the submit button
     .click(ViewPatientRegistrationPage.submitButton)
     .wait(5000)
