@@ -68,11 +68,11 @@ test('Check Patient Registration Warning Message when no EMPI, PBF records found
 
 test.skip('Check Patient Registration Success Message when EMPI exists but no PBF records found', async (t) => {
   await t
-    // Given a PHN entered with an invalid format
+    // Given a PHN entered with an valid format
     .typeText(ViewPatientRegistrationPage.phnInput, '9878259011')
     // When I click the submit button
     .click(ViewPatientRegistrationPage.submitButton)
-    // I expect an error message stating the page had errors and an individual error message for the PHN format
+    // I expect a success message
     .expect(AlertPage.alertBannerText.textContent)
     .contains(SUCCESS_MESSAGE)
     .expect(ViewPatientRegistrationPage.patientDemoDetail.exists)
@@ -128,7 +128,7 @@ test('Check properly filled form passes validation and validate results', async 
     .contains(POTENTIAL_DUPLICATE_EMPI)
 })
 
-test('Check Patient registered with a different msp payee within group', async (t) => {
+test.skip('Check Patient registered with a different msp payee within group', async (t) => {
   await t
     // Given the page is filled out correctly
     .typeText(ViewPatientRegistrationPage.phnInput, '9879869673')
@@ -170,7 +170,7 @@ test('Check Patient registered with a different msp payee within group', async (
     .contains(DIFFERENT_MSP_PAYEE_WITHIN_GROUP + '\n' + POTENTIAL_DUPLICATE_EMPI)
 })
 
-test('Check Patient registered with a different msp payee outside group', async (t) => {
+test.skip('Check Patient registered with a different msp payee outside group', async (t) => {
   await t
     .click(ViewPatientRegistrationPage.clearButton)
     // Given the page is filled out correctly
