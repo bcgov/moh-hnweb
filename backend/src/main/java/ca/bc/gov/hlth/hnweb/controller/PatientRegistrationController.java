@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,13 +18,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.converter.hl7v3.GetDemographicsConverter;
+import ca.bc.gov.hlth.hnweb.exception.HNWebException;
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegisterModel;
@@ -34,8 +38,12 @@ import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
+import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.BcscPayeeMapping;
 import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.PatientRegister;
+import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
+import ca.bc.gov.hlth.hnweb.security.UserInfo;
+import ca.bc.gov.hlth.hnweb.service.BcscPayeeMappingService;
 import ca.bc.gov.hlth.hnweb.service.EnrollmentService;
 import ca.bc.gov.hlth.hnweb.service.PatientRegistrationService;
 
@@ -65,6 +73,9 @@ public class PatientRegistrationController extends BaseController {
 
 	@Autowired
 	private PatientRegistrationService patientRegistrationService;
+	
+	@Autowired
+	private BcscPayeeMappingService bcscPayeeMappingService;	
 
 	@PostMapping("/get-patient-registration")
 	public ResponseEntity<PatientRegistrationResponse> getPatientRegistration(
@@ -77,6 +88,8 @@ public class PatientRegistrationController extends BaseController {
 				AffectedPartyDirection.INBOUND);
 
 		try {
+			validatePayeeNumberMapping(patientRegistrationRequest);
+			
 			// Retrieve demographic details
 			GetDemographicsConverter converter = new GetDemographicsConverter();
 			GetDemographicsRequest demographicsRequest = converter.convertRequest(patientRegistrationRequest.getPhn());
@@ -116,6 +129,25 @@ public class PatientRegistrationController extends BaseController {
 		} catch (Exception e) {
 			handleException(transaction, e);
 			return null;
+		}
+	}
+
+	/**
+	 * The Payee number submitted in the request must match the Payee Number mapped to the current user in the BCSC to Payee Number mappings.
+	 * 
+	 * @param patientRegistrationRequest
+	 * @throws HNWebException
+	 */
+	private void validatePayeeNumberMapping(PatientRegistrationRequest patientRegistrationRequest) {
+		UserInfo userInfo = SecurityUtil.loadUserInfo();
+		Optional<BcscPayeeMapping> bcscPayeeMappingOptional = bcscPayeeMappingService.find(userInfo.getUserId());
+		if (bcscPayeeMappingOptional.isEmpty()) {
+			logger.error("No Payee Number mapping was found for the current user");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Payee Number mapping was found for the current user");
+		}
+		if (!StringUtils.equals(patientRegistrationRequest.getPayee(), bcscPayeeMappingOptional.get().getPayeeNumber())) {
+			logger.error("Payee field value {} does not match the Payee Number mapped to this user", patientRegistrationRequest.getPayee());
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Payee field value %s does not match the Payee Number mapped to this user", patientRegistrationRequest.getPayee()));
 		}
 	}
 

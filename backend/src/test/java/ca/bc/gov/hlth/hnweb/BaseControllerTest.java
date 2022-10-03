@@ -45,7 +45,7 @@ public class BaseControllerTest {
 	
 	protected static MockWebServer mockBackEnd;
 	
-	private static MockedStatic<SecurityUtil> mockStatic;
+	protected static MockedStatic<SecurityUtil> mockStatic;
 	
 	@BeforeAll
     static void setUp() throws IOException {
@@ -53,7 +53,7 @@ public class BaseControllerTest {
         mockBackEnd.start(0);
         
         mockStatic = Mockito.mockStatic(SecurityUtil.class);
-        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "00000010", "hnweb-user", UUID.randomUUID().toString()));
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "3c0fc3b5-45f8-4745-afa9-b7b04978023d", "00000010", "hnweb-user", UUID.randomUUID().toString()));
     }
 
     @AfterAll

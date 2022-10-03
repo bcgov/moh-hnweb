@@ -5,6 +5,7 @@ package ca.bc.gov.hlth.hnweb.security;
  */
 public class UserInfo {
 	private String username;
+	private String userId;
 	private String organization;
 	private String role;
 	private String sessionState;
@@ -20,9 +21,10 @@ public class UserInfo {
 		this.role = role;
 	}
 	
-	public UserInfo(String username, String organization, String role, String sessionState) {
+	public UserInfo(String username, String userId, String organization, String role, String sessionState) {
 		super();
 		this.username = username;
+		this.userId = userId;
 		this.organization = organization;
 		this.role = role;
 		this.sessionState = sessionState;
@@ -34,6 +36,14 @@ public class UserInfo {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String getOrganization() {
@@ -58,6 +68,12 @@ public class UserInfo {
 
 	public void setSessionState(String sessionState) {
 		this.sessionState = sessionState;
+	}
+
+	@Override
+	public String toString() {
+		return "UserInfo [username=" + username + ", userId=" + userId + ", organization=" + organization + ", role="
+				+ role + ", sessionState=" + sessionState + "]";
 	}
 
 }

@@ -16,7 +16,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.payee" id="payee" label="MSP Payee" type="text" v-model.trim="payee" />
+          <AppInput :e-model="v$.payee" id="payee" label="MSP Payee" type="text" v-model.trim="payee" disabled="true"/>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -128,7 +128,22 @@ export default {
       showModal: false,
     }
   },
-  created() {},
+  async created() {
+    try {
+      const userId = this.$keycloak.tokenParsed?.sub
+      const bcscPayeeMapping = (await PatientRegistrationService.getBcscPayeeMapping(userId)).data
+      this.payee = bcscPayeeMapping.payeeNumber
+    } catch (err) {
+      //Check for Not Found error and add a user friendly error message
+      if (typeof err === 'object') {
+        const errMessage = String(err)
+        if (errMessage.includes("404")) {
+          err = 'Error: No MSP Payee Number found for this user'
+        }
+      }
+      handleServiceError(err, this.alertStore, this.$router)
+    }
+  },
 
   computed: {
     fullName() {
@@ -198,7 +213,6 @@ export default {
     },
     resetForm() {
       this.phn = ''
-      this.payee = ''
       this.result = null
       this.v$.$reset()
       this.alertStore.dismissAlert()
@@ -212,6 +226,9 @@ export default {
       phn: {
         required,
         validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
+      },
+      payee: {
+        required,
       },
     }
   },
