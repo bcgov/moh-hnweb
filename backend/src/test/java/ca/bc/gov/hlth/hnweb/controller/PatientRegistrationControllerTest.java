@@ -211,7 +211,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 
 		assertThatExceptionOfType(ResponseStatusException.class)
 		.isThrownBy(() -> patientRegistrationController.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest()))
-		.withMessage("400 BAD_REQUEST \"No Payee Number mapping was found for the current user\"; nested exception is ca.bc.gov.hlth.hnweb.exception.HNWebException: No Payee Number mapping was found for the current user");
+		.withMessage("400 BAD_REQUEST \"400 BAD_REQUEST \"No Payee Number mapping was found for the current user\"\"; nested exception is org.springframework.web.server.ResponseStatusException: 400 BAD_REQUEST \"No Payee Number mapping was found for the current user\"");
 	}
 
 	@Test
@@ -230,7 +230,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 
 		assertThatExceptionOfType(ResponseStatusException.class)
 		.isThrownBy(() -> patientRegistrationController.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest()))
-		.withMessage("400 BAD_REQUEST \"Payee field value does not match the Payee Number mapped to this user\"; nested exception is ca.bc.gov.hlth.hnweb.exception.HNWebException: Payee field value does not match the Payee Number mapped to this user");
+		.withMessage("400 BAD_REQUEST \"400 BAD_REQUEST \"Payee field value T0053 does not match the Payee Number mapped to this user\"\"; nested exception is org.springframework.web.server.ResponseStatusException: 400 BAD_REQUEST \"Payee field value T0053 does not match the Payee Number mapped to this user\"");
 	}
 
 	private void createPatientRegister() {

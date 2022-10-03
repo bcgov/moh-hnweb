@@ -19,7 +19,7 @@ export const resources = {
     getPatientRegistration: '/patient-registration/get-patient-registration',
   },
   bcscPayeeMappings: {
-    getBcscPayeeMapping: '/bcsc-payee-mappings/'
+    getBcscPayeeMapping: '/payee-mapping'
   },
   groupMember: {
     addGroupMember: '/group-member/add-group-member',

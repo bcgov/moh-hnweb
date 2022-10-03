@@ -1,8 +1,6 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
-import java.util.List;
-
-import javax.validation.Valid;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -30,7 +28,7 @@ import ca.bc.gov.hlth.hnweb.service.BcscPayeeMappingService;
  * Controller to handle CRUD requests for maintaining BC Services Card (BCSC) Users to their PBF MSP Payee Number mappings.
  *   
  */
-@RequestMapping("/bcsc-payee-mappings")
+@RequestMapping("/payee-mapping")
 @RestController
 public class BcscPayeeMappingController {
 
@@ -46,7 +44,7 @@ public class BcscPayeeMappingController {
 	 * @return the response containing the newly created mapping if successful otherwise an error status 
 	 */
 	@PostMapping("")
-	public ResponseEntity<BcscPayeeMappingResponse> addBcscPayeeMapping(@Valid @RequestBody BcscPayeeMappingRequest bcscPayeeMappingRequest) {
+	public ResponseEntity<BcscPayeeMappingResponse> addBcscPayeeMapping(@RequestBody BcscPayeeMappingRequest bcscPayeeMappingRequest) {
 		logger.info("Adding a new BCSC User to Payee Mapping:\n{}", bcscPayeeMappingRequest.toString());
 		
 		if (StringUtils.isBlank(bcscPayeeMappingRequest.getBcscGuid())) {
@@ -54,10 +52,6 @@ public class BcscPayeeMappingController {
 		}
 		if (StringUtils.isBlank(bcscPayeeMappingRequest.getPayeeNumber())) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing value in required request field payeeNumber.");
-		}
-		List<BcscPayeeMapping> payeeNumberMappings = bcscPayeeMappingService.findByPayeeNumber(bcscPayeeMappingRequest.getPayeeNumber());
-		if (!payeeNumberMappings.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, "A mapping already exists for this Payee Number.");
 		}
 		
 		try {
@@ -72,7 +66,7 @@ public class BcscPayeeMappingController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<BcscPayeeMappingResponse> updateBcscPayeeMapping(@Valid @RequestBody BcscPayeeMappingRequest bcscPayeeMappingRequest, @PathVariable String id) {
+	public ResponseEntity<BcscPayeeMappingResponse> updateBcscPayeeMapping(@RequestBody BcscPayeeMappingRequest bcscPayeeMappingRequest, @PathVariable String id) {
 		logger.info("Updating a BCSC User to Payee Mapping for ID: {}; Updated entity: \n{}", id, bcscPayeeMappingRequest.toString());
 		
 		if (StringUtils.isBlank(bcscPayeeMappingRequest.getPayeeNumber())) {
@@ -94,12 +88,12 @@ public class BcscPayeeMappingController {
 	public ResponseEntity<BcscPayeeMappingResponse> getBcscPayeeMapping(@PathVariable String id) {
 		logger.info("Getting a BCSC User to Payee Mapping for ID: {}", id);
 		
-		BcscPayeeMapping bcscPayeeMapping = bcscPayeeMappingService.find(id);
-		if (bcscPayeeMapping == null) {
+		Optional<BcscPayeeMapping> bcscPayeeMappingOptional = bcscPayeeMappingService.find(id);
+		if (bcscPayeeMappingOptional.isEmpty()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Entity not found for ID %s", id));
 		}
 
-		BcscPayeeMappingResponse bcscPayeeMappingResponse = mapEntityToRepsonse(bcscPayeeMapping);		
+		BcscPayeeMappingResponse bcscPayeeMappingResponse = mapEntityToRepsonse(bcscPayeeMappingOptional.get());		
 		return ResponseEntity.ok(bcscPayeeMappingResponse);
 	}
 	

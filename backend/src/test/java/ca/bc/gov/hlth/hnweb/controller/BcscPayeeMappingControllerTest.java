@@ -47,15 +47,6 @@ public class BcscPayeeMappingControllerTest {
 	}
 
 	@Test
-	public void testAddBcscPayeeMapping_fail_request_missing() {
-		
-		BcscPayeeMappingRequest bcscPayeeMappingRequest = null;
-		
-		assertThatExceptionOfType(NullPointerException.class)
-		.isThrownBy(() -> bcscPayeeMappingController.addBcscPayeeMapping(bcscPayeeMappingRequest));
-	}
-	
-	@Test
 	public void testAddBcscPayeeMapping_fail_missing_bcsc_guid() {
 
 		String bcscGuid = null;		
@@ -107,20 +98,6 @@ public class BcscPayeeMappingControllerTest {
 		.withMessage("409 CONFLICT \"Entity already exists.\"; nested exception is ca.bc.gov.hlth.hnweb.exception.BcscPayeeMappingException: Entity already exists.");
 	}
 	
-	@Test
-	public void testAddBcscPayeeMapping_fail_payee_number_already_mapped() {
-		
-		String bcscGuid = UUID.randomUUID().toString();		
-		String payeeNumber = "00023";
-		
-		BcscPayeeMappingRequest bcscPayeeMappingRequest = createBcscPayeeMappingRequest(bcscGuid, payeeNumber);
-		
-		assertThatExceptionOfType(ResponseStatusException.class)
-		.isThrownBy(() -> bcscPayeeMappingController.addBcscPayeeMapping(bcscPayeeMappingRequest))
-		.withMessage("409 CONFLICT \"A mapping already exists for this Payee Number.\"");
-		
-	}
-		
 	@Test
 	public void testGetBcscPayeeMapping_success() {
 		

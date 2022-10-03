@@ -130,13 +130,13 @@ export default {
   },
   async created() {
     try {
-      let userId = this.$keycloak.tokenParsed?.sub
-      let bcscPayeeMapping = (await PatientRegistrationService.getBcscPayeeMapping(userId)).data
+      const userId = this.$keycloak.tokenParsed?.sub
+      const bcscPayeeMapping = (await PatientRegistrationService.getBcscPayeeMapping(userId)).data
       this.payee = bcscPayeeMapping.payeeNumber
     } catch (err) {
       //Check for Not Found error and add a user friendly error message
       if (typeof err === 'object') {
-        let errMessage = String(err)
+        const errMessage = String(err)
         if (errMessage.includes("404")) {
           err = 'Error: No MSP Payee Number found for this user'
         }

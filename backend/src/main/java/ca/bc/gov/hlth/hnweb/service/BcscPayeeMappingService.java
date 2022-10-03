@@ -1,6 +1,5 @@
 package ca.bc.gov.hlth.hnweb.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -67,17 +66,10 @@ public class BcscPayeeMappingService {
 	/**
 	 * Finds a BcscPayeeMapping for the given id
 	 * @param id the id of the entity to be found.
-	 * @return the BcscPayeeMapping entity or null if not found
+	 * @return an Optional with BcscPayeeMapping entity or empty if not found
 	 */
-	public BcscPayeeMapping find(String id) {
-		Optional<BcscPayeeMapping> optional = bcscPayeeMappingRepository.findById(id);
-		
-		if (optional.isEmpty()) {
-			logger.info("BcscPayeeMapping entity not found for ID {}", id);
-			return null;
-		}
-
-		return optional.get();
+	public Optional<BcscPayeeMapping> find(String id) {
+		return bcscPayeeMappingRepository.findById(id);
 	}
 
 	/**
@@ -95,10 +87,6 @@ public class BcscPayeeMappingService {
 		}
 		
 		bcscPayeeMappingRepository.deleteById(id);
-	}
-
-	public List<BcscPayeeMapping> findByPayeeNumber(String payeeNumber){
-		return bcscPayeeMappingRepository.findByPayeeNumber(payeeNumber);
 	}
 
 }

@@ -5,7 +5,7 @@ export default {
     return apiRequest().then((axiosInstance) => axiosInstance.post(resources.patientRegistration.getPatientRegistration, request))
   },
   getBcscPayeeMapping(bcscUserId) {
-    let url = `${resources.bcscPayeeMappings.getBcscPayeeMapping}${bcscUserId}`;
+    const url = `${resources.bcscPayeeMappings.getBcscPayeeMapping}/${bcscUserId}`;
     return apiRequest().then((axiosInstance) => axiosInstance.get(url))
   },
 }
