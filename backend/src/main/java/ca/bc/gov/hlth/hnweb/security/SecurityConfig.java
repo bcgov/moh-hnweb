@@ -75,6 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .mvcMatchers(HttpMethod.POST, "/group-member/cancel-group-member").hasRole("CancelGroupMember")
             .mvcMatchers(HttpMethod.POST, "/group-member/update-number-and-dept").hasRole("UpdateNumberAndDept")
             .mvcMatchers(HttpMethod.POST, "/group-member/reinstate-over-age-dependent").hasRole("ReinstateOverAgeDependent")
+            .mvcMatchers(HttpMethod.POST, "/group-member/renew-cancelled-group-coverage").hasRole("RenewCancelledGroupCoverage")
             .mvcMatchers(HttpMethod.POST, "/msp-contracts/get-contract-periods").hasRole("GetContractPeriods")
             .mvcMatchers(HttpMethod.POST, "/msp-contracts/update-contract-address").hasRole("UpdateContractAddress")
             .mvcMatchers(HttpMethod.POST, "/msp-contracts/inquire-contract").hasAnyRole("ContractInquiry", "GetGroupMembersContractAddress")  //inquire-contract endpoint will require this multi role as it is used by both R40 and R37 transactions

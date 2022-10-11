@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPAG0Converter;
+import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPAI0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPAJ0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPRE0Converter;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAG0;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAI0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAJ0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPRE0;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.ChangeEffectiveDateRequest;
@@ -25,6 +27,8 @@ import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ChangeCancelDateRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ChangeCancelDateResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ReinstateOverAgeDependentRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ReinstateOverAgeDependentResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.maintenance.RenewCancelledGroupCoverageRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.maintenance.RenewCancelledGroupCoverageResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
@@ -135,6 +139,37 @@ public class MaintenanceController extends BaseController {
 			addAffectedParty(transaction, IdentifierType.PHN, reinstateResponse.getPhn(), AffectedPartyDirection.OUTBOUND);
 	
 			return response;	
+		} catch (Exception e) {
+			handleException(transaction, e);
+			return null;
+		}
+	}
+	/**
+	 * Renew the coverage effective date of an employee. 
+	 * Maps to the legacy R45 (z27).
+	 * 
+	 * @param changeCancelDateRequest
+	 * @return The result of the operation.
+	 */
+	@PostMapping("/renew-cancelled-group-coverage")
+	public ResponseEntity<RenewCancelledGroupCoverageResponse> renewCancelledGroupCoverage(
+			@Valid @RequestBody RenewCancelledGroupCoverageRequest renewCancelledGroupCoverageRequest, HttpServletRequest request) {
+
+		Transaction transaction = auditChangeCancelDateStart(renewCancelledGroupCoverageRequest.getPhn(), request);
+
+		try {
+			RPBSPAI0Converter converter = new RPBSPAI0Converter();
+			RPBSPAI0 rpbspai0Request = converter.convertRequest(renewCancelledGroupCoverageRequest);
+			RPBSPAI0 rpbspai0Response = maintenanceService.renewCoverageEffectiveDate(rpbspai0Request, transaction);
+			RenewCancelledGroupCoverageResponse renewCancelledGroupCoverageResponse = converter.convertResponse(rpbspai0Response);
+
+			ResponseEntity<RenewCancelledGroupCoverageResponse> response = ResponseEntity.ok(renewCancelledGroupCoverageResponse);
+
+			logger.info("RenewCancelledGroupCoverageResponse response: {} ", renewCancelledGroupCoverageResponse);
+
+			auditChangeCancelDateComplete(transaction, renewCancelledGroupCoverageResponse.getPhn());
+
+			return response;
 		} catch (Exception e) {
 			handleException(transaction, e);
 			return null;
