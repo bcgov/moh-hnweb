@@ -8,7 +8,7 @@
     <p>If no matches are found based on the search criteria, enter the information about the person you wish to add. This will create a PHN for the person and give the option to add another Study Permit Holder.</p>
   </AppHelp>
   <NameSearch v-if="isNameSearch" @search-for-candidates="searchForCandidates" :searching="searching" />
-  <NameSearchResults v-else-if="isNameSearchResults" :candidates="this.nameSearchResult.candidates" />
+  <NameSearchResults v-else-if="isNameSearchResults" :candidates="this.nameSearchResult.candidates" @set-page-action="setPageAction" />
   <ResidentDetailsWithoutPHN v-else-if="isStudentRegistration" :resident="this.registrationPerson" @register-resident="registerResident" :submitting="submitting" />
   <RegistrationConfirmation v-else-if="isConfirmation" :resident="this.registrationPerson" />
 </template>
@@ -104,19 +104,12 @@ export default {
           this.alertStore.setWarningAlert(this.nameSearchResult?.message)
         }
 
+        this.registrationPerson = { ...searchCriteria } //make the search criteria available for registration screen in the case where the user wants to use it create new PHN
         if (!this.nameSearchResult.candidates || this.nameSearchResult.candidates.length == 0) {
-          //found no result so need to register and enroll without a PHN
-
-          this.registrationPerson = { ...searchCriteria }
+          //found no result so add message for user
           this.alertStore.setInfoAlert(this.nameSearchResult?.message)
-          this.pageAction = this.PAGE_ACTION.REGISTRATION
-        } else if (this.nameSearchResult.candidates.length === 1) {
-          //found 1 result so can auto select it for use in Register with PHN
-          this.studyPermitHolderStore.resident = this.nameSearchResult.candidates[0]
-          this.$router.push({ name: 'AddVisaResidentWithPHN', query: { pageAction: 'REGISTRATION' } })
-        } else {
-          this.pageAction = this.PAGE_ACTION.NAME_SEARCH_RESULTS
         }
+        this.pageAction = this.PAGE_ACTION.NAME_SEARCH_RESULTS
       } catch (err) {
         handleServiceError(err, this.alertStore, this.$router)
       } finally {
@@ -144,6 +137,9 @@ export default {
       } finally {
         this.submitting = false
       }
+    },
+    setPageAction(pageAction) {
+      this.pageAction = pageAction
     },
   },
 }
