@@ -1,9 +1,12 @@
 <template>
   <div>
-    <p>Number of Matches: {{ numberOfMatches }}</p>
+    <p>
+      Number of Matches: <b>{{ numberOfMatches }}</b>
+    </p>
     <div v-if="hasCandidates">
       <NameSearchCandidate v-for="candidate in candidates" :candidate="candidate" :key="candidate.phn" />
     </div>
+    <hr />
     <p>If none of the candidates returned match the client for whom you would like to add a study permit, please click "Create New PHN"</p>
     <AppRow>
       <AppButton @click="registerWithoutPHN" mode="secondary" type="button">Create New PHN</AppButton>
