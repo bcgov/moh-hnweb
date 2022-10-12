@@ -104,7 +104,7 @@ export default {
           this.alertStore.setWarningAlert(this.nameSearchResult?.message)
         }
 
-        this.registrationPerson = { ...searchCriteria } //make the search criteria available for registration screen in the case where the user wants to use it create new PHN
+        this.registrationPerson = { ...searchCriteria } //make the search criteria available for the Registration screen for populating it in the case where the user wants to use it to create a new PHN
         if (!this.nameSearchResult.candidates || this.nameSearchResult.candidates.length == 0) {
           //found no result so add message for user
           this.alertStore.setInfoAlert(this.nameSearchResult?.message)
