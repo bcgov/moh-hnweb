@@ -22,6 +22,11 @@ on:
       - "frontend/**"
 
   workflow_dispatch:
+    inputs:
+      branch:
+        description: "Enter branch name:"
+        required: true
+        default: main
 
 jobs:
   buildAndPush:
@@ -33,13 +38,13 @@ jobs:
         id: checkout
         uses: actions/checkout@v3
         with:
-          ref: main
+          ref: ${{ github.event.inputs.branch }}
 
       # Determine the version number tag i.e. test_auto_build_main_<build execution>
       - name: Determine Version number
         # Branch name is fixed to 'main' in version identifier
         run: |
-          echo "VERSION=test_auto_build_main_${{github.run_number}}" | tee -a $GITHUB_ENV
+          echo "VERSION=test_auto_build_${{ github.event.inputs.branch }}_${{github.run_number}}" | tee -a $GITHUB_ENV
 
       # Edit .env in frontend with the value
       - name: Edit env file to add version
