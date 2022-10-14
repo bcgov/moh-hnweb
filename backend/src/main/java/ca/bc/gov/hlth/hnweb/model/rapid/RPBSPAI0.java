@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 public class RPBSPAI0 {
 	private RPBSHeader rpbsHeader = new RPBSHeader();
 	private AI0 ai0 = new AI0();
-
+	
 	public RPBSPAI0() {
 		super();
 	}
@@ -13,9 +13,7 @@ public class RPBSPAI0 {
 	public RPBSPAI0(String message) {
 		String headerText = StringUtils.substring(message, 0, RPBSHeader.SEGMENT_LENGTH);
 		String bodyText = StringUtils.substring(message, RPBSHeader.SEGMENT_LENGTH);
-
 		rpbsHeader = new RPBSHeader(headerText);
-
 		ai0 = new AI0(bodyText);
 	}
 

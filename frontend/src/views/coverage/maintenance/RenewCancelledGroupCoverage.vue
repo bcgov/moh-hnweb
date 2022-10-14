@@ -1,10 +1,4 @@
 <template>
-  <AppHelp>
-    <p>Use the Renew Cancelled Group Coverage screen to renew the coverage of an employee on your MSP group account. Any dependents with the same existing coverage will automatically have their coverage renewed along with the employee.</p>
-    <p>NOTE - if you do not know the PHN, the PHN Lookup transaction can be used to find an employee's PHN from their MSP Contract Number.</p>
-    <p>You must enter the new Coverage date to renew the coverage. Use the Get Contract Periods business service first to be sure you have the correct date.</p>
-    <p>The employee's Personal Health Number is displayed. You may wish to use the PHN to verify, with the Get Contract Periods business service, that the cancel date has been changed correctly.</p>
-  </AppHelp>
   <div id="renewCancelledGroupCoverage" v-if="inputFormActive">
     <form @submit.prevent="submitForm">
       <AppRow>
@@ -48,10 +42,6 @@ import { handleServiceError } from '../../../util/utils'
 export default {
   name: 'RenewCancelledGroupCoverage',
 
-  components: {
-    AppHelp,
-  },
-
   setup() {
     return {
       alertStore: useAlertStore(),
@@ -64,7 +54,7 @@ export default {
       inputFormActive: true,
       phn: '',
       groupNumber: '',
-      newCoverageEffectiveDate: null,
+      newCoverageEffectiveDate: dayjs().startOf('month').toDate(),
       result: {
         phn: '',
         status: '',
@@ -115,7 +105,7 @@ export default {
     resetForm() {
       this.groupNumber = ''
       this.phn = ''
-      this.newCoverageEffectiveDate = null
+      this.newCoverageEffectiveDate = dayjs().startOf('month').toDate()
       this.result = null
       this.v$.$reset()
       this.inputFormActive = true

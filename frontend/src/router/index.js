@@ -140,7 +140,7 @@ const createRoutes = (app) => [
         },
       },
       {
-        path: 'renewcancelledGroupCoverage',
+        path: 'renewCancelledGroupCoverage',
         name: 'RenewCancelledGroupCoverage',
         component: RenewCancelledGroupCoverage,
         meta: {

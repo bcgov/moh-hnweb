@@ -17,10 +17,13 @@ import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPAG0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPAI0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPAJ0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPRE0Converter;
+import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPXP0Converter;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAG0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAI0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAJ0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPRE0;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPXP0;
+import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.ChangeEffectiveDateRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.ChangeEffectiveDateResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ChangeCancelDateRequest;
@@ -33,6 +36,7 @@ import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
+import ca.bc.gov.hlth.hnweb.service.GroupMemberService;
 import ca.bc.gov.hlth.hnweb.service.MaintenanceService;
 
 /**
@@ -42,10 +46,15 @@ import ca.bc.gov.hlth.hnweb.service.MaintenanceService;
 @RestController
 public class MaintenanceController extends BaseController {
 
+	private static final String SUCCESS = "RPBS9014";
+
 	private static final Logger logger = LoggerFactory.getLogger(MaintenanceController.class);
 
 	@Autowired
 	private MaintenanceService maintenanceService;
+	
+	@Autowired
+	private GroupMemberService groupMemberService;
 
 	/**
 	 * Changes coverage effective date for the group number. Maps to the legacy
@@ -145,29 +154,42 @@ public class MaintenanceController extends BaseController {
 		}
 	}
 	/**
-	 * Renew the coverage effective date of an employee. 
-	 * Maps to the legacy R45 (z27).
+	 * Renew the coverage effective date of an employee and spouse/dependents. 
+	 * Maps to the legacy R45 (Z27).
 	 * 
-	 * @param changeCancelDateRequest
+	 * @param RenewCancelledGroupCoverageRequest
 	 * @return The result of the operation.
 	 */
 	@PostMapping("/renew-cancelled-group-coverage")
 	public ResponseEntity<RenewCancelledGroupCoverageResponse> renewCancelledGroupCoverage(
 			@Valid @RequestBody RenewCancelledGroupCoverageRequest renewCancelledGroupCoverageRequest, HttpServletRequest request) {
 
-		Transaction transaction = auditChangeCancelDateStart(renewCancelledGroupCoverageRequest.getPhn(), request);
-
+		Transaction transaction = auditRenewCancelledCoverageStart(renewCancelledGroupCoverageRequest.getPhn(), request);
+		RenewCancelledGroupCoverageResponse renewCancelledGroupCoverageResponse;
 		try {
 			RPBSPAI0Converter converter = new RPBSPAI0Converter();
 			RPBSPAI0 rpbspai0Request = converter.convertRequest(renewCancelledGroupCoverageRequest);
 			RPBSPAI0 rpbspai0Response = maintenanceService.renewCoverageEffectiveDate(rpbspai0Request, transaction);
-			RenewCancelledGroupCoverageResponse renewCancelledGroupCoverageResponse = converter.convertResponse(rpbspai0Response);
-
+			
+			//Execute if RPBSPAI0 returns successfully
+			if(rpbspai0Response.getRpbsHeader().getStatusCode().contentEquals(SUCCESS)) {
+			RPBSPXP0Converter rpbspxp0Converter = new RPBSPXP0Converter();
+			
+			//Creates/Clones a new Coverage entry, not simply an update but an Add
+			AddGroupMemberRequest addGroupMemberRequest = converter.buildAddGroupMemberRequest(rpbspai0Response);
+			RPBSPXP0 rpbspxp0 = rpbspxp0Converter.convertRequest(addGroupMemberRequest);
+			
+			RPBSPXP0 rpbspxp0Response = groupMemberService.addGroupMember(rpbspxp0, transaction);
+			renewCancelledGroupCoverageResponse = rpbspxp0Converter.convertResponseForRenewel(rpbspxp0Response);
+			} else {
+				renewCancelledGroupCoverageResponse = converter.convertResponse(rpbspai0Response);
+			}
+		
 			ResponseEntity<RenewCancelledGroupCoverageResponse> response = ResponseEntity.ok(renewCancelledGroupCoverageResponse);
+			
+			logger.info("RenewCancelledGroupCoverageResponse response: {} ", response);
 
-			logger.info("RenewCancelledGroupCoverageResponse response: {} ", renewCancelledGroupCoverageResponse);
-
-			auditChangeCancelDateComplete(transaction, renewCancelledGroupCoverageResponse.getPhn());
+			auditRenewCancelledCoverageComplete(transaction, renewCancelledGroupCoverageResponse.getPhn());
 
 			return response;
 		} catch (Exception e) {
@@ -224,6 +246,25 @@ public class MaintenanceController extends BaseController {
 		addAffectedParty(transaction, IdentifierType.PHN, reinstateRequest.getPhn(), AffectedPartyDirection.INBOUND);
 		addAffectedParty(transaction, IdentifierType.PHN, reinstateRequest.getDependentPhn(), AffectedPartyDirection.INBOUND);
 		return transaction;
+	}
+	
+	private Transaction auditRenewCancelledCoverageStart(String phn, HttpServletRequest request) {
+
+		Transaction transaction = transactionStart(request, TransactionType.RENEW_CANCELLED_COVERAGE);
+
+		if (StringUtils.isNotBlank(phn)) {
+			addAffectedParty(transaction, IdentifierType.PHN, phn, AffectedPartyDirection.INBOUND);
+		}
+		return transaction;
+	}
+	
+	private void auditRenewCancelledCoverageComplete(Transaction transaction, String phn) {
+
+		transactionComplete(transaction);
+
+		if (StringUtils.isNotBlank(phn)) {
+			addAffectedParty(transaction, IdentifierType.PHN, phn, AffectedPartyDirection.OUTBOUND);
+		}
 	}
 
 }
