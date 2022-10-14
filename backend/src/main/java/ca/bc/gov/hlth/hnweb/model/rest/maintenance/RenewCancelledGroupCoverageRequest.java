@@ -23,8 +23,6 @@ public class RenewCancelledGroupCoverageRequest {
 		this.phn = phn;
 	}
 
-	
-
 	public LocalDate getNewCoverageEffectiveDate() {
 		return newCoverageEffectiveDate;
 	}
