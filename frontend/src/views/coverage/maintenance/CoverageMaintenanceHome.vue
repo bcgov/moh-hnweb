@@ -3,6 +3,7 @@
     <SubNavTab routeName="ChangeEffectiveDate" title="Change Effective Date" v-if="hasPermission('ChangeEffectiveDate')" />
     <SubNavTab routeName="ChangeCancelDate" title="Change Cancel Date" v-if="hasPermission('ChangeCancelDate')" />
     <SubNavTab routeName="ReinstateOverAgeDependent" title="Reinstate OverAge Dependent" v-if="hasPermission('ReinstateOverAgeDependent')" />
+    <SubNavTab routeName="RenewCancelledGroupCoverage" title="Renew Cancelled Group Coverage" v-if="hasPermission('RenewCancelledCoverage')" />
   </TheSubNav>
   <router-view />
 </template>

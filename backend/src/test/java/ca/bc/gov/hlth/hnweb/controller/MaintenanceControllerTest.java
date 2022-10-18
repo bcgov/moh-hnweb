@@ -22,6 +22,8 @@ import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ChangeCancelDateRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ChangeCancelDateResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ReinstateOverAgeDependentRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ReinstateOverAgeDependentResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.maintenance.RenewCancelledGroupCoverageRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.maintenance.RenewCancelledGroupCoverageResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.util.V2MessageUtil;
@@ -56,6 +58,20 @@ public class MaintenanceControllerTest extends BaseControllerTest {
 	private static final String R46_B_INVALID_COVERAGE_CANCELLATION_DATE = "        RPBSPAG000000010                                ERRORMSGRPBS1016COVERAGE CANCEL DAY INVALID                                             484190498732516932022-08-012022-08-02                     ";
 	
 	private static final String R46_B_SUBSCRIBER_NOT_COVERED = "        RPBSPAG000000010                                ERRORMSGRPBS9109SUBSCRIBER NOT COVERED UNDER THIS GROUP                                 484190493319269192022-07-312022-08-31                     ";
+	
+	private static final String R45_ACTIVE_COVERAGE_EXIST = "        RPBSPAI000000010                                ERRORMSGRPBS0117ACTIVE COVERAGE ALREADY EXISTS FOR THE PHN/GROUP NUMBER ENTERED.        98731026176257760";
+	
+	private static final String R45_COVERGE_EFFECTIVE_DAY_MUST_BE_01 = "        RPBSPAI000000010                                ERRORMSGRPBS0276COVERGE EFFECTIVE DAY MUST BE 01                                        987310261762577602022-10-02";
+	
+	private static final String R45_SUBSCRIBER_HAS_FUTURE_COVERAGE = "        RPBSPAI000000010                                ERRORMSGRPBS0049SUBSCRIBER HAS FUTURE COVERAGE.  PLS FORWARD DOCS TO MSP                987310261760997332022-12-01";
+	
+	private static final String R45_SUBSCRIBER_NOT_COVERED_UNDER_THIS_GROUP = "        RPBSPAI000000010                                ERRORMSGRPBS9109SUBSCRIBER NOT COVERED UNDER THIS GROUP                                 987310261762014532022-12-01";
+	
+	private static final String R45_UNABLE_TO_PROCESS_AS_A_RENEWAL = "        RPBSPAI000000010                                ERRORMSGRPBS0118UNABLE TO PROCESS AS A RENEWAL.  PLEASE USE REINSTATE CONTRACT TRX.     987310261760997332022-10-01";
+	
+	private static final String R45_SUCCESS = "        RPBSPAI000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  987309854962674052021-12-019873098549                                                                                          6267405                                                                                                                         550 KP RD                VICTORIA BC                                                                V4R8U8";  
+	
+	private static final String R30_SUCCESS = "        RPBSPXP000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  6267405               2021-12-01                                                                                                          550 KP RD                VICTORIA BC                                                                V4R8U8                                                            9873098549";
 	
 	protected static DateTimeFormatter dateOnlyFormatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_FORMAT_DATE_ONLY);
 	
@@ -401,6 +417,168 @@ public class MaintenanceControllerTest extends BaseControllerTest {
         assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
 	}
 	
+	@Test
+	public void testRenewCancelledCoverage_error_activeCoverageExist() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R45_ACTIVE_COVERAGE_EXIST)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        RenewCancelledGroupCoverageRequest renewCancelledGroupCoverageRequest = createRenewCancelledGroupCoverageRequest(LocalDate.parse("2022-11-01"));
+		
+        ResponseEntity<RenewCancelledGroupCoverageResponse> response = maintenanceController.renewCancelledGroupCoverage(renewCancelledGroupCoverageRequest, createHttpServletRequest());
+		
+        RenewCancelledGroupCoverageResponse renewCancelledGroupCoverageResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, renewCancelledGroupCoverageResponse.getStatus());
+        assertEquals("RPBS0117 ACTIVE COVERAGE ALREADY EXISTS FOR THE PHN/GROUP NUMBER ENTERED.", renewCancelledGroupCoverageResponse.getMessage());
+
+        assertEquals("9873102617", renewCancelledGroupCoverageResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.RENEW_CANCELLED_COVERAGE);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+	}
+	
+	@Test
+	public void testRenewCancelledCoverage_error_invalidCoverageEffectiveDate() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R45_COVERGE_EFFECTIVE_DAY_MUST_BE_01)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        RenewCancelledGroupCoverageRequest renewCancelledGroupCoverageRequest = createRenewCancelledGroupCoverageRequest(LocalDate.parse("2022-10-02"));
+		
+        ResponseEntity<RenewCancelledGroupCoverageResponse> response = maintenanceController.renewCancelledGroupCoverage(renewCancelledGroupCoverageRequest, createHttpServletRequest());
+		
+        RenewCancelledGroupCoverageResponse renewCancelledGroupCoverageResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, renewCancelledGroupCoverageResponse.getStatus());
+        assertEquals("RPBS0276 COVERGE EFFECTIVE DAY MUST BE 01", renewCancelledGroupCoverageResponse.getMessage());
+
+        assertEquals("9873102617", renewCancelledGroupCoverageResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.RENEW_CANCELLED_COVERAGE);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+	}
+	
+	@Test
+	public void testRenewCancelledCoverage_error_subscriberHasFutureCoverage() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R45_SUBSCRIBER_HAS_FUTURE_COVERAGE)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        RenewCancelledGroupCoverageRequest renewCancelledGroupCoverageRequest = createRenewCancelledGroupCoverageRequest(LocalDate.parse("2022-12-01"));
+		
+        ResponseEntity<RenewCancelledGroupCoverageResponse> response = maintenanceController.renewCancelledGroupCoverage(renewCancelledGroupCoverageRequest, createHttpServletRequest());
+		
+        RenewCancelledGroupCoverageResponse renewCancelledGroupCoverageResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, renewCancelledGroupCoverageResponse.getStatus());
+        assertEquals("RPBS0049 SUBSCRIBER HAS FUTURE COVERAGE.  PLS FORWARD DOCS TO MSP", renewCancelledGroupCoverageResponse.getMessage());
+
+        assertEquals("9873102617", renewCancelledGroupCoverageResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.RENEW_CANCELLED_COVERAGE);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+	}
+	
+	@Test
+	public void testRenewCancelledCoverage_error_subscriberNotCovered() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R45_SUBSCRIBER_NOT_COVERED_UNDER_THIS_GROUP)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        RenewCancelledGroupCoverageRequest renewCancelledGroupCoverageRequest = createRenewCancelledGroupCoverageRequest(LocalDate.parse("2022-12-01"));
+		
+        ResponseEntity<RenewCancelledGroupCoverageResponse> response = maintenanceController.renewCancelledGroupCoverage(renewCancelledGroupCoverageRequest, createHttpServletRequest());
+		
+        RenewCancelledGroupCoverageResponse renewCancelledGroupCoverageResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, renewCancelledGroupCoverageResponse.getStatus());
+        assertEquals("RPBS9109 SUBSCRIBER NOT COVERED UNDER THIS GROUP", renewCancelledGroupCoverageResponse.getMessage());
+
+        assertEquals("9873102617", renewCancelledGroupCoverageResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.RENEW_CANCELLED_COVERAGE);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+	}
+	
+	@Test
+	public void testRenewCancelledCoverage_error_unableToProcessAsRenewel() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R45_UNABLE_TO_PROCESS_AS_A_RENEWAL)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        RenewCancelledGroupCoverageRequest renewCancelledGroupCoverageRequest = createRenewCancelledGroupCoverageRequest(LocalDate.parse("2022-12-01"));
+		
+        ResponseEntity<RenewCancelledGroupCoverageResponse> response = maintenanceController.renewCancelledGroupCoverage(renewCancelledGroupCoverageRequest, createHttpServletRequest());
+		
+        RenewCancelledGroupCoverageResponse renewCancelledGroupCoverageResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, renewCancelledGroupCoverageResponse.getStatus());
+        assertEquals("RPBS0118 UNABLE TO PROCESS AS A RENEWAL.  PLEASE USE REINSTATE CONTRACT TRX.", renewCancelledGroupCoverageResponse.getMessage());
+
+        assertEquals("9873102617", renewCancelledGroupCoverageResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.RENEW_CANCELLED_COVERAGE);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+	}
+	
+		
+	@Test
+	public void testRenewCancelledCoverage_success() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R45_SUCCESS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(R30_SUCCESS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+        
+        RenewCancelledGroupCoverageRequest renewCancelledGroupCoverageRequest = createRenewCancelledGroupCoverageRequest(LocalDate.parse("2022-11-01"));
+		
+        ResponseEntity<RenewCancelledGroupCoverageResponse> response = maintenanceController.renewCancelledGroupCoverage(renewCancelledGroupCoverageRequest, createHttpServletRequest());
+		
+        RenewCancelledGroupCoverageResponse renewCancelledGroupCoverageResponse = response.getBody();
+		assertEquals(StatusEnum.SUCCESS, renewCancelledGroupCoverageResponse.getStatus());
+        assertEquals("RPBS9014 TRANSACTION COMPLETED", renewCancelledGroupCoverageResponse.getMessage());
+
+        assertEquals("9873098549", renewCancelledGroupCoverageResponse.getPhn());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        
+        assertTransactionCreated(TransactionType.RENEW_CANCELLED_COVERAGE);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+	}
+	
+	
     /**
      * The URL property used by the mocked endpoint needs to be set after the MockWebServer starts as the port it uses is 
      * created dynamically on start up to ensure it uses an available port so it is not known before then. 
@@ -444,6 +622,14 @@ public class MaintenanceControllerTest extends BaseControllerTest {
 		reinstateRequest.setStudentEndDate(studentEndDate);
 		
 		return reinstateRequest;
+	}
+	
+	private RenewCancelledGroupCoverageRequest createRenewCancelledGroupCoverageRequest(LocalDate newEffectiveDate) {
+		RenewCancelledGroupCoverageRequest renewCancelledGroupCoverageRequest =new RenewCancelledGroupCoverageRequest();
+		renewCancelledGroupCoverageRequest.setPhn("9873102617");
+		renewCancelledGroupCoverageRequest.setGroupNumber("6099733");
+		renewCancelledGroupCoverageRequest.setNewCoverageEffectiveDate(newEffectiveDate);
+		return renewCancelledGroupCoverageRequest;
 	}
 	
 }

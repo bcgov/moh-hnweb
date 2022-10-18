@@ -10,6 +10,7 @@ import ca.bc.gov.hlth.hnweb.model.rapid.XP0;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.MemberAddress;
+import ca.bc.gov.hlth.hnweb.model.rest.maintenance.RenewCancelledGroupCoverageResponse;
 
 public class RPBSPXP0Converter extends BaseRapidConverter {
 	private static final String TRAN_CODE = "RPBSPXP0";
@@ -72,6 +73,16 @@ public class RPBSPXP0Converter extends BaseRapidConverter {
 		return response;
 	}
 	
+	public RenewCancelledGroupCoverageResponse convertResponseForRenewal(RPBSPXP0 rpbspxp0) {
+		RenewCancelledGroupCoverageResponse response = new RenewCancelledGroupCoverageResponse();
+		RPBSHeader header = rpbspxp0.getRpbsHeader();
+		
+		handleStatus(header, response);
+		response.setPhn(rpbspxp0.getXp0().getPhn());
+		
+		return response;
+	}
+
 	private RPBSAddress convertAddress(MemberAddress memberAddress) {
 		RPBSAddress rpbsAddress = new RPBSAddress();
 		
@@ -86,7 +97,6 @@ public class RPBSPXP0Converter extends BaseRapidConverter {
 		
 		return rpbsAddress;
 	}
-
 
 	@Override
 	public String getTranCode() {
