@@ -36,68 +36,59 @@
   <div v-if="searchOk && result.contractInquiryBeneficiaries.length > 0">
     <hr />
     <div id="personInfo">
-      <AppRow>
-        <AppCol class="col3"><h2>Home Address</h2> </AppCol>
-        <AppCol class="col3"><h2>Mailing Address</h2></AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Line 1" :value="result.homeAddressLine1" />
-        </AppCol>
-        <AppCol class="col3">
-          <AppOutput label="Line 1" :value="result.mailingAddressLine1" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Line 2" :value="result.homeAddressLine2" />
-        </AppCol>
-        <AppCol class="col3">
-          <AppOutput label="Line 2" :value="result.mailingAddressLine2" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Line 3" :value="result.homeAddressLine3" />
-        </AppCol>
-        <AppCol class="col3">
-          <AppOutput label="Line 3" :value="result.mailingAddressLine3" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Line 4" :value="result.homeAddressLine4" />
-        </AppCol>
-        <AppCol class="col3">
-          <AppOutput label="Line 4" :value="result.mailingAddressLine4" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Postal Code" :value="result.homeAddressPostalCode" />
-        </AppCol>
-        <AppCol class="col3">
-          <AppOutput label="Postal Code" :value="result.mailingAddressPostalCode" />
-        </AppCol>
-      </AppRow>
-      <br />
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Telephone" :value="result.telephone" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Group Member Number" :value="result.groupMemberNumber" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col5">
-          <AppOutput label="Group Member Department Number" :value="result.groupMemberDepartmentNumber" />
-        </AppCol>
-      </AppRow>
-    </div>
+      <h2>Addresses</h2>
+      <AppSimpleTable id="addressTable">
+          <thead>
+          <tr>
+            <th>Use</th>
+            <th>Line1</th>
+            <th>Line2</th>
+            <th>City/Province</th>
+            <th>Postal Code</th>
+          <th>Telephone</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr >
+          <td>Home Address</td>
+          <td>{{ result.homeAddressLine1 }}</td>
+          <td>{{ result.homeAddressLine2 }}</td>
+          <td>{{ result.homeAddressLine1 }}</td>
+          <td>{{ result.homeAddressLine2 }}</td>
+          <td>{{ result.telephone }}</td>
+        </tr>
+        <tr >
+          <td>Mailing Address</td>
+          <td>{{ result.mailingAddressLine1 }}</td>
+          <td>{{ result.mailingAddressLine1 }}</td>
+          <td>{{ result.mailingAddressLine1 }}</td>
+          <td>{{ result.mailingAddressLine1 }}</td>
+          <td>{{ result.telephone }}</td>
+        </tr>
+      </tbody>
+    </AppSimpleTable>
+    <br/>
+    <h2>Group Member Details</h2>
+    <AppSimpleTable id="identifierTable">
+      <thead>
+        <tr>
+          <th>Identifier</th>
+          <th>Value</th>     
+        </tr>
+      </thead>
+      <tbody>
+        <tr >
+          <td>Group Member Number</td>
+          <td>{{ result.groupMemberNumber }}</td>   
+        </tr>
+        <tr >
+          <td>Department Number</td>
+          <td>{{ result.groupMemberDepartmentNumber }}</td>   
+        </tr>
+      </tbody>
+    </AppSimpleTable>   
     <br />
+    <h2>Demographics</h2>
     <AppSimpleTable id="resultsTable">
       <thead>
         <tr>
@@ -118,6 +109,8 @@
         </tr>
       </tbody>
     </AppSimpleTable>
+    <br/> 
+    </div>
   </div>
 </template>
 <script>
@@ -137,6 +130,7 @@ export default {
     AppHelp,
     AppSimpleTable,
     ContractInquiryBeneficiary,
+    BeneficiaryAddress,
   },
   setup() {
     return {
@@ -159,10 +153,10 @@ export default {
         homeAddressLine2: '',
         homeAddressLine3: '',
         homePostalCode: '',
-        MailinghomeLine1: '',
-        MailingAddressLine2: '',
-        MailingAddressLine3: '',
-        MailingPostalCode: '',
+        mailingAddressLine1: '',
+        mailingAddressLine2: '',
+        mailingAddressLine3: '',
+        mailingPostalCode: '',
         telephone: '',
         contractInquiryBeneficiaries: [],
       },
