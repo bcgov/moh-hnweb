@@ -1,13 +1,9 @@
 package ca.bc.gov.hlth.hnweb.converter.rapid;
 
-import java.time.LocalDate;
-
 import org.apache.commons.lang3.StringUtils;
 
-import ca.bc.gov.hlth.hnweb.model.rapid.R45NewPayer;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSAddress;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
-import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAI0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPXP0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPhone;
 import ca.bc.gov.hlth.hnweb.model.rapid.XP0;
@@ -77,7 +73,7 @@ public class RPBSPXP0Converter extends BaseRapidConverter {
 		return response;
 	}
 	
-	public RenewCancelledGroupCoverageResponse convertResponseForRenewel(RPBSPXP0 rpbspxp0) {
+	public RenewCancelledGroupCoverageResponse convertResponseForRenewal(RPBSPXP0 rpbspxp0) {
 		RenewCancelledGroupCoverageResponse response = new RenewCancelledGroupCoverageResponse();
 		RPBSHeader header = rpbspxp0.getRpbsHeader();
 		

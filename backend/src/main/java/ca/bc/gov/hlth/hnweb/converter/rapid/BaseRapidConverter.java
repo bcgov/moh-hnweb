@@ -20,7 +20,7 @@ public abstract class BaseRapidConverter {
 	
 	protected static final String RAPID_YYYY_MM_FORMAT = "yyyy-MM";
 	
-	protected static final String STATUS_CODE_SUCCESS = "RPBS9014";
+	public static final String STATUS_CODE_SUCCESS = "RPBS9014";
 	
 	protected static final String SUCCESS_MESSAGE = "TRANSACTION COMPLETED";
 	

@@ -7,7 +7,6 @@ import ca.bc.gov.hlth.hnweb.model.rapid.R45NewPayer;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSAddress;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSHeader;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAI0;
-import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPXP0;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.MemberAddress;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.RenewCancelledGroupCoverageRequest;

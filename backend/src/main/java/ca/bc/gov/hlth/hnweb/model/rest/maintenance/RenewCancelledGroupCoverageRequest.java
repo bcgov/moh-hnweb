@@ -33,7 +33,8 @@ public class RenewCancelledGroupCoverageRequest {
 
 	@Override
 	public String toString() {
-		return "ChangeCancelDateRequest [groupNumber=" + groupNumber + ", phn=" + phn + ", newCoverageEffectiveDate="
-				+ newCoverageEffectiveDate + "]";
+		return "RenewCancelledGroupCoverageRequest [groupNumber=" + groupNumber + ", phn=" + phn
+				+ ", newCoverageEffectiveDate=" + newCoverageEffectiveDate + "]";
 	}
+	
 }

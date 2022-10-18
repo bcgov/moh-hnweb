@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ca.bc.gov.hlth.hnweb.converter.rapid.BaseRapidConverter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPAG0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPAI0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPAJ0Converter;
@@ -45,8 +46,6 @@ import ca.bc.gov.hlth.hnweb.service.MaintenanceService;
 @RequestMapping("/maintenance")
 @RestController
 public class MaintenanceController extends BaseController {
-
-	private static final String SUCCESS = "RPBS9014";
 
 	private static final Logger logger = LoggerFactory.getLogger(MaintenanceController.class);
 
@@ -153,8 +152,9 @@ public class MaintenanceController extends BaseController {
 			return null;
 		}
 	}
+	
 	/**
-	 * Renew the coverage effective date of an employee and spouse/dependents. 
+	 * Renew the coverage effective date of an employee and spouse/dependents.
 	 * Maps to the legacy R45 (Z27).
 	 * 
 	 * @param RenewCancelledGroupCoverageRequest
@@ -162,31 +162,35 @@ public class MaintenanceController extends BaseController {
 	 */
 	@PostMapping("/renew-cancelled-group-coverage")
 	public ResponseEntity<RenewCancelledGroupCoverageResponse> renewCancelledGroupCoverage(
-			@Valid @RequestBody RenewCancelledGroupCoverageRequest renewCancelledGroupCoverageRequest, HttpServletRequest request) {
+			@Valid @RequestBody RenewCancelledGroupCoverageRequest renewCancelledGroupCoverageRequest,
+			HttpServletRequest request) {
 
-		Transaction transaction = auditRenewCancelledCoverageStart(renewCancelledGroupCoverageRequest.getPhn(), request);
-		RenewCancelledGroupCoverageResponse renewCancelledGroupCoverageResponse;
+		Transaction transaction = auditRenewCancelledCoverageStart(renewCancelledGroupCoverageRequest.getPhn(),
+				request);
+		
 		try {
 			RPBSPAI0Converter converter = new RPBSPAI0Converter();
 			RPBSPAI0 rpbspai0Request = converter.convertRequest(renewCancelledGroupCoverageRequest);
 			RPBSPAI0 rpbspai0Response = maintenanceService.renewCoverageEffectiveDate(rpbspai0Request, transaction);
+			RenewCancelledGroupCoverageResponse renewCancelledGroupCoverageResponse;
 			
-			//Execute if RPBSPAI0 returns successfully
-			if(rpbspai0Response.getRpbsHeader().getStatusCode().contentEquals(SUCCESS)) {
-			RPBSPXP0Converter rpbspxp0Converter = new RPBSPXP0Converter();
-			
-			//Creates/Clones a new Coverage entry, not simply an update but an Add
-			AddGroupMemberRequest addGroupMemberRequest = converter.buildAddGroupMemberRequest(rpbspai0Response);
-			RPBSPXP0 rpbspxp0 = rpbspxp0Converter.convertRequest(addGroupMemberRequest);
-			
-			RPBSPXP0 rpbspxp0Response = groupMemberService.addGroupMember(rpbspxp0, transaction);
-			renewCancelledGroupCoverageResponse = rpbspxp0Converter.convertResponseForRenewel(rpbspxp0Response);
+			// Execute if RPBSPAI0 returns successfully
+			if (StringUtils.equals(rpbspai0Response.getRpbsHeader().getStatusCode(), BaseRapidConverter.STATUS_CODE_SUCCESS)) {
+				RPBSPXP0Converter rpbspxp0Converter = new RPBSPXP0Converter();
+
+				// Creates/Clones a new Coverage entry, not simply an update but an Add
+				AddGroupMemberRequest addGroupMemberRequest = converter.buildAddGroupMemberRequest(rpbspai0Response);
+				RPBSPXP0 rpbspxp0 = rpbspxp0Converter.convertRequest(addGroupMemberRequest);
+
+				RPBSPXP0 rpbspxp0Response = groupMemberService.addGroupMember(rpbspxp0, transaction);
+				renewCancelledGroupCoverageResponse = rpbspxp0Converter.convertResponseForRenewal(rpbspxp0Response);
 			} else {
 				renewCancelledGroupCoverageResponse = converter.convertResponse(rpbspai0Response);
 			}
-		
-			ResponseEntity<RenewCancelledGroupCoverageResponse> response = ResponseEntity.ok(renewCancelledGroupCoverageResponse);
-			
+
+			ResponseEntity<RenewCancelledGroupCoverageResponse> response = ResponseEntity
+					.ok(renewCancelledGroupCoverageResponse);
+
 			logger.info("RenewCancelledGroupCoverageResponse response: {} ", response);
 
 			auditRenewCancelledCoverageComplete(transaction, renewCancelledGroupCoverageResponse.getPhn());

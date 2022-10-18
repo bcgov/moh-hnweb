@@ -32,7 +32,7 @@
               <router-link @click="resetAlert" :class="menuClass($route, 'ChangeEffectiveDate')" :to="{ name: 'ChangeEffectiveDate' }" v-if="hasPermission('ChangeEffectiveDate')">Change Effective Date</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'ChangeCancelDate')" :to="{ name: 'ChangeCancelDate' }" v-if="hasPermission('ChangeCancelDate')">Change Cancel Date</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'ReinstateOverAgeDependent')" :to="{ name: 'ReinstateOverAgeDependent' }" v-if="hasPermission('ReinstateOverAgeDependent')">Reinstate OverAge Dependent</router-link>
-              <router-link @click="resetAlert" :class="menuClass($route, 'RenewCancelledGroupCoverage')" :to="{ name: 'RenewCancelledGroupCoverage' }" v-if="hasPermission('RenewCancelledCoverage')">RenewCancelledGroupCoverage</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'RenewCancelledGroupCoverage')" :to="{ name: 'RenewCancelledGroupCoverage' }" v-if="hasPermission('RenewCancelledCoverage')">Renew Cancelled Group Coverage</router-link>
             </div>
           </div>
         </li>

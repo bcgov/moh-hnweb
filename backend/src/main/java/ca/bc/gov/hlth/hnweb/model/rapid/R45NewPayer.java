@@ -3,41 +3,41 @@ package ca.bc.gov.hlth.hnweb.model.rapid;
 import org.apache.commons.lang3.StringUtils;
 
 public class R45NewPayer {
-	/** 0	SubscriberPHN	String	No	0...10	.. */
+	/** 0 SubscriberPHN String No 0...10 .. */
 	private String phn;
-	/** 1	SpousePHN	String	No	0...10	.. */
-	private String spousePhn;	
-	/** 2	DependentPHN1	String	No	0...10	.. */	 
+	/** 1 SpousePHN String No 0...10 .. */
+	private String spousePhn;
+	/** 2 DependentPHN1 String No 0...10 .. */
 	private String dependentPhn1;
-	/** 3	DependentPHN2	String	No	0...10	.. */	 	 
+	/** 3 DependentPHN2 String No 0...10 .. */
 	private String dependentPhn2;
-	/** 4	DependentPHN3	String	No	0...10	.. */	 
+	/** 4 DependentPHN3 String No 0...10 .. */
 	private String dependentPhn3;
-	/** 5	DependentPHN4	String	No	0...10	.. */	 
+	/** 5 DependentPHN4 String No 0...10 .. */
 	private String dependentPhn4;
-	/** 6	DependentPHN5	String	No	0...10	.. */	 
+	/** 6 DependentPHN5 String No 0...10 .. */
 	private String dependentPhn5;
-	/** 7	DependentPHN6	String	No	0...10	.. */
+	/** 7 DependentPHN6 String No 0...10 .. */
 	private String dependentPhn6;
-	/** 8	DependentPHN7	String	No	0...10	.. */
+	/** 8 DependentPHN7 String No 0...10 .. */
 	private String dependentPhn7;
 	/** 9 EmployeePHN String No 0...10 .. */
 	private String employeePhn;
 	/** 10 GroupNumber String No 0...7 .. */
 	private String groupNumber;
-	/**	11 EmployeeNumber	String	No	0...9	.. */
+	/** 11 EmployeeNumber String No 0...9 .. */
 	private String employeeNumber;
-	/** 12	DepartmentNumber	String	No	0...6 */
+	/** 12 DepartmentNumber String No 0...6 */
 	private String departmentNumber;
-	/** 13	HomeAddress	RPBSAddress	No	0...106	.. */
+	/** 13 HomeAddress RPBSAddress No 0...106 .. */
 	private RPBSAddress homeAddress;
-	/** 14	MailAddress	RPBSAddress	No	0...106	.. */
+	/** 14 MailAddress RPBSAddress No 0...106 .. */
 	private RPBSAddress mailAddress;
-	/** 15	Phone0	RPBSPhone	No	0...30	.. */
+	/** 15 Phone0 RPBSPhone No 0...30 .. */
 	private RPBSPhone phone0;
-	/** 16	Phone1	RPBSPhone	No	0...30	.. */
+	/** 16 Phone1 RPBSPhone No 0...30 .. */
 	private RPBSPhone phone1;
-		
+
 	public R45NewPayer() {
 		super();
 	}
@@ -60,58 +60,74 @@ public class R45NewPayer {
 		homeAddress = new RPBSAddress(StringUtils.substring(message, 122, 228));
 		mailAddress = new RPBSAddress(StringUtils.substring(message, 228, 334));
 		phone0 = new RPBSPhone(StringUtils.substring(message, 334, 364));
-		phone1 = new RPBSPhone(StringUtils.substring(message, 364, 394));			
+		phone1 = new RPBSPhone(StringUtils.substring(message, 364, 394));
 
 	}
 
 	public String getPhn() {
 		return phn;
 	}
+
 	public void setPhn(String phn) {
 		this.phn = phn;
 	}
+
 	public String getSpousePhn() {
 		return spousePhn;
 	}
+
 	public void setSpousePhn(String spousePhn) {
 		this.spousePhn = spousePhn;
 	}
+
 	public String getDependentPhn1() {
 		return dependentPhn1;
 	}
+
 	public void setDependentPhn1(String dependentPhn1) {
 		this.dependentPhn1 = dependentPhn1;
 	}
+
 	public String getDependentPhn2() {
 		return dependentPhn2;
 	}
+
 	public void setDependentPhn2(String dependentPhn2) {
 		this.dependentPhn2 = dependentPhn2;
 	}
+
 	public String getDependentPhn3() {
 		return dependentPhn3;
 	}
+
 	public void setDependentPhn3(String dependentPhn3) {
 		this.dependentPhn3 = dependentPhn3;
 	}
+
 	public String getDependentPhn4() {
 		return dependentPhn4;
 	}
+
 	public void setDependentPhn4(String dependentPhn4) {
 		this.dependentPhn4 = dependentPhn4;
 	}
+
 	public String getDependentPhn5() {
 		return dependentPhn5;
 	}
+
 	public void setDependentPhn5(String dependentPhn5) {
 		this.dependentPhn5 = dependentPhn5;
 	}
+
 	public String getDependentPhn6() {
 		return dependentPhn6;
 	}
+
 	public void setDependentPhn6(String dependentPhn6) {
 		this.dependentPhn6 = dependentPhn6;
 	}
+
 	public String getEmployeePhn() {
 		return employeePhn;
 	}
@@ -123,6 +139,7 @@ public class R45NewPayer {
 	public String getDependentPhn7() {
 		return dependentPhn7;
 	}
+
 	public void setDependentPhn7(String dependentPhn7) {
 		this.dependentPhn7 = dependentPhn7;
 	}
