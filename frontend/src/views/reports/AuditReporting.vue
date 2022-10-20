@@ -73,7 +73,7 @@
     >
       <Column field="type" header="Type" :sortable="true"></Column>
       <Column field="organization" header="Organization" :sortable="true"></Column>
-      <Column field="userId" header="User ID" :sortable="true"></Column>
+      <Column field="userId" header="User ID" :sortable="true" class="userId"></Column>
       <Column field="transactionStartTime" header="Transaction Start Time" :sortable="true"></Column>
       <Column field="affectedPartyId" header="Affected Party ID" :sortable="true"></Column>
       <Column field="affectedPartyType" header="Affected Party ID Type" :sortable="true"></Column>
@@ -130,7 +130,31 @@ export default {
       firstRecordIndex: 0,
       loading: false,
       lazyParams: {},
-      transactionOptions: ['CheckEligibility', 'PHNInquiry', 'PHNLookup', 'EnrollSubscriber', 'GetPersonDetails', 'NameSearch', 'AddGroupMember', 'AddDependent', 'UpdateNumberAndDept', 'CancelDependent', 'ContractInquiry', 'GetContractAddress', 'UpdateContractAddress'],
+      transactionOptions: [
+        'AddDependent',
+        'AddGroupMember',
+        'CancelDependent',
+        'CancelGroupMember',
+        'ChangeCancelDate',
+        'ChangeEffectiveDate',
+        'CheckEligibility',
+        'ContractInquiry',
+        'EnrollSubscriber',
+        'ExtendCancelDate',
+        'GetContractAddress',
+        'GetContractPeriods',
+        'GetPatientRegistration',
+        'GetPersonDetails',
+        'MSPCoverageCheck',
+        'NameSearch',
+        'PHNInquiry',
+        'PHNLookup',
+        'ReinstateCancelledCoverage',
+        'ReinstateOverAgeDependent',
+        'RenewCancelledCoverage',
+        'UpdateContractAddress',
+        'UpdateNumberAndDept',
+      ],
     }
   },
   mounted() {
@@ -268,7 +292,6 @@ export default {
       this.searching = false
       this.v$.$reset()
       this.alertStore.dismissAlert()
-      this.auditStore.$reset()
       this.firstRecordIndex = 0
       // This is a workaround to ensure that the paginator is reset by forcing the component to reload
       // Technically this can be handled with firstRecordIndex but there appears to be an issue. See https://github.com/primefaces/primevue/issues/2253.
@@ -392,5 +415,12 @@ export default {
 /* Show the checkmark when checked */
 .checkbox input:checked ~ .checkmark:after {
   display: block;
+}
+</style>
+
+<style>
+.userId {
+  max-width: 150px;
+  word-wrap: break-word;
 }
 </style>
