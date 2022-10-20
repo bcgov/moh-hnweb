@@ -35,9 +35,9 @@
   <br />
   <div v-if="searchOk && result.contractInquiryBeneficiaries.length > 0">
     <hr />
-    <div id="personInfo">
-      <h2>Addresses</h2>
-      <AppSimpleTable id="addressTable">
+    <br />
+    <h2>Addresses</h2>
+    <AppSimpleTable id="addressTable">
           <thead>
           <tr>
             <th>Use</th>
@@ -49,25 +49,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr >
-          <td>Home Address</td>
-          <td>{{ result.homeAddressLine1 }}</td>
-          <td>{{ result.homeAddressLine2 }}</td>
-          <td>{{ result.homeAddressLine1 }}</td>
-          <td>{{ result.homeAddressLine2 }}</td>
-          <td>{{ result.telephone }}</td>
-        </tr>
-        <tr >
-          <td>Mailing Address</td>
-          <td>{{ result.mailingAddressLine1 }}</td>
-          <td>{{ result.mailingAddressLine1 }}</td>
-          <td>{{ result.mailingAddressLine1 }}</td>
-          <td>{{ result.mailingAddressLine1 }}</td>
-          <td>{{ result.telephone }}</td>
-        </tr>
+        <BeneficiaryAddress :result="result" />
       </tbody>
     </AppSimpleTable>
-    <br/>
     <h2>Group Member Details</h2>
     <AppSimpleTable id="identifierTable">
       <thead>
@@ -77,17 +61,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr >
-          <td>Group Member Number</td>
-          <td>{{ result.groupMemberNumber }}</td>   
-        </tr>
-        <tr >
-          <td>Department Number</td>
-          <td>{{ result.groupMemberDepartmentNumber }}</td>   
-        </tr>
+        <BeneficiaryMemberDetails :result="result" />
       </tbody>
     </AppSimpleTable>   
-    <br />
     <h2>Demographics</h2>
     <AppSimpleTable id="resultsTable">
       <thead>
@@ -109,13 +85,14 @@
         </tr>
       </tbody>
     </AppSimpleTable>
-    <br/> 
-    </div>
+    <br/>   
   </div>
 </template>
 <script>
 import AppHelp from '../../components/ui/AppHelp.vue'
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
+import BeneficiaryAddress from '../../components/mspcontracts/BeneficiaryAddress.vue'
+import BeneficiaryMemberDetails from '../../components/mspcontracts/BeneficiaryMemberDetails.vue'
 import ContractInquiryBeneficiary from '../../components/mspcontracts/ContractInquiryBeneficiary.vue'
 import useVuelidate from '@vuelidate/core'
 import { validateOptionalPHN, validateGroupNumber, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE } from '../../util/validators'
@@ -131,6 +108,7 @@ export default {
     AppSimpleTable,
     ContractInquiryBeneficiary,
     BeneficiaryAddress,
+    BeneficiaryMemberDetails
   },
   setup() {
     return {
@@ -152,16 +130,16 @@ export default {
         homeAddressLine1: '',
         homeAddressLine2: '',
         homeAddressLine3: '',
-        homePostalCode: '',
+        homeAddressPostalCode: '',
         mailingAddressLine1: '',
         mailingAddressLine2: '',
         mailingAddressLine3: '',
-        mailingPostalCode: '',
+        mailingAddressPostalCode: '',
         telephone: '',
         contractInquiryBeneficiaries: [],
       },
     }
-  },
+  },   
   methods: {
     async submitForm() {
       this.result = null

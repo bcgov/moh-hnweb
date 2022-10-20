@@ -41,58 +41,23 @@
         </tr>
       </tbody>
     </AppSimpleTable>
-    <br />
     <div id="personInfo">
-      <AppRow>
-        <AppCol class="col3"><h2>Home Address</h2> </AppCol>
-        <AppCol class="col3"><h2>Mailing Address</h2></AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Line 1" :value="result.homeAddressLine1" />
-        </AppCol>
-        <AppCol class="col3">
-          <AppOutput label="Line 1" :value="result.mailingAddressLine1" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Line 2" :value="result.homeAddressLine2" />
-        </AppCol>
-        <AppCol class="col3">
-          <AppOutput label="Line 2" :value="result.mailingAddressLine2" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Line 3" :value="result.homeAddressLine3" />
-        </AppCol>
-        <AppCol class="col3">
-          <AppOutput label="Line 3" :value="result.mailingAddressLine3" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Line 4" :value="result.homeAddressLine4" />
-        </AppCol>
-        <AppCol class="col3">
-          <AppOutput label="Line 4" :value="result.mailingAddressLine4" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Postal Code" :value="result.homeAddressPostalCode" />
-        </AppCol>
-        <AppCol class="col3">
-          <AppOutput label="Postal Code" :value="result.mailingAddressPostalCode" />
-        </AppCol>
-      </AppRow>
+      <AppSimpleTable id="addressTable">
+        <thead>
+          <tr>
+            <th>Use</th>
+            <th>Line1</th>
+            <th>Line2</th>
+            <th>City/Province</th>
+            <th>Postal Code</th>
+            <th>Telephone</th>
+          </tr>
+        </thead>
+        <tbody>
+          <BeneficiaryAddress :result="result"></BeneficiaryAddress>
+        </tbody>
+      </AppSimpleTable>
       <br />
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Telephone" :value="result.telephone" />
-        </AppCol>
-      </AppRow>
     </div>
   </div>
 </template>
@@ -100,6 +65,7 @@
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
 import AppHelp from '../../components/ui/AppHelp.vue'
 import GroupMemberContractBeneficiary from '../../components/mspcontracts/GroupMemberContractBeneficiary.vue'
+import BeneficiaryAddress from '../../components/mspcontracts/BeneficiaryAddress.vue'
 import useVuelidate from '@vuelidate/core'
 import { validateOptionalPHN, validateGroupNumber, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE } from '../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
@@ -113,6 +79,7 @@ export default {
     AppHelp,
     AppSimpleTable,
     GroupMemberContractBeneficiary,
+    BeneficiaryAddress,
   },
   setup() {
     return {
