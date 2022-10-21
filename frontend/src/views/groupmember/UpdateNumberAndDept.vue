@@ -37,7 +37,11 @@
   </div>
   <br />
   <div id="confirmation" v-if="updateOk">
+    <h2>Transaction completed for:</h2>
+    <p>Group Number: {{ this.updateNumberAndDeptRequest.groupNumber }}</p>
     <p>PHN: {{ result?.phn }}</p>
+    <p>Group Member Number: {{ this.updateNumberAndDeptRequest.groupMemberNumber }}</p>
+    <p>Department Number: {{ this.updateNumberAndDeptRequest.departmentNumber }}</p>
     <AppButton @click="resetForm" mode="primary" type="button">Update Another Group Member</AppButton>
   </div>
 </template>
@@ -77,6 +81,7 @@ export default {
         status: '',
         message: '',
       },
+      updateNumberAndDeptRequest: {},
     }
   },
   methods: {
@@ -102,6 +107,10 @@ export default {
           this.showError(errors)
           return
         }
+
+        this.updateNumberAndDeptRequest.groupNumber = this.groupNumber
+        this.updateNumberAndDeptRequest.groupMemberNumber = this.groupMemberNumber
+        this.updateNumberAndDeptRequest.departmentNumber = this.departmentNumber
 
         this.result = (
           await GroupMemberService.updateNumberAndDept({
@@ -173,3 +182,13 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+p {
+  font-weight: bold;
+  color: #003366;
+}
+h2 {
+  color: #003366;
+}
+</style>
