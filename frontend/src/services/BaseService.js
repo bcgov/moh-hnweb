@@ -5,8 +5,8 @@ import keycloak from '../keycloak'
 export const resources = {
   bulletins: '/bulletins',
   enrollment: {
-    nameSearch: 'enrollment/name-search',
-    getPersonDetails: 'enrollment/get-person-details',
+    nameSearch: '/enrollment/name-search',
+    getPersonDetails: '/enrollment/get-person-details',
     enrollSubscriber: '/enrollment/enroll-subscriber',
   },
   eligibility: {
@@ -19,7 +19,7 @@ export const resources = {
     getPatientRegistration: '/patient-registration/get-patient-registration',
   },
   bcscPayeeMappings: {
-    getBcscPayeeMapping: '/payee-mapping'
+    getBcscPayeeMapping: '/payee-mapping',
   },
   groupMember: {
     addGroupMember: '/group-member/add-group-member',
