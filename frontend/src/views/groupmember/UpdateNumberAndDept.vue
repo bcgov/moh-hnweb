@@ -37,11 +37,16 @@
   </div>
   <br />
   <div id="confirmation" v-if="updateOk">
-    <h2>Transaction completed for:</h2>
-    <p>Group Number: {{ this.updateNumberAndDeptRequest.groupNumber }}</p>
-    <p>PHN: {{ result?.phn }}</p>
-    <p>Group Member Number: {{ this.updateNumberAndDeptRequest.groupMemberNumber }}</p>
-    <p>Department Number: {{ this.updateNumberAndDeptRequest.departmentNumber }}</p>
+    <p>
+      <label>Transaction completed for:</label>
+      <br />
+      <ul>
+        <li><label>Group Number: </label>{{ updateNumberAndDeptRequest.groupNumber }}</li>
+        <li><label>PHN: </label>{{ result?.phn }}</li>
+        <li><label>Group Member Number: </label>{{ updateNumberAndDeptRequest.groupMemberNumber }}</li>
+        <li><label>Department Number: </label>{{ updateNumberAndDeptRequest.departmentNumber }}</li>
+      </ul>
+    </p>
     <AppButton @click="resetForm" mode="primary" type="button">Update Another Group Member</AppButton>
   </div>
 </template>
@@ -182,13 +187,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-p {
-  font-weight: bold;
-  color: #003366;
-}
-h2 {
-  color: #003366;
-}
-</style>
