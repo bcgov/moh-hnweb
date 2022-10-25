@@ -37,6 +37,8 @@ public class RPBSPEE0Converter extends BaseRapidConverter {
 		handleStatus(header, response);
 		
 		response.setPhn(rpbspee0.getEe0().getPhn());
+		response.setGroupNumber(rpbspee0.getEe0().getGroupNumber());
+		response.setGroupMemberNumber(rpbspee0.getEe0().getEmployeeNumber());
 		
 		return response;
 	}

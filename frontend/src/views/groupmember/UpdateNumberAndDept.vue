@@ -37,16 +37,14 @@
   </div>
   <br />
   <div id="confirmation" v-if="updateOk">
-    <p>
-      <label>Transaction completed for:</label>
-      <br />
-      <ul>
-        <li><label>Group Number: </label>{{ updateNumberAndDeptRequest.groupNumber }}</li>
-        <li><label>PHN: </label>{{ result?.phn }}</li>
-        <li><label>Group Member Number: </label>{{ updateNumberAndDeptRequest.groupMemberNumber }}</li>
-        <li><label>Department Number: </label>{{ updateNumberAndDeptRequest.departmentNumber }}</li>
-      </ul>
-    </p>
+    <p><label>Transaction completed for:</label></p>
+    <ul>
+      <li><label>Group Number: </label>{{ result.groupNumber }}</li>
+      <li><label>PHN: </label>{{ result?.phn }}</li>
+      <li><label>Group Member Number: </label>{{ result.groupMemberNumber }}</li>
+      <li><label>Department Number: </label>{{ result.departmentNumber }}</li>
+    </ul>
+    <br />
     <AppButton @click="resetForm" mode="primary" type="button">Update Another Group Member</AppButton>
   </div>
 </template>
@@ -83,6 +81,9 @@ export default {
       submitting: false,
       result: {
         phn: '',
+        groupNumber: '',
+        groupMemberNumber: '',
+        departmentNumber: '',
         status: '',
         message: '',
       },
@@ -112,10 +113,6 @@ export default {
           this.showError(errors)
           return
         }
-
-        this.updateNumberAndDeptRequest.groupNumber = this.groupNumber
-        this.updateNumberAndDeptRequest.groupMemberNumber = this.groupMemberNumber
-        this.updateNumberAndDeptRequest.departmentNumber = this.departmentNumber
 
         this.result = (
           await GroupMemberService.updateNumberAndDept({
