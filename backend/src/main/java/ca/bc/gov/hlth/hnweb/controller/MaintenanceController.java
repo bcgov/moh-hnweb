@@ -29,6 +29,8 @@ import ca.bc.gov.hlth.hnweb.model.rest.groupmember.ChangeEffectiveDateRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.ChangeEffectiveDateResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ChangeCancelDateRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ChangeCancelDateResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ExtendCancelDateRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ExtendCancelDateResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ReinstateOverAgeDependentRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ReinstateOverAgeDependentResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.RenewCancelledGroupCoverageRequest;
@@ -118,7 +120,37 @@ public class MaintenanceController extends BaseController {
 			return null;
 		}
 	}
+	/**
+	 * Extend the premium cancellation date of an employee. 
+	 * Maps to the legacy R51 (z25).
+	 * 
+	 * @param extendCancelDateRequest
+	 * @return The result of the operation.
+	 */
+	@PostMapping("/extend-cancel-date")
+	public ResponseEntity<ExtendCancelDateResponse> extendCancelDate(
+			@Valid @RequestBody ExtendCancelDateRequest extendCancelDateRequest, HttpServletRequest request) {
 
+		Transaction transaction = auditChangeCancelDateStart(extendCancelDateRequest.getPhn(), request);
+
+		try {
+			RPBSPAG0Converter converter = new RPBSPAG0Converter();
+			RPBSPAG0 rpbspag0Request = converter.convertRequest(extendCancelDateRequest);
+			RPBSPAG0 rpbspag0Response = maintenanceService.extendCancelDate(rpbspag0Request, transaction);
+			ExtendCancelDateResponse extendCancelDateResponse = converter.convertExtendCancelDateResponse(rpbspag0Response);
+
+			ResponseEntity<ExtendCancelDateResponse> response = ResponseEntity.ok(extendCancelDateResponse);
+
+			logger.info("extendCancelDateResponse response: {} ", extendCancelDateResponse);
+
+			auditChangeCancelDateComplete(transaction, extendCancelDateResponse.getPhn());
+
+			return response;
+		} catch (Exception e) {
+			handleException(transaction, e);
+			return null;
+		}
+	}
 	/**
 	 * Reinstates coverage for an overage dependent. Maps to the legacy R43.
 	 * 
