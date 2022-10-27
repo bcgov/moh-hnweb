@@ -1,5 +1,6 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -67,7 +68,7 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 	private GroupMemberController groupMemberController;
 	
     @Test
-    public void testUpdateGroupMember_invalidRequest() {
+    public void testUpdateNumberAndDept_invalidRequest() {
     	
     	UpdateNumberAndDeptRequest updateNumberAndDeptRequest = new UpdateNumberAndDeptRequest();
     	updateNumberAndDeptRequest.setPhn("9347984074");
@@ -84,7 +85,7 @@ public class GroupMemberControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void testUpdateGroupMember_phnHasNoCoverageInGroup() throws InterruptedException {
+    public void testUpdateNumberAndDept_phnHasNoCoverageInGroup() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()
         		.setBody(RPBSPED0_ERROR_PHN_HAS_NO_COVERAGE_IN_GROUP)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
@@ -115,7 +116,7 @@ public class GroupMemberControllerTest extends BaseControllerTest {
     }
     
     @Test
-    public void testUpdateGroupMember_success() throws InterruptedException {
+    public void testUpdateNumberAndDept_success() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()
         		.setBody(RPBSPED0_SUCCESS)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
@@ -126,7 +127,7 @@ public class GroupMemberControllerTest extends BaseControllerTest {
     	UpdateNumberAndDeptRequest updateNumberAndDeptRequest = new UpdateNumberAndDeptRequest();
     	updateNumberAndDeptRequest.setPhn("9873895927");
     	updateNumberAndDeptRequest.setGroupNumber("6337109");
-    	updateNumberAndDeptRequest.setDepartmentNumber("000001");
+    	updateNumberAndDeptRequest.setDepartmentNumber("111111");
     	updateNumberAndDeptRequest.setGroupMemberNumber("000000001");
     	
 		ResponseEntity<UpdateNumberAndDeptResponse> response = groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest, createHttpServletRequest());
@@ -135,6 +136,9 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 		assertEquals(StatusEnum.SUCCESS, updateNumberAndDeptResponse.getStatus());
         assertEquals("RPBS9014 TRANSACTION COMPLETED", updateNumberAndDeptResponse.getMessage());
         assertEquals("9873895927", updateNumberAndDeptResponse.getPhn());
+        assertEquals("6337109", updateNumberAndDeptResponse.getGroupNumber());
+        assertEquals("111111", updateNumberAndDeptResponse.getDepartmentNumber());
+        assertEquals("000000001", updateNumberAndDeptResponse.getGroupMemberNumber());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -142,6 +146,66 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 
         assertTransactionCreated(TransactionType.UPDATE_NUMBER_AND_OR_DEPT);
         assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 4);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+    }
+    
+    @Test
+    public void testUpdateNumberAndDept_deptOnly() throws InterruptedException {
+    	mockBackEnd.enqueue(new MockResponse()
+        		.setBody(RPBSPED0_SUCCESS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+    	
+    	UpdateNumberAndDeptRequest updateNumberAndDeptRequest = new UpdateNumberAndDeptRequest();
+    	updateNumberAndDeptRequest.setPhn("9873895927");
+    	updateNumberAndDeptRequest.setGroupNumber("6337109");
+    	updateNumberAndDeptRequest.setDepartmentNumber("111111");
+    	
+		ResponseEntity<UpdateNumberAndDeptResponse> response = groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest, createHttpServletRequest());
+		
+		UpdateNumberAndDeptResponse updateNumberAndDeptResponse = response.getBody();
+		assertEquals(StatusEnum.SUCCESS, updateNumberAndDeptResponse.getStatus());
+        assertEquals("RPBS9014 TRANSACTION COMPLETED", updateNumberAndDeptResponse.getMessage());
+        assertEquals("9873895927", updateNumberAndDeptResponse.getPhn());
+        assertEquals("6337109", updateNumberAndDeptResponse.getGroupNumber());
+        assertEquals("111111", updateNumberAndDeptResponse.getDepartmentNumber());
+        assertNull(updateNumberAndDeptResponse.getGroupMemberNumber());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.UPDATE_NUMBER_AND_OR_DEPT);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+    }    
+    
+    @Test
+    public void testUpdateNumberAndDept_groupMemberNumberOnly() throws InterruptedException {
+    	mockBackEnd.enqueue(new MockResponse()
+        		.setBody(RPBSPEE0_SUCCESS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+    	
+    	UpdateNumberAndDeptRequest updateNumberAndDeptRequest = new UpdateNumberAndDeptRequest();
+    	updateNumberAndDeptRequest.setPhn("9873895927");
+    	updateNumberAndDeptRequest.setGroupNumber("6337109");
+    	updateNumberAndDeptRequest.setGroupMemberNumber("000000001");
+    	
+		ResponseEntity<UpdateNumberAndDeptResponse> response = groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest, createHttpServletRequest());
+		
+		UpdateNumberAndDeptResponse updateNumberAndDeptResponse = response.getBody();
+		assertEquals(StatusEnum.SUCCESS, updateNumberAndDeptResponse.getStatus());
+        assertEquals("RPBS9014 TRANSACTION COMPLETED", updateNumberAndDeptResponse.getMessage());
+        assertEquals("9873895927", updateNumberAndDeptResponse.getPhn());
+        assertEquals("6337109", updateNumberAndDeptResponse.getGroupNumber());
+        assertNull(updateNumberAndDeptResponse.getDepartmentNumber());
+        assertEquals("000000001", updateNumberAndDeptResponse.getGroupMemberNumber());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.UPDATE_NUMBER_AND_OR_DEPT);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
         assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     

@@ -19,7 +19,7 @@ public class EE0 {
 		super();
 		phn = StringUtils.substring(message, 0, 10);
 		groupNumber = StringUtils.substring(message, 10, 17);
-		employeeNumber = StringUtils.substring(message, 17, 25);
+		employeeNumber = StringUtils.substring(message, 17, 26);
 	}
 
 	public String serialize() {

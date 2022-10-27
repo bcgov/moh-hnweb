@@ -36,6 +36,8 @@ public class RPBSPED0Converter extends BaseRapidConverter {
 		
 		handleStatus(header, response);
 		response.setPhn(rpbsped0.getEd0().getPhn());
+		response.setGroupNumber(rpbsped0.getEd0().getGroupNumber());
+		response.setDepartmentNumber(rpbsped0.getEd0().getDepartmentNumber());
 		
 		return response;
 	}

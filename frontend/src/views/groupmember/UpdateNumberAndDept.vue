@@ -37,7 +37,14 @@
   </div>
   <br />
   <div id="confirmation" v-if="updateOk">
-    <p>PHN: {{ result?.phn }}</p>
+    <p><label>Transaction completed for:</label></p>
+    <ul>
+      <li><label>Group Number: </label>{{ result.groupNumber }}</li>
+      <li><label>PHN: </label>{{ result?.phn }}</li>
+      <li><label>Group Member Number: </label>{{ result.groupMemberNumber }}</li>
+      <li><label>Department Number: </label>{{ result.departmentNumber }}</li>
+    </ul>
+    <br />
     <AppButton @click="resetForm" mode="primary" type="button">Update Another Group Member</AppButton>
   </div>
 </template>
@@ -74,9 +81,13 @@ export default {
       submitting: false,
       result: {
         phn: '',
+        groupNumber: '',
+        groupMemberNumber: '',
+        departmentNumber: '',
         status: '',
         message: '',
       },
+      updateNumberAndDeptRequest: {},
     }
   },
   methods: {
