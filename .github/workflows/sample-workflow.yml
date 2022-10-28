@@ -29,21 +29,18 @@ jobs:
 
       - name: Generate list using Markdown
         run: |
-          echo "This is the lead in sentence for the list" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY # this is a blank line
-          echo "- Lets add a bullet point" >> $GITHUB_STEP_SUMMARY
-          echo "- Lets add a second bullet point" >> $GITHUB_STEP_SUMMARY
-          echo "- How about a third one?" >> $GITHUB_STEP_SUMMARY
-      
+          echo "sample=sample-value" >> $GITHUB_ENV
+          
       # Determine the tags
       - name: Determine image tags
         run: |
-          echo "IMAGE_TAGS=" >>$GITHUB_ENV
+          echo "IMAGE_TAGS=" >> $GITHUB_ENV
           echo "This is line 1 " >> $GITHUB_ENV
           echo "This is line 2 " >> $GITHUB_ENV
           echo "This is line 3 " >> $GITHUB_ENV
           
       - name: Print the tag
         run: |
-          echo ${{env.IMAGE_TAGS}}
+          echo "Sample is " ${{env.sample}}
+          echo "Image tag is " ${{env.IMAGE_TAGS}}
           
