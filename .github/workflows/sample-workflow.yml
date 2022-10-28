@@ -14,12 +14,11 @@ on:
         default: main
 
 jobs:
-  createRtransRelease:
+  sample-workflow-actions:
     runs-on: ubuntu-latest
 
 
     steps:
-      # Check out the code
       - name: Print out 
         id: print
         run: |
@@ -27,19 +26,19 @@ jobs:
           echo "Openshift service account is ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_USER }}" | sed 's/./& /g'
           echo "Gitops repo is ${{secrets.GITOPS_C5839F_REPO}}" | sed 's/./& /g'
 
-      - name: Generate list using Markdown
+      - name: Single line image tag
         run: |
           echo "sample=sample-value" >> $GITHUB_ENV
           
-      # Determine the tags
-      - name: Determine image tags
+      - name: Multi line image tag failing
         run: |
           echo "IMAGE_TAGS=" >> $GITHUB_ENV
-          echo "This is line 1 " >> $GITHUB_ENV
-          echo "This is line 2 " >> $GITHUB_ENV
-          echo "This is line 3 " >> $GITHUB_ENV
+          echo "::notice file={file},line={line}::Setting multi line failed"
+          #echo "This is line 1 " >> $GITHUB_ENV
+          #echo "This is line 2 " >> $GITHUB_ENV
+          #echo "This is line 3 " >> $GITHUB_ENV
           
-      - name: Print the tag
+      - name: Print the environment variables
         run: |
           echo "Sample is " ${{env.sample}}
           echo "Image tag is " ${{env.IMAGE_TAGS}}
