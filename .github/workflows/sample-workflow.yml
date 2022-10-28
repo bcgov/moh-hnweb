@@ -26,3 +26,16 @@ jobs:
           echo "Openshift server is ${{secrets.C5839F_OPENSHIFT_SERVER}}" | sed 's/./& /g'
           echo "Openshift service account is ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_USER }}" | sed 's/./& /g'
           echo "Gitops repo is ${{secrets.GITOPS_C5839F_REPO}}" | sed 's/./& /g'
+          
+      # Determine the tags
+      - name: Determine image tags
+        run: |
+          echo "IMAGE_TAGS=" >>$GITHUB_ENV
+          echo "This is line 1 " >> $GITHUB_ENV
+          echo "This is line 2 " >> $GITHUB_ENV
+          echo "This is line 3 " >> $GITHUB_ENV
+          
+      - name: Print the tag
+        run: |
+          echo ${{env.IMAGE_TAGS}}
+          
