@@ -32,7 +32,7 @@ jobs:
           
       - name: Multi line image tag failing
         run: |
-          echo "IMAGE_TAGS= Line 1 "
+          echo "${{IMAGE_TAGS}} = Line 1 "
           echo "Image tag is " ${{IMAGE_TAGS}}
           echo "${{IMAGE_TAGS}}= ${{IMAGE_TAGS}} Line 2 " 
           echo "Image tag is " ${{IMAGE_TAGS}}
