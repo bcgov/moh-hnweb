@@ -121,8 +121,7 @@ public class MaintenanceController extends BaseController {
 		}
 	}
 	/**
-	 * Extend the premium cancellation date of an employee. 
-	 * Maps to the legacy R51 (z25).
+	 * Extend the premium cancellation date of an employee. Maps to the legacy R51(z25).
 	 * 
 	 * @param extendCancelDateRequest
 	 * @return The result of the operation.
@@ -131,19 +130,20 @@ public class MaintenanceController extends BaseController {
 	public ResponseEntity<ExtendCancelDateResponse> extendCancelDate(
 			@Valid @RequestBody ExtendCancelDateRequest extendCancelDateRequest, HttpServletRequest request) {
 
-		Transaction transaction = auditChangeCancelDateStart(extendCancelDateRequest.getPhn(), request);
+		Transaction transaction = auditExtendCancelDateStart(extendCancelDateRequest.getPhn(), request);
 
 		try {
 			RPBSPAG0Converter converter = new RPBSPAG0Converter();
 			RPBSPAG0 rpbspag0Request = converter.convertRequest(extendCancelDateRequest);
 			RPBSPAG0 rpbspag0Response = maintenanceService.extendCancelDate(rpbspag0Request, transaction);
-			ExtendCancelDateResponse extendCancelDateResponse = converter.convertExtendCancelDateResponse(rpbspag0Response);
+			ExtendCancelDateResponse extendCancelDateResponse = converter
+					.convertExtendCancelDateResponse(rpbspag0Response);
 
 			ResponseEntity<ExtendCancelDateResponse> response = ResponseEntity.ok(extendCancelDateResponse);
 
 			logger.info("extendCancelDateResponse response: {} ", extendCancelDateResponse);
 
-			auditChangeCancelDateComplete(transaction, extendCancelDateResponse.getPhn());
+			auditExtendCancelDateComplete(transaction, extendCancelDateResponse.getPhn());
 
 			return response;
 		} catch (Exception e) {
@@ -151,6 +151,7 @@ public class MaintenanceController extends BaseController {
 			return null;
 		}
 	}
+	
 	/**
 	 * Reinstates coverage for an overage dependent. Maps to the legacy R43.
 	 * 
@@ -257,6 +258,25 @@ public class MaintenanceController extends BaseController {
 		}
 	}
 
+	private Transaction auditExtendCancelDateStart(String phn, HttpServletRequest request) {
+
+		Transaction transaction = transactionStart(request, TransactionType.EXTEND_CANCEL_DATE);
+
+		if (StringUtils.isNotBlank(phn)) {
+			addAffectedParty(transaction, IdentifierType.PHN, phn, AffectedPartyDirection.INBOUND);
+		}
+		return transaction;
+	}
+
+	private void auditExtendCancelDateComplete(Transaction transaction, String phn) {
+
+		transactionComplete(transaction);
+
+		if (StringUtils.isNotBlank(phn)) {
+			addAffectedParty(transaction, IdentifierType.PHN, phn, AffectedPartyDirection.OUTBOUND);
+		}
+	}
+	
 	private Transaction auditChangeCancelDateStart(String phn, HttpServletRequest request) {
 
 		Transaction transaction = transactionStart(request, TransactionType.CHANGE_CANCEL_DATE);

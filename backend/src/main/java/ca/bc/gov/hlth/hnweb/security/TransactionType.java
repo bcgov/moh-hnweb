@@ -24,6 +24,7 @@ public enum TransactionType {
 	RENEW_CANCELLED_COVERAGE("RenewCancelledCoverage"), // R45
 	CHANGE_EFFECTIVE_DATE("ChangeEffectiveDate"), // R46a	
 	CHANGE_CANCEL_DATE("ChangeCancelDate"), // R46b	
+	EXTEND_CANCEL_DATE("ExtendCancelDate"), // R51	
 	GET_PATIENT_REGISTRATION("GetPatientRegistration"), // R70
 	UNKNOWN("Unknown");
 
