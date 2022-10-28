@@ -32,14 +32,11 @@ jobs:
           
       - name: Multi line image tag failing
         run: |
-          echo "IMAGE_TAGS= Line 1 " >> $GITHUB_ENV
-          echo "Image tag is " ${{env.IMAGE_TAGS}}
-          echo "IMAGE_TAGS= ${{env.IMAGE_TAGS}} Line 2 " >> $GITHUB_ENV
-          echo "Image tag is " ${{env.IMAGE_TAGS}}
+          echo "IMAGE_TAGS= Line 1 "
+          echo "Image tag is " ${{IMAGE_TAGS}}
+          echo "${{IMAGE_TAGS}}= ${{IMAGE_TAGS}} Line 2 " 
+          echo "Image tag is " ${{IMAGE_TAGS}}
           echo "::notice file={file},line={line}::Setting multi line failed"
-          #echo "This is line 1 " >> $GITHUB_ENV
-          #echo "This is line 2 " >> $GITHUB_ENV
-          #echo "This is line 3 " >> $GITHUB_ENV
           
       - name: Print the environment variables
         run: |
