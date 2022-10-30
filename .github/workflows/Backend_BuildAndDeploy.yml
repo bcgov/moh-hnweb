@@ -90,13 +90,7 @@ jobs:
       # Determine the tags
       - name: Determine image tags
         run: |
-          echo "IMAGE_TAGS=
-          ${{env.TOOLSNS_IMAGE_REGISTRY}}/${{env.IMAGE_NAME}}:${GITHUB_SHA::12} 
-          ${{env.TOOLSNS_IMAGE_REGISTRY}}/${{env.IMAGE_NAME}}:mspdirect${{env.DEPLOY_SUFFIX}} 
-          ${{env.TOOLSNS_IMAGE_REGISTRY}}/${{env.IMAGE_NAME}}:${{env.VERSION}} 
-          ${{env.IMAGE_REGISTRY}}/${{env.OPENSHIFT_NAMESPACE}}/${{env.IMAGE_NAME}}${{env.DEPLOY_SUFFIX}}:${GITHUB_SHA::12} 
-          ${{env.IMAGE_REGISTRY}}/${{env.OPENSHIFT_NAMESPACE}}/${{env.IMAGE_NAME}}${{env.DEPLOY_SUFFIX}}:mspdirect${{env.DEPLOY_SUFFIX}} 
-          ${{env.IMAGE_REGISTRY}}/${{env.OPENSHIFT_NAMESPACE}}/${{env.IMAGE_NAME}}${{env.DEPLOY_SUFFIX}}:${{env.VERSION}} " | tee -a $GITHUB_ENV
+          echo "IMAGE_TAGS= ${{env.TOOLSNS_IMAGE_REGISTRY}}/${{env.IMAGE_NAME}}:${GITHUB_SHA::12} ${{env.TOOLSNS_IMAGE_REGISTRY}}/${{env.IMAGE_NAME}}:mspdirect${{env.DEPLOY_SUFFIX}} ${{env.TOOLSNS_IMAGE_REGISTRY}}/${{env.IMAGE_NAME}}:${{env.VERSION}} ${{env.IMAGE_REGISTRY}}/${{env.OPENSHIFT_NAMESPACE}}/${{env.IMAGE_NAME}}${{env.DEPLOY_SUFFIX}}:${GITHUB_SHA::12} ${{env.IMAGE_REGISTRY}}/${{env.OPENSHIFT_NAMESPACE}}/${{env.IMAGE_NAME}}${{env.DEPLOY_SUFFIX}}:mspdirect${{env.DEPLOY_SUFFIX}} ${{env.IMAGE_REGISTRY}}/${{env.OPENSHIFT_NAMESPACE}}/${{env.IMAGE_NAME}}${{env.DEPLOY_SUFFIX}}:${{env.VERSION}} " | tee -a $GITHUB_ENV
 
       # Build from docker file. Tags the build the previously created tags which are used in the next step which pushes them to the registry. One set of tags for tools and one for dev. Only 'tags' are used as this allows specifying
       # the image name in each tag. This is needed because it is different in each namespace as it contains '-dev' suffix in the dev namespace. Note, with multiple tags both have the same digest value.
