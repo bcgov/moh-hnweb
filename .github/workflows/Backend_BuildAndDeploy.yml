@@ -104,7 +104,7 @@ jobs:
             ./backend/Dockerfile
 
       # Push images at the same time using the different tags from the build. This allows having different image names.
-      - name: Push to tools and dev registry
+      - name: Push to tools and selected registry
         id: push-images
         uses: redhat-actions/push-to-registry@v2
         with:
