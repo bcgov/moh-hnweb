@@ -3,7 +3,7 @@ name: Backend_BuildAndDeploy
 env:
   # Registries such as GHCR, Quay.io, and Docker Hub are supported.
   TOOLSNS_IMAGE_REGISTRY: image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools
-  IMAGE_REGISTRY: image-registry.apps.silver.devops.gov.bc.ca/
+  IMAGE_REGISTRY: image-registry.apps.silver.devops.gov.bc.ca
   IMAGE_REGISTRY_USER: ${{secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_USER}}
   IMAGE_REGISTRY_PASSWORD: ${{secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN}}
   IMAGE_NAME: mspdirect-backend
