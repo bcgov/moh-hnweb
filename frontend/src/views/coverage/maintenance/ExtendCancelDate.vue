@@ -75,6 +75,7 @@ export default {
       existingCancellationDate: null,
       newCancellationDate: null,
       immigrationCode: '',
+      immigrationCodeOptions: {},
       permitIssueDate: null,
       permitExpiryDate: null,
       result: {
