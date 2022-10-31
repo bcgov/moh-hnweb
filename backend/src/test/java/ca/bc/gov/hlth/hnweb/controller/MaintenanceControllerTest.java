@@ -20,6 +20,8 @@ import ca.bc.gov.hlth.hnweb.model.rest.groupmember.ChangeEffectiveDateRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.ChangeEffectiveDateResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ChangeCancelDateRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ChangeCancelDateResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ExtendCancelDateRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ExtendCancelDateResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ReinstateOverAgeDependentRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ReinstateOverAgeDependentResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.RenewCancelledGroupCoverageRequest;
@@ -72,6 +74,14 @@ public class MaintenanceControllerTest extends BaseControllerTest {
 	private static final String R45_SUCCESS = "        RPBSPAI000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  987309854962674052021-12-019873098549                                                                                          6267405                                                                                                                         550 KP RD                VICTORIA BC                                                                V4R8U8";  
 	
 	private static final String R30_SUCCESS = "        RPBSPXP000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  6267405               2021-12-01                                                                                                          550 KP RD                VICTORIA BC                                                                V4R8U8                                                            9873098549";
+	
+	private static final String R51_SUCCESS = "        RPBSPAG000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  606855598730689262022-10-312022-11-30S2022-10-012023-05-31";
+	
+	private static final String R51_EXPIRY_DATE_MUST_BE_AFTER_ISSUE_DATE = "        RPBSPAG000000010                                ERRORMSGRPBS0210VISA EXPIRY DATE MUST BE AFTER VISA ISSUE DATE                          606855598730689262022-10-312023-10-31S2022-10-012022-05-31";
+	
+	private static final String R51_INVALID_IMMIGRATION_CODE= "        RPBSPAG000000010                                ERRORMSGRPBS0194IMMIGRATION CODE IS INVALID                                             633710993329124862022-09-302022-10-31nullnullnull";
+	
+	private static final String R51_VISA_DATE_CHANGE_REJECTED= "        RPBSPAG000000010                                ERRORMSGRPBS0172COVERAGE NOT CANCELLED D, VISA DATE CHANGE REJECTED                     633710993329124862022-09-302022-10-31S2022-10-012023-10-31";
 	
 	protected static DateTimeFormatter dateOnlyFormatter = DateTimeFormatter.ofPattern(V2MessageUtil.DATE_FORMAT_DATE_ONLY);
 	
@@ -578,6 +588,115 @@ public class MaintenanceControllerTest extends BaseControllerTest {
         assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
 	}
 	
+	@Test
+	public void testExtendCancelDate_success() throws Exception {
+		mockBackEnd.enqueue(
+				new MockResponse().setBody(R51_SUCCESS).addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+
+		ExtendCancelDateRequest extendCancelDateRequest = createExtendCancelDateRequest("9873068926", "6068555",
+				LocalDate.parse("2022-10-31"), "S", LocalDate.parse("2022-10-01"), LocalDate.parse("2023-10-31"));
+
+		ResponseEntity<ExtendCancelDateResponse> response = maintenanceController
+				.extendCancelDate(extendCancelDateRequest, createHttpServletRequest());
+
+		ExtendCancelDateResponse extendCancelDateResponse = response.getBody();
+		assertEquals(StatusEnum.SUCCESS, extendCancelDateResponse.getStatus());
+		assertEquals("RPBS9014 TRANSACTION COMPLETED", extendCancelDateResponse.getMessage());
+
+		assertEquals("9873068926", extendCancelDateResponse.getPhn());
+
+		// Check the client request is sent as expected
+		RecordedRequest recordedRequest = mockBackEnd.takeRequest();
+		assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+		assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+
+		assertTransactionCreated(TransactionType.EXTEND_CANCEL_DATE);
+		assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+		assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+	}
+
+	@Test
+	public void testExtendCancelDate_error_invalidImmigrationCode() throws Exception {
+		mockBackEnd.enqueue(new MockResponse().setBody(R51_INVALID_IMMIGRATION_CODE).addHeader(CONTENT_TYPE,
+				MediaType.TEXT_PLAIN.toString()));
+
+		ExtendCancelDateRequest extendCancelDateRequest = createExtendCancelDateRequest("9332912486", "6337109",
+				LocalDate.parse("2022-10-31"), null, null, null);
+
+		ResponseEntity<ExtendCancelDateResponse> response = maintenanceController
+				.extendCancelDate(extendCancelDateRequest, createHttpServletRequest());
+
+		ExtendCancelDateResponse extendCancelDateResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, extendCancelDateResponse.getStatus());
+		assertEquals("RPBS0194 IMMIGRATION CODE IS INVALID", extendCancelDateResponse.getMessage());
+
+		assertEquals("9332912486", extendCancelDateResponse.getPhn());
+
+		// Check the client request is sent as expected
+		RecordedRequest recordedRequest = mockBackEnd.takeRequest();
+		assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+		assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+
+		assertTransactionCreated(TransactionType.EXTEND_CANCEL_DATE);
+		assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+		assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+	}
+
+	@Test
+	public void testExtendCancelDate_error_expiryDateMustBeAfterIssueDate() throws Exception {
+		mockBackEnd.enqueue(new MockResponse().setBody(R51_EXPIRY_DATE_MUST_BE_AFTER_ISSUE_DATE).addHeader(CONTENT_TYPE,
+				MediaType.TEXT_PLAIN.toString()));
+
+		ExtendCancelDateRequest extendCancelDateRequest = createExtendCancelDateRequest("9873068926", "6068555",
+				LocalDate.parse("2022-10-31"), "S", LocalDate.parse("2023-10-01"), LocalDate.parse("2022-10-31"));
+
+		ResponseEntity<ExtendCancelDateResponse> response = maintenanceController
+				.extendCancelDate(extendCancelDateRequest, createHttpServletRequest());
+
+		ExtendCancelDateResponse extendCancelDateResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, extendCancelDateResponse.getStatus());
+		assertEquals("RPBS0210 VISA EXPIRY DATE MUST BE AFTER VISA ISSUE DATE", extendCancelDateResponse.getMessage());
+
+		assertEquals("9873068926", extendCancelDateResponse.getPhn());
+
+		// Check the client request is sent as expected
+		RecordedRequest recordedRequest = mockBackEnd.takeRequest();
+		assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+		assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+
+		assertTransactionCreated(TransactionType.EXTEND_CANCEL_DATE);
+		assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+		assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+	}
+
+	@Test
+	public void testExtendCancelDate_error_visaDateChangeRejected() throws Exception {
+		mockBackEnd.enqueue(new MockResponse().setBody(R51_VISA_DATE_CHANGE_REJECTED).addHeader(CONTENT_TYPE,
+				MediaType.TEXT_PLAIN.toString()));
+
+		ExtendCancelDateRequest extendCancelDateRequest = createExtendCancelDateRequest("9332912486", "6337109",
+				LocalDate.parse("2022-10-31"), "S", LocalDate.parse("2022-10-01"), LocalDate.parse("2023-10-31"));
+
+		ResponseEntity<ExtendCancelDateResponse> response = maintenanceController
+				.extendCancelDate(extendCancelDateRequest, createHttpServletRequest());
+
+		ExtendCancelDateResponse extendCancelDateResponse = response.getBody();
+		assertEquals(StatusEnum.ERROR, extendCancelDateResponse.getStatus());
+		assertEquals("RPBS0172 COVERAGE NOT CANCELLED D, VISA DATE CHANGE REJECTED",
+				extendCancelDateResponse.getMessage());
+
+		assertEquals("9332912486", extendCancelDateResponse.getPhn());
+
+		// Check the client request is sent as expected
+		RecordedRequest recordedRequest = mockBackEnd.takeRequest();
+		assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+		assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+
+		assertTransactionCreated(TransactionType.EXTEND_CANCEL_DATE);
+		assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+		assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+	}
+	
 	
     /**
      * The URL property used by the mocked endpoint needs to be set after the MockWebServer starts as the port it uses is 
@@ -589,7 +708,6 @@ public class MaintenanceControllerTest extends BaseControllerTest {
         registry.add("rapid.url", () -> String.format("http://localhost:%s", mockBackEnd.getPort()));
     }
     
-
 	private ChangeEffectiveDateRequest createChangeEffectiveDate(LocalDate newEffectiveDate, LocalDate oldEffectiveDate) {
 		ChangeEffectiveDateRequest changeEffDateRequest = new ChangeEffectiveDateRequest();
 		changeEffDateRequest.setGroupNumber("6337109");
@@ -600,7 +718,6 @@ public class MaintenanceControllerTest extends BaseControllerTest {
 		
 		return changeEffDateRequest;
 	}
-
 	
 	private ChangeCancelDateRequest createChangeCancelDateRequest(String phn, LocalDate existingCancellationDate, LocalDate newCancellationDate) {
 		ChangeCancelDateRequest changeCancelDateRequest = new ChangeCancelDateRequest();
@@ -630,6 +747,19 @@ public class MaintenanceControllerTest extends BaseControllerTest {
 		renewCancelledGroupCoverageRequest.setGroupNumber("6099733");
 		renewCancelledGroupCoverageRequest.setNewCoverageEffectiveDate(newEffectiveDate);
 		return renewCancelledGroupCoverageRequest;
+	}
+	
+	private ExtendCancelDateRequest createExtendCancelDateRequest(String phn, String groupNumber,
+			LocalDate newCancelDate, String immigrationCode, LocalDate issueDate, LocalDate expiryDate) {
+		ExtendCancelDateRequest extendCancelDateRequest = new ExtendCancelDateRequest();
+		extendCancelDateRequest.setPhn(phn);
+		extendCancelDateRequest.setGroupNumber(groupNumber);
+		extendCancelDateRequest.setNewCancellationDate(newCancelDate);
+		extendCancelDateRequest.setExistingCancellationDate(LocalDate.parse("2022-09-30"));
+		extendCancelDateRequest.setPermitIssueDate(issueDate);
+		extendCancelDateRequest.setPermitExpiryDate(expiryDate);
+		extendCancelDateRequest.setImmigrationCode(immigrationCode);
+		return extendCancelDateRequest;
 	}
 	
 }

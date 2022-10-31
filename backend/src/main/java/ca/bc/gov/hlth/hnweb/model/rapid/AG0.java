@@ -12,6 +12,13 @@ public class AG0 {
 	private String existingCancellationDate;
 	/** 4 NewCancellationDate RPBSDate No 0...10 .. */
 	private String newCancellationDate;
+	/** 5 ImmigrationCode String No 0...1 .. */
+	private String immigrationCode;
+	/** 6 PermitIssueDate RPBSDate No 0...10 .. */
+	private String permitIssueDate;
+	/** 6 PermitExpiryDate RPBSDate No 0...10 .. */
+	private String permitExpiryDate;
+	
 
 	public AG0() {
 		super();
@@ -23,6 +30,9 @@ public class AG0 {
 		phn = StringUtils.substring(message, 7, 17);
 		existingCancellationDate = StringUtils.substring(message, 17, 27);
 		newCancellationDate = StringUtils.substring(message, 27, 37);
+		immigrationCode = StringUtils.substring(message, 37, 38);
+		permitIssueDate = StringUtils.substring(message, 38, 48);
+		permitExpiryDate = StringUtils.substring(message, 48, 58);
 
 	}
 
@@ -35,6 +45,19 @@ public class AG0 {
 		sb.append(StringUtils.rightPad(existingCancellationDate, 10));
 		sb.append(StringUtils.rightPad(newCancellationDate, 10));
 
+		return sb.toString();
+	}
+	
+	public String serializeECD() {
+		// Serialize is only used in when creating the request
+		StringBuilder sb = new StringBuilder();
+		sb.append(StringUtils.rightPad(groupNumber, 7));
+		sb.append(StringUtils.rightPad(phn, 10));
+		sb.append(StringUtils.rightPad(existingCancellationDate, 10));
+		sb.append(StringUtils.rightPad(newCancellationDate, 10));
+		sb.append(StringUtils.rightPad(immigrationCode, 1));
+		sb.append(StringUtils.rightPad(permitIssueDate, 10));
+		sb.append(StringUtils.rightPad(permitExpiryDate, 10));
 		return sb.toString();
 	}
 
@@ -68,6 +91,30 @@ public class AG0 {
 
 	public void setNewCancellationDate(String newCancellationDate) {
 		this.newCancellationDate = newCancellationDate;
+	}
+
+	public String getImmigrationCode() {
+		return immigrationCode;
+	}
+
+	public void setImmigrationCode(String immigrationCode) {
+		this.immigrationCode = immigrationCode;
+	}
+
+	public String getPermitIssueDate() {
+		return permitIssueDate;
+	}
+
+	public void setPermitIssueDate(String permitIssueDate) {
+		this.permitIssueDate = permitIssueDate;
+	}
+
+	public String getPermitExpiryDate() {
+		return permitExpiryDate;
+	}
+
+	public void setPermitExpiryDate(String permitExpiryDate) {
+		this.permitExpiryDate = permitExpiryDate;
 	}
 
 }

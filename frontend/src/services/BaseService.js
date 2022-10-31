@@ -31,6 +31,7 @@ export const resources = {
   maintenance: {
     changeEffectiveDate: '/maintenance/change-effective-date',
     changeCancelDate: '/maintenance/change-cancel-date',
+    extendCancelDate: '/maintenance/extend-cancel-date',
     reinstateOverAgeDependent: '/maintenance/reinstate-over-age-dependent',
     renewCancelledGroupCoverage: '/maintenance/renew-cancelled-group-coverage',
   },

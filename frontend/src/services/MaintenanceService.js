@@ -10,8 +10,10 @@ export default {
   reinstateOverAgeDependent(request) {
     return apiRequest().then((axiosInstance) => axiosInstance.post(resources.maintenance.reinstateOverAgeDependent, request))
   },
-
   renewCancelledGroupCoverage(request) {
     return apiRequest().then((axiosInstance) => axiosInstance.post(resources.maintenance.renewCancelledGroupCoverage, request))
+  },
+  extendCancelDate(request) {
+    return apiRequest().then((axiosInstance) => axiosInstance.post(resources.maintenance.extendCancelDate, request))
   },
 }

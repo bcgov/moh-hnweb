@@ -33,6 +33,7 @@
               <router-link @click="resetAlert" :class="menuClass($route, 'ChangeCancelDate')" :to="{ name: 'ChangeCancelDate' }" v-if="hasPermission('ChangeCancelDate')">Change Cancel Date</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'ReinstateOverAgeDependent')" :to="{ name: 'ReinstateOverAgeDependent' }" v-if="hasPermission('ReinstateOverAgeDependent')">Reinstate OverAge Dependent</router-link>
               <router-link @click="resetAlert" :class="menuClass($route, 'RenewCancelledGroupCoverage')" :to="{ name: 'RenewCancelledGroupCoverage' }" v-if="hasPermission('RenewCancelledCoverage')">Renew Cancelled Group Coverage</router-link>
+              <router-link @click="resetAlert" :class="menuClass($route, 'ExtendCancelDate')" :to="{ name: 'ExtendCancelDate' }" v-if="hasPermission('ExtendCancelDate')">Extend Cancel Date</router-link>
             </div>
           </div>
         </li>
@@ -146,7 +147,7 @@ export default {
       return this.hasPermission('AddGroupMember') || this.hasPermission('AddDependent') || this.hasPermission('UpdateNumberAndDept') || this.hasPermission('CancelGroupMember') || this.hasPermission('CancelDependent')
     },
     hasMaintenancePermission() {
-      return this.hasPermission('ReinstateOverAgeDependent') || this.hasPermission('ChangeEffectiveDate') || this.hasPermission('ChangeCancelDate') || this.hasPermission('RenewCancelledCoverage')
+      return this.hasPermission('ReinstateOverAgeDependent') || this.hasPermission('ChangeEffectiveDate') || this.hasPermission('ChangeCancelDate') || this.hasPermission('RenewCancelledCoverage') || this.hasPermission('ExtendCancelDate')
     },
     hasMSPContractsPermission() {
       return this.hasPermission('GetContractPeriods') || this.hasPermission('ContractInquiry') || this.hasPermission('UpdateContractAddress')
