@@ -47,7 +47,6 @@ public class RPBSPAG0Converter extends BaseRapidConverter {
 		ag0.setPermitIssueDate(formatDate(request.getPermitIssueDate()));
 		ag0.setPermitExpiryDate(formatDate(request.getPermitExpiryDate()));
 		
-
 		RPBSPAG0 rpbspag0 = new RPBSPAG0();
 		rpbspag0.setRpbsHeader(rpbsHeader);
 		rpbspag0.setAg0(ag0);

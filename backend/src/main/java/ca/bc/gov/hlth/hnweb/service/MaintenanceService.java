@@ -101,7 +101,7 @@ public class MaintenanceService extends BaseService {
 	}
 	
 	/**
-	 * Changes Coverage Cancellation Date for the group member based on the R46/RPBSPAG0 request.
+	 * Extends Coverage Cancellation Date for the group member based on the R51/RPBSPAG0 request.
 	 * 
 	 * @param rpbspag0
 	 * @param transaction
