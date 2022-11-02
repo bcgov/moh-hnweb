@@ -74,31 +74,17 @@ jobs:
               return "-test"
             } 
 
-      - name: Compute devops directory
-        id: set-devops-dir
-        uses: actions/github-script@v5
-        with:
-          script: |
-            if (`${{ github.event.inputs.environment }}` == 'dev') {
-              return "dev"
-            }
-            if (`${{ github.event.inputs.environment }}` == 'test') {
-              return "test"
-            } 
-
       - name: Set env values
         run: |
           echo "OPENSHIFT_NAMESPACE=${{steps.set-namespace.outputs.result}}"  | tee -a $GITHUB_ENV
           echo "DEPLOY_SUFFIX=${{steps.set-deploy-suffix.outputs.result}}"  | tee -a $GITHUB_ENV
-          echo "DEVOPS_DIR=${{steps.set-devops-dir.outputs.result}}"  | tee -a $GITHUB_ENV
-
 
       # Determine the tags
       - name: Determine image tags
         run: |
-          echo "IMAGE_TAGS= ${{env.TOOLSNS_IMAGE_REGISTRY}}/${{env.IMAGE_NAME}}:${GITHUB_SHA::12} ${{env.TOOLSNS_IMAGE_REGISTRY}}/${{env.IMAGE_NAME}}:mspdirect${{env.DEPLOY_SUFFIX}} ${{env.TOOLSNS_IMAGE_REGISTRY}}/${{env.IMAGE_NAME}}:${{env.VERSION}} ${{env.IMAGE_REGISTRY}}/${{env.OPENSHIFT_NAMESPACE}}/${{env.IMAGE_NAME}}${{env.DEPLOY_SUFFIX}}:mspdirect${{env.DEPLOY_SUFFIX}} " | tee -a $GITHUB_ENV
+          echo "IMAGE_TAGS=${{env.TOOLSNS_IMAGE_REGISTRY}}/${{env.IMAGE_NAME}}:${GITHUB_SHA::12} ${{env.TOOLSNS_IMAGE_REGISTRY}}/${{env.IMAGE_NAME}}:mspdirect${{env.DEPLOY_SUFFIX}} ${{env.TOOLSNS_IMAGE_REGISTRY}}/${{env.IMAGE_NAME}}:${{env.VERSION}} ${{env.IMAGE_REGISTRY}}/${{env.OPENSHIFT_NAMESPACE}}/${{env.IMAGE_NAME}}${{env.DEPLOY_SUFFIX}}:mspdirect${{env.DEPLOY_SUFFIX}} " | tee -a $GITHUB_ENV
                                                 
-      # Build from docker file. Tags the build the previously created tags which are used in the next step which pushes them to the registry. One set of tags for tools and one for dev. Only 'tags' are used as this allows specifying
+      # Build from docker file. Tags the build with the previously created tags which are used in the next step which pushes them to the registry. One set of tags for tools and one for dev. Only 'tags' are used as this allows specifying
       # the image name in each tag. This is needed because it is different in each namespace as it contains '-dev' suffix in the dev namespace. Note, with multiple tags both have the same digest value.
       - name: Build from Dockerfile
         id: build-docker
@@ -145,5 +131,5 @@ jobs:
           kustomize edit set image "frontend-image=image-registry.openshift-image-registry.svc:5000/${{env.OPENSHIFT_NAMESPACE}}/${{env.IMAGE_NAME}}${{env.DEPLOY_SUFFIX}}@${{steps.push-images.outputs.digest}}"
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git commit -am "Deploying build: ${{env.VERSION}} in dev using Frontend_BuildAndDeploy workflow."
+          git commit -am "Deploying build: ${{env.VERSION}} in ${{github.event.inputs.environment}} using Frontend_BuildAndDeploy workflow."
           git push origin
