@@ -14,7 +14,7 @@ const PERMIT_ISSUE_DATE_REQUIRED_MESSAGE = 'Permit Issue Date is required'
 const PERMIT_EXPIRY_DATE_REQUIRED_MESSAGE = 'Permit Expiry Date is required'
 const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'
-const NEW_DATE_CANNOT_EQUAL_OLD_DATE = 'RPBS0138 NEW CANCEL DATE CANNOT EQUAL OLD CANCEL DATE'
+const EXISTING_CANCEL_DATE_NOT_RECENT = 'RPBS0053 EXISTING CANCEL DATE NOT FOUND AS THE MOST RECENT DATEFOR PHN AND GROUP'
 const VISA_EXPIRY_DATE_MUST_BE_AFTER_ISSUE_DATE = 'RPBS0210 VISA EXPIRY DATE MUST BE AFTER VISA ISSUE DATE'
 const CANCEL_DATE_TOO_FAR_IN_THE_PAST = 'RPBS0159 NEW COVERAGE CANCEL DATE TOO FAR IN THE PAST'
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/maintenance/extendCancelDate'
@@ -45,7 +45,7 @@ test('Check required fields validation', async (t) => {
     .contains(IMMIGRATION_CODE_REQUIRED_MESSAGE)
     .expect(ExtendCancelDatePage.errorText.nth(5).textContent)
     .contains(PERMIT_ISSUE_DATE_REQUIRED_MESSAGE)
-    .expect(ExtendCancelDatePage.errorText.nth(5).textContent)
+    .expect(ExtendCancelDatePage.errorText.nth(6).textContent)
     .contains(PERMIT_EXPIRY_DATE_REQUIRED_MESSAGE)
 })
 
@@ -74,7 +74,7 @@ test('Check properly filled form passes validation and validate results, dates c
     .typeText(ExtendCancelDatePage.existingCancelDateInput, '20220731')
     .pressKey('tab')
     .pressKey('tab')
-    .typeText(ExtendCancelDatePage.newCancelDateInput, '20220731')
+    .typeText(ExtendCancelDatePage.newCancelDateInput, '20230731')
     .pressKey('tab')
     .pressKey('tab')
     .typeText(ExtendCancelDatePage.permitIssueDate, '20220701')
@@ -84,7 +84,7 @@ test('Check properly filled form passes validation and validate results, dates c
     .wait(5000)
     // I expect a Error message
     .expect(AlertPage.alertBannerText.textContent)
-    .contains(NEW_DATE_CANNOT_EQUAL_OLD_DATE)
+    .contains(EXISTING_CANCEL_DATE_NOT_RECENT)
 })
 
 test('Check properly filled form passes validation and validate results, invalid visa expiry date', async (t) => {
@@ -156,7 +156,7 @@ test('Check clear button clears the form', async (t) => {
     .eql('')
     .expect(ExtendCancelDatePage.newCancelDateInput.value)
     .eql('')
-    .expect(ExtendCancelDatePage.immigrationCode.value)
+    .expect(ExtendCancelDatePage.immigrationCodeSelect.value)
     .eql('')
     .expect(ExtendCancelDatePage.permitIssueDate.value)
     .eql('')
