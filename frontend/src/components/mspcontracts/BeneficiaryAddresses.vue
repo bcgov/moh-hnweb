@@ -32,8 +32,8 @@ export default {
       return {
         title: 'Home Address',
         addressLine1: this.result.homeAddressLine1,
-        addressLine2: this.homeAddressLine2,
-        cityProvince: this.homeCityProvince,
+        addressLine2: this.result.homeAddressLine2,
+        addressLine3: this.result.homeAddressLine3,
         postalCode: this.result.homeAddressPostalCode,
         telephone: this.result.telephone,
       }
@@ -42,37 +42,11 @@ export default {
       return {
         title: 'Mailing Address',
         addressLine1: this.result.mailingAddressLine1,
-        addressLine2: this.mailingAddressLine2,
-        cityProvince: this.mailingCityProvince,
+        addressLine2: this.result.mailingAddressLine2,
+        addressLine3: this.result.mailingAddressLine3,
         postalCode: this.result.mailingAddressPostalCode,
         telephone: this.result.telephone,
       }
-    },
-    homeAddressLine2() {
-      console.log(this.result.homeAddressLine3 && this.result.homeAddressLine2)
-      return this.result.homeAddressLine3 && this.result.homeAddressLine2 ? this.result.homeAddressLine2 : ''
-    },
-    mailingAddressLine2() {
-      return this.result.mailingAddressLine3 && this.result.mailingAddressLine2 ? this.result.mailingAddressLine3 : ''
-    },
-    homeCityProvince() {
-      let cityProvince = ''
-      if (this.result.homeAddressLine3) {
-        cityProvince = this.result.homeAddressLine3
-      } else if (this.result.homeAddressLine2) {
-        cityProvince = this.result.homeAddressLine2
-      }
-      return cityProvince
-    },
-    mailingCityProvince() {
-      let cityProvince = ''
-      if (this.result.mailingAddressLine3) {
-        cityProvince = this.result.mailingAddressLine3
-      } else if (this.result.mailingAddressLine2) {
-        cityProvince = this.result.mailingAddressLine2
-        this.result.mailingAddressLine2 = ''
-      }
-      return cityProvince
     },
   },
 }
