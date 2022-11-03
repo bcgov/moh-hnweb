@@ -141,7 +141,8 @@ test('Check properly filled form passes validation and validate results', async 
     .eql('E')
 })
 
-test.skip('Check properly filled form passes validation and validate results when more than 20', async (t) => {
+test('Check properly filled form passes validation and validate results when more than 20', async (t) => {
+  // Need new test data
   await t
     // Given the page is filled out correctly
     .typeText(ContractInquiryPage.groupNumberInput, '6243109')
@@ -187,7 +188,8 @@ test.skip('Check properly filled form passes validation and validate results whe
     .eql(20)
 })
 
-test.skip('Check properly filled form passes validation and displays no result if coverage not exists', async (t) => {
+test('Check properly filled form passes validation and displays no result if coverage not exists', async (t) => {
+  // Need new test data
   await t
     // Given the page is filled out correctly
     .typeText(ContractInquiryPage.groupNumberInput, '6337109')

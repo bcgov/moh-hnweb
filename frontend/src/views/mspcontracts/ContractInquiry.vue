@@ -35,35 +35,9 @@
   <br />
   <div v-if="searchOk && result.contractInquiryBeneficiaries.length > 0">
     <hr />
-    <br />
     <h2>Addresses</h2>
-    <AppSimpleTable id="addressTable">
-          <thead>
-          <tr>
-            <th>Use</th>
-            <th>Line1</th>
-            <th>Line2</th>
-            <th>City/Province</th>
-            <th>Postal Code</th>
-          <th>Telephone</th>
-        </tr>
-      </thead>
-      <tbody>
-        <BeneficiaryAddress :result="result" />
-      </tbody>
-    </AppSimpleTable>
-    <h2>Group Member Details</h2>
-    <AppSimpleTable id="identifierTable">
-      <thead>
-        <tr>
-          <th>Identifier</th>
-          <th>Value</th>     
-        </tr>
-      </thead>
-      <tbody>
-        <BeneficiaryMemberDetails :result="result" />
-      </tbody>
-    </AppSimpleTable>   
+    <BeneficiaryAddresses :result="result" />
+    <BeneficiaryMemberDetails :result="result" />
     <h2>Demographics</h2>
     <AppSimpleTable id="resultsTable">
       <thead>
@@ -91,7 +65,7 @@
 <script>
 import AppHelp from '../../components/ui/AppHelp.vue'
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
-import BeneficiaryAddress from '../../components/mspcontracts/BeneficiaryAddress.vue'
+import BeneficiaryAddresses from '../../components/mspcontracts/BeneficiaryAddresses.vue'
 import BeneficiaryMemberDetails from '../../components/mspcontracts/BeneficiaryMemberDetails.vue'
 import ContractInquiryBeneficiary from '../../components/mspcontracts/ContractInquiryBeneficiary.vue'
 import useVuelidate from '@vuelidate/core'
@@ -107,7 +81,7 @@ export default {
     AppHelp,
     AppSimpleTable,
     ContractInquiryBeneficiary,
-    BeneficiaryAddress,
+    BeneficiaryAddresses,
     BeneficiaryMemberDetails
   },
   setup() {

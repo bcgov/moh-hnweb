@@ -42,22 +42,7 @@
       </tbody>
     </AppSimpleTable>
     <div id="personInfo">
-      <AppSimpleTable id="addressTable">
-        <thead>
-          <tr>
-            <th>Use</th>
-            <th>Line1</th>
-            <th>Line2</th>
-            <th>City/Province</th>
-            <th>Postal Code</th>
-            <th>Telephone</th>
-          </tr>
-        </thead>
-        <tbody>
-          <BeneficiaryAddress :result="result"></BeneficiaryAddress>
-        </tbody>
-      </AppSimpleTable>
-      <br />
+      <BeneficiaryAddresses :result="result"></BeneficiaryAddresses>
     </div>
   </div>
 </template>
@@ -65,7 +50,7 @@
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
 import AppHelp from '../../components/ui/AppHelp.vue'
 import GroupMemberContractBeneficiary from '../../components/mspcontracts/GroupMemberContractBeneficiary.vue'
-import BeneficiaryAddress from '../../components/mspcontracts/BeneficiaryAddress.vue'
+import BeneficiaryAddresses from '../../components/mspcontracts/BeneficiaryAddresses.vue'
 import useVuelidate from '@vuelidate/core'
 import { validateOptionalPHN, validateGroupNumber, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE } from '../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
@@ -79,7 +64,7 @@ export default {
     AppHelp,
     AppSimpleTable,
     GroupMemberContractBeneficiary,
-    BeneficiaryAddress,
+    BeneficiaryAddresses,
   },
   setup() {
     return {
