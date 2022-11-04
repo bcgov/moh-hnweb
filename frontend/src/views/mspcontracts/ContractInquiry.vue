@@ -35,69 +35,10 @@
   <br />
   <div v-if="searchOk && result.contractInquiryBeneficiaries.length > 0">
     <hr />
-    <div id="personInfo">
-      <AppRow>
-        <AppCol class="col3"><h2>Home Address</h2> </AppCol>
-        <AppCol class="col3"><h2>Mailing Address</h2></AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Line 1" :value="result.homeAddressLine1" />
-        </AppCol>
-        <AppCol class="col3">
-          <AppOutput label="Line 1" :value="result.mailingAddressLine1" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Line 2" :value="result.homeAddressLine2" />
-        </AppCol>
-        <AppCol class="col3">
-          <AppOutput label="Line 2" :value="result.mailingAddressLine2" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Line 3" :value="result.homeAddressLine3" />
-        </AppCol>
-        <AppCol class="col3">
-          <AppOutput label="Line 3" :value="result.mailingAddressLine3" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Line 4" :value="result.homeAddressLine4" />
-        </AppCol>
-        <AppCol class="col3">
-          <AppOutput label="Line 4" :value="result.mailingAddressLine4" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Postal Code" :value="result.homeAddressPostalCode" />
-        </AppCol>
-        <AppCol class="col3">
-          <AppOutput label="Postal Code" :value="result.mailingAddressPostalCode" />
-        </AppCol>
-      </AppRow>
-      <br />
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Telephone" :value="result.telephone" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppOutput label="Group Member Number" :value="result.groupMemberNumber" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col5">
-          <AppOutput label="Group Member Department Number" :value="result.groupMemberDepartmentNumber" />
-        </AppCol>
-      </AppRow>
-    </div>
-    <br />
+    <h2>Addresses</h2>
+    <BeneficiaryAddresses :result="result" />
+    <BeneficiaryMemberDetails :result="result" />
+    <h2>Demographics</h2>
     <AppSimpleTable id="resultsTable">
       <thead>
         <tr>
@@ -118,11 +59,14 @@
         </tr>
       </tbody>
     </AppSimpleTable>
+    <br/>   
   </div>
 </template>
 <script>
 import AppHelp from '../../components/ui/AppHelp.vue'
 import AppSimpleTable from '../../components/ui/AppSimpleTable.vue'
+import BeneficiaryAddresses from '../../components/mspcontracts/BeneficiaryAddresses.vue'
+import BeneficiaryMemberDetails from '../../components/mspcontracts/BeneficiaryMemberDetails.vue'
 import ContractInquiryBeneficiary from '../../components/mspcontracts/ContractInquiryBeneficiary.vue'
 import useVuelidate from '@vuelidate/core'
 import { validateOptionalPHN, validateGroupNumber, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE } from '../../util/validators'
@@ -137,6 +81,8 @@ export default {
     AppHelp,
     AppSimpleTable,
     ContractInquiryBeneficiary,
+    BeneficiaryAddresses,
+    BeneficiaryMemberDetails
   },
   setup() {
     return {
@@ -158,16 +104,16 @@ export default {
         homeAddressLine1: '',
         homeAddressLine2: '',
         homeAddressLine3: '',
-        homePostalCode: '',
-        MailinghomeLine1: '',
-        MailingAddressLine2: '',
-        MailingAddressLine3: '',
-        MailingPostalCode: '',
+        homeAddressPostalCode: '',
+        mailingAddressLine1: '',
+        mailingAddressLine2: '',
+        mailingAddressLine3: '',
+        mailingAddressPostalCode: '',
         telephone: '',
         contractInquiryBeneficiaries: [],
       },
     }
-  },
+  },   
   methods: {
     async submitForm() {
       this.result = null
