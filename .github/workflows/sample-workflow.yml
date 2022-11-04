@@ -14,15 +14,32 @@ on:
         default: main
 
 jobs:
-  createRtransRelease:
+  sample-workflow-actions:
     runs-on: ubuntu-latest
 
 
     steps:
-      # Check out the code
       - name: Print out 
         id: print
         run: |
           echo "Openshift server is ${{secrets.C5839F_OPENSHIFT_SERVER}}" | sed 's/./& /g'
           echo "Openshift service account is ${{ secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_USER }}" | sed 's/./& /g'
           echo "Gitops repo is ${{secrets.GITOPS_C5839F_REPO}}" | sed 's/./& /g'
+
+      - name: Single line image tag
+        run: |
+          echo "sample=sample-value" >> $GITHUB_ENV
+          
+      - name: Multi line image tag failing
+        run: |
+          echo "$IMAGE_TAGS = Line 1 "
+          echo "Image tag is  $IMAGE_TAGS"
+          echo "$IMAGE_TAGS = $IMAGE_TAGS Line 2 " 
+          echo "Image tag is $IMAGE_TAGS"
+          echo "::notice file={file},line={line}::Setting multi line failed"
+          
+      - name: Print the environment variables
+        run: |
+          echo "Sample is " ${{env.sample}}
+          echo "Image tag is " ${{env.IMAGE_TAGS}}
+          

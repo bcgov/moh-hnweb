@@ -260,6 +260,9 @@ public class GroupMemberController extends BaseController {
 			response.setStatus(StatusEnum.SUCCESS);
 		}
 		response.setPhn(StringUtils.isNotBlank(deptNumberResponse.getPhn()) ? deptNumberResponse.getPhn() : empNumberResponse.getPhn());
+		response.setGroupNumber(StringUtils.isNotBlank(deptNumberResponse.getGroupNumber()) ? deptNumberResponse.getGroupNumber() : empNumberResponse.getGroupNumber());
+		response.setDepartmentNumber(deptNumberResponse.getDepartmentNumber());
+		response.setGroupMemberNumber(empNumberResponse.getGroupMemberNumber());
 		return response;
 	}
 	

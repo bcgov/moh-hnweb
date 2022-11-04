@@ -105,16 +105,22 @@ test('Check properly filled form passes validation', async (t) => {
   await t
     // Given I have a form filled out with data
     .typeText(UpdateNumberAndDept.phnInput, '9332912486')
-    .typeText(UpdateNumberAndDept.groupMemberInput, '6243109')
+    .typeText(UpdateNumberAndDept.groupMemberInput, '6337109')
     .typeText(UpdateNumberAndDept.groupMemberNumberInput, '123456')
-    .typeText(UpdateNumberAndDept.departmentNumberInput, '123456')
+    .typeText(UpdateNumberAndDept.departmentNumberInput, '456789')
     .wait(1000)
     // When I click the submit button
     .click(UpdateNumberAndDept.submitButton)
     .wait(5000)
     // I expect the message from downstream
-    .expect(UpdateNumberAndDept.phnOutput.exists)
-    .ok()
+    .expect(UpdateNumberAndDept.phnOutput.innerText)
+    .contains('9332912486')
+    .expect(UpdateNumberAndDept.groupMemberOutput.innerText)
+    .contains('6337109')
+    .expect(UpdateNumberAndDept.groupMemberNumberOutput.innerText)
+    .ok('123456')
+    .expect(UpdateNumberAndDept.departmentNumberOutput.innerText)
+    .ok('456789')
     .expect(UpdateNumberAndDept.updateAnotherButton.exists)
     .ok()
 })
@@ -123,13 +129,15 @@ test('Check validation passes if department is not filled', async (t) => {
   await t
     // Given I have a form filled out with data
     .typeText(UpdateNumberAndDept.phnInput, '9332912486')
-    .typeText(UpdateNumberAndDept.groupMemberInput, '6243109')
+    .typeText(UpdateNumberAndDept.groupMemberInput, '6337109')
     .typeText(UpdateNumberAndDept.groupMemberNumberInput, '123456')
-    .wait(1000)
+    .wait(5000)
     // When I click the submit button
     .click(UpdateNumberAndDept.submitButton)
     // I expect the message from downstream
     .expect(UpdateNumberAndDept.phnOutput.exists)
+    .ok()
+    .expect(UpdateNumberAndDept.groupMemberOutput.exists)
     .ok()
     .expect(UpdateNumberAndDept.updateAnotherButton.exists)
     .ok()
@@ -139,9 +147,9 @@ test('Check validation passes if Group Member number is not filled', async (t) =
   await t
     // Given I have a form filled out with data
     .typeText(UpdateNumberAndDept.phnInput, '9332912486')
-    .typeText(UpdateNumberAndDept.groupMemberInput, '6243109')
+    .typeText(UpdateNumberAndDept.groupMemberInput, '6337109')
     .typeText(UpdateNumberAndDept.departmentNumberInput, '123456')
-    .wait(1000)
+    .wait(5000)
     // When I click the submit button
     .click(UpdateNumberAndDept.submitButton)
     // I expect the message from downstream

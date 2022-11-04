@@ -8,7 +8,7 @@ const PHN_REQUIRED_MESSAGE = 'PHN is required'
 const GROUP_NUMBER_REQUIRED_MESSAGE = 'Group Number is required'
 const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'
-const SUCCESS_MESSAGE = 'TRANSACTION SUCCESSFUL'
+const SUCCESS_MESSAGE = 'RPBS9014 TRANSACTION COMPLETED'
 const WARNING_MESSAGE = 'RPBS0059 MORE THAN 20 PERSONS. PLEASE CONTACT MSP'
 const NO_COVEREAGE_ERROR_MESSAGE = 'RPBS0067 NO COVERAGE FOUND FOR THE PHN ENTERED. PLEASE CONTACT MSP'
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/mspContracts/contractInquiry'
@@ -52,14 +52,14 @@ test('Check invalid phn, groupNumber format validation', async (t) => {
 test('Check properly filled form passes validation and validate results', async (t) => {
   await t
     // Given the page is filled out correctly
-    .typeText(ContractInquiryPage.groupNumberInput, '6337109')
-    .typeText(ContractInquiryPage.phnInput, '9331926919')
+    .typeText(ContractInquiryPage.groupNumberInput, '6099733')
+    .typeText(ContractInquiryPage.phnInput, '9873102617')
     // When I click the submit button
     .click(ContractInquiryPage.submitButton)
     // I expect a success message
     .expect(AlertPage.alertBannerText.textContent)
     .contains(SUCCESS_MESSAGE)
-    // And a table with three results
+    // A table with three results
     .expect(ContractInquiryPage.resultsTable.exists)
     .ok()
     .expect(ContractInquiryPage.resultsTable.child('thead').exists)
@@ -70,47 +70,79 @@ test('Check properly filled form passes validation and validate results', async 
     .ok()
     .expect(ContractInquiryPage.resultsRow1.child('td').exists)
     .ok()
+    // A address table with two results
+    .expect(ContractInquiryPage.addressTable.exists)
+    .ok()
+    .expect(ContractInquiryPage.addressTable.child('thead').exists)
+    .ok()
+    .expect(ContractInquiryPage.addressTable.child('tbody').child('tr').count)
+    .eql(2)
+    .expect(ContractInquiryPage.addressRow1.exists)
+    .ok()
+    .expect(ContractInquiryPage.addressRow1.child('td').nth(0).textContent)
+    .eql('Home Address')
+    .expect(ContractInquiryPage.addressRow1.child('td').nth(3).textContent)
+    .eql('KELOWNA BC')
+    .expect(ContractInquiryPage.addressRow1.child('td').exists)
+    .ok()
+    .expect(ContractInquiryPage.addressRow2.child('td').nth(0).textContent)
+    .eql('Mailing Address')
+    .expect(ContractInquiryPage.addressRow2.child('td').nth(3).textContent)
+    .eql('VANCOUVER BC')
+
+    // And a address table with two results
+    .expect(ContractInquiryPage.identifierTable.exists)
+    .ok()
+    .expect(ContractInquiryPage.identifierTable.child('thead').exists)
+    .ok()
+    .expect(ContractInquiryPage.identifierTable.child('tbody').child('tr').count)
+    .eql(2)
+    .expect(ContractInquiryPage.identifierRow1.exists)
+    .ok()
+    .expect(ContractInquiryPage.identifierRow1.child('td').exists)
+    .ok()
     // Validate the first row
     .expect(ContractInquiryPage.resultsRow1.child('td').nth(0).textContent)
-    .eql('9331926919')
+    .eql('9873102617')
     .expect(ContractInquiryPage.resultsRow1.child('td').nth(1).textContent)
-    .eql('PROTOCTIST ORDERXD, JACK-LYALLXH MO-CHARAXI')
+    .eql('MORRISON, MORGAN')
     .expect(ContractInquiryPage.resultsRow1.child('td').nth(2).textContent)
-    .eql('20020705')
+    .eql('19730219')
     .expect(ContractInquiryPage.resultsRow1.child('td').nth(3).textContent)
-    .eql('F')
+    .eql('M')
     .expect(ContractInquiryPage.resultsRow1.child('td').nth(4).textContent)
     .eql('Employee')
     .expect(ContractInquiryPage.resultsRow1.child('td').nth(5).textContent)
     .eql('N')
     .expect(ContractInquiryPage.resultsRow1.child('td').nth(6).textContent)
-    .eql('20220301')
+    .eql('20221001')
     .expect(ContractInquiryPage.resultsRow1.child('td').nth(7).textContent)
-    .eql('')
+    .eql('20221031')
     .expect(ContractInquiryPage.resultsRow1.child('td').nth(8).textContent)
-    .eql(' ')
+    .eql('E')
     // Validate the last row
     .expect(ContractInquiryPage.resultsRow3.child('td').nth(0).textContent)
-    .eql('9348175493')
+    .eql('9873102584')
     .expect(ContractInquiryPage.resultsRow3.child('td').nth(1).textContent)
-    .eql('PROTOCTIST ORDERXD, SYCAMOREXC SIMONIDESXD')
+    .eql('MORRISON, KENNETH')
     .expect(ContractInquiryPage.resultsRow3.child('td').nth(2).textContent)
-    .eql('20021223')
+    .eql('20160617')
     .expect(ContractInquiryPage.resultsRow3.child('td').nth(3).textContent)
-    .eql('F')
+    .eql('M')
     .expect(ContractInquiryPage.resultsRow3.child('td').nth(4).textContent)
     .eql('Dependent')
     .expect(ContractInquiryPage.resultsRow3.child('td').nth(5).textContent)
-    .eql('Y')
+    .eql('N')
     .expect(ContractInquiryPage.resultsRow3.child('td').nth(6).textContent)
-    .eql('20220101')
+    .eql('20221001')
     .expect(ContractInquiryPage.resultsRow3.child('td').nth(7).textContent)
-    .eql('20220228')
+    .eql('20221031')
     .expect(ContractInquiryPage.resultsRow3.child('td').nth(8).textContent)
     .eql('E')
 })
 
 test('Check properly filled form passes validation and validate results when more than 20', async (t) => {
+  // Need new test data
   await t
     // Given the page is filled out correctly
     .typeText(ContractInquiryPage.groupNumberInput, '6243109')
@@ -157,6 +189,7 @@ test('Check properly filled form passes validation and validate results when mor
 })
 
 test('Check properly filled form passes validation and displays no result if coverage not exists', async (t) => {
+  // Need new test data
   await t
     // Given the page is filled out correctly
     .typeText(ContractInquiryPage.groupNumberInput, '6337109')

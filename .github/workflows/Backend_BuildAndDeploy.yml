@@ -1,0 +1,129 @@
+name: Backend-BuildAndDeploy
+# Build the image and deploy in OpenShift environment
+env:
+  # Registries such as GHCR, Quay.io, and Docker Hub are supported.
+  TOOLSNS_IMAGE_REGISTRY: image-registry.apps.silver.devops.gov.bc.ca/c5839f-tools
+  IMAGE_REGISTRY: image-registry.apps.silver.devops.gov.bc.ca
+  IMAGE_REGISTRY_USER: ${{secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_USER}}
+  IMAGE_REGISTRY_PASSWORD: ${{secrets.C5839F_OPENSHIFT_GITHUB_ACTIONS_SA_TOKEN}}
+  IMAGE_NAME: mspdirect-backend
+  IMAGE_TAGS:
+
+on:
+  # Run the workflow manually, instead of on a push.
+  # The user specifies the name of the branch which is defaulted to 'main'.
+  # --------------------------------------------------------------------------
+
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Enter branch name:"
+        required: true
+        default: main
+      environment:
+        type: choice
+        description: "Select the environment to deploy:"
+        options:
+          - dev
+          - test
+jobs:
+  buildAndPush:
+    runs-on: ubuntu-latest
+    steps:
+      # Check out the code
+      - name: Check out code
+        id: checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{github.event.inputs.branch}}
+
+      # Determine the version number tag i.e. feature_build_<branch-name>_<build execution>
+      - name: Determine Version number
+        # Branch name is taken from action inputs
+        run: |
+          echo "VERSION=feature_build_${{github.event.inputs.branch}}_${{github.run_number}}" | tee -a $GITHUB_ENV
+
+      # Find the namespace and image digest from input parameters
+      - name: Compute namespace
+        id: set-namespace
+        uses: actions/github-script@v5
+        with:
+          script: |
+            if (`${{ github.event.inputs.environment }}` == 'dev') {
+              return "c5839f-dev"
+            }
+            if (`${{ github.event.inputs.environment }}` == 'test') {
+              return "c5839f-test"
+            }
+
+      - name: Compute deployment env suffix
+        id: set-deploy-suffix
+        uses: actions/github-script@v5
+        with:
+          script: |
+            if (`${{ github.event.inputs.environment }}` == 'dev') {
+              return "-dev"
+            }
+            if (`${{ github.event.inputs.environment }}` == 'test') {
+              return "-test"
+            } 
+
+      - name: Set env values
+        run: |
+          echo "OPENSHIFT_NAMESPACE=${{steps.set-namespace.outputs.result}}"  | tee -a $GITHUB_ENV
+          echo "DEPLOY_SUFFIX=${{steps.set-deploy-suffix.outputs.result}}"  | tee -a $GITHUB_ENV
+
+      # Determine the tags
+      - name: Determine image tags
+        run: |
+          echo "IMAGE_TAGS=${{env.TOOLSNS_IMAGE_REGISTRY}}/${{env.IMAGE_NAME}}:${GITHUB_SHA::12} ${{env.TOOLSNS_IMAGE_REGISTRY}}/${{env.IMAGE_NAME}}:mspdirect${{env.DEPLOY_SUFFIX}} ${{env.TOOLSNS_IMAGE_REGISTRY}}/${{env.IMAGE_NAME}}:${{env.VERSION}} ${{env.IMAGE_REGISTRY}}/${{env.OPENSHIFT_NAMESPACE}}/${{env.IMAGE_NAME}}${{env.DEPLOY_SUFFIX}}:mspdirect${{env.DEPLOY_SUFFIX}} " | tee -a $GITHUB_ENV
+                                                
+      # Build from docker file. Tags the build with the previously created tags which are used in the next step which pushes them to the registry. One set of tags for tools and one for dev. Only 'tags' are used as this allows specifying
+      # the image name in each tag. This is needed because it is different in each namespace as it contains '-dev' suffix in the dev namespace. Note, with multiple tags both have the same digest value.
+      - name: Build from Dockerfile
+        id: build-docker
+        uses: redhat-actions/buildah-build@v2
+        with:
+          tags: ${{env.IMAGE_TAGS}}
+          context: ./backend
+          dockerfiles: |
+            ./backend/Dockerfile
+
+      # Push images at the same time using the different tags from the build. This allows having different image names.
+      - name: Push to tools and selected registry
+        id: push-images
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          tags: ${{steps.build-docker.outputs.tags}}
+          username: ${{env.IMAGE_REGISTRY_USER}}
+          password: ${{env.IMAGE_REGISTRY_PASSWORD}}
+
+      # Update the image ID in the manifest repository used by Argo CD.
+      # We need to use the SSH deploy key to check out the manifest repo, set up
+      # Kustomize in the runner, update the image ID, commit the change, and
+      # push the changes back to the manifest repository.
+      # ------------------------------------------------------------------------
+      - name: Prepare deploy key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{secrets.GITOPS_C5839F_PRIVATE_KEY}}
+
+      - name: Check out manifest repo
+        uses: actions/checkout@v3
+        with:
+          ssh-key: ${{secrets.GITOPS_C5839F_PRIVATE_KEY}}
+          repository: ${{secrets.GITOPS_C5839F_REPO}}
+          ref: main
+
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v1
+
+      - name: Update image ID and commit change
+        if: ${{success()}}
+        run: |
+          cd mspdirect-devops/overlays/${{github.event.inputs.environment}}
+          kustomize edit set image "backend-image=image-registry.openshift-image-registry.svc:5000/${{env.OPENSHIFT_NAMESPACE}}/${{env.IMAGE_NAME}}${{env.DEPLOY_SUFFIX}}@${{steps.push-images.outputs.digest}}"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -am "Deploying build: ${{env.VERSION}} in ${{github.event.inputs.environment}} using Backend_BuildAndDeploy workflow."
+          git push origin
