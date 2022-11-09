@@ -18,6 +18,7 @@ import ChangeCancelDate from '../views/coverage/maintenance/ChangeCancelDate.vue
 import ChangeEffectiveDate from '../views/coverage/maintenance/ChangeEffectiveDate.vue'
 import CoverageMaintenanceHome from '../views/coverage/maintenance/CoverageMaintenanceHome.vue'
 import ExtendCancelDate from '../views/coverage/maintenance/ExtendCancelDate.vue'
+import ReinstateCancelledGroupCoverage from '../views/coverage/maintenance/ReinstateCancelledGroupCoverage.vue'
 import ReinstateOverAgeDependent from '../views/coverage/maintenance/ReinstateOverAgeDependent.vue'
 import RenewCancelledGroupCoverage from '../views/coverage/maintenance/RenewCancelledGroupCoverage.vue'
 import EligibilityHome from '../views/eligibility/EligibilityHome.vue'
@@ -155,6 +156,15 @@ const createRoutes = (app) => [
         component: RenewCancelledGroupCoverage,
         meta: {
           permission: 'RenewCancelledCoverage',
+          requiresAuth: true,
+        },
+      },
+      {
+        path: 'reinstateCancelledGroupCoverage',
+        name: 'ReinstateCancelledGroupCoverage',
+        component: ReinstateCancelledGroupCoverage,
+        meta: {
+          permission: 'ReinstateCancelledCoverage',
           requiresAuth: true,
         },
       },

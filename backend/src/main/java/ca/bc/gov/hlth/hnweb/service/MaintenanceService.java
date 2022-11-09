@@ -16,6 +16,7 @@ import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAG0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAI0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAJ0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPRE0;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPRH0;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
 
 /**
@@ -29,6 +30,9 @@ public class MaintenanceService extends BaseService {
 
 	@Value("${rapid.r43Path:}")
 	private String r43Path;
+	
+	@Value("${rapid.r44Path:}")
+	private String r44Path;
 	
 	@Value("${rapid.r45Path:}")
 	private String r45Path;
@@ -127,6 +131,27 @@ public class MaintenanceService extends BaseService {
 		RPBSPAG0 rpbspag0Response = new RPBSPAG0(response.getBody());
 
 		return rpbspag0Response;
+	}
+	
+	public RPBSPRH0 reinstateCancelledCoverage(RPBSPRH0 rpbsprh0, Transaction transaction) throws HNWebException {
+		String rpbsprh0Str = rpbsprh0.serialize();
+
+		logger.info("Request:\n{}", rpbsprh0Str);
+
+		messageSent(transaction);
+		ResponseEntity<String> response = postRapidRequest(r44Path, rpbsprh0Str,
+				transaction.getTransactionId().toString());
+		messageReceived(transaction);
+		logger.info("Response Status: {}; Message:\n{}", response.getStatusCode(), response.getBody());
+
+		if (response.getStatusCode() != HttpStatus.OK) {
+			logger.error("Could not connect to downstream service. Service returned {}", response.getStatusCode());
+			throw new HNWebException(ExceptionType.DOWNSTREAM_FAILURE);
+		}
+
+		RPBSPRH0 rpbsprh0Response = new RPBSPRH0(response.getBody());
+
+		return rpbsprh0Response;
 	}
 	
 	/**
