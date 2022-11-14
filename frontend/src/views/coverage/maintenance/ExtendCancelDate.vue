@@ -1,4 +1,13 @@
 <template>
+  <AppHelp>
+    <ul>
+      <li>
+        Use this screen to extend the coverage cancellation date of an international student on your MSP group account based on their renewed study permit. Any dependents with the same existing cancellation date will automatically have their cancel dates changed along with the study permit holder.
+      </li>
+      <li>If you do not know the PHN, the PHN Lookup screen can be used to find a group member’s PHN.</li>
+      <li>If the transaction is successful, the group members PHN is displayed. You may use the PHN with the Get Contract Periods screen to verify the cancellation date has been correctly changed.</li>
+    </ul>
+  </AppHelp>
   <div id="extendCancelDate" v-if="inputFormActive">
     <form @submit.prevent="submitForm">
       <AppRow>
@@ -12,13 +21,13 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col3">
-          <AppDateInput :e-model="v$.existingCancellationDate" id="existingCancellationDate" label="Existing Cancellation Date" v-model="existingCancellationDate" />
+        <AppCol class="col4">
+          <AppDateInput :e-model="v$.permitIssueDate" id="permitIssueDate" label="Permit Issue Date" v-model="permitIssueDate" />
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col3">
-          <AppDateInput :e-model="v$.newCancellationDate" id="newCancellationDate" label="New Cancellation Date" v-model="newCancellationDate" />
+        <AppCol class="col4">
+          <AppDateInput :e-model="v$.permitExpiryDate" id="permitExpiryDate" label="Permit Expiry Date" v-model="permitExpiryDate" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -27,13 +36,13 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col4">
-          <AppDateInput :e-model="v$.permitIssueDate" id="permitIssueDate" label="Permit Issue Date" v-model="permitIssueDate" />
+        <AppCol class="col3">
+          <AppDateInput :e-model="v$.existingCancellationDate" id="existingCancellationDate" label="Existing Cancellation Date" v-model="existingCancellationDate" />
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col4">
-          <AppDateInput :e-model="v$.permitExpiryDate" id="permitExpiryDate" label="Permit Expiry Date" v-model="permitExpiryDate" />
+        <AppCol class="col3">
+          <AppDateInput :e-model="v$.newCancellationDate" id="newCancellationDate" label="New Cancellation Date" v-model="newCancellationDate" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -50,6 +59,7 @@
 
 <script>
 import MaintenanceService from '../../../services/MaintenanceService'
+import AppHelp from '../../../components/ui/AppHelp.vue'
 import useVuelidate from '@vuelidate/core'
 import { validatePHN, validateGroupNumber, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
@@ -60,6 +70,9 @@ import { handleServiceError } from '../../../util/utils'
 
 export default {
   name: 'ExtendCancelDate',
+  components: {
+    AppHelp,
+  },
   setup() {
     return {
       alertStore: useAlertStore(),
