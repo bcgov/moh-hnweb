@@ -36,7 +36,7 @@ public class RPBSPAG0 {
 	}
 
 	public String serialize() {
-		return rpbsHeader.serialize() + ag0.serializ();
+		return rpbsHeader.serialize() + ag0.serialize();
 	}
 	
 }

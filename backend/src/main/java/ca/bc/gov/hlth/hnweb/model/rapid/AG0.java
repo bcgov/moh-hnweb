@@ -35,7 +35,7 @@ public class AG0 {
 
 	}
 
-	public String serializ() {
+	public String serialize() {
 		// Serialize is only used in when creating the request
 		StringBuilder sb = new StringBuilder();
 		sb.append(StringUtils.rightPad(groupNumber, 7));
