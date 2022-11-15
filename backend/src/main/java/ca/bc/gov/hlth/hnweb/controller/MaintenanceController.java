@@ -160,7 +160,7 @@ public class MaintenanceController extends BaseController {
 	public ResponseEntity<ReinstateCancelledGroupCoverageResponse> reinstateCancelledGroupCoverage(
 			@Valid @RequestBody ReinstateCancelledGroupCoverageRequest reinstateCancelledGroupCoverageRequest, HttpServletRequest request) {
 
-		Transaction transaction = auditExtendCancelDateStart(reinstateCancelledGroupCoverageRequest.getPhn(), request);
+		Transaction transaction = auditReinstateCancelledCoverage(reinstateCancelledGroupCoverageRequest.getPhn(), request);
 
 		try {
 			RPBSPRH0Converter converter = new RPBSPRH0Converter();
@@ -173,7 +173,7 @@ public class MaintenanceController extends BaseController {
 
 			logger.info("reinstateCancelledGroupCoverageResponse response: {} ", reinstateCancelledGroupCoverageResponse);
 
-			auditExtendCancelDateComplete(transaction, reinstateCancelledGroupCoverageResponse.getPhn());
+			auditReinstateCancelledCoverageComplete(transaction, reinstateCancelledGroupCoverageResponse.getPhn());
 
 			return response;
 		} catch (Exception e) {
@@ -299,6 +299,25 @@ public class MaintenanceController extends BaseController {
 	}
 
 	private void auditExtendCancelDateComplete(Transaction transaction, String phn) {
+
+		transactionComplete(transaction);
+
+		if (StringUtils.isNotBlank(phn)) {
+			addAffectedParty(transaction, IdentifierType.PHN, phn, AffectedPartyDirection.OUTBOUND);
+		}
+	}
+	
+	private Transaction auditReinstateCancelledCoverage(String phn, HttpServletRequest request) {
+
+		Transaction transaction = transactionStart(request, TransactionType.REINSTATE_CANCELLED_COVERAGE);
+
+		if (StringUtils.isNotBlank(phn)) {
+			addAffectedParty(transaction, IdentifierType.PHN, phn, AffectedPartyDirection.INBOUND);
+		}
+		return transaction;
+	}
+	
+	private void auditReinstateCancelledCoverageComplete(Transaction transaction, String phn) {
 
 		transactionComplete(transaction);
 
