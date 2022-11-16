@@ -156,11 +156,17 @@ public class MaintenanceController extends BaseController {
 		}
 	}
 	
+	/**
+	 * Reinstate the cancelled group coverage. Maps to the legacy R44.
+	 * @param reinstateCancelledGroupCoverageRequest
+	 * @param request
+	 * @return The result of the operation.
+	 */
 	@PostMapping("/reinstate-cancelled-group-coverage")
 	public ResponseEntity<ReinstateCancelledGroupCoverageResponse> reinstateCancelledGroupCoverage(
 			@Valid @RequestBody ReinstateCancelledGroupCoverageRequest reinstateCancelledGroupCoverageRequest, HttpServletRequest request) {
 
-		Transaction transaction = auditReinstateCancelledCoverage(reinstateCancelledGroupCoverageRequest.getPhn(), request);
+		Transaction transaction = auditReinstateCancelledCoverage(reinstateCancelledGroupCoverageRequest.getPhn(), reinstateCancelledGroupCoverageRequest.getGroupNumber(), request);
 
 		try {
 			RPBSPRH0Converter converter = new RPBSPRH0Converter();
@@ -183,7 +189,7 @@ public class MaintenanceController extends BaseController {
 	}
 	
 	/**
-	 * Reinstates coverage for an overage dependent. Maps to the legacy R43.
+	 * Reinstates coverage for an coverage dependent. Maps to the legacy R43.
 	 * 
 	 * @param changeEffectiveDateRequest
 	 * @return The result of the operation.
@@ -307,12 +313,15 @@ public class MaintenanceController extends BaseController {
 		}
 	}
 	
-	private Transaction auditReinstateCancelledCoverage(String phn, HttpServletRequest request) {
+	private Transaction auditReinstateCancelledCoverage(String phn, String groupNumber, HttpServletRequest request) {
 
 		Transaction transaction = transactionStart(request, TransactionType.REINSTATE_CANCELLED_COVERAGE);
 
 		if (StringUtils.isNotBlank(phn)) {
 			addAffectedParty(transaction, IdentifierType.PHN, phn, AffectedPartyDirection.INBOUND);
+		}
+		if (StringUtils.isNotBlank(groupNumber)) {
+			addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, groupNumber, AffectedPartyDirection.INBOUND);
 		}
 		return transaction;
 	}
