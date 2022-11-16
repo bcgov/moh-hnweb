@@ -265,7 +265,7 @@ public class MaintenanceController extends BaseController {
 		if (StringUtils.isNotBlank(phn)) {
 			addAffectedParty(transaction, IdentifierType.PHN, phn, AffectedPartyDirection.INBOUND);
 		}
-		if (StringUtils.isNotBlank(phn)) {
+		if (StringUtils.isNotBlank(groupNumber)) {
 		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, groupNumber, AffectedPartyDirection.INBOUND);
 		}
 		return transaction;
