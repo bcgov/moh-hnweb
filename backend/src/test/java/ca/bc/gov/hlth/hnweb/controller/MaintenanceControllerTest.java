@@ -729,7 +729,7 @@ public class MaintenanceControllerTest extends BaseControllerTest {
 		assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
 
 		assertTransactionCreated(TransactionType.REINSTATE_CANCELLED_COVERAGE);
-		assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+		assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
 		assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
 	}
 	
@@ -757,7 +757,7 @@ public class MaintenanceControllerTest extends BaseControllerTest {
 		assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
 
 		assertTransactionCreated(TransactionType.REINSTATE_CANCELLED_COVERAGE);
-		assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+		assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
 		assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
 	}
 	
@@ -785,7 +785,7 @@ public class MaintenanceControllerTest extends BaseControllerTest {
 		assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
 
 		assertTransactionCreated(TransactionType.REINSTATE_CANCELLED_COVERAGE);
-		assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+		assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
 		assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
 	}
 	
