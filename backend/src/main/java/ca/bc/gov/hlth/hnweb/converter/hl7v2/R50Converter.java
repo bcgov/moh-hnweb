@@ -65,17 +65,15 @@ public class R50Converter extends BaseV2Converter {
 		return r50;
 	}
 	
-    /*
-     * Populate a customized IN1 segment
-     * 
+    /**
+     * Populate a customized IN1 segment.
      */
-    private void populateIN1(IN1Custom in1, LocalDate planEffectiveDate, LocalDate planCancellationDate, String groupNumber, String groupMemebrNumber, String departmentNumber ) throws HL7Exception {
-        setIn1Values(in1, groupNumber, groupMemebrNumber, departmentNumber, dateOnlyFormatter.format(planEffectiveDate), dateOnlyFormatter.format(planCancellationDate));
+    private void populateIN1(IN1Custom in1, LocalDate planEffectiveDate, LocalDate planCancellationDate, String groupNumber, String groupMemberNumber, String departmentNumber) throws HL7Exception {
+        setIn1Values(in1, groupNumber, groupMemberNumber, departmentNumber, dateOnlyFormatter.format(planEffectiveDate), dateOnlyFormatter.format(planCancellationDate));
     }
 
-    /*
-     *  Set the values of a customized IN1 segment
-     * 
+    /**
+     *  Set the values of a customized IN1 segment.
      */
     private static void setIn1Values(IN1Custom in1, String groupNumber, String insuredSGroupEmpID, String insuredSGroupEmpNameIdNumber, 
                                     String planEffectiveDate, String planExpirationDate) throws HL7Exception {

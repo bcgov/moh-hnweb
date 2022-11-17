@@ -113,10 +113,11 @@ import ca.uhn.hl7v2.parser.ModelClassFactory;
      * <li>IN1-49: Insured's ID Number (CX) <b>optional repeating</b>
  * </ul>
  */
-@SuppressWarnings("unused")
 public class IN1Custom extends AbstractSegment {
 
-    /** 
+	private static final long serialVersionUID = -1282206741449674506L;
+
+	/** 
      * Creates a new IN1 segment
      */
     public IN1Custom(Group parent, ModelClassFactory factory) {
@@ -124,7 +125,8 @@ public class IN1Custom extends AbstractSegment {
        init(factory);
     }
 
-    private void init(ModelClassFactory factory) {
+    @SuppressWarnings("deprecation")
+	private void init(ModelClassFactory factory) {
        try {
                                   this.add(SI.class, true, 1, 4, new Object[]{ getMessage() }, "Set ID - IN1");
                                   this.add(CE.class, true, 1, 250, new Object[]{ getMessage() }, "Insurance Plan ID");
@@ -2322,7 +2324,8 @@ public class IN1Custom extends AbstractSegment {
 
 
     /** {@inheritDoc} */   
-    protected Type createNewTypeWithoutReflection(int field) {
+    @SuppressWarnings("deprecation")
+	protected Type createNewTypeWithoutReflection(int field) {
        switch (field) {
           case 0: return new SI(getMessage());
           case 1: return new CE(getMessage());

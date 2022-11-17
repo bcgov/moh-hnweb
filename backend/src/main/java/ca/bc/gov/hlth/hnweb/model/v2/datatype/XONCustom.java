@@ -57,10 +57,11 @@ import ca.uhn.hl7v2.model.v24.datatype.ST;
  * <li>Name Representation code (ID)
  * </ul>
  */
-@SuppressWarnings("unused")
 public class XONCustom extends AbstractComposite {
 
-    private Type[] data;
+	private static final long serialVersionUID = -1391622078856236743L;
+
+	private Type[] data;
 
     /** 
      * Creates a new XON type
