@@ -3,13 +3,13 @@ package ca.bc.gov.hlth.hnweb.model.v2.message;
 import static ca.bc.gov.hlth.hnweb.util.V2MessageUtil.ENCODING_CHARACTERS;
 import static ca.bc.gov.hlth.hnweb.util.V2MessageUtil.FIELD_SEPARATOR;
 
+import ca.bc.gov.hlth.hnweb.model.v2.segment.IN1;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZHD;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIA;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIH;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIK;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.AbstractMessage;
-import ca.uhn.hl7v2.model.v24.segment.IN1;
 import ca.uhn.hl7v2.model.v24.segment.MSH;
 import ca.uhn.hl7v2.model.v24.segment.PID;
 import ca.uhn.hl7v2.parser.DefaultModelClassFactory;

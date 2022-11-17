@@ -75,8 +75,8 @@ public abstract class BaseV2Converter {
 		V2MessageUtil.setIn1Values(in1, null, null, null, dateOnlyFormatter.format(planEffectiveDate), null);
 	}
 	
-	protected void populateIN1(IN1 in1, LocalDate planEffectiveDate, LocalDate planCancellationDate, String groupNumber, String groupMemebrNumber, String immigrationCode ) throws HL7Exception {
-		V2MessageUtil.setIn1Values(in1, groupNumber, groupMemebrNumber, immigrationCode, dateOnlyFormatter.format(planEffectiveDate), dateOnlyFormatter.format(planCancellationDate));
+	protected void populateIN1(IN1 in1, LocalDate planEffectiveDate, LocalDate planCancellationDate, String groupNumber, String groupMemberNumber, String departmentNumber) throws HL7Exception {
+		V2MessageUtil.setIn1Values(in1, groupNumber, groupMemberNumber, departmentNumber, dateOnlyFormatter.format(planEffectiveDate), dateOnlyFormatter.format(planCancellationDate));
 	}
 
 	protected void mapErrorValues(Terser terser, BaseResponse response) throws HL7Exception {

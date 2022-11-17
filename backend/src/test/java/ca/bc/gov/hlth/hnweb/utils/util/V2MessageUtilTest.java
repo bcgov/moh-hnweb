@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.bc.gov.hlth.hnweb.model.v2.message.E45;
+import ca.bc.gov.hlth.hnweb.model.v2.message.R15;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.HDR;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.QPD;
@@ -84,11 +85,11 @@ public class V2MessageUtilTest {
 	public void testSetIn1Values() throws HL7Exception {
 
 		//Create a R50 message 
-    	R50 r50Zo6 = new R50();
+    	R15 r15 = new R15();
 		
-    	V2MessageUtil.setIn1Values(r50Zo6.getIN1(), "6337109", "789446", "123456", "20190501", "20201231");		
-    	IN1 in1 = r50Zo6.getIN1();		
-		String encoded = parser.doEncode(in1, EncodingCharacters.getInstance(r50Zo6));		
+    	V2MessageUtil.setIn1Values(r15.getIN1(), "6337109", "789446", "123456", "20190501", "20201231");		
+    	IN1 in1 = r15.getIN1();		
+		String encoded = parser.doEncode(in1, EncodingCharacters.getInstance(r15));		
 		assertEquals("IN1||||||||6337109||789446|^^123456|20190501|20201231", encoded);
 	}
 	
