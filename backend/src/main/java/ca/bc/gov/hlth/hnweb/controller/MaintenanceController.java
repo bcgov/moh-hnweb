@@ -130,7 +130,7 @@ public class MaintenanceController extends BaseController {
 	public ResponseEntity<ExtendCancelDateResponse> extendCancelDate(
 			@Valid @RequestBody ExtendCancelDateRequest extendCancelDateRequest, HttpServletRequest request) {
 
-		Transaction transaction = auditExtendCancelDateStart(extendCancelDateRequest.getPhn(), request);
+		Transaction transaction = auditExtendCancelDateStart(extendCancelDateRequest.getPhn(), extendCancelDateRequest.getGroupNumber(), request);
 
 		try {
 			RPBSPAG0Converter converter = new RPBSPAG0Converter();
@@ -258,12 +258,15 @@ public class MaintenanceController extends BaseController {
 		}
 	}
 
-	private Transaction auditExtendCancelDateStart(String phn, HttpServletRequest request) {
+	private Transaction auditExtendCancelDateStart(String phn, String groupNumber, HttpServletRequest request) {
 
 		Transaction transaction = transactionStart(request, TransactionType.EXTEND_CANCEL_DATE);
 
 		if (StringUtils.isNotBlank(phn)) {
 			addAffectedParty(transaction, IdentifierType.PHN, phn, AffectedPartyDirection.INBOUND);
+		}
+		if (StringUtils.isNotBlank(groupNumber)) {
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, groupNumber, AffectedPartyDirection.INBOUND);
 		}
 		return transaction;
 	}

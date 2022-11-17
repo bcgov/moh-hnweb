@@ -18,7 +18,6 @@ public class AG0 {
 	private String permitIssueDate;
 	/** 6 PermitExpiryDate RPBSDate No 0...10 .. */
 	private String permitExpiryDate;
-	
 
 	public AG0() {
 		super();
@@ -38,26 +37,17 @@ public class AG0 {
 
 	public String serialize() {
 		// Serialize is only used in when creating the request
-		// where only the first two fields are used
 		StringBuilder sb = new StringBuilder();
 		sb.append(StringUtils.rightPad(groupNumber, 7));
 		sb.append(StringUtils.rightPad(phn, 10));
 		sb.append(StringUtils.rightPad(existingCancellationDate, 10));
 		sb.append(StringUtils.rightPad(newCancellationDate, 10));
-
-		return sb.toString();
-	}
-	
-	public String serializeECD() {
-		// Serialize is only used in when creating the request
-		StringBuilder sb = new StringBuilder();
-		sb.append(StringUtils.rightPad(groupNumber, 7));
-		sb.append(StringUtils.rightPad(phn, 10));
-		sb.append(StringUtils.rightPad(existingCancellationDate, 10));
-		sb.append(StringUtils.rightPad(newCancellationDate, 10));
-		sb.append(StringUtils.rightPad(immigrationCode, 1));
-		sb.append(StringUtils.rightPad(permitIssueDate, 10));
-		sb.append(StringUtils.rightPad(permitExpiryDate, 10));
+		if (StringUtils.isNotBlank(immigrationCode) || StringUtils.isNotBlank(permitIssueDate)
+				|| StringUtils.isNotBlank(permitExpiryDate)) {
+			sb.append(StringUtils.rightPad(immigrationCode, 1));
+			sb.append(StringUtils.rightPad(permitIssueDate, 10));
+			sb.append(StringUtils.rightPad(permitExpiryDate, 10));
+		}
 		return sb.toString();
 	}
 

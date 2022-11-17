@@ -109,12 +109,12 @@ public class MaintenanceService extends BaseService {
 	 * @throws HNWebException
 	 */
 	public RPBSPAG0 extendCancelDate(RPBSPAG0 rpbspag0, Transaction transaction) throws HNWebException {
-		String rpbspag0Str = rpbspag0.serializeECD();
+		String rpbspag0Str = rpbspag0.serialize();
 
 		logger.info("Request:\n{}", rpbspag0Str);
 
 		messageSent(transaction);
-		ResponseEntity<String> response = postRapidRequest(r46Path, rpbspag0Str,
+		ResponseEntity<String> response = postRapidRequest(r51Path, rpbspag0Str,
 				transaction.getTransactionId().toString());
 		messageReceived(transaction);
 		logger.info("Response Status: {}; Message:\n{}", response.getStatusCode(), response.getBody());
