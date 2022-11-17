@@ -1,5 +1,6 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
@@ -146,7 +147,7 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         String in1 = segments[4];
         
         recordedRequest.getBody().readUtf8Line();
-        assertEquals("IN1||||||||4567368|||^^ABC123|20221116|20221116", in1);
+        assertTrue(in1.startsWith("IN1||||||||4567368|||^^ABC123|"));
         
         assertTransactionCreated(TransactionType.ENROLL_SUBSCRIBER);
         assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
