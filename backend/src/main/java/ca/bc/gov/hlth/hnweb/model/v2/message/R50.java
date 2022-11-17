@@ -3,7 +3,7 @@ package ca.bc.gov.hlth.hnweb.model.v2.message;
 import static ca.bc.gov.hlth.hnweb.util.V2MessageUtil.ENCODING_CHARACTERS;
 import static ca.bc.gov.hlth.hnweb.util.V2MessageUtil.FIELD_SEPARATOR;
 
-import ca.bc.gov.hlth.hnweb.model.v2.segment.IN1Custom;
+import ca.bc.gov.hlth.hnweb.model.v2.segment.IN1;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZHD;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIA;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIH;
@@ -42,7 +42,7 @@ public class R50 extends AbstractMessage {
             this.add(ZHD.class, true, false);
             this.add(PID.class, true, false);          
             this.add(ZIA.class, true, false);
-            this.add(IN1Custom.class, true, false);
+            this.add(IN1.class, true, false);
             this.add(ZIH.class, false, false);
             this.add(ZIK.class, false, false);
 
@@ -79,8 +79,8 @@ public class R50 extends AbstractMessage {
 		return getTyped("ZIA", ZIA.class);
 	}
 
-	public IN1Custom getIN1() {
-		return getTyped("IN1Custom", IN1Custom.class);
+	public IN1 getIN1() {
+		return getTyped("IN1", IN1.class);
 	}
 
 	public ZIH getZIH() {

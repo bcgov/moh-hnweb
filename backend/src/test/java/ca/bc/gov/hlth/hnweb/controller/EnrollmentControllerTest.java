@@ -6,6 +6,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -87,7 +88,7 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals("/", recordedRequest.getPath());
         
         assertTransactionCreated(TransactionType.ENROLL_SUBSCRIBER);
-        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
         assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 0);
     }
     
@@ -112,7 +113,7 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals("/", recordedRequest.getPath());
         
         assertTransactionCreated(TransactionType.ENROLL_SUBSCRIBER);
-        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
         assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 0);
     }
     
@@ -137,10 +138,18 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
         assertEquals(MediaType.TEXT_PLAIN.toString(), recordedRequest.getHeader(CONTENT_TYPE));
-        assertEquals("/", recordedRequest.getPath());       
+        assertEquals("/", recordedRequest.getPath());     
+        
+        // Validate the IN1 segment
+        String request = recordedRequest.getBody().readUtf8();
+        String[] segments = StringUtils.split(request, "\r\n");
+        String in1 = segments[4];
+        
+        recordedRequest.getBody().readUtf8Line();
+        assertEquals("IN1||||||||4567368|||^^ABC123|20221116|20221116", in1);
         
         assertTransactionCreated(TransactionType.ENROLL_SUBSCRIBER);
-        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 3);
         assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 0);
     }
     
@@ -167,7 +176,7 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals("/", recordedRequest.getPath());       
         
         assertTransactionCreated(TransactionType.ENROLL_SUBSCRIBER);
-        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
         assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     
@@ -385,6 +394,7 @@ public class EnrollmentControllerTest extends BaseControllerTest {
     private EnrollSubscriberRequest createEnrollSubscriberRequest() {
 		EnrollSubscriberRequest enrollSubscriberRequest = new EnrollSubscriberRequest();
 		enrollSubscriberRequest.setGroupNumber("4567368");
+		enrollSubscriberRequest.setDepartmentNumber("ABC123");
 		enrollSubscriberRequest.setGivenName("FirstName");
 		enrollSubscriberRequest.setSecondName("SecondName");
 		enrollSubscriberRequest.setSurname("FamilyName");

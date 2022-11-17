@@ -10,7 +10,7 @@ import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.EnrollSubscriberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.EnrollSubscriberResponse;
 import ca.bc.gov.hlth.hnweb.model.v2.message.R50;
-import ca.bc.gov.hlth.hnweb.model.v2.segment.IN1Custom;
+import ca.bc.gov.hlth.hnweb.model.v2.segment.IN1;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIA;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIH;
 import ca.bc.gov.hlth.hnweb.model.v2.segment.ZIK;
@@ -68,14 +68,14 @@ public class R50Converter extends BaseV2Converter {
     /**
      * Populate a customized IN1 segment.
      */
-    private void populateIN1(IN1Custom in1, LocalDate planEffectiveDate, LocalDate planCancellationDate, String groupNumber, String groupMemberNumber, String departmentNumber) throws HL7Exception {
+    private void populateIN1(IN1 in1, LocalDate planEffectiveDate, LocalDate planCancellationDate, String groupNumber, String groupMemberNumber, String departmentNumber) throws HL7Exception {
         setIn1Values(in1, groupNumber, groupMemberNumber, departmentNumber, dateOnlyFormatter.format(planEffectiveDate), dateOnlyFormatter.format(planCancellationDate));
     }
 
     /**
      *  Set the values of a customized IN1 segment.
      */
-    private static void setIn1Values(IN1Custom in1, String groupNumber, String insuredSGroupEmpID, String insuredSGroupEmpNameIdNumber, 
+    private static void setIn1Values(IN1 in1, String groupNumber, String insuredSGroupEmpID, String insuredSGroupEmpNameIdNumber, 
                                     String planEffectiveDate, String planExpirationDate) throws HL7Exception {
         //e.g. IN1||||||||6337109||789446|^^ABC456|20190501|20201231^M
         

@@ -113,14 +113,14 @@ import ca.uhn.hl7v2.parser.ModelClassFactory;
      * <li>IN1-49: Insured's ID Number (CX) <b>optional repeating</b>
  * </ul>
  */
-public class IN1Custom extends AbstractSegment {
+public class IN1 extends AbstractSegment {
 
 	private static final long serialVersionUID = -1282206741449674506L;
 
 	/** 
      * Creates a new IN1 segment
      */
-    public IN1Custom(Group parent, ModelClassFactory factory) {
+    public IN1(Group parent, ModelClassFactory factory) {
        super(parent, factory);
        init(factory);
     }
