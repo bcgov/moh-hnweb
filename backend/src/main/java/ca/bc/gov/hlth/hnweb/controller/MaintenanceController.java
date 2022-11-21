@@ -90,8 +90,7 @@ public class MaintenanceController extends BaseController {
 	}
 
 	/**
-	 * Change the coverage cancellation date of an employee. Maps to the legacy R46b
-	 * (z26).
+	 * Change the coverage cancellation date of an employee. Maps to the legacy R46b (z26).
 	 * 
 	 * @param changeCancelDateRequest
 	 * @return The result of the operation.
@@ -122,8 +121,7 @@ public class MaintenanceController extends BaseController {
 	}
 
 	/**
-	 * Extend the premium cancellation date of an employee. Maps to the legacy
-	 * R51(z25).
+	 * Extend the premium cancellation date of an employee. Maps to the legacy R51(z25).
 	 * 
 	 * @param extendCancelDateRequest
 	 * @return The result of the operation.
@@ -191,8 +189,8 @@ public class MaintenanceController extends BaseController {
 	}
 
 	/**
-	 * Renew the coverage effective date of an employee and spouse/dependents. Maps
-	 * to the legacy R45 (Z27).
+	 * Renew the coverage effective date of an employee and spouse/dependents. 
+	 * Maps to the legacy R45 (Z27).
 	 * 
 	 * @param RenewCancelledGroupCoverageRequest
 	 * @return The result of the operation.
