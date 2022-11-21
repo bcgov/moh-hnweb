@@ -18,11 +18,13 @@ import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPAG0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPAI0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPAJ0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPRE0Converter;
+import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPRH0Converter;
 import ca.bc.gov.hlth.hnweb.converter.rapid.RPBSPXP0Converter;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAG0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAI0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPAJ0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPRE0;
+import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPRH0;
 import ca.bc.gov.hlth.hnweb.model.rapid.RPBSPXP0;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.AddGroupMemberRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.ChangeEffectiveDateRequest;
@@ -31,6 +33,8 @@ import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ChangeCancelDateRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ChangeCancelDateResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ExtendCancelDateRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ExtendCancelDateResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ReinstateCancelledGroupCoverageRequest;
+import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ReinstateCancelledGroupCoverageResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ReinstateOverAgeDependentRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.ReinstateOverAgeDependentResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.maintenance.RenewCancelledGroupCoverageRequest;
@@ -153,7 +157,39 @@ public class MaintenanceController extends BaseController {
 	}
 	
 	/**
-	 * Reinstates coverage for an overage dependent. Maps to the legacy R43.
+	 * Reinstate the cancelled group coverage. Maps to the legacy R44.
+	 * @param reinstateCancelledGroupCoverageRequest
+	 * @param request
+	 * @return The result of the operation.
+	 */
+	@PostMapping("/reinstate-cancelled-group-coverage")
+	public ResponseEntity<ReinstateCancelledGroupCoverageResponse> reinstateCancelledGroupCoverage(
+			@Valid @RequestBody ReinstateCancelledGroupCoverageRequest reinstateCancelledGroupCoverageRequest, HttpServletRequest request) {
+
+		Transaction transaction = auditReinstateCancelledCoverage(reinstateCancelledGroupCoverageRequest.getPhn(), reinstateCancelledGroupCoverageRequest.getGroupNumber(), request);
+
+		try {
+			RPBSPRH0Converter converter = new RPBSPRH0Converter();
+			RPBSPRH0 rpbsprh0Request = converter.convertRequest(reinstateCancelledGroupCoverageRequest);
+			RPBSPRH0 rpbsprh0Response = maintenanceService.reinstateCancelledCoverage(rpbsprh0Request, transaction);
+			ReinstateCancelledGroupCoverageResponse reinstateCancelledGroupCoverageResponse = converter
+					.convertResponse(rpbsprh0Response);
+
+			ResponseEntity<ReinstateCancelledGroupCoverageResponse> response = ResponseEntity.ok(reinstateCancelledGroupCoverageResponse);
+
+			logger.info("reinstateCancelledGroupCoverageResponse response: {} ", reinstateCancelledGroupCoverageResponse);
+
+			auditReinstateCancelledCoverageComplete(transaction, reinstateCancelledGroupCoverageResponse.getPhn());
+
+			return response;
+		} catch (Exception e) {
+			handleException(transaction, e);
+			return null;
+		}
+	}
+	
+	/**
+	 * Reinstates coverage for an coverage dependent. Maps to the legacy R43.
 	 * 
 	 * @param changeEffectiveDateRequest
 	 * @return The result of the operation.
@@ -272,6 +308,28 @@ public class MaintenanceController extends BaseController {
 	}
 
 	private void auditExtendCancelDateComplete(Transaction transaction, String phn) {
+
+		transactionComplete(transaction);
+
+		if (StringUtils.isNotBlank(phn)) {
+			addAffectedParty(transaction, IdentifierType.PHN, phn, AffectedPartyDirection.OUTBOUND);
+		}
+	}
+	
+	private Transaction auditReinstateCancelledCoverage(String phn, String groupNumber, HttpServletRequest request) {
+
+		Transaction transaction = transactionStart(request, TransactionType.REINSTATE_CANCELLED_COVERAGE);
+
+		if (StringUtils.isNotBlank(phn)) {
+			addAffectedParty(transaction, IdentifierType.PHN, phn, AffectedPartyDirection.INBOUND);
+		}
+		if (StringUtils.isNotBlank(groupNumber)) {
+			addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, groupNumber, AffectedPartyDirection.INBOUND);
+		}
+		return transaction;
+	}
+	
+	private void auditReinstateCancelledCoverageComplete(Transaction transaction, String phn) {
 
 		transactionComplete(transaction);
 

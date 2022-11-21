@@ -21,6 +21,7 @@ public enum TransactionType {
 	GET_CONTRACT_ADDRESS("GetContractAddress"), // R37
 	UPDATE_CONTRACT_ADDRESS("UpdateContractAddress"), // R38
 	REINSTATE_OVER_AGE_DEPENDENT("ReinstateOverAgeDependent"), // R43
+	REINSTATE_CANCELLED_COVERAGE("ReinstateCancelledCoverage"), // R44
 	RENEW_CANCELLED_COVERAGE("RenewCancelledCoverage"), // R45
 	CHANGE_EFFECTIVE_DATE("ChangeEffectiveDate"), // R46a	
 	CHANGE_CANCEL_DATE("ChangeCancelDate"), // R46b	
