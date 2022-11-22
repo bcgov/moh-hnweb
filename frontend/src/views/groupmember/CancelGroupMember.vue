@@ -11,8 +11,8 @@
     <p>To change a cancel date, use the Change Cancel Date screen.</p>
     <p>
       MSP requires the reason for cancellation, the person’s current address and, if the person has moved outside of BC, the date of the move. To complete a cancellation, you must submit a Coverage Cancellation form (HLTH 217, found at
-      <a href target="_blank">www.gov.bc.ca/mspgroupplanadministratorforms</a>), or submit a written request including your group number, employee account number(s) and name(s), and all the information required on the form to Health Insurance BC at: <br />PO Box 9140 <br />Stn Prov Govt<br />Victoria
-      BC V8W 9E5
+      <a href="http://www.gov.bc.ca/mspgroupplanadministratorforms" target="_blank">www.gov.bc.ca/mspgroupplanadministratorforms</a>), or submit a written request including your group number, employee account number(s) and name(s), and all the information required on the form to Health Insurance BC
+      at: <br />PO Box 9140 <br />Stn Prov Govt<br />Victoria BC V8W 9E5
     </p>
     <p>You can use the PHN with the Get Contract Periods screen to verify the cancellation.</p>
   </AppHelp>

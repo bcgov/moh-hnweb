@@ -8,7 +8,7 @@
     <p>Contact the Help Desk if you need to change or correct a dependent's cancellation date.</p>
     <p>
       MSP requires the reason for cancellation, the person’s current address and, if the person has moved outside of BC, the date of the move. To complete a cancellation, you must submit a Group Change Request (HLTH 217, found at
-      <a href target="_blank">www.gov.bc.ca/mspgroupplanadministratorforms</a>), along with all required supporting documents to Health Insurance BC at:<br />
+      <a href="http://www.gov.bc.ca/mspgroupplanadministratorforms" target="_blank">www.gov.bc.ca/mspgroupplanadministratorforms</a>), along with all required supporting documents to Health Insurance BC at:<br />
       PO Box 9140 <br />
       Stn Prov Govt <br />
       Victoria BC V8W 9E5
