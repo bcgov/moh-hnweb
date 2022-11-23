@@ -1,4 +1,20 @@
 <template>
+  <AppHelp>
+    <p>Use this screen to initiate the cancellation of a group member’s spouse or child from your MSP group account. To complete the cancellation, you must submit a Group Change Request form to Health Insurance BC. If you do not know the PHN, the PHN Lookup screen can be used.</p>
+    <p>The cancellation date must be no more than two months prior to current date. Note that MSP coverage can only be cancelled as of the end of the month with this screen. To cancel coverage as of the effective date please contact the help desk.</p>
+    <p>Most retroactive cancellations are limited to two months on group accounts. Group enrolment is cancelled on the last day of the month; however, if a group member leaves before becoming eligible, their group coverage can be cancelled as of the effective date.</p>
+    <p>Cancel reason is a drop-down box with a default Cancel Reason of "Divorced". You may leave the default or click and select a more appropriate Cancel Reason.</p>
+    <p>"No longer a child" is used when a child aged 19 to 24 with YES student status either leaves full-time studies or enters a marriage or marriage-like relationship</p>
+    <p>Contact the Help Desk if you need to change or correct a dependent's cancellation date.</p>
+    <p>
+      MSP requires the reason for cancellation, the person’s current address and, if the person has moved outside of BC, the date of the move. To complete a cancellation, you must submit a Group Change Request (HLTH 217, found at
+      <a href="http://www.gov.bc.ca/mspgroupplanadministratorforms" target="_blank">www.gov.bc.ca/mspgroupplanadministratorforms</a>), along with all required supporting documents to Health Insurance BC at:<br />
+      PO Box 9140 <br />
+      Stn Prov Govt <br />
+      Victoria BC V8W 9E5
+    </p>
+    <p>You can use the PHN with the Get Contract Periods screen to verify the cancellation.</p>
+  </AppHelp>
   <div id="cancelDependent" v-if="inputFormActive">
     <form @submit.prevent="submitForm">
       <AppRow>
@@ -48,6 +64,7 @@
 
 <script>
 import useVuelidate from '@vuelidate/core'
+import AppHelp from '../../components/ui/AppHelp.vue'
 import { helpers, required } from '@vuelidate/validators'
 import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumber, validatePHN } from '../../util/validators'
 import GroupMemberService from '../../services/GroupMemberService'
@@ -56,6 +73,9 @@ import { handleServiceError } from '../../util/utils'
 
 export default {
   name: 'CancelDependent',
+  components: {
+    AppHelp,
+  },
   setup() {
     return {
       alertStore: useAlertStore(),
