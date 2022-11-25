@@ -57,7 +57,7 @@ public class MaintenanceController extends BaseController {
 
 	@Autowired
 	private MaintenanceService maintenanceService;
-	
+
 	@Autowired
 	private GroupMemberService groupMemberService;
 
@@ -94,8 +94,7 @@ public class MaintenanceController extends BaseController {
 	}
 
 	/**
-	 * Change the coverage cancellation date of an employee. 
-	 * Maps to the legacy R46b (z26).
+	 * Change the coverage cancellation date of an employee. Maps to the legacy R46b (z26).
 	 * 
 	 * @param changeCancelDateRequest
 	 * @return The result of the operation.
@@ -104,7 +103,7 @@ public class MaintenanceController extends BaseController {
 	public ResponseEntity<ChangeCancelDateResponse> changeCancelDate(
 			@Valid @RequestBody ChangeCancelDateRequest changeCancelDateRequest, HttpServletRequest request) {
 
-		Transaction transaction = auditChangeCancelDateStart(changeCancelDateRequest.getPhn(), request);
+		Transaction transaction = auditChangeCancelDateStart(changeCancelDateRequest, request);
 
 		try {
 			RPBSPAG0Converter converter = new RPBSPAG0Converter();
@@ -124,6 +123,7 @@ public class MaintenanceController extends BaseController {
 			return null;
 		}
 	}
+
 	/**
 	 * Extend the premium cancellation date of an employee. Maps to the legacy R51(z25).
 	 * 
@@ -134,7 +134,7 @@ public class MaintenanceController extends BaseController {
 	public ResponseEntity<ExtendCancelDateResponse> extendCancelDate(
 			@Valid @RequestBody ExtendCancelDateRequest extendCancelDateRequest, HttpServletRequest request) {
 
-		Transaction transaction = auditExtendCancelDateStart(extendCancelDateRequest.getPhn(), extendCancelDateRequest.getGroupNumber(), request);
+		Transaction transaction = auditExtendCancelDateStart(extendCancelDateRequest, request);
 
 		try {
 			RPBSPAG0Converter converter = new RPBSPAG0Converter();
@@ -155,7 +155,7 @@ public class MaintenanceController extends BaseController {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Reinstate the cancelled group coverage. Maps to the legacy R44.
 	 * @param reinstateCancelledGroupCoverageRequest
@@ -195,35 +195,37 @@ public class MaintenanceController extends BaseController {
 	 * @return The result of the operation.
 	 */
 	@PostMapping("/reinstate-over-age-dependent")
-	public ResponseEntity<ReinstateOverAgeDependentResponse> reinstateOverAgeDependent(@Valid @RequestBody ReinstateOverAgeDependentRequest reinstateRequest, HttpServletRequest request) {
+	public ResponseEntity<ReinstateOverAgeDependentResponse> reinstateOverAgeDependent(
+			@Valid @RequestBody ReinstateOverAgeDependentRequest reinstateRequest, HttpServletRequest request) {
 
 		logger.info("Reinstate over age dependent request: {} ", reinstateRequest.getPhn());
-		
+
 		Transaction transaction = auditReinstateOverAgeDependentStart(reinstateRequest, request);
 
 		try {
 			RPBSPRE0Converter converter = new RPBSPRE0Converter();
 			RPBSPRE0 pre0Request = converter.convertRequest(reinstateRequest);
-		
-			RPBSPRE0 pre0Response = maintenanceService.reinstateOverAgeDependent(pre0Request, transaction);	
-			
+
+			RPBSPRE0 pre0Response = maintenanceService.reinstateOverAgeDependent(pre0Request, transaction);
+
 			ReinstateOverAgeDependentResponse reinstateResponse = converter.convertResponse(pre0Response);
-					
+
 			ResponseEntity<ReinstateOverAgeDependentResponse> response = ResponseEntity.ok(reinstateResponse);
 			logger.info("reinstateOverAgeDependent response: {} ", reinstateResponse);
-	
+
 			transactionComplete(transaction);
-			addAffectedParty(transaction, IdentifierType.PHN, reinstateResponse.getPhn(), AffectedPartyDirection.OUTBOUND);
-	
-			return response;	
+			addAffectedParty(transaction, IdentifierType.PHN, reinstateResponse.getPhn(),
+					AffectedPartyDirection.OUTBOUND);
+
+			return response;
 		} catch (Exception e) {
 			handleException(transaction, e);
 			return null;
 		}
 	}
-	
+
 	/**
-	 * Renew the coverage effective date of an employee and spouse/dependents.
+	 * Renew the coverage effective date of an employee and spouse/dependents. 
 	 * Maps to the legacy R45 (Z27).
 	 * 
 	 * @param RenewCancelledGroupCoverageRequest
@@ -234,17 +236,17 @@ public class MaintenanceController extends BaseController {
 			@Valid @RequestBody RenewCancelledGroupCoverageRequest renewCancelledGroupCoverageRequest,
 			HttpServletRequest request) {
 
-		Transaction transaction = auditRenewCancelledCoverageStart(renewCancelledGroupCoverageRequest.getPhn(),
-				request);
-		
+		Transaction transaction = auditRenewCancelledCoverageStart(renewCancelledGroupCoverageRequest, request);
+
 		try {
 			RPBSPAI0Converter converter = new RPBSPAI0Converter();
 			RPBSPAI0 rpbspai0Request = converter.convertRequest(renewCancelledGroupCoverageRequest);
 			RPBSPAI0 rpbspai0Response = maintenanceService.renewCoverageEffectiveDate(rpbspai0Request, transaction);
 			RenewCancelledGroupCoverageResponse renewCancelledGroupCoverageResponse;
-			
+
 			// Execute if RPBSPAI0 returns successfully
-			if (StringUtils.equals(rpbspai0Response.getRpbsHeader().getStatusCode(), BaseRapidConverter.STATUS_CODE_SUCCESS)) {
+			if (StringUtils.equals(rpbspai0Response.getRpbsHeader().getStatusCode(),
+					BaseRapidConverter.STATUS_CODE_SUCCESS)) {
 				RPBSPXP0Converter rpbspxp0Converter = new RPBSPXP0Converter();
 
 				// Creates/Clones a new Coverage entry, not simply an update but an Add
@@ -276,10 +278,11 @@ public class MaintenanceController extends BaseController {
 
 		Transaction transaction = transactionStart(request, TransactionType.CHANGE_EFFECTIVE_DATE);
 
-		if (StringUtils.isNotBlank(changeEffectiveDateRequest.getPhn())) {
-			addAffectedParty(transaction, IdentifierType.PHN, changeEffectiveDateRequest.getPhn(),
-					AffectedPartyDirection.INBOUND);
-		}
+		addAffectedParty(transaction, IdentifierType.PHN, changeEffectiveDateRequest.getPhn(),
+				AffectedPartyDirection.INBOUND);
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, changeEffectiveDateRequest.getGroupNumber(),
+				AffectedPartyDirection.INBOUND);
+
 		return transaction;
 	}
 
@@ -294,16 +297,16 @@ public class MaintenanceController extends BaseController {
 		}
 	}
 
-	private Transaction auditExtendCancelDateStart(String phn, String groupNumber, HttpServletRequest request) {
+	private Transaction auditExtendCancelDateStart(ExtendCancelDateRequest extendCancelDateRequest,
+			HttpServletRequest request) {
 
 		Transaction transaction = transactionStart(request, TransactionType.EXTEND_CANCEL_DATE);
 
-		if (StringUtils.isNotBlank(phn)) {
-			addAffectedParty(transaction, IdentifierType.PHN, phn, AffectedPartyDirection.INBOUND);
-		}
-		if (StringUtils.isNotBlank(groupNumber)) {
-		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, groupNumber, AffectedPartyDirection.INBOUND);
-		}
+		addAffectedParty(transaction, IdentifierType.PHN, extendCancelDateRequest.getPhn(),
+				AffectedPartyDirection.INBOUND);
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, extendCancelDateRequest.getGroupNumber(),
+				AffectedPartyDirection.INBOUND);
+
 		return transaction;
 	}
 
@@ -337,14 +340,16 @@ public class MaintenanceController extends BaseController {
 			addAffectedParty(transaction, IdentifierType.PHN, phn, AffectedPartyDirection.OUTBOUND);
 		}
 	}
-	
-	private Transaction auditChangeCancelDateStart(String phn, HttpServletRequest request) {
 
+	private Transaction auditChangeCancelDateStart(ChangeCancelDateRequest changeCancelDateRequest,
+			HttpServletRequest request) {
 		Transaction transaction = transactionStart(request, TransactionType.CHANGE_CANCEL_DATE);
 
-		if (StringUtils.isNotBlank(phn)) {
-			addAffectedParty(transaction, IdentifierType.PHN, phn, AffectedPartyDirection.INBOUND);
-		}
+		addAffectedParty(transaction, IdentifierType.PHN, changeCancelDateRequest.getPhn(),
+				AffectedPartyDirection.INBOUND);
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, changeCancelDateRequest.getGroupNumber(),
+				AffectedPartyDirection.INBOUND);
+
 		return transaction;
 	}
 
@@ -357,24 +362,29 @@ public class MaintenanceController extends BaseController {
 		}
 	}
 
-	private Transaction auditReinstateOverAgeDependentStart(ReinstateOverAgeDependentRequest reinstateRequest, HttpServletRequest request) {
+	private Transaction auditReinstateOverAgeDependentStart(ReinstateOverAgeDependentRequest reinstateRequest,
+			HttpServletRequest request) {
 		Transaction transaction = transactionStart(request, TransactionType.REINSTATE_OVER_AGE_DEPENDENT);
-		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, reinstateRequest.getGroupNumber(), AffectedPartyDirection.INBOUND);
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, reinstateRequest.getGroupNumber(),
+				AffectedPartyDirection.INBOUND);
 		addAffectedParty(transaction, IdentifierType.PHN, reinstateRequest.getPhn(), AffectedPartyDirection.INBOUND);
-		addAffectedParty(transaction, IdentifierType.PHN, reinstateRequest.getDependentPhn(), AffectedPartyDirection.INBOUND);
+		addAffectedParty(transaction, IdentifierType.PHN, reinstateRequest.getDependentPhn(),
+				AffectedPartyDirection.INBOUND);
 		return transaction;
 	}
-	
-	private Transaction auditRenewCancelledCoverageStart(String phn, HttpServletRequest request) {
+
+	private Transaction auditRenewCancelledCoverageStart(RenewCancelledGroupCoverageRequest renwelRequest,
+			HttpServletRequest request) {
 
 		Transaction transaction = transactionStart(request, TransactionType.RENEW_CANCELLED_COVERAGE);
 
-		if (StringUtils.isNotBlank(phn)) {
-			addAffectedParty(transaction, IdentifierType.PHN, phn, AffectedPartyDirection.INBOUND);
-		}
+		addAffectedParty(transaction, IdentifierType.PHN, renwelRequest.getPhn(), AffectedPartyDirection.INBOUND);
+		addAffectedParty(transaction, IdentifierType.GROUP_NUMBER, renwelRequest.getGroupNumber(),
+				AffectedPartyDirection.INBOUND);
+
 		return transaction;
 	}
-	
+
 	private void auditRenewCancelledCoverageComplete(Transaction transaction, String phn) {
 
 		transactionComplete(transaction);
