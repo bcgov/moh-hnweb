@@ -7,6 +7,9 @@ export default {
   changeCancelDate(request) {
     return apiRequest().then((axiosInstance) => axiosInstance.post(resources.maintenance.changeCancelDate, request))
   },
+  reinstateCancelledGroupCoverage(request) {
+    return apiRequest().then((axiosInstance) => axiosInstance.post(resources.maintenance.reistateCancelledGroupCoverage, request))
+  },
   reinstateOverAgeDependent(request) {
     return apiRequest().then((axiosInstance) => axiosInstance.post(resources.maintenance.reinstateOverAgeDependent, request))
   },

@@ -34,6 +34,7 @@ export const resources = {
     extendCancelDate: '/maintenance/extend-cancel-date',
     reinstateOverAgeDependent: '/maintenance/reinstate-over-age-dependent',
     renewCancelledGroupCoverage: '/maintenance/renew-cancelled-group-coverage',
+    reistateCancelledGroupCoverage: '/maintenance/reinstate-cancelled-group-coverage',
   },
   mspContracts: {
     getContractPeriods: '/msp-contracts/get-contract-periods',
