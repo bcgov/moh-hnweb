@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.GetPersonDetailsResponse;
+import ca.bc.gov.hlth.hnweb.model.v3.Address;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.Name;
@@ -113,6 +114,27 @@ public class GetDemographicsConverter {
 			personDetailsResponse.setDateOfBirth(birthDate);			
 			personDetailsResponse.setDateOfDeath(deathDate);
 			personDetailsResponse.setGender(demographicsResponse.getPerson().getGender());
+		}
+		
+		Address address = demographicsResponse.getPerson().getPhysicalAddress();
+		if (address != null) {
+			personDetailsResponse.setAddress1(demographicsResponse.getPerson().getPhysicalAddress().getAddressLine1());
+			personDetailsResponse.setAddress2(demographicsResponse.getPerson().getPhysicalAddress().getAddressLine2());
+			personDetailsResponse.setAddress3(demographicsResponse.getPerson().getPhysicalAddress().getAddressLine3());
+			personDetailsResponse.setCity(demographicsResponse.getPerson().getPhysicalAddress().getCity());
+			personDetailsResponse.setProvince(demographicsResponse.getPerson().getPhysicalAddress().getProvince());
+			personDetailsResponse.setPostalCode(demographicsResponse.getPerson().getPhysicalAddress().getPostalCode());
+		}
+
+		Address mailingAddress = demographicsResponse.getPerson().getMailingAddress();
+		// Populate mailingAddress if different than physical address
+		if (mailingAddress != null && !mailingAddress.equals(address)) {
+			personDetailsResponse.setMailingAddress1(demographicsResponse.getPerson().getMailingAddress().getAddressLine1());
+			personDetailsResponse.setMailingAddress2(demographicsResponse.getPerson().getMailingAddress().getAddressLine2());
+			personDetailsResponse.setMailingAddress3(demographicsResponse.getPerson().getMailingAddress().getAddressLine3());
+			personDetailsResponse.setMailingAddressCity(demographicsResponse.getPerson().getMailingAddress().getCity());
+			personDetailsResponse.setMailingAddressProvince(demographicsResponse.getPerson().getMailingAddress().getProvince());
+			personDetailsResponse.setMailingAddressPostalCode(demographicsResponse.getPerson().getMailingAddress().getPostalCode());
 		}
 	}
 

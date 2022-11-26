@@ -97,16 +97,26 @@ export default {
             surname: data.surname,
             dateOfBirth: data.dateOfBirth,
             gender: data.gender,
+            address1: data.address1,
+            address2: data.address2,
+            address3: data.address2,
+            city: data.city,
+            province: data.province,
+            postalCode: data.postalCode,
+            mailingAddress1: data.mailingAddress1,
+            mailingAddress2: data.mailingAddress2,
+            mailingAddress3: data.mailingAddress33,
+            mailingAddressCity: data.mailingAddressCity,
+            mailingAddressProvince: data.mailingAddressProvince,
+            mailingAddressPostalCode: data.mailingAddressPostalCode,
           },
           status: data.status,
           message: data.message,
         }
-
         if (this.getPersonDetailsResult?.status === 'error') {
           this.alertStore.setErrorAlert(this.getPersonDetailsResult?.message)
           return
         }
-
         if (this.getPersonDetailsResult?.status === 'warning') {
           this.alertStore.setWarningAlert(this.getPersonDetailsResult?.message)
         }

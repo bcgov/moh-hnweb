@@ -75,22 +75,42 @@ export default {
       let address = ''
       if (this.candidate.address1) {
         address = address + this.candidate.address1
+
+        if (this.candidate.address2) {
+          address = address + ' ' + this.candidate.address2
+        }
+        if (this.candidate.address3) {
+          address = address + ' ' + this.candidate.address3
+        }
+        if (this.candidate.city) {
+          address = address + ' ' + this.candidate.city
+        }
+        if (this.candidate.province) {
+          address = address + ' ' + this.candidate.province
+        }
+        if (this.candidate.postalCode) {
+          address = address + ' ' + this.candidate.postalCode
+        }
+      } else if (this.candidate.mailingAddress1) {
+        address = address + this.candidate.mailingAddress1
+
+        if (this.candidate.mailingAddress2) {
+          address = address + ' ' + this.candidate.mailingAddress2
+        }
+        if (this.candidate.mailingAddress2) {
+          address = address + ' ' + this.candidate.mailingAddress3
+        }
+        if (this.candidate.mailingAddressCity) {
+          address = address + ' ' + this.candidate.mailingAddressCity
+        }
+        if (this.candidate.mailingAddressProvince) {
+          address = address + ' ' + this.candidate.mailingAddressProvince
+        }
+        if (this.candidate.mailingAddressPostalCode) {
+          address = address + ' ' + this.candidate.mailingAddressPostalCode
+        }
       }
-      if (this.candidate.address2) {
-        address = address + ' ' + this.candidate.address2
-      }
-      if (this.candidate.address3) {
-        address = address + ' ' + this.candidate.address3
-      }
-      if (this.candidate.city) {
-        address = address + ' ' + this.candidate.city
-      }
-      if (this.candidate.province) {
-        address = address + ' ' + this.candidate.province
-      }
-      if (this.candidate.postalCode) {
-        address = address + ' ' + this.candidate.postalCode
-      }
+
       return address
     },
     fullName() {
