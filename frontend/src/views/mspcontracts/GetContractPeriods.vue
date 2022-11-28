@@ -5,7 +5,7 @@
       can be used to find a group member or dependent's PHN.
     </p>
     <p>
-      If the transaction was successful, persons will be returned in this order: 
+      If the transaction was successful, persons will be returned: 
       <ul>
         <li>the spouse(s), active and cancelled ·</li>
         <li>the dependent(s)</li>
