@@ -109,15 +109,14 @@ public class Address {
     Address addressToCheck = (Address) obj;
 
     // StringUtils to be null safe
-    if (!StringUtils.equals(this.addressLine1, addressToCheck.getAddressLine1())
-        || !StringUtils.equals(this.addressLine2, addressToCheck.getAddressLine2())
-        || !StringUtils.equals(this.addressLine3, addressToCheck.getAddressLine3())
-        || !StringUtils.equals(this.city, addressToCheck.getCity())
-        || !StringUtils.equals(this.postalCode, addressToCheck.getPostalCode())
-        || !StringUtils.equals(this.province, addressToCheck.getProvince())
-        || !StringUtils.equals(this.country, addressToCheck.getCountry())
-        || !this.ver == addressToCheck.isVer()
-        || !StringUtils.equals(this.addressType, addressToCheck.getAddressType())) {
+    if (!StringUtils.equalsIgnoreCase(this.addressLine1, addressToCheck.getAddressLine1())
+        || !StringUtils.equalsIgnoreCase(this.addressLine2, addressToCheck.getAddressLine2())
+        || !StringUtils.equalsIgnoreCase(this.addressLine3, addressToCheck.getAddressLine3())
+        || !StringUtils.equalsIgnoreCase(this.city, addressToCheck.getCity())
+        || !StringUtils.equalsIgnoreCase(this.postalCode, addressToCheck.getPostalCode())
+        || !StringUtils.equalsIgnoreCase(this.province, addressToCheck.getProvince())
+        || !StringUtils.equalsIgnoreCase(this.country, addressToCheck.getCountry())
+        || !this.ver == addressToCheck.isVer()) {
 
       return false;
     }

@@ -116,25 +116,25 @@ public class GetDemographicsConverter {
 			personDetailsResponse.setGender(demographicsResponse.getPerson().getGender());
 		}
 		
-		Address address = demographicsResponse.getPerson().getPhysicalAddress();
-		if (address != null) {
-			personDetailsResponse.setAddress1(demographicsResponse.getPerson().getPhysicalAddress().getAddressLine1());
-			personDetailsResponse.setAddress2(demographicsResponse.getPerson().getPhysicalAddress().getAddressLine2());
-			personDetailsResponse.setAddress3(demographicsResponse.getPerson().getPhysicalAddress().getAddressLine3());
-			personDetailsResponse.setCity(demographicsResponse.getPerson().getPhysicalAddress().getCity());
-			personDetailsResponse.setProvince(demographicsResponse.getPerson().getPhysicalAddress().getProvince());
-			personDetailsResponse.setPostalCode(demographicsResponse.getPerson().getPhysicalAddress().getPostalCode());
+		Address physicalAddress = demographicsResponse.getPerson().getPhysicalAddress();
+		if (physicalAddress != null) {
+			personDetailsResponse.setAddress1(physicalAddress.getAddressLine1());
+			personDetailsResponse.setAddress2(physicalAddress.getAddressLine2());
+			personDetailsResponse.setAddress3(physicalAddress.getAddressLine3());
+			personDetailsResponse.setCity(physicalAddress.getCity());
+			personDetailsResponse.setProvince(physicalAddress.getProvince());
+			personDetailsResponse.setPostalCode(physicalAddress.getPostalCode());
 		}
 
 		Address mailingAddress = demographicsResponse.getPerson().getMailingAddress();
 		// Populate mailingAddress if different than physical address
-		if (mailingAddress != null && !mailingAddress.equals(address)) {
-			personDetailsResponse.setMailingAddress1(demographicsResponse.getPerson().getMailingAddress().getAddressLine1());
-			personDetailsResponse.setMailingAddress2(demographicsResponse.getPerson().getMailingAddress().getAddressLine2());
-			personDetailsResponse.setMailingAddress3(demographicsResponse.getPerson().getMailingAddress().getAddressLine3());
-			personDetailsResponse.setMailingAddressCity(demographicsResponse.getPerson().getMailingAddress().getCity());
-			personDetailsResponse.setMailingAddressProvince(demographicsResponse.getPerson().getMailingAddress().getProvince());
-			personDetailsResponse.setMailingAddressPostalCode(demographicsResponse.getPerson().getMailingAddress().getPostalCode());
+		if (mailingAddress != null && !mailingAddress.equals(physicalAddress)) {
+			personDetailsResponse.setMailingAddress1(mailingAddress.getAddressLine1());
+			personDetailsResponse.setMailingAddress2(mailingAddress.getAddressLine2());
+			personDetailsResponse.setMailingAddress3(mailingAddress.getAddressLine3());
+			personDetailsResponse.setMailingAddressCity(mailingAddress.getCity());
+			personDetailsResponse.setMailingAddressProvince(mailingAddress.getProvince());
+			personDetailsResponse.setMailingAddressPostalCode(mailingAddress.getPostalCode());
 		}
 	}
 

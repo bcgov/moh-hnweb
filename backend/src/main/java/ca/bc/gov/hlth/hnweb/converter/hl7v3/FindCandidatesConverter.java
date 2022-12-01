@@ -128,25 +128,25 @@ public class FindCandidatesConverter {
 				nameSearchResult.setDateOfBirth(birthDate);
 				nameSearchResult.setGender(ns.getPerson().getGender());
 
-				Address address = ns.getPerson().getPhysicalAddress();
-				if (address != null) {
-					nameSearchResult.setAddress1(ns.getPerson().getPhysicalAddress().getAddressLine1());
-					nameSearchResult.setAddress2(ns.getPerson().getPhysicalAddress().getAddressLine2());
-					nameSearchResult.setAddress3(ns.getPerson().getPhysicalAddress().getAddressLine3());
-					nameSearchResult.setCity(ns.getPerson().getPhysicalAddress().getCity());
-					nameSearchResult.setProvince(ns.getPerson().getPhysicalAddress().getProvince());
-					nameSearchResult.setPostalCode(ns.getPerson().getPhysicalAddress().getPostalCode());
+				Address physicalAddress = ns.getPerson().getPhysicalAddress();
+				if (physicalAddress != null) {
+					nameSearchResult.setAddress1(physicalAddress.getAddressLine1());
+					nameSearchResult.setAddress2(physicalAddress.getAddressLine2());
+					nameSearchResult.setAddress3(physicalAddress.getAddressLine3());
+					nameSearchResult.setCity(physicalAddress.getCity());
+					nameSearchResult.setProvince(physicalAddress.getProvince());
+					nameSearchResult.setPostalCode(physicalAddress.getPostalCode());
 				}
 
 				Address mailingAddress = ns.getPerson().getMailingAddress();
 				// Populate mailingAddress if different than physical address
-				if (mailingAddress != null && !mailingAddress.equals(address)) {
-					nameSearchResult.setMailingAddress1(ns.getPerson().getMailingAddress().getAddressLine1());
-					nameSearchResult.setMailingAddress2(ns.getPerson().getMailingAddress().getAddressLine2());
-					nameSearchResult.setMailingAddress3(ns.getPerson().getMailingAddress().getAddressLine3());
-					nameSearchResult.setMailingAddressCity(ns.getPerson().getMailingAddress().getCity());
-					nameSearchResult.setMailingAddressProvince(ns.getPerson().getMailingAddress().getProvince());
-					nameSearchResult.setMailingAddressPostalCode(ns.getPerson().getMailingAddress().getPostalCode());
+				if (mailingAddress != null && !mailingAddress.equals(physicalAddress)) {
+					nameSearchResult.setMailingAddress1(mailingAddress.getAddressLine1());
+					nameSearchResult.setMailingAddress2(mailingAddress.getAddressLine2());
+					nameSearchResult.setMailingAddress3(mailingAddress.getAddressLine3());
+					nameSearchResult.setMailingAddressCity(mailingAddress.getCity());
+					nameSearchResult.setMailingAddressProvince(mailingAddress.getProvince());
+					nameSearchResult.setMailingAddressPostalCode(mailingAddress.getPostalCode());
 				}
 
 				nameSearchResult.setScore(ns.getScore());
@@ -157,7 +157,5 @@ public class FindCandidatesConverter {
 
 		return nameSearchList;
 	}
-	
-	
 
 }
