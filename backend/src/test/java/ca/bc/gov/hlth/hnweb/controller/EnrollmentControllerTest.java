@@ -355,7 +355,7 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals("123 FRONT ST", nameSearchResponse.getCandidates().get(1).getAddress1());
         assertNull(nameSearchResponse.getCandidates().get(1).getMailingAddress1());
         
-      //Check mailing address populated correctly if there and different than physical address
+        //Check mailing address populated correctly if there and different than physical address
         assertNull(nameSearchResponse.getCandidates().get(2).getAddress1());
         assertEquals("PO BOX 5", nameSearchResponse.getCandidates().get(2).getMailingAddress1());
     			
