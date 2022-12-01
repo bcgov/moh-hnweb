@@ -113,16 +113,17 @@ public class FindCandidatesConverter {
 			nameSearchResult.setIdentifierTypeCode(IDENTIFIER_TYPE_CODE);
 			nameSearchResult.setAssigningAuthority(ASSIGNING_AUTHORITY);
 
-			Name nameObj = ns.getPerson().getDeclaredName();
-			if (nameObj == null) {
-				nameObj = ns.getPerson().getDocumentedName();
+			// "Documented" should always be shown over a "Declared" name.
+			Name name = ns.getPerson().getDocumentedName();
+			if (name == null) {
+				name = ns.getPerson().getDeclaredName();
 			}
 
-			if (nameObj != null) {
-				nameSearchResult.setGivenName(Optional.ofNullable(nameObj.getFirstGivenName()).orElse(""));
-				nameSearchResult.setSecondName(Optional.ofNullable(nameObj.getSecondGivenName()).orElse(""));
-				nameSearchResult.setSurname(Optional.ofNullable(nameObj.getSurname()).orElse(""));
-				nameSearchResult.setNameTypeCode(Optional.ofNullable(nameObj.getType()).orElse(""));
+			if (name != null) {
+				nameSearchResult.setGivenName(Optional.ofNullable(name.getFirstGivenName()).orElse(""));
+				nameSearchResult.setSecondName(Optional.ofNullable(name.getSecondGivenName()).orElse(""));
+				nameSearchResult.setSurname(Optional.ofNullable(name.getSurname()).orElse(""));
+				nameSearchResult.setNameTypeCode(Optional.ofNullable(name.getType()).orElse(""));
 
 				String birthDate = V3MessageUtil.convertDateToString(ns.getPerson().getBirthDate());
 				nameSearchResult.setDateOfBirth(birthDate);
