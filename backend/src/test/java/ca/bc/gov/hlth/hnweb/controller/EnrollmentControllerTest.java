@@ -1,5 +1,6 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -243,6 +244,41 @@ public class EnrollmentControllerTest extends BaseControllerTest {
     }
     
     @Test
+    void testGetDemographicsDetails_physicalAndMailingAddress() throws Exception {    	
+        
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_Address.xml"))
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+
+        GetPersonDetailsRequest getPersonQuery = new GetPersonDetailsRequest();
+        getPersonQuery.setPhn("9999999999");
+        
+        ResponseEntity<GetPersonDetailsResponse> response = enrollmentController.getPersonDetails(getPersonQuery, createHttpServletRequest());
+        GetPersonDetailsResponse getPersonDetailsResponse = response.getBody();
+        assertEquals("1965 CYPRESS ST", getPersonDetailsResponse.getAddress1());
+        assertEquals("ATTENTION - MULLER", getPersonDetailsResponse.getAddress2());
+        assertEquals("VICTORIA", getPersonDetailsResponse.getCity());
+        assertEquals("BC", getPersonDetailsResponse.getProvince());
+        assertEquals("X5H2T8", getPersonDetailsResponse.getPostalCode());
+             
+        assertEquals("121 Main ST", getPersonDetailsResponse.getMailingAddress1());
+        assertEquals("Churchil Road", getPersonDetailsResponse.getMailingAddress2());
+        assertEquals("BAYSIDE", getPersonDetailsResponse.getMailingAddressCity());
+        assertEquals("BC", getPersonDetailsResponse.getMailingAddressProvince());
+        assertEquals("V8V8V8", getPersonDetailsResponse.getMailingAddressPostalCode());
+      			
+		//Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.GET_PERSON_DETAILS);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+    }
+    
+    @Test
     void testGetDemographicsDetails_Warning() throws Exception {      
         mockBackEnd.enqueue(new MockResponse()
         		.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_NonSurvivor.xml"))
@@ -354,6 +390,46 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertTransactionCreated(TransactionType.NAME_SEARCH);
         assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 0);
         assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 0);
+    }
+    
+    @Test
+    void testGetNameSearch_physicalAndMailingAddress() throws Exception {    	
+        
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/FindCandidatesResponse_Multiples.xml"))
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+        
+        NameSearchRequest nameSearchRequest = new NameSearchRequest();
+        nameSearchRequest.setGivenName("TestGiven");
+        nameSearchRequest.setSurname("TestSurname");
+        nameSearchRequest.setGender("M");
+        nameSearchRequest.setDateOfBirth(LocalDate.of(1973, 8, 11));
+        	       
+        ResponseEntity<NameSearchResponse> response = enrollmentController.getNameSearch(nameSearchRequest, createHttpServletRequest());
+        NameSearchResponse nameSearchResponse = response.getBody();
+        assertEquals(3, nameSearchResponse.getCandidates().size());
+        
+        //Check if physical address is populated correctly
+        assertNull(nameSearchResponse.getCandidates().get(0).getMailingAddress1());       
+        assertEquals("666 YELLOW BRICK RD", nameSearchResponse.getCandidates().get(0).getAddress1());
+        
+        //Check mailing address not populated if same as physical address
+        assertEquals("123 FRONT ST", nameSearchResponse.getCandidates().get(1).getAddress1());
+        assertNull(nameSearchResponse.getCandidates().get(1).getMailingAddress1());
+        
+        //Check mailing address populated correctly if there and different than physical address
+        assertNull(nameSearchResponse.getCandidates().get(2).getAddress1());
+        assertEquals("PO BOX 5", nameSearchResponse.getCandidates().get(2).getMailingAddress1());
+    			
+		//Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.NAME_SEARCH);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 0);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 3);
     }
     
     @Test

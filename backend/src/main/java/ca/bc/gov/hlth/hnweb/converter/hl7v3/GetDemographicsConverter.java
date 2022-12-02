@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.GetPersonDetailsResponse;
+import ca.bc.gov.hlth.hnweb.model.v3.Address;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.Name;
@@ -120,6 +121,27 @@ public class GetDemographicsConverter {
 			personDetailsResponse.setDateOfDeath(deathDate);
 			
 			personDetailsResponse.setGender(person.getGender());
+		}
+		
+		Address physicalAddress = demographicsResponse.getPerson().getPhysicalAddress();
+		if (physicalAddress != null) {
+			personDetailsResponse.setAddress1(physicalAddress.getAddressLine1());
+			personDetailsResponse.setAddress2(physicalAddress.getAddressLine2());
+			personDetailsResponse.setAddress3(physicalAddress.getAddressLine3());
+			personDetailsResponse.setCity(physicalAddress.getCity());
+			personDetailsResponse.setProvince(physicalAddress.getProvince());
+			personDetailsResponse.setPostalCode(physicalAddress.getPostalCode());
+		}
+
+		Address mailingAddress = demographicsResponse.getPerson().getMailingAddress();
+		// Populate mailingAddress if different than physical address
+		if (mailingAddress != null && !mailingAddress.equals(physicalAddress)) {
+			personDetailsResponse.setMailingAddress1(mailingAddress.getAddressLine1());
+			personDetailsResponse.setMailingAddress2(mailingAddress.getAddressLine2());
+			personDetailsResponse.setMailingAddress3(mailingAddress.getAddressLine3());
+			personDetailsResponse.setMailingAddressCity(mailingAddress.getCity());
+			personDetailsResponse.setMailingAddressProvince(mailingAddress.getProvince());
+			personDetailsResponse.setMailingAddressPostalCode(mailingAddress.getPostalCode());
 		}
 	}
 

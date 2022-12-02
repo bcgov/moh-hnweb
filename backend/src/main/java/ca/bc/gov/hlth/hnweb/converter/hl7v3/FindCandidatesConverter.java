@@ -135,7 +135,7 @@ public class FindCandidatesConverter {
 
 				nameSearchResult.setGender(person.getGender());
 
-				Address physicalAddress = person.getPhysicalAddress();
+				Address physicalAddress = ns.getPerson().getPhysicalAddress();
 				if (physicalAddress != null) {
 					nameSearchResult.setAddress1(physicalAddress.getAddressLine1());
 					nameSearchResult.setAddress2(physicalAddress.getAddressLine2());
@@ -146,13 +146,14 @@ public class FindCandidatesConverter {
 				}
 
 				Address mailingAddress = ns.getPerson().getMailingAddress();
-				if (mailingAddress != null) {
-					nameSearchResult.setAddress1(mailingAddress.getAddressLine1());
-					nameSearchResult.setAddress2(mailingAddress.getAddressLine2());
-					nameSearchResult.setAddress3(mailingAddress.getAddressLine3());
-					nameSearchResult.setCity(mailingAddress.getCity());
-					nameSearchResult.setProvince(mailingAddress.getProvince());
-					nameSearchResult.setPostalCode(mailingAddress.getPostalCode());
+				// Populate mailingAddress if different than physical address
+				if (mailingAddress != null && !mailingAddress.equals(physicalAddress)) {
+					nameSearchResult.setMailingAddress1(mailingAddress.getAddressLine1());
+					nameSearchResult.setMailingAddress2(mailingAddress.getAddressLine2());
+					nameSearchResult.setMailingAddress3(mailingAddress.getAddressLine3());
+					nameSearchResult.setMailingAddressCity(mailingAddress.getCity());
+					nameSearchResult.setMailingAddressProvince(mailingAddress.getProvince());
+					nameSearchResult.setMailingAddressPostalCode(mailingAddress.getPostalCode());
 				}
 
 				nameSearchResult.setScore(ns.getScore());
