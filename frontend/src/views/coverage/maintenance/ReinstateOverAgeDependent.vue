@@ -1,4 +1,23 @@
 <template>
+  <AppHelp>
+    <p>Use this screen to Reinstate an OverAge Dependent. If you do not know the PHN, use the PHN Lookup screen.</p>
+    <p>
+      Before you begin:<br />
+      Use the PHN Inquiry screen to confirm that the dependent is currently eligible for publicly funded health care (Eligible? = Y) and, if they are a dependent between 19 and 24 years of age, check with your group member that their dependent's student status is confirmed.
+    </p>
+    <p>
+      Student status<br />
+      A dependent aged 18 and 9 months through to 24 and 9 months may still be covered on your group members account as an overage student if they are attending a school or educational institution. If yes, click the "YES" button. If the dependent is over 18 and 9 months and is not studying within
+      Canada, you will NOT be able to add them as a dependent on an account.
+    </p>
+    <p>
+      Studies Completion Date<br />
+      Enter the date when the dependent’s studies are expected to finish. This date must be at least three months from today's date and can be up to five years into the future. If the dependent is turning 25 during this period, you will be able to confirm them as a student until the month before
+      their 25th birthday.
+    </p>
+    <p>If the transaction is successful, the PHN is displayed. You may use the PHN with the Get Contract Periods screen to verify the coverage.</p>
+  </AppHelp>
+
   <div id="reinstateOverAgeDependent" v-if="inputFormActive">
     <form @submit.prevent="submitForm">
       <AppRow>
@@ -56,6 +75,7 @@
 <script>
 import YesNoRadioButtonGroup from '../../../components/ui/YesNoRadioButtonGroup.vue'
 import useVuelidate from '@vuelidate/core'
+import AppHelp from '../../../components/ui/AppHelp.vue'
 import { helpers, required, requiredIf } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumber, validatePHN } from '../../../util/validators'
@@ -66,8 +86,8 @@ import AppCol from '../../../components/grid/AppCol.vue'
 import { handleServiceError } from '../../../util/utils'
 
 export default {
-  name: 'AddDependent',
-  components: { YesNoRadioButtonGroup, AppCol },
+  name: 'ReinstateOverAgeDependent',
+  components: { YesNoRadioButtonGroup, AppCol, AppHelp },
   setup() {
     const currentMonth = {
       month: new Date().getMonth(),
