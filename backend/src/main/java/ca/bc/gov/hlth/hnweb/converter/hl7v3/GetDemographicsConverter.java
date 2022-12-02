@@ -98,16 +98,17 @@ public class GetDemographicsConverter {
 
 	private void buildPersonDetails(GetDemographicsResponse demographicsResponse,
 			GetPersonDetailsResponse personDetailsResponse) {
-		Name nameObj = demographicsResponse.getPerson().getDeclaredName();
-		if (nameObj == null) {
-			nameObj = demographicsResponse.getPerson().getDocumentedName();
+		// "Documented" should always be shown over a "Declared" name.
+		Name name = demographicsResponse.getPerson().getDocumentedName();
+		if (name == null) {
+			name = demographicsResponse.getPerson().getDeclaredName();
 		}
 
-		if (nameObj != null) {
+		if (name != null) {
 			personDetailsResponse.setPhn(demographicsResponse.getPerson().getPhn());
-			personDetailsResponse.setGivenName(nameObj.getFirstGivenName());
-			personDetailsResponse.setSecondName(nameObj.getSecondGivenName());
-			personDetailsResponse.setSurname(nameObj.getSurname());
+			personDetailsResponse.setGivenName(name.getFirstGivenName());
+			personDetailsResponse.setSecondName(name.getSecondGivenName());
+			personDetailsResponse.setSurname(name.getSurname());
 
 			String birthDate = V3MessageUtil.convertDateToString(demographicsResponse.getPerson().getBirthDate());
 			String deathDate = demographicsResponse.getPerson().getDeathDate() != null ? V3MessageUtil.convertDateToString(demographicsResponse.getPerson().getDeathDate()) :"N/A";

@@ -1,10 +1,10 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -25,6 +25,7 @@ import ca.bc.gov.hlth.hnweb.model.rest.enrollment.GetPersonDetailsRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.NameSearchRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.enrollment.NameSearchResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.enrollment.NameSearchResult;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.utils.TestUtil;
@@ -60,6 +61,8 @@ public class EnrollmentControllerTest extends BaseControllerTest {
 	private static final String FC_WARNING_MESSAGE = "BCHCIM.FC.0.0017  The maximum number of results were returned, and more may be available. Please refine your search criteria and try again.";
 	
 	private static final String FC_ERROR_MESSAGE = "BCHCIM.FC.2.0006 The HL7 message is invalid. Please correct the HL7 message, and resubmit it.Results from Schematron validation";
+	
+	private static final String FC_SUCCESS_MESSAGE = "BCHCIM.FC.0.0012  The search completed successfully.";
 	
 	private static final String GD_ERROR_MESSAGE = "BCHCIM.GD.2.0006 The HL7 message is invalid. Please correct the HL7 message, and resubmit it.Results from Schematron validation";
 	
@@ -211,29 +214,23 @@ public class EnrollmentControllerTest extends BaseControllerTest {
     }
     
     @Test
-    void testGetDemographicsDetails_physicalAndMailingAddress() throws Exception {    	
+    void testGetDemographicsDetails_DocumentedName() throws Exception {    	
         
         mockBackEnd.enqueue(new MockResponse()
-        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_Address.xml"))
+        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_DocumentedName.xml"))
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
         GetPersonDetailsRequest getPersonQuery = new GetPersonDetailsRequest();
-        getPersonQuery.setPhn("9999999999");
+        getPersonQuery.setPhn("9862716574");
         
         ResponseEntity<GetPersonDetailsResponse> response = enrollmentController.getPersonDetails(getPersonQuery, createHttpServletRequest());
         GetPersonDetailsResponse getPersonDetailsResponse = response.getBody();
-        assertEquals("1965 CYPRESS ST", getPersonDetailsResponse.getAddress1());
-        assertEquals("ATTENTION - MULLER", getPersonDetailsResponse.getAddress2());
-        assertEquals("VICTORIA", getPersonDetailsResponse.getCity());
-        assertEquals("BC", getPersonDetailsResponse.getProvince());
-        assertEquals("X5H2T8", getPersonDetailsResponse.getPostalCode());
-             
-        assertEquals("121 Main ST", getPersonDetailsResponse.getMailingAddress1());
-        assertEquals("Churchil Road", getPersonDetailsResponse.getMailingAddress2());
-        assertEquals("BAYSIDE", getPersonDetailsResponse.getMailingAddressCity());
-        assertEquals("BC", getPersonDetailsResponse.getMailingAddressProvince());
-        assertEquals("V8V8V8", getPersonDetailsResponse.getMailingAddressPostalCode());
-      			
+    	assertEquals("9862716574",  getPersonDetailsResponse.getPhn());
+        // This is the documented name
+    	assertEquals("Robert", getPersonDetailsResponse.getGivenName());
+    	assertEquals("Smith", getPersonDetailsResponse.getSurname());
+    	assertEquals("M", getPersonDetailsResponse.getGender());
+		
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
         assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
@@ -318,46 +315,6 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertEquals(new BigDecimal(31), nameSearchResponse.getCandidates().get(0).getScore());
         assertEquals(new BigDecimal(-53), nameSearchResponse.getCandidates().get(1).getScore());
         assertEquals(new BigDecimal(-56), nameSearchResponse.getCandidates().get(2).getScore());
-    			
-		//Check the client request is sent as expected
-        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
-        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
-        assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
-        assertEquals("/", recordedRequest.getPath());
-        
-        assertTransactionCreated(TransactionType.NAME_SEARCH);
-        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 0);
-        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 3);
-    }
-    
-    @Test
-    void testGetNameSearch_physicalAndMailingAddress() throws Exception {    	
-        
-        mockBackEnd.enqueue(new MockResponse()
-        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/FindCandidatesResponse_Multiples.xml"))
-        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
-        
-        NameSearchRequest nameSearchRequest = new NameSearchRequest();
-        nameSearchRequest.setGivenName("TestGiven");
-        nameSearchRequest.setSurname("TestSurname");
-        nameSearchRequest.setGender("M");
-        nameSearchRequest.setDateOfBirth(LocalDate.of(1973, 8, 11));
-        	       
-        ResponseEntity<NameSearchResponse> response = enrollmentController.getNameSearch(nameSearchRequest, createHttpServletRequest());
-        NameSearchResponse nameSearchResponse = response.getBody();
-        assertEquals(3, nameSearchResponse.getCandidates().size());
-        
-        //Check if physical address is populated correctly
-        assertNull(nameSearchResponse.getCandidates().get(0).getMailingAddress1());       
-        assertEquals("666 YELLOW BRICK RD", nameSearchResponse.getCandidates().get(0).getAddress1());
-        
-        //Check mailing address not populated if same as physical address
-        assertEquals("123 FRONT ST", nameSearchResponse.getCandidates().get(1).getAddress1());
-        assertNull(nameSearchResponse.getCandidates().get(1).getMailingAddress1());
-        
-        //Check mailing address populated correctly if there and different than physical address
-        assertNull(nameSearchResponse.getCandidates().get(2).getAddress1());
-        assertEquals("PO BOX 5", nameSearchResponse.getCandidates().get(2).getMailingAddress1());
     			
 		//Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
@@ -455,6 +412,42 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertTransactionCreated(TransactionType.NAME_SEARCH);
         assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 0);
         assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 0);
+    }
+    
+    /**
+     * Tests that the documentedName gets used instead of the declaredName when available.
+     * @throws IOException 
+     */
+    @Test
+    void testGetNameSearch_documentedName() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/FindCandidatesResponse_DocumentedName.xml"))
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+        
+        NameSearchRequest nameSearchRequest = new NameSearchRequest();
+        nameSearchRequest.setGender("M");
+        nameSearchRequest.setDateOfBirth(LocalDate.of(1973, 8, 11));
+        	       
+        ResponseEntity<NameSearchResponse> response = enrollmentController.getNameSearch(nameSearchRequest, createHttpServletRequest());
+        NameSearchResponse nameSearchResponse = response.getBody();
+        assertEquals(StatusEnum.SUCCESS, nameSearchResponse.getStatus());
+        assertEquals(FC_SUCCESS_MESSAGE, nameSearchResponse.getMessage());
+        assertEquals(1, nameSearchResponse.getCandidates().size());
+        
+        NameSearchResult nameSearchResult = nameSearchResponse.getCandidates().get(0);
+        // This is the documented name
+        assertEquals("PURPLE DINO", nameSearchResult.getGivenName());
+        assertEquals("BARNEY", nameSearchResult.getSurname());
+    			
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.NAME_SEARCH);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 0);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     
     /**
