@@ -11,6 +11,7 @@ import ca.bc.gov.hlth.hnweb.model.v3.Address;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.Name;
+import ca.bc.gov.hlth.hnweb.model.v3.Person;
 import ca.bc.gov.hlth.hnweb.util.V3MessageUtil;
 
 /**
@@ -98,23 +99,28 @@ public class GetDemographicsConverter {
 
 	private void buildPersonDetails(GetDemographicsResponse demographicsResponse,
 			GetPersonDetailsResponse personDetailsResponse) {
+		Person person = demographicsResponse.getPerson();
 		// "Documented" should always be shown over a "Declared" name.
-		Name name = demographicsResponse.getPerson().getDocumentedName();
+		Name name = person.getDocumentedName();
 		if (name == null) {
-			name = demographicsResponse.getPerson().getDeclaredName();
+			name = person.getDeclaredName();
 		}
 
 		if (name != null) {
-			personDetailsResponse.setPhn(demographicsResponse.getPerson().getPhn());
+			personDetailsResponse.setPhn(person.getPhn());
 			personDetailsResponse.setGivenName(name.getFirstGivenName());
 			personDetailsResponse.setSecondName(name.getSecondGivenName());
 			personDetailsResponse.setSurname(name.getSurname());
 
-			String birthDate = V3MessageUtil.convertDateToString(demographicsResponse.getPerson().getBirthDate());
-			String deathDate = demographicsResponse.getPerson().getDeathDate() != null ? V3MessageUtil.convertDateToString(demographicsResponse.getPerson().getDeathDate()) :"N/A";
-			personDetailsResponse.setDateOfBirth(birthDate);			
+			if (person.getBirthDate() != null) {
+				String birthDate = V3MessageUtil.convertDateToString(person.getBirthDate());
+				personDetailsResponse.setDateOfBirth(birthDate);
+			}
+			
+			String deathDate = person.getDeathDate() != null ? V3MessageUtil.convertDateToString(person.getDeathDate()) :"N/A";			
 			personDetailsResponse.setDateOfDeath(deathDate);
-			personDetailsResponse.setGender(demographicsResponse.getPerson().getGender());
+			
+			personDetailsResponse.setGender(person.getGender());
 		}
 		
 		Address physicalAddress = demographicsResponse.getPerson().getPhysicalAddress();

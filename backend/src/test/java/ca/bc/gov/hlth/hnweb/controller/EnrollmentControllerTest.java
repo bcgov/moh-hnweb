@@ -243,6 +243,41 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
     
+    /**
+     * Tests that a masked DOB doesn't cause an exception
+     * @throws Exception 
+     */
+    @Test
+    void testGetDemographicsDetails_maskedBirthDate() throws Exception {    	
+        
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_MaskedBirthDate.xml"))
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+
+        GetPersonDetailsRequest getPersonQuery = new GetPersonDetailsRequest();
+        getPersonQuery.setPhn("9862716574");
+        
+        ResponseEntity<GetPersonDetailsResponse> response = enrollmentController.getPersonDetails(getPersonQuery, createHttpServletRequest());
+        GetPersonDetailsResponse getPersonDetailsResponse = response.getBody();
+    	assertEquals("9862716574",  getPersonDetailsResponse.getPhn());
+ 
+        // This is the documented name
+    	assertEquals("Robert", getPersonDetailsResponse.getGivenName());
+    	assertEquals("Smith", getPersonDetailsResponse.getSurname());
+    	assertEquals("M", getPersonDetailsResponse.getGender());
+    	assertNull(getPersonDetailsResponse.getDateOfBirth());
+		
+		//Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.GET_PERSON_DETAILS);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 1);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+    }
+    
     @Test
     void testGetDemographicsDetails_physicalAndMailingAddress() throws Exception {    	
         
@@ -514,6 +549,42 @@ public class EnrollmentControllerTest extends BaseControllerTest {
         // This is the documented name
         assertEquals("PURPLE DINO", nameSearchResult.getGivenName());
         assertEquals("BARNEY", nameSearchResult.getSurname());
+    			
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+        assertEquals(MediaType.TEXT_XML.toString(), recordedRequest.getHeader(CONTENT_TYPE));
+        assertEquals("/", recordedRequest.getPath());
+        
+        assertTransactionCreated(TransactionType.NAME_SEARCH);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 0);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
+    }
+    
+    /**
+     * Tests that a masked DOB doesn't cause an exception
+     * @throws Exception 
+     */
+    @Test
+    void testGetNameSearch_maskedDateOfBirth() throws Exception {
+        mockBackEnd.enqueue(new MockResponse()
+        		.setBody(TestUtil.convertXMLFileToString("src/test/resources/FindCandidatesResponse_MaskedBirthDate.xml"))
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+        
+        NameSearchRequest nameSearchRequest = new NameSearchRequest();
+        nameSearchRequest.setGender("M");
+        nameSearchRequest.setDateOfBirth(LocalDate.of(1973, 8, 11));
+        	       
+        ResponseEntity<NameSearchResponse> response = enrollmentController.getNameSearch(nameSearchRequest, createHttpServletRequest());
+        NameSearchResponse nameSearchResponse = response.getBody();
+        assertEquals(StatusEnum.SUCCESS, nameSearchResponse.getStatus());
+        assertEquals(FC_SUCCESS_MESSAGE, nameSearchResponse.getMessage());
+        assertEquals(1, nameSearchResponse.getCandidates().size());
+        
+        NameSearchResult nameSearchResult = nameSearchResponse.getCandidates().get(0);
+        assertEquals("PURPLE DINO", nameSearchResult.getGivenName());
+        assertEquals("BARNEY", nameSearchResult.getSurname());
+        assertNull(nameSearchResult.getDateOfBirth());
     			
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        

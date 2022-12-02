@@ -19,6 +19,7 @@ import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesResult;
 import ca.bc.gov.hlth.hnweb.model.v3.Name;
+import ca.bc.gov.hlth.hnweb.model.v3.Person;
 import ca.bc.gov.hlth.hnweb.util.V3MessageUtil;
 
 public class FindCandidatesConverter {
@@ -108,15 +109,17 @@ public class FindCandidatesConverter {
 		}
 
 		candidatesResult.forEach(ns -> {
+			Person person = ns.getPerson();
+			
 			NameSearchResult nameSearchResult = new NameSearchResult();
-			nameSearchResult.setPhn(ns.getPerson().getPhn());
+			nameSearchResult.setPhn(person.getPhn());
 			nameSearchResult.setIdentifierTypeCode(IDENTIFIER_TYPE_CODE);
 			nameSearchResult.setAssigningAuthority(ASSIGNING_AUTHORITY);
 
 			// "Documented" should always be shown over a "Declared" name.
-			Name name = ns.getPerson().getDocumentedName();
+			Name name = person.getDocumentedName();
 			if (name == null) {
-				name = ns.getPerson().getDeclaredName();
+				name = person.getDeclaredName();
 			}
 
 			if (name != null) {
@@ -125,9 +128,12 @@ public class FindCandidatesConverter {
 				nameSearchResult.setSurname(Optional.ofNullable(name.getSurname()).orElse(""));
 				nameSearchResult.setNameTypeCode(Optional.ofNullable(name.getType()).orElse(""));
 
-				String birthDate = V3MessageUtil.convertDateToString(ns.getPerson().getBirthDate());
-				nameSearchResult.setDateOfBirth(birthDate);
-				nameSearchResult.setGender(ns.getPerson().getGender());
+				if (person.getBirthDate() != null) {
+					String birthDate = V3MessageUtil.convertDateToString(person.getBirthDate());
+					nameSearchResult.setDateOfBirth(birthDate);					
+				}
+
+				nameSearchResult.setGender(person.getGender());
 
 				Address physicalAddress = ns.getPerson().getPhysicalAddress();
 				if (physicalAddress != null) {
