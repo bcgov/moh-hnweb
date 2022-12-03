@@ -1,4 +1,13 @@
 <template>
+  <AppHelp>
+    <p>Use this screen to renew a cancelled group member on your MSP group account. Dependents that were cancelled on the same date as the group member will automatically be renewed along with the group member.</p>
+    <p>
+      NOTE: this allows you to renew without having to enter the dependents' PHNs and the address. Please use the Contract Inquiry screen after you have renewed the coverage to make sure that the address on file is current. If it is not, you will need to submit an Update Group Members Contract
+      Address.
+    </p>
+    <p>If you do not know the PHN, the PHN Lookup can be used to find the group member's PHN from their MSP Contract Number.</p>
+    <p>If the transaction was successful, the group members PHN is displayed. This PHN may be used in the Contract Inquiry screen to verify that the coverage has been correctly renewed, and to check if the address is current.</p>
+  </AppHelp>
   <div id="renewCancelledGroupCoverage" v-if="inputFormActive">
     <form @submit.prevent="submitForm">
       <AppRow>
@@ -31,6 +40,7 @@
 <script>
 import MaintenanceService from '../../../services/MaintenanceService'
 import useVuelidate from '@vuelidate/core'
+import AppHelp from '../../../components/ui/AppHelp.vue'
 import { validatePHN, validateGroupNumber, VALIDATE_PHN_MESSAGE, VALIDATE_GROUP_NUMBER_MESSAGE } from '../../../util/validators'
 import { required, helpers } from '@vuelidate/validators'
 import { API_DATE_FORMAT } from '../../../util/constants'
@@ -40,7 +50,9 @@ import { handleServiceError } from '../../../util/utils'
 
 export default {
   name: 'RenewCancelledGroupCoverage',
-
+  components: {
+    AppHelp,
+  },
   setup() {
     return {
       alertStore: useAlertStore(),
