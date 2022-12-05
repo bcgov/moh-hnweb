@@ -6,8 +6,8 @@ import { regularAccUser } from '../../roles/roles'
 const ERROR_MESSAGE = 'Please correct errors before submitting'
 const INVALID_ADDRESS_LINE1_MESSAGE = 'Address Line 1 is invalid'
 const INVALID_ADDRESS_LINE2_MESSAGE = 'Address Line 2 is invalid'
-const INVALID_ADDRESS_LINE3_MESSAGE = 'City is invalid'
-const INVALID_ADDRESS_LINE4_MESSAGE = 'Province is invalid'
+const INVALID_CITY_MESSAGE = 'City is invalid'
+const INVALID_PROVINCE_MESSAGE = 'Province is invalid'
 const CITY_REQUIRED_MESSAGE = 'City is required'
 const PROVINCE_REQUIRED_MESSAGE = 'Province is required'
 const MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE = 'The maximum length allowed is 25'
@@ -91,8 +91,8 @@ test('Check properly filled form passes validation', async (t) => {
     .typeText(UpdateContractAddress.phnInput, '9882807277')
     .typeText(UpdateContractAddress.telephoneInput, '7807777777')
     .typeText(UpdateContractAddress.address1Input, 'Test 111 ST')
-    .typeText(UpdateContractAddress.address3Input, 'Victoria')
-    .typeText(UpdateContractAddress.address4Input, 'British Columbia')
+    .typeText(UpdateContractAddress.homeAddressCityInput, 'Victoria')
+    .typeText(UpdateContractAddress.homeAddressProvinceInput, 'British Columbia')
     .typeText(UpdateContractAddress.postalCodeInput, 'V8V8V8')
 
     // When I click the submit button
@@ -110,8 +110,8 @@ test('Check PHN, Group Number format validation', async (t) => {
     .typeText(UpdateContractAddress.phnInput, '9002807277')
     .typeText(UpdateContractAddress.telephoneInput, '7807777777')
     .typeText(UpdateContractAddress.address1Input, 'Test 111 ST')
-    .typeText(UpdateContractAddress.address3Input, 'Victoria')
-    .typeText(UpdateContractAddress.address4Input, 'British Columbia')
+    .typeText(UpdateContractAddress.homeAddressCityInput, 'Victoria')
+    .typeText(UpdateContractAddress.homeAddressProvinceInput, 'British Columbia')
     .typeText(UpdateContractAddress.postalCodeInput, 'V8V8V8')
 
     // When I click the submit button
@@ -132,13 +132,13 @@ test('Check invalid character validation', async (t) => {
     .typeText(UpdateContractAddress.telephoneInput, '780923t#11')
     .typeText(UpdateContractAddress.address1Input, 'Test 111 ST!@#$%')
     .typeText(UpdateContractAddress.address2Input, 'Test 111 ST()_+{}')
-    .typeText(UpdateContractAddress.address3Input, '!@#!@#')
-    .typeText(UpdateContractAddress.address4Input, '{}{}{}}')
+    .typeText(UpdateContractAddress.homeAddressCityInput, '!@#!@#')
+    .typeText(UpdateContractAddress.homeAddressProvinceInput, '{}{}{}}')
     .typeText(UpdateContractAddress.postalCodeInput, '#$%@#')
     .typeText(UpdateContractAddress.mailingAddress1Input, 'Test 111 ST!@#$%')
     .typeText(UpdateContractAddress.mailingAddress2Input, 'Test 111 ST()_+{}')
-    .typeText(UpdateContractAddress.mailingAddress3Input, '!@#!@#')
-    .typeText(UpdateContractAddress.mailingAddress4Input, '{}{}{}}')
+    .typeText(UpdateContractAddress.mailingAddressCityInput, '!@#!@#')
+    .typeText(UpdateContractAddress.mailingAddressProvinceInput, '{}{}{}}')
     .typeText(UpdateContractAddress.mailingPostalCodeInput, '@#$%^&')
     // When I click the submit button
     .click(UpdateContractAddress.submitButton)
@@ -158,13 +158,13 @@ test('Check invalid character validation', async (t) => {
     .expect(UpdateContractAddress.errorText.nth(6).textContent)
     .contains(INVALID_ADDRESS_LINE2_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(7).textContent)
-    .contains(INVALID_ADDRESS_LINE3_MESSAGE)
+    .contains(INVALID_CITY_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(8).textContent)
-    .contains(INVALID_ADDRESS_LINE4_MESSAGE)
+    .contains(INVALID_PROVINCE_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(9).textContent)
-    .contains(INVALID_ADDRESS_LINE3_MESSAGE)
+    .contains(INVALID_CITY_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(10).textContent)
-    .contains(INVALID_ADDRESS_LINE4_MESSAGE)
+    .contains(INVALID_PROVINCE_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(11).textContent)
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(12).textContent)
@@ -180,13 +180,13 @@ test('Check invalid character validation', async (t) => {
     .typeText(UpdateContractAddress.telephoneInput, '7809231111111')
     .typeText(UpdateContractAddress.address1Input, 'Address Line 1 is tooooooooooooooooooooooooooooooooo long')
     .typeText(UpdateContractAddress.address2Input, 'Address Line 2 is tooooooooooooooooooooooooooooooooo long')
-    .typeText(UpdateContractAddress.address3Input, 'Address Line 3 is tooooooooooooooooooooooooooooooooo long')
-    .typeText(UpdateContractAddress.address4Input, 'Address Line 4 is tooooooooooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.homeAddressCityInput, 'Address Line 3 is tooooooooooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.homeAddressProvinceInput, 'Address Line 4 is tooooooooooooooooooooooooooooooooo long')
     .typeText(UpdateContractAddress.postalCodeInput, 'V8V 8V8')
     .typeText(UpdateContractAddress.mailingAddress1Input, 'Mailing Address Line 1 is tooooooooooooooooooooooooooooooooo long')
     .typeText(UpdateContractAddress.mailingAddress2Input, 'Mailing Address Line 2 is tooooooooooooooooooooooooooooooooo long')
-    .typeText(UpdateContractAddress.mailingAddress3Input, 'Mailing Address Line 3 is tooooooooooooooooooooooooooooooooo long')
-    .typeText(UpdateContractAddress.mailingAddress4Input, 'Mailing Address Line 4 is tooooooooooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.mailingAddressCityInput, 'Mailing Address Line 3 is tooooooooooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.mailingAddressProvinceInput, 'Mailing Address Line 4 is tooooooooooooooooooooooooooooooooo long')
     .typeText(UpdateContractAddress.mailingPostalCodeInput, 'T6T 6T6')
     // When I click the submit button
     .click(UpdateContractAddress.submitButton)
@@ -227,13 +227,13 @@ test('Check clear button clears the form', async (t) => {
 
     .typeText(UpdateContractAddress.address1Input, 'Test 111 ST')
     .typeText(UpdateContractAddress.address2Input, 'Test 111 ST')
-    .typeText(UpdateContractAddress.address3Input, 'Test 111 ST')
-    .typeText(UpdateContractAddress.address4Input, 'VANCOUVER BC')
+    .typeText(UpdateContractAddress.homeAddressCityInput, 'Test 111 ST')
+    .typeText(UpdateContractAddress.homeAddressProvinceInput, 'VANCOUVER BC')
     .typeText(UpdateContractAddress.postalCodeInput, 'V8V8V8')
     .typeText(UpdateContractAddress.mailingAddress1Input, 'Test 222 ST')
     .typeText(UpdateContractAddress.mailingAddress2Input, 'Test 222 ST')
-    .typeText(UpdateContractAddress.mailingAddress3Input, 'Test 222 ST')
-    .typeText(UpdateContractAddress.mailingAddress4Input, 'EDMONTON ALBERTA')
+    .typeText(UpdateContractAddress.mailingAddressCityInput, 'Test 222 ST')
+    .typeText(UpdateContractAddress.mailingAddressProvinceInput, 'EDMONTON ALBERTA')
     .typeText(UpdateContractAddress.mailingPostalCodeInput, 'T6T6T6')
 
     // When I click the clear button
@@ -247,9 +247,9 @@ test('Check clear button clears the form', async (t) => {
     .eql('')
     .expect(UpdateContractAddress.address2Input.value)
     .eql('')
-    .expect(UpdateContractAddress.address3Input.value)
+    .expect(UpdateContractAddress.homeAddressCityInput.value)
     .eql('')
-    .expect(UpdateContractAddress.address4Input.value)
+    .expect(UpdateContractAddress.homeAddressProvinceInput.value)
     .eql('')
     .expect(UpdateContractAddress.postalCodeInput.value)
     .eql('')
@@ -257,9 +257,9 @@ test('Check clear button clears the form', async (t) => {
     .eql('')
     .expect(UpdateContractAddress.mailingAddress2Input.value)
     .eql('')
-    .expect(UpdateContractAddress.mailingAddress3Input.value)
+    .expect(UpdateContractAddress.mailingAddressCityInput.value)
     .eql('')
-    .expect(UpdateContractAddress.mailingAddress4Input.value)
+    .expect(UpdateContractAddress.mailingAddressProvinceInput.value)
     .eql('')
     .expect(UpdateContractAddress.mailingPostalCodeInput.value)
     .eql('')

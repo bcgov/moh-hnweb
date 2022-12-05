@@ -90,11 +90,12 @@
   </div>
   <br />
   <div id="confirmation" v-if="updateOk">
-    <h2 class="result-text">Transaction Completed for:</h2>
-    <div>
-      <div><span class="result-text"> Group Number: </span>{{ groupNumber }}</div>
-      <div><span class="result-text">PHN: </span>{{ result?.phn }}</div>
-    </div>
+    <p><label>Transaction completed for:</label></p>
+    <ul>
+      <li><label>Group Number: </label>{{ groupNumber }}</li>
+      <li><label>PHN: </label>{{ result?.phn }}</li>
+    </ul>
+    <br />
     <AppButton @click="resetForm" mode="primary" type="button">Update Another Contract Address</AppButton>
   </div>
 </template>
@@ -110,7 +111,7 @@ import {
   validateMailingPostalCode,
   validateAddress,
   validateOptionalAddress,
-  validateMailingAddress,
+  validateMailingAddressForMSPContracts,
   validateTelephone,
   VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE,
   VALIDATE_ADDRESS_LINE1_MESSAGE,
@@ -291,7 +292,7 @@ export default {
       },
       mailingAddress: {
         addressLine1: {
-          required: helpers.withMessage(VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE, requiredIf(validateMailingAddress)),
+          required: helpers.withMessage(VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForMSPContracts)),
           maxLength: maxLength(25),
           validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateOptionalAddress),
         },
@@ -303,12 +304,12 @@ export default {
           validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
         },
         city: {
-          required: helpers.withMessage(VALIDATE_CITY_REQUIRED_MESSAGE, requiredIf(validateMailingAddress)),
+          required: helpers.withMessage(VALIDATE_CITY_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForMSPContracts)),
           maxLength: maxLength(25),
           validateAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateAddress),
         },
         province: {
-          required: helpers.withMessage(VALIDATE_PROVINCE_REQUIRED_MESSAGE, requiredIf(validateMailingAddress)),
+          required: helpers.withMessage(VALIDATE_PROVINCE_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForMSPContracts)),
           maxLength: maxLength(25),
           validateAddress: helpers.withMessage(VALIDATE_PROVINCE_MESSAGE, validateAddress),
         },
@@ -317,9 +318,3 @@ export default {
   },
 }
 </script>
-<style>
-.result-text {
-  font-weight: bold;
-  color: #003366;
-}
-</style>

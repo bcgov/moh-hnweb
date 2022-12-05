@@ -185,9 +185,15 @@ function validateSpecialCharactersForAddress(input, length) {
  * Used to validate that Mailing Address line 1 must be completed if any other Mailing Address(Line 2, Line 3, Line 4, PostalCode) is complete
  */
 export function validateMailingAddress() {
-  return this.mailingAddress.addressLine2 !== '' || this.mailingAddress.city !== '' || this.mailingAddress.province !== '' || this.mailingAddress.postalCode !== ''
+  return this.mailingAddress.addressLine2 !== '' || this.mailingAddress.addressLine3 !== '' || this.mailingAddress.addressLine4 !== '' || this.mailingAddress.postalCode !== ''
 }
 
+/**
+ * Used to validate that Mailing Address line 1 must be completed if any other Mailing Address(Line 2, city, province, PostalCode) is complete
+ */
+export function validateMailingAddressForMSPContracts() {
+  return this.mailingAddress.addressLine2 !== '' || this.mailingAddress.city !== '' || this.mailingAddress.province !== '' || this.mailingAddress.postalCode !== ''
+}
 /**
  * Used to validate that Mailing Address line 1 must be completed if any other Mailing Address(Line 2, Line 3, PostalCode) is complete
  */
