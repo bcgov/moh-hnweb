@@ -8,13 +8,13 @@ class UpdateContractAddress {
 
     this.address1Input = Selector('#addressLine1')
     this.address2Input = Selector('#addressLine2')
-    this.address3Input = Selector('#addressLine3')
-    this.address4Input = Selector('#addressLine4')
+    this.address3Input = Selector('#city')
+    this.address4Input = Selector('#province')
     this.postalCodeInput = Selector('#postalCode')
     this.mailingAddress1Input = Selector('#mailingAddress1')
     this.mailingAddress2Input = Selector('#mailingAddress2')
-    this.mailingAddress3Input = Selector('#mailingAddress3')
-    this.mailingAddress4Input = Selector('#mailingAddress4')
+    this.mailingAddress3Input = Selector('#mailingCity')
+    this.mailingAddress4Input = Selector('#mailingProvince')
     this.mailingPostalCodeInput = Selector('#mailingPostalCode')
 
     this.errorText = Selector('div').withAttribute('class', 'error-text')
