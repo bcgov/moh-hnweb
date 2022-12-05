@@ -157,59 +157,59 @@ public class NameSearchResult {
 		this.nameTypeCode = currentRecord;
 	}
 
-	protected String getMailingAddress1() {
+	public String getMailingAddress1() {
 		return mailingAddress1;
 	}
 
-	protected void setMailingAddress1(String mailingAddress1) {
+	public void setMailingAddress1(String mailingAddress1) {
 		this.mailingAddress1 = mailingAddress1;
 	}
 
-	protected String getMailingAddress2() {
+	public String getMailingAddress2() {
 		return mailingAddress2;
 	}
 
-	protected void setMailingAddress2(String mailingAddress2) {
+	public void setMailingAddress2(String mailingAddress2) {
 		this.mailingAddress2 = mailingAddress2;
 	}
 
-	protected String getMailingAddress3() {
+	public String getMailingAddress3() {
 		return mailingAddress3;
 	}
 
-	protected void setMailingAddress3(String mailingAddress3) {
+	public void setMailingAddress3(String mailingAddress3) {
 		this.mailingAddress3 = mailingAddress3;
 	}
 
-	protected String getMailingAddressCity() {
+	public String getMailingAddressCity() {
 		return mailingAddressCity;
 	}
 
-	protected void setMailingAddressCity(String mailingAddressCity) {
+	public void setMailingAddressCity(String mailingAddressCity) {
 		this.mailingAddressCity = mailingAddressCity;
 	}
 
-	protected String getMailingAddressProvince() {
+	public String getMailingAddressProvince() {
 		return mailingAddressProvince;
 	}
 
-	protected void setMailingAddressProvince(String mailingAddressProvince) {
+	public void setMailingAddressProvince(String mailingAddressProvince) {
 		this.mailingAddressProvince = mailingAddressProvince;
 	}
 
-	protected String getMailingAddressCountry() {
+	public String getMailingAddressCountry() {
 		return mailingAddressCountry;
 	}
 
-	protected void setMailingAddressCountry(String mailingAddressCountry) {
+	public void setMailingAddressCountry(String mailingAddressCountry) {
 		this.mailingAddressCountry = mailingAddressCountry;
 	}
 
-	protected String getMailingAddressPostalCode() {
+	public String getMailingAddressPostalCode() {
 		return mailingAddressPostalCode;
 	}
 
-	protected void setMailingAddressPostalCode(String mailingAddressPostalCode) {
+	public void setMailingAddressPostalCode(String mailingAddressPostalCode) {
 		this.mailingAddressPostalCode = mailingAddressPostalCode;
 	}
 

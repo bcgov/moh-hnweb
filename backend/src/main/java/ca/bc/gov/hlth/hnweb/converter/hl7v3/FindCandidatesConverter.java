@@ -19,6 +19,7 @@ import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesResponse;
 import ca.bc.gov.hlth.hnweb.model.v3.FindCandidatesResult;
 import ca.bc.gov.hlth.hnweb.model.v3.Name;
+import ca.bc.gov.hlth.hnweb.model.v3.Person;
 import ca.bc.gov.hlth.hnweb.util.V3MessageUtil;
 
 public class FindCandidatesConverter {
@@ -108,44 +109,51 @@ public class FindCandidatesConverter {
 		}
 
 		candidatesResult.forEach(ns -> {
+			Person person = ns.getPerson();
+			
 			NameSearchResult nameSearchResult = new NameSearchResult();
-			nameSearchResult.setPhn(ns.getPerson().getPhn());
+			nameSearchResult.setPhn(person.getPhn());
 			nameSearchResult.setIdentifierTypeCode(IDENTIFIER_TYPE_CODE);
 			nameSearchResult.setAssigningAuthority(ASSIGNING_AUTHORITY);
 
-			Name nameObj = ns.getPerson().getDeclaredName();
-			if (nameObj == null) {
-				nameObj = ns.getPerson().getDocumentedName();
+			// "Documented" should always be shown over a "Declared" name.
+			Name name = person.getDocumentedName();
+			if (name == null) {
+				name = person.getDeclaredName();
 			}
 
-			if (nameObj != null) {
-				nameSearchResult.setGivenName(Optional.ofNullable(nameObj.getFirstGivenName()).orElse(""));
-				nameSearchResult.setSecondName(Optional.ofNullable(nameObj.getSecondGivenName()).orElse(""));
-				nameSearchResult.setSurname(Optional.ofNullable(nameObj.getSurname()).orElse(""));
-				nameSearchResult.setNameTypeCode(Optional.ofNullable(nameObj.getType()).orElse(""));
+			if (name != null) {
+				nameSearchResult.setGivenName(Optional.ofNullable(name.getFirstGivenName()).orElse(""));
+				nameSearchResult.setSecondName(Optional.ofNullable(name.getSecondGivenName()).orElse(""));
+				nameSearchResult.setSurname(Optional.ofNullable(name.getSurname()).orElse(""));
+				nameSearchResult.setNameTypeCode(Optional.ofNullable(name.getType()).orElse(""));
 
-				String birthDate = V3MessageUtil.convertDateToString(ns.getPerson().getBirthDate());
-				nameSearchResult.setDateOfBirth(birthDate);
-				nameSearchResult.setGender(ns.getPerson().getGender());
+				if (person.getBirthDate() != null) {
+					String birthDate = V3MessageUtil.convertDateToString(person.getBirthDate());
+					nameSearchResult.setDateOfBirth(birthDate);					
+				}
 
-				Address address = ns.getPerson().getPhysicalAddress();
-				if (address != null) {
-					nameSearchResult.setAddress1(ns.getPerson().getPhysicalAddress().getAddressLine1());
-					nameSearchResult.setAddress2(ns.getPerson().getPhysicalAddress().getAddressLine2());
-					nameSearchResult.setAddress3(ns.getPerson().getPhysicalAddress().getAddressLine3());
-					nameSearchResult.setCity(ns.getPerson().getPhysicalAddress().getCity());
-					nameSearchResult.setProvince(ns.getPerson().getPhysicalAddress().getProvince());
-					nameSearchResult.setPostalCode(ns.getPerson().getPhysicalAddress().getPostalCode());
+				nameSearchResult.setGender(person.getGender());
+
+				Address physicalAddress = ns.getPerson().getPhysicalAddress();
+				if (physicalAddress != null) {
+					nameSearchResult.setAddress1(physicalAddress.getAddressLine1());
+					nameSearchResult.setAddress2(physicalAddress.getAddressLine2());
+					nameSearchResult.setAddress3(physicalAddress.getAddressLine3());
+					nameSearchResult.setCity(physicalAddress.getCity());
+					nameSearchResult.setProvince(physicalAddress.getProvince());
+					nameSearchResult.setPostalCode(physicalAddress.getPostalCode());
 				}
 
 				Address mailingAddress = ns.getPerson().getMailingAddress();
-				if (mailingAddress != null) {
-					nameSearchResult.setAddress1(ns.getPerson().getMailingAddress().getAddressLine1());
-					nameSearchResult.setAddress2(ns.getPerson().getMailingAddress().getAddressLine2());
-					nameSearchResult.setAddress3(ns.getPerson().getMailingAddress().getAddressLine3());
-					nameSearchResult.setCity(ns.getPerson().getMailingAddress().getCity());
-					nameSearchResult.setProvince(ns.getPerson().getMailingAddress().getProvince());
-					nameSearchResult.setPostalCode(ns.getPerson().getMailingAddress().getPostalCode());
+				// Populate mailingAddress if different than physical address
+				if (mailingAddress != null && !mailingAddress.equals(physicalAddress)) {
+					nameSearchResult.setMailingAddress1(mailingAddress.getAddressLine1());
+					nameSearchResult.setMailingAddress2(mailingAddress.getAddressLine2());
+					nameSearchResult.setMailingAddress3(mailingAddress.getAddressLine3());
+					nameSearchResult.setMailingAddressCity(mailingAddress.getCity());
+					nameSearchResult.setMailingAddressProvince(mailingAddress.getProvince());
+					nameSearchResult.setMailingAddressPostalCode(mailingAddress.getPostalCode());
 				}
 
 				nameSearchResult.setScore(ns.getScore());
