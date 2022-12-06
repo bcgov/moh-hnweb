@@ -86,6 +86,63 @@ test('Check invalid formats validation', async (t) => {
     .contains(ERROR_MESSAGE)
 })
 
+test('Check max length validation', async (t) => {
+  await t
+    // Given I enter Group Number, Group Member's PHN, Dependent's PHN with more than allowed length
+    .typeText(AddDependentPage.groupNumberInput, '62431099')
+    .typeText(AddDependentPage.phnInput, '93971055755')
+    .typeText(AddDependentPage.dependentPhnInput, '93971055756')
+    // When I click the submit button
+    .click(AddDependentPage.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the Group Number, Group Member's PHN, Dependent's PHN
+    .expect(AddDependentPage.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(AddDependentPage.errorText.nth(1).textContent)
+    .contains(INVALID_GROUP_MEMBER_PHN_ERROR_MESSAGE)
+    .expect(AddDependentPage.errorText.nth(2).textContent)
+    .contains(INVALID_DEPENDENT_PHN_ERROR_MESSAGE)
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+})
+
+test('Check alphanumeric validation', async (t) => {
+  await t
+    // Given I enter Group Number, Group Member's PHN, Dependent's PHN with alphanumeric format
+    .typeText(AddDependentPage.groupNumberInput, '62431AA')
+    .typeText(AddDependentPage.phnInput, '93971055bc')
+    .typeText(AddDependentPage.dependentPhnInput, '93fg105575')
+    // When I click the submit button
+    .click(AddDependentPage.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the Group Number, Group Member's PHN, Dependent's PHN
+    .expect(AddDependentPage.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(AddDependentPage.errorText.nth(1).textContent)
+    .contains(INVALID_GROUP_MEMBER_PHN_ERROR_MESSAGE)
+    .expect(AddDependentPage.errorText.nth(2).textContent)
+    .contains(INVALID_DEPENDENT_PHN_ERROR_MESSAGE)
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+})
+
+test('Check special char validation', async (t) => {
+  await t
+    // Given I enter Group Number, Group Member's PHN, Dependent's PHN with special char
+    .typeText(AddDependentPage.groupNumberInput, '62431AA')
+    .typeText(AddDependentPage.phnInput, '93971055bc')
+    .typeText(AddDependentPage.dependentPhnInput, '93fg105575')
+    // When I click the submit button
+    .click(AddDependentPage.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the Group Number, Group Member's PHN, Dependent's PHN
+    .expect(AddDependentPage.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(AddDependentPage.errorText.nth(1).textContent)
+    .contains(INVALID_GROUP_MEMBER_PHN_ERROR_MESSAGE)
+    .expect(AddDependentPage.errorText.nth(2).textContent)
+    .contains(INVALID_DEPENDENT_PHN_ERROR_MESSAGE)
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+})
+
 test('Check properly filled form passes validation', async (t) => {
   await t
     // Given I have a form filled out with data

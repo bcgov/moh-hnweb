@@ -58,6 +58,54 @@ test('Check invalid phn, groupNumber format validation', async (t) => {
     .contains(INVALID_PHN_ERROR_MESSAGE)
 })
 
+test('Check max length format validation', async (t) => {
+  await t
+    // Given I enter Group Number, Group Member's PHN, Dependent's PHN with more than allowed length
+    .typeText(RenewCancelledCoveragePage.phnInput, '98732516935')
+    .typeText(RenewCancelledCoveragePage.groupNumberInput, '48419044')
+    // When I click the submit button
+    .click(RenewCancelledCoveragePage.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the PHN format
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+    .expect(RenewCancelledCoveragePage.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(RenewCancelledCoveragePage.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+})
+
+test('Check alphanumeric validation', async (t) => {
+  await t
+    // Given a PHN entered with an alphanumeric format
+    .typeText(RenewCancelledCoveragePage.phnInput, '9873251abc')
+    .typeText(RenewCancelledCoveragePage.groupNumberInput, 'XYZ1904')
+    // When I click the submit button
+    .click(RenewCancelledCoveragePage.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the PHN format
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+    .expect(RenewCancelledCoveragePage.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(RenewCancelledCoveragePage.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+})
+
+test('Check special char validation', async (t) => {
+  await t
+    // Given a PHN entered with special chars
+    .typeText(RenewCancelledCoveragePage.phnInput, '9873251#$%')
+    .typeText(RenewCancelledCoveragePage.groupNumberInput, '&*(1904')
+    // When I click the submit button
+    .click(RenewCancelledCoveragePage.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the PHN format
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+    .expect(RenewCancelledCoveragePage.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(RenewCancelledCoveragePage.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+})
+
 test('Check properly filled form passes validation and validate results, invalid coverage effective date', async (t) => {
   await t
     // Given the page is filled out correctly

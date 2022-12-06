@@ -94,10 +94,11 @@ test('Check properly filled form passes validation', async (t) => {
     .contains(SUCCESS_MESSAGE)
 })
 
-test('Check PHN, Group Number format validation', async (t) => {
+test('Check PHN, Group Number, Department format validation', async (t) => {
   await t
     // Given the page is filled out correctly
     .typeText(AddGroupMember.groupNumberInput, '6007109')
+    .typeText(AddGroupMember.departmentNumberInput, 'A1234')
     .click(AddGroupMember.coverageEffectiveDateInput)
     .click(AddGroupMember.divSelectedDate)
     .click(AddGroupMember.phnInput)
