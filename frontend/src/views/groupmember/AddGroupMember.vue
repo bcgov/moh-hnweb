@@ -61,7 +61,7 @@
             <AppInput :e-model="v$.mailingAddress.city" id="mailingAddressCity" label="City" type="text" v-model.trim="mailingAddress.city" />
           </AppCol>
           <AppCol class="col5">
-            <AppInput :e-model="v$.mailingAddress.province" id="mailingAddressProvince" label="Province" type="text" v-model.trim="mailingAddress.province" />
+            <AppInput :e-model="v$.mailingAddress.province" id="mailingAddressProvince" :label="stateAddressField" type="text" v-model.trim="mailingAddress.province" />
           </AppCol>
         </AppRow>
       </AppRow>
@@ -71,12 +71,12 @@
             <AppInput :e-model="v$.homeAddress.postalCode" id="postalCode" label="Postal Code" type="text" v-model.trim="homeAddress.postalCode" />
           </AppCol>
           <AppCol class="col5">
-            <AppSelect id="country" label="Country" v-model="homeAddress.country" :options="countryOptions" />
+            <AppInput :e-model="v$.homeAddress.country" id="country" label="Country" type="text" value="Canada" disabled="disabled" v-model.trim="homeAddress.country" />
           </AppCol>
         </AppRow>
         <AppRow>
           <AppCol class="col5">
-            <AppInput :e-model="v$.mailingAddress.postalCode" id="mailingPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddress.postalCode" />
+            <AppInput :e-model="v$.mailingAddress.postalCode" id="mailingPostalCode" :label="zipAddressField" type="text" v-model.trim="mailingAddress.postalCode" />
           </AppCol>
           <AppCol class="col5">
             <AppSelect id="mailingAddressCountry" label="Country" v-model="mailingAddress.country" :options="countryOptions" />
@@ -209,6 +209,18 @@ export default {
     // Coverage Effective Date Date should be the first day of the month.
     effectiveDateAdjusted() {
       return new Date(this.coverageEffectiveDate.year, this.coverageEffectiveDate.month, 1)
+    },
+    stateAddressField() {
+      if (this.mailingAddress.country === 'US') {
+        return 'State'
+      }
+      return 'Province'
+    },
+    zipAddressField() {
+      if (this.mailingAddress.country === 'US') {
+        return 'ZIP Code'
+      }
+      return 'Postal Code'
     },
   },
   methods: {

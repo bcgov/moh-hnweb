@@ -22,7 +22,6 @@ const CITY_REQUIRED_MESSAGE = 'City is required'
 const PROVINCE_REQUIRED_MESSAGE = 'Province is required'
 const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
 const INVALID_POSTAL_CODE_VALIDATION_MESSAGE = 'Postal Code is invalid'
-//const SUCCESS_MESSAGE = 'RPBS0031 9882807277 PHN IS INELIGIBLE. PLEASE FORWARD SOURCE DOCS TO MSP'
 const SUCCESS_MESSAGE = 'RPBS0065 9882807277 COVERAGE ALREADY EXISTS FOR THE PHN/GROUP NUMBER SPECIFIED'
 const PHONE_NUMBER_VALIDATION_MESSAGE = 'Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
 
