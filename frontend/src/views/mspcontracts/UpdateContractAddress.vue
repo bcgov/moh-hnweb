@@ -55,7 +55,7 @@
               <AppInput :e-model="v$.mailingAddress.city" id="mailingCity" label="City" type="text" v-model.trim="mailingAddress.city" />
             </AppCol>
             <AppCol>
-              <AppInput :e-model="v$.mailingAddress.province" id="mailingProvince" label="Province" type="text" v-model.trim="mailingAddress.province" />
+              <AppInput :e-model="v$.mailingAddress.province" id="mailingProvince" :label="stateAddressField" type="text" v-model.trim="mailingAddress.province" />
             </AppCol>
           </AppRow>
         </AppCol>
@@ -67,14 +67,14 @@
               <AppInput :e-model="v$.homeAddress.postalCode" id="postalCode" label="Postal Code" type="text" v-model.trim="homeAddress.postalCode" />
             </AppCol>
             <AppCol>
-              <AppSelect id="country" label="Country" v-model="homeAddress.country" :options="countryOptions" />
+              <AppInput :e-model="v$.homeAddress.country" id="country" label="Country" type="text" value="Canada" disabled="disabled" v-model.trim="homeAddress.country" />
             </AppCol>
           </AppRow>
         </AppCol>
         <AppCol class="col5"
           ><AppRow>
             <AppCol>
-              <AppInput :e-model="v$.mailingAddress.postalCode" id="mailingPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddress.postalCode" />
+              <AppInput :e-model="v$.mailingAddress.postalCode" id="mailingPostalCode" :label="zipAddressField" type="text" v-model.trim="mailingAddress.postalCode" />
             </AppCol>
             <AppCol>
               <AppSelect id="mailingCountry" label="Country" v-model="mailingAddress.country" :options="countryOptions" />
@@ -175,7 +175,20 @@ export default {
       },
     }
   },
-
+  computed: {
+    stateAddressField() {
+      if (this.mailingAddress.country === 'US') {
+        return 'State'
+      }
+      return 'Province'
+    },
+    zipAddressField() {
+      if (this.mailingAddress.country === 'US') {
+        return 'ZIP Code'
+      }
+      return 'Postal Code'
+    },
+  },
   methods: {
     async submitForm() {
       this.submitting = true
