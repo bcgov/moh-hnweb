@@ -132,7 +132,7 @@ import {
   validatePostalCode,
   validateMailingPostalCode,
   validateAddress,
-  validateMailingAddressForMSPContracts,
+  validateMailingAddressForGroupMember,
   validateOptionalAddress,
   validateDepartmentNumber,
   validateGroupMemberNumber,
@@ -374,7 +374,7 @@ export default {
       },
       mailingAddress: {
         addressLine1: {
-          required: helpers.withMessage(VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForMSPContracts)),
+          required: helpers.withMessage(VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForGroupMember)),
           maxLength: maxLength(25),
           validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateOptionalAddress),
         },
@@ -386,12 +386,12 @@ export default {
           validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
         },
         city: {
-          required: helpers.withMessage(VALIDATE_CITY_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForMSPContracts)),
+          required: helpers.withMessage(VALIDATE_CITY_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForGroupMember)),
           maxLength: maxLength(25),
           validateAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateAddress),
         },
         province: {
-          required: helpers.withMessage(VALIDATE_PROVINCE_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForMSPContracts)),
+          required: helpers.withMessage(VALIDATE_PROVINCE_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForGroupMember)),
           maxLength: maxLength(25),
           validateAddress: helpers.withMessage(VALIDATE_PROVINCE_MESSAGE, validateAddress),
         },
