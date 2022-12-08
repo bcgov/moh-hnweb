@@ -226,14 +226,14 @@ export default {
     this.address3 = this.resident.address3
     this.city = this.resident?.city
     this.province = this.resident?.province
-    this.postalCode = this.resident?.postalCode?.replace(/\s+/, '')
+    this.postalCode = this.homePostalCode
 
     this.mailingAddress1 = this.resident?.mailingAddress1
     this.mailingAddress2 = this.resident?.mailingAddress2
     this.mailingAddress3 = this.resident.mailingAddress3
     this.mailingAddressCity = this.resident?.mailingAddressCity
     this.mailingAddressProvince = this.resident?.mailingAddressProvince
-    this.mailingAddressPostalCode = this.resident?.mailingAddressPostalCode?.replace(/\s+/, '')
+    this.mailingAddressPostalCode = this.mailingPostalCode
   },
   computed: {
     resident() {
@@ -241,6 +241,18 @@ export default {
     },
     fullName() {
       return formatPersonName(this.resident)
+    },
+    homePostalCode() {
+      if (this.resident?.postalCode != undefined) {
+        return this.resident.postalCode.replace(/\s+/, '')
+      }
+    },
+    mailingPostalCode() {
+      if (this.resident?.mailingAddressPostalCode != undefined) {
+        return this.resident.mailingAddressPostalCode.replace(/\s+/, '')
+      }else{
+        
+      }
     },
   },
   props: {
