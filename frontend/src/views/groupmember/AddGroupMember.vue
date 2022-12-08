@@ -131,6 +131,7 @@ import {
   validatePHN,
   validatePostalCode,
   validateMailingPostalCode,
+  validateCityAndProvince,
   validateAddress,
   validateMailingAddressForGroupMember,
   validateOptionalAddress,
@@ -144,6 +145,7 @@ import {
   VALIDATE_DEPARTMENT_NUMBER_MESSAGE,
   VALIDATE_PHN_MESSAGE,
   VALIDATE_POSTAL_CODE_MESSAGE,
+  VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE,
   VALIDATE_TELEPHONE_MESSAGE,
   VALIDATE_CITY_REQUIRED_MESSAGE,
   VALIDATE_CITY_MESSAGE,
@@ -364,12 +366,12 @@ export default {
         city: {
           required,
           maxLength: maxLength(25),
-          validateAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateAddress),
+          validateAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityAndProvince),
         },
         province: {
           required,
           maxLength: maxLength(25),
-          validateAddress: helpers.withMessage(VALIDATE_PROVINCE_MESSAGE, validateAddress),
+          validateAddress: helpers.withMessage(VALIDATE_PROVINCE_MESSAGE, validateCityAndProvince),
         },
       },
       mailingAddress: {
@@ -383,17 +385,18 @@ export default {
           validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateOptionalAddress),
         },
         postalCode: {
+          required: helpers.withMessage(VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForGroupMember)),
           validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
         },
         city: {
           required: helpers.withMessage(VALIDATE_CITY_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForGroupMember)),
           maxLength: maxLength(25),
-          validateAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateAddress),
+          validateAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityAndProvince),
         },
         province: {
           required: helpers.withMessage(VALIDATE_PROVINCE_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForGroupMember)),
           maxLength: maxLength(25),
-          validateAddress: helpers.withMessage(VALIDATE_PROVINCE_MESSAGE, validateAddress),
+          validateAddress: helpers.withMessage(VALIDATE_PROVINCE_MESSAGE, validateCityAndProvince),
         },
       },
       spousePhn: {

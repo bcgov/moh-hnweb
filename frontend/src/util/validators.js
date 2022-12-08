@@ -180,6 +180,22 @@ function validateSpecialCharactersForAddress(input, length) {
   }
   return true
 }
+/**
+ * Validates City / Province for invalid characters
+ */
+export function validateCityAndProvince(cityOrProvince) {
+  if (cityOrProvince === undefined || cityOrProvince === '') {
+    return true
+  }
+  if (cityOrProvince.length > 25) {
+    return true
+  }
+  var validChars = /^[a-zA-Z ]+$/
+  if (validChars.test(cityOrProvince)) {
+    return true
+  }
+  return false
+}
 
 /**
  * Used to validate that Mailing Address line 1 must be completed if any other Mailing Address(Line 2, Line 3, Line 4, PostalCode) is complete
@@ -199,7 +215,7 @@ export function validateMailingAddressForMSPContracts() {
  * Used to validate that Mailing Address line 1 must be completed if any other Mailing Address(Line 2, city, province, PostalCode) is complete
  */
 export function validateMailingAddressForGroupMember() {
-  return this.mailingAddress.addressLine2 !== '' || this.mailingAddress.city !== '' || this.mailingAddress.province !== '' || this.mailingAddress.postalCode !== ''
+  return this.mailingAddress.addressLine1 !== '' || this.mailingAddress.addressLine2 !== '' || this.mailingAddress.city !== '' || this.mailingAddress.province !== '' || this.mailingAddress.postalCode !== ''
 }
 /**
  * Used to validate that Mailing Address line 1 must be completed if any other Mailing Address(Line 2, Line 3, PostalCode) is complete
@@ -320,5 +336,6 @@ export const VALIDATE_GROUP_NUMBER_MESSAGE = 'Group Number is invalid'
 export const VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE = 'Group Member Number is invalid'
 export const VALIDATE_DEPARTMENT_NUMBER_MESSAGE = 'Department Number is invalid'
 export const VALIDATE_POSTAL_CODE_MESSAGE = 'Postal Code is invalid'
+export const VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
 export const VALIDATE_TELEPHONE_MESSAGE = 'Telephone is invalid. Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
 export const VALIDATE_USER_ID_MESSAGE = 'User ID cannot be longer than 100 characters'
