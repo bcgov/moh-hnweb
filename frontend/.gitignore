@@ -13,3 +13,4 @@ dist-ssr
 yarn.lock
 yarn-error.log
 package-lock.json
+.pnp.cjs

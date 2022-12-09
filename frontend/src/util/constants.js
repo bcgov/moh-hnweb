@@ -71,10 +71,3 @@ export const RELATIONSHIPS = [
   { text: 'Spouse', value: 'S' },
   { text: 'Dependent', value: 'D' },
 ]
-
-// COUNTRY OPTIONS
-export const COUNTRIES = [
-  { text: 'Select', value: '' },
-  { text: 'Canada', value: 'CA' },
-  { text: 'United States', value: 'US' },
-]
