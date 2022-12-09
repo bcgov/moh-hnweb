@@ -8,6 +8,7 @@ import { regularAccUser } from '../../roles/roles'
 
 const immigrationCodeOption = AddVisaResidentWithPHNPage.immigrationCodeSelect.find('option')
 const provinceOption = AddVisaResidentWithPHNPage.provinceSelect.find('option')
+const mailingProvinceOption = AddVisaResidentWithPHNPage.mailingProvinceInput.find('option')
 const priorResidenceCodeOption = AddVisaResidentWithPHNPage.priorResidenceCodeInput.find('option')
 
 const INVALID_ADDRESS_LINE1_MESSAGE = 'Address Line 1 is invalid'
@@ -16,7 +17,7 @@ const INVALID_ADDRESS_LINE3_MESSAGE = 'Address Line 3 is invalid'
 const ERROR_MESSAGE = 'Please correct errors before submitting'
 const MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE = 'The maximum length allowed is 25'
 const INVALID_City_MESSAGE = 'City is invalid'
-const SUCCESS_MESSAGE = 'INVALID SUBSCRIBER DATA FOUND. PLS CONTACT MSP.'
+const SUCCESS_MESSAGE = 'HRPB242E INVALID SUBSCRIBER DATA FOUND. PLS CONTACT MSP.'
 const GROUPNUMBER_REQUIRED_MESSAGE = 'Group Number is required'
 const IMMIGRATION_CODE_REQUIRED_MESSAGE = 'Immigration Code is required'
 const PERMIT_ISSUE_DATE_REQUIRED_MESSAGE = 'Permit Issue Date is required'
@@ -106,7 +107,7 @@ test('Check required fields validation for mailing address', async (t) => {
     .expect(AddVisaResidentWithPHNPage.errorText.nth(5).textContent)
     .contains(COVERAGE_CANCELLATION_DATE_REQUIRED_MESSAGE)
     .expect(AddVisaResidentWithPHNPage.errorText.nth(6).textContent)
-    .contains(HOME_ADDRESS_REQUIRED_MESSAGE)
+    .contains(MAILING_ADDRESS_REQUIRED_MESSAGE)
     .expect(AddVisaResidentWithPHNPage.errorText.nth(7).textContent)
     .contains(CITY_REQUIRED_MESSAGE)
     .expect(AddVisaResidentWithPHNPage.errorText.nth(8).textContent)
@@ -114,7 +115,7 @@ test('Check required fields validation for mailing address', async (t) => {
     .expect(AddVisaResidentWithPHNPage.errorText.nth(9).textContent)
     .contains(POSTAL_CODE_REQUIRED_MESSAGE)
 
-    .expect(AddVisaResidentWithPHNPage.errorText.nth(11).textContent)
+    .expect(AddVisaResidentWithPHNPage.errorText.nth(10).textContent)
     .contains(PRIOR_RESIDENCE_REQUIRED_MESSAGE)
 })
 
@@ -151,7 +152,7 @@ test('Check properly filled form passes validation', async (t) => {
 
 test('Check invalid input field character validation', async (t) => {
   await t
-    .typeText(PersonDetails.phnInput, '9882807277')
+    .typeText(PersonDetails.phnInput, '9875410727')
     .click(PersonDetails.submitButton)
     .wait(1000)
     // Given a Group Number entered with an invalid format
@@ -159,7 +160,7 @@ test('Check invalid input field character validation', async (t) => {
     .typeText(AddVisaResidentWithPHNPage.groupMemberNumberInput, '9000444@@@')
     .typeText(AddVisaResidentWithPHNPage.departmentNumberInput, '9000444^^')
     .typeText(AddVisaResidentWithPHNPage.telephoneInput, '7807777!@#')
-    .typeText(AddVisaResidentWithPHNPage.address1Input, 'Test 111 ST :"<>?')
+    .typeText(AddVisaResidentWithPHNPage.address1Input, ':"<>?')
     .typeText(AddVisaResidentWithPHNPage.address2Input, 'Test 111 ST @@@@@')
     .typeText(AddVisaResidentWithPHNPage.address3Input, '!@#$%^*(9')
     .typeText(AddVisaResidentWithPHNPage.cityInput, 'VICTORIA<>')
@@ -170,6 +171,8 @@ test('Check invalid input field character validation', async (t) => {
     .typeText(AddVisaResidentWithPHNPage.mailingAddress2Input, 'Test 111 ST @@@@@')
     .typeText(AddVisaResidentWithPHNPage.mailingAddress3Input, '!@#$%^*(9')
     .typeText(AddVisaResidentWithPHNPage.mailingCityInput, 'VICTORIA<>')
+    .click(AddVisaResidentWithPHNPage.mailingProvinceInput)
+    .click(mailingProvinceOption.withText('British Columbia'))
     .typeText(AddVisaResidentWithPHNPage.mailingPostalCodeInput, 'tt!!@@')
     // When I click the submit button
     .click(AddVisaResidentWithPHNPage.submitButton)
@@ -196,9 +199,9 @@ test('Check invalid input field character validation', async (t) => {
     .contains(INVALID_ADDRESS_LINE3_MESSAGE)
     .expect(AddVisaResidentWithPHNPage.errorText.nth(15).textContent)
     .contains(INVALID_City_MESSAGE)
-    .expect(AddVisaResidentWithPHNPage.errorText.nth(17).textContent)
-    .contains(INVALID_City_MESSAGE)
     .expect(AddVisaResidentWithPHNPage.errorText.nth(16).textContent)
+    .contains(INVALID_City_MESSAGE)
+    .expect(AddVisaResidentWithPHNPage.errorText.nth(17).textContent)
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
     .expect(AddVisaResidentWithPHNPage.errorText.nth(18).textContent)
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
@@ -248,7 +251,7 @@ test('Check invalid input field length validation', async (t) => {
     .expect(AddVisaResidentWithPHNPage.errorText.nth(12).textContent)
     .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
     .expect(AddVisaResidentWithPHNPage.errorText.nth(13).textContent)
-    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
     .expect(AddVisaResidentWithPHNPage.errorText.nth(14).textContent)
     .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
     .expect(AddVisaResidentWithPHNPage.errorText.nth(15).textContent)
@@ -256,9 +259,7 @@ test('Check invalid input field length validation', async (t) => {
     .expect(AddVisaResidentWithPHNPage.errorText.nth(16).textContent)
     .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
     .expect(AddVisaResidentWithPHNPage.errorText.nth(17).textContent)
-    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
-    .expect(AddVisaResidentWithPHNPage.errorText.nth(17).textContent)
-    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
     .expect(AddVisaResidentWithPHNPage.errorText.nth(18).textContent)
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
     .expect(AlertPage.alertBannerText.textContent)

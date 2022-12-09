@@ -151,6 +151,7 @@ import {
   validatePostalCode,
   validateAddress,
   validateOptionalAddress,
+  validateCityAndProvince,
   validateMailingAddressForVisaResident,
   VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE,
   VALIDATE_ADDRESS_LINE1_MESSAGE,
@@ -163,6 +164,8 @@ import {
   VALIDATE_DEPARTMENT_NUMBER_MESSAGE,
   VALIDATE_TELEPHONE_MESSAGE,
   VALIDATE_POSTAL_CODE_MESSAGE,
+  VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE,
+  VALIDATE_PROVINCE_REQUIRED_MESSAGE,
 } from '../../../util/validators'
 import { required, requiredIf, helpers, maxLength } from '@vuelidate/validators'
 import dayjs from 'dayjs'
@@ -405,11 +408,13 @@ export default {
       mailingAddressCity: {
         required: helpers.withMessage(VALIDATE_CITY_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForVisaResident)),
         maxLength: maxLength(25),
-        validateOptionalAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateOptionalAddress),
+        validateCityAndProvince: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityAndProvince),
       },
-      mailingAddressProvince: {},
+      mailingAddressProvince: {
+        required: helpers.withMessage(VALIDATE_PROVINCE_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForVisaResident)),
+      },
       mailingAddressPostalCode: {
-        required: helpers.withMessage(VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForVisaResident)),
+        required: helpers.withMessage(VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForVisaResident)),
         validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
       },
       priorResidenceCode: { required },
