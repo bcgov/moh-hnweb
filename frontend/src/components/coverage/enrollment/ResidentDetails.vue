@@ -157,6 +157,7 @@ import {
   VALIDATE_ADDRESS_LINE2_MESSAGE,
   VALIDATE_ADDRESS_LINE3_MESSAGE,
   VALIDATE_CITY_MESSAGE,
+  VALIDATE_CITY_REQUIRED_MESSAGE,
   VALIDATE_GROUP_NUMBER_MESSAGE,
   VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE,
   VALIDATE_DEPARTMENT_NUMBER_MESSAGE,
@@ -228,11 +229,11 @@ export default {
     this.province = this.resident?.province
     this.postalCode = this.homePostalCode
 
-    this.mailingAddress1 = this.resident?.mailingAddress1
-    this.mailingAddress2 = this.resident?.mailingAddress2
-    this.mailingAddress3 = this.resident.mailingAddress3
-    this.mailingAddressCity = this.resident?.mailingAddressCity
-    this.mailingAddressProvince = this.resident?.mailingAddressProvince
+    this.mailingAddress1 = this.resident.mailingAddress1 ?? ''
+    this.mailingAddress2 = this.resident.mailingAddress2 ?? ''
+    this.mailingAddress3 = this.resident.mailingAddress3 ?? ''
+    this.mailingAddressCity = this.resident.mailingAddressCity ?? ''
+    this.mailingAddressProvince = this.resident.mailingAddressProvince ?? ''
     this.mailingAddressPostalCode = this.mailingPostalCode
   },
   computed: {
@@ -245,13 +246,15 @@ export default {
     homePostalCode() {
       if (this.resident?.postalCode != undefined) {
         return this.resident.postalCode.replace(/\s+/, '')
+      } else {
+        return ''
       }
     },
     mailingPostalCode() {
       if (this.resident?.mailingAddressPostalCode != undefined) {
         return this.resident.mailingAddressPostalCode.replace(/\s+/, '')
-      }else{
-        
+      } else {
+        return ''
       }
     },
   },
@@ -400,11 +403,13 @@ export default {
         validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateOptionalAddress),
       },
       mailingAddressCity: {
+        required: helpers.withMessage(VALIDATE_CITY_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForVisaResident)),
         maxLength: maxLength(25),
         validateOptionalAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateOptionalAddress),
       },
       mailingAddressProvince: {},
       mailingAddressPostalCode: {
+        required: helpers.withMessage(VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForVisaResident)),
         validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
       },
       priorResidenceCode: { required },
