@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+
 import { helpers } from '@vuelidate/validators'
 
 /**
@@ -189,12 +190,6 @@ export function validateMailingAddress() {
 }
 
 /**
- * Used to validate that Mailing Address line 1 must be completed if any other Mailing Address(Line 2, city, province, PostalCode) is complete
- */
-export function validateMailingAddressForMSPContracts() {
-  return this.mailingAddress.addressLine2 !== '' || this.mailingAddress.city !== '' || this.mailingAddress.province !== '' || this.mailingAddress.postalCode !== ''
-}
-/**
  * Used to validate that Mailing Address line 1 must be completed if any other Mailing Address(Line 2, Line 3, PostalCode) is complete
  */
 export function validateMailingAddressForVisaResident() {
@@ -302,10 +297,7 @@ export const VALIDATE_ADDRESS_LINE4_MESSAGE = 'Address Line 4 is invalid'
 export const VALIDATE_SURNAME_MESSAGE = 'Surname is invalid'
 export const VALIDATE_FIRST_NAME_MESSAGE = 'First Name is invalid'
 export const VALIDATE_SECOND_NAME_MESSAGE = 'Second Name is invalid'
-export const VALIDATE_CITY_REQUIRED_MESSAGE = 'City is required'
 export const VALIDATE_CITY_MESSAGE = 'City is invalid'
-export const VALIDATE_PROVINCE_REQUIRED_MESSAGE = 'Province is required'
-export const VALIDATE_PROVINCE_MESSAGE = 'Province is invalid'
 export const VALIDATE_DOB_MESSAGE = 'Date of Birth must not be in the future'
 export const VALIDATE_PHN_MESSAGE = 'PHN format is invalid'
 export const VALIDATE_CONTRACT_NUMBER_MESSAGE = 'MSP Contract Number is invalid'

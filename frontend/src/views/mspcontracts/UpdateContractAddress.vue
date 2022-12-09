@@ -22,64 +22,54 @@
           <AppInput :e-model="v$.telephone" id="telephone" label="Telephone (Optional)" type="text" v-model.trim="telephone" placeholder="1234567890" />
         </AppCol>
       </AppRow>
-      <AppRow class="flex-gap">
-        <AppCol class="col5">
+      <AppRow>
+        <AppCol class="col6">
           <AppInput :e-model="v$.homeAddress.addressLine1" id="addressLine1" label="Home Address Line 1" type="text" v-model="homeAddress.addressLine1" />
         </AppCol>
-        <AppCol class="col5">
+      </AppRow>
+      <AppRow>
+        <AppCol class="col6">
+          <AppInput :e-model="v$.homeAddress.addressLine2" id="addressLine2" label="Line 2 (Optional)" type="text" v-model="homeAddress.addressLine2" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col6">
+          <AppInput :e-model="v$.homeAddress.addressLine3" id="addressLine3" label="Line 3 (Optional)" type="text" v-model="homeAddress.addressLine3" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col6">
+          <AppInput :e-model="v$.homeAddress.addressLine4" id="addressLine4" label="Line 4 (Optional)" type="text" v-model="homeAddress.addressLine4" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col3">
+          <AppInput :e-model="v$.homeAddress.postalCode" id="postalCode" label="Postal Code" type="text" v-model.trim="homeAddress.postalCode" />
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col6">
           <AppInput :e-model="v$.mailingAddress.addressLine1" id="mailingAddress1" label="Mailing Address (if different from home address)" v-model="mailingAddress.addressLine1" />
         </AppCol>
       </AppRow>
-      <AppRow class="flex-gap">
-        <AppCol class="col5">
-          <AppInput :e-model="v$.homeAddress.addressLine2" id="addressLine2" label="Line 2 (Optional)" type="text" v-model="homeAddress.addressLine2" />
-        </AppCol>
-        <AppCol class="col5">
+      <AppRow>
+        <AppCol class="col6">
           <AppInput :e-model="v$.mailingAddress.addressLine2" id="mailingAddress2" label="Line 2 (Optional)" v-model="mailingAddress.addressLine2" />
         </AppCol>
       </AppRow>
-      <AppRow class="flex-gap">
-        <AppCol class="col5">
-          <AppRow>
-            <AppCol>
-              <AppInput :e-model="v$.homeAddress.city" id="city" label="City" type="text" v-model.trim="homeAddress.city" />
-            </AppCol>
-            <AppCol>
-              <AppInput :e-model="v$.homeAddress.province" id="province" label="Province" type="text" v-model.trim="homeAddress.province" />
-            </AppCol>
-          </AppRow>
-        </AppCol>
-        <AppCol class="col5">
-          <AppRow>
-            <AppCol>
-              <AppInput :e-model="v$.mailingAddress.city" id="mailingCity" label="City" type="text" v-model.trim="mailingAddress.city" />
-            </AppCol>
-            <AppCol>
-              <AppInput :e-model="v$.mailingAddress.province" id="mailingProvince" label="Province" type="text" v-model.trim="mailingAddress.province" />
-            </AppCol>
-          </AppRow>
+      <AppRow>
+        <AppCol class="col6">
+          <AppInput :e-model="v$.mailingAddress.addressLine3" id="mailingAddress3" label="Line 3 (Optional)" v-model="mailingAddress.addressLine3" />
         </AppCol>
       </AppRow>
-      <AppRow class="flex-gap">
-        <AppCol class="col5">
-          <AppRow>
-            <AppCol>
-              <AppInput :e-model="v$.homeAddress.postalCode" id="postalCode" label="Postal Code" type="text" v-model.trim="homeAddress.postalCode" />
-            </AppCol>
-            <AppCol>
-              <AppSelect id="country" label="Country" v-model="homeAddress.country" :options="countryOptions" />
-            </AppCol>
-          </AppRow>
+      <AppRow>
+        <AppCol class="col6">
+          <AppInput :e-model="v$.mailingAddress.addressLine4" id="mailingAddress4" label="Line 4 (Optional)" v-model="mailingAddress.addressLine4" />
         </AppCol>
-        <AppCol class="col5"
-          ><AppRow>
-            <AppCol>
-              <AppInput :e-model="v$.mailingAddress.postalCode" id="mailingPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddress.postalCode" />
-            </AppCol>
-            <AppCol>
-              <AppSelect id="mailingCountry" label="Country" v-model="mailingAddress.country" :options="countryOptions" />
-            </AppCol>
-          </AppRow>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col3">
+          <AppInput :e-model="v$.mailingAddress.postalCode" id="mailingPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddress.postalCode" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -90,12 +80,7 @@
   </div>
   <br />
   <div id="confirmation" v-if="updateOk">
-    <p><label>Transaction completed for:</label></p>
-    <ul>
-      <li><label>Group Number: </label>{{ groupNumber }}</li>
-      <li><label>PHN: </label>{{ result?.phn }}</li>
-    </ul>
-    <br />
+    <p>PHN: {{ result?.phn }}</p>
     <AppButton @click="resetForm" mode="primary" type="button">Update Another Contract Address</AppButton>
   </div>
 </template>
@@ -103,7 +88,6 @@
 import AppHelp from '../../components/ui/AppHelp.vue'
 import useVuelidate from '@vuelidate/core'
 import { required, requiredIf, helpers, maxLength } from '@vuelidate/validators'
-import { COUNTRIES } from '../../util/constants'
 import {
   validateGroupNumber,
   validatePHN,
@@ -111,19 +95,17 @@ import {
   validateMailingPostalCode,
   validateAddress,
   validateOptionalAddress,
-  validateMailingAddressForMSPContracts,
+  validateMailingAddress,
   validateTelephone,
   VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE,
   VALIDATE_ADDRESS_LINE1_MESSAGE,
   VALIDATE_ADDRESS_LINE2_MESSAGE,
+  VALIDATE_ADDRESS_LINE3_MESSAGE,
+  VALIDATE_ADDRESS_LINE4_MESSAGE,
   VALIDATE_GROUP_NUMBER_MESSAGE,
   VALIDATE_PHN_MESSAGE,
   VALIDATE_POSTAL_CODE_MESSAGE,
   VALIDATE_TELEPHONE_MESSAGE,
-  VALIDATE_CITY_REQUIRED_MESSAGE,
-  VALIDATE_CITY_MESSAGE,
-  VALIDATE_PROVINCE_REQUIRED_MESSAGE,
-  VALIDATE_PROVINCE_MESSAGE,
 } from '../../util/validators'
 import MspContractsService from '../../services/MspContractsService'
 import { useAlertStore } from '../../stores/alert'
@@ -140,9 +122,6 @@ export default {
       v$: useVuelidate(),
     }
   },
-  created() {
-    this.countryOptions = COUNTRIES
-  },
   data() {
     return {
       submitting: false,
@@ -155,18 +134,16 @@ export default {
       homeAddress: {
         addressLine1: '',
         addressLine2: '',
+        addressLine3: '',
+        addressLine4: '',
         postalCode: '',
-        country: '',
-        city: '',
-        province: '',
       },
       mailingAddress: {
         addressLine1: '',
         addressLine2: '',
+        addressLine3: '',
+        addressLine4: '',
         postalCode: '',
-        country: '',
-        city: '',
-        province: '',
       },
       result: {
         phn: '',
@@ -195,14 +172,16 @@ export default {
             phone: this.telephone,
             homeAddress: {
               addressLine1: this.homeAddress.addressLine1,
-              addressLine2: this.homeAddress.addressLine2 === '' ? this.homeAddress.city + ' ' + this.homeAddress.province : this.homeAddress.addressLine2,
-              addressLine3: this.homeAddress.addressLine2 === '' ? '' : this.homeAddress.city + ' ' + this.homeAddress.province,
+              addressLine2: this.homeAddress.addressLine2,
+              addressLine3: this.homeAddress.addressLine3,
+              addressLine4: this.homeAddress.addressLine4,
               postalCode: this.homeAddress.postalCode,
             },
             mailingAddress: {
               addressLine1: this.mailingAddress.addressLine1,
-              addressLine2: this.mailingAddress.addressLine2 === '' ? this.mailingAddress.city + ' ' + this.mailingAddress.province : this.mailingAddress.addressLine2,
-              addressLine3: this.mailingAddress.addressLine2 === '' ? '' : this.mailingAddress.city + ' ' + this.mailingAddress.province,
+              addressLine2: this.mailingAddress.addressLine2,
+              addressLine3: this.mailingAddress.addressLine3,
+              addressLine4: this.mailingAddress.addressLine4,
               postalCode: this.mailingAddress.postalCode,
             },
           })
@@ -235,13 +214,13 @@ export default {
       this.telephone = ''
       this.homeAddress.addressLine1 = ''
       this.homeAddress.addressLine2 = ''
-      this.homeAddress.city = ''
-      this.homeAddress.province = ''
+      this.homeAddress.addressLine3 = ''
+      this.homeAddress.addressLine4 = ''
       this.homeAddress.postalCode = ''
       this.mailingAddress.addressLine1 = ''
       this.mailingAddress.addressLine2 = ''
-      this.mailingAddress.city = ''
-      this.mailingAddress.province = ''
+      this.mailingAddress.addressLine3 = ''
+      this.mailingAddress.addressLine4 = ''
       this.mailingAddress.postalCode = ''
       this.result = null
       this.v$.$reset()
@@ -275,24 +254,22 @@ export default {
           maxLength: maxLength(25),
           validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
         },
+        addressLine3: {
+          maxLength: maxLength(25),
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateAddress),
+        },
+        addressLine4: {
+          maxLength: maxLength(25),
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE4_MESSAGE, validateAddress),
+        },
         postalCode: {
           required,
           validatePostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validatePostalCode),
         },
-        city: {
-          required,
-          maxLength: maxLength(25),
-          validateAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateAddress),
-        },
-        province: {
-          required,
-          maxLength: maxLength(25),
-          validateAddress: helpers.withMessage(VALIDATE_PROVINCE_MESSAGE, validateAddress),
-        },
       },
       mailingAddress: {
         addressLine1: {
-          required: helpers.withMessage(VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForMSPContracts)),
+          required: helpers.withMessage(VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE, requiredIf(validateMailingAddress)),
           maxLength: maxLength(25),
           validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateOptionalAddress),
         },
@@ -300,18 +277,16 @@ export default {
           maxLength: maxLength(25),
           validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateOptionalAddress),
         },
+        addressLine3: {
+          maxLength: maxLength(25),
+          validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateOptionalAddress),
+        },
+        addressLine4: {
+          maxLength: maxLength(25),
+          validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE4_MESSAGE, validateOptionalAddress),
+        },
         postalCode: {
           validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
-        },
-        city: {
-          required: helpers.withMessage(VALIDATE_CITY_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForMSPContracts)),
-          maxLength: maxLength(25),
-          validateAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateAddress),
-        },
-        province: {
-          required: helpers.withMessage(VALIDATE_PROVINCE_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForMSPContracts)),
-          maxLength: maxLength(25),
-          validateAddress: helpers.withMessage(VALIDATE_PROVINCE_MESSAGE, validateAddress),
         },
       },
     }
