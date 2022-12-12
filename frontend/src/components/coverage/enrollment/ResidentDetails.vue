@@ -385,7 +385,7 @@ export default {
       city: {
         required,
         maxLength: maxLength(25),
-        validateAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateAddress),
+        validateCityAndProvince: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityAndProvince),
       },
       province: { required },
       postalCode: {
