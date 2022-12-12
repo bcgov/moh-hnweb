@@ -228,7 +228,7 @@ export default {
     this.address1 = this.resident?.address1
     this.address2 = this.resident?.address2
     this.address3 = this.resident.address3
-    this.city = this.resident?.city
+    this.city = this.resident.city ?? ''
     this.province = this.resident?.province
     this.postalCode = this.homePostalCode
 
