@@ -127,9 +127,9 @@ test('Check alphanumeric validation', async (t) => {
 test('Check special char validation', async (t) => {
   await t
     // Given I enter Group Number, Group Member's PHN, Dependent's PHN with special char
-    .typeText(AddDependentPage.groupNumberInput, '62431AA')
-    .typeText(AddDependentPage.phnInput, '93971055bc')
-    .typeText(AddDependentPage.dependentPhnInput, '93fg105575')
+    .typeText(AddDependentPage.groupNumberInput, '6243@#$')
+    .typeText(AddDependentPage.phnInput, '93971^&*bc')
+    .typeText(AddDependentPage.dependentPhnInput, '93*&10557@')
     // When I click the submit button
     .click(AddDependentPage.submitButton)
     // I expect an error message stating the page had errors and an individual error message for the Group Number, Group Member's PHN, Dependent's PHN
