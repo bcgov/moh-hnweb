@@ -170,7 +170,7 @@ export default {
         addressLine1: '',
         addressLine2: '',
         postalCode: '',
-        country: '',
+        country: 'CA',
         city: '',
         province: '',
       },
@@ -193,30 +193,6 @@ export default {
         return 'ZIP Code'
       }
       return 'Postal Code'
-    },
-    stateAddressFieldRequiredValidationMessage() {
-      if (this.mailingAddress.country === 'US') {
-        return VALIDATE_STATE_REQUIRED_MESSAGE
-      }
-      return VALIDATE_PROVINCE_REQUIRED_MESSAGE
-    },
-    zipAddressFieldRequiredValidationMessage() {
-      if (this.mailingAddress.country === 'US') {
-        return VALIDATE_ZIP_CODE_REQUIRED_MESSAGE
-      }
-      return VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE
-    },
-    stateAddressFieldInvalidValidationMessage() {
-      if (this.mailingAddress.country === 'US') {
-        return VALIDATE_STATE_MESSAGE
-      }
-      return VALIDATE_PROVINCE_MESSAGE
-    },
-    zipAddressFieldInvalidValidationMessage() {
-      if (this.mailingAddress.country === 'US') {
-        return VALIDATE_ZIP_CODE_MESSAGE
-      }
-      return VALIDATE_POSTAL_CODE_MESSAGE
     },
   },
   methods: {
@@ -293,6 +269,30 @@ export default {
       this.updateOk = false
       this.updateMode = true
     },
+    stateAddressFieldRequiredValidationMessage() {
+      if (this.mailingAddress.country === 'US') {
+        return VALIDATE_STATE_REQUIRED_MESSAGE
+      }
+      return VALIDATE_PROVINCE_REQUIRED_MESSAGE
+    },
+    zipAddressFieldRequiredValidationMessage() {
+      if (this.mailingAddress.country === 'US') {
+        return VALIDATE_ZIP_CODE_REQUIRED_MESSAGE
+      }
+      return VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE
+    },
+    stateAddressFieldInvalidValidationMessage() {
+      if (this.mailingAddress.country === 'US') {
+        return VALIDATE_STATE_MESSAGE
+      }
+      return VALIDATE_PROVINCE_MESSAGE
+    },
+    zipAddressFieldInvalidValidationMessage() {
+      if (this.mailingAddress.country === 'US') {
+        return VALIDATE_ZIP_CODE_MESSAGE
+      }
+      return VALIDATE_POSTAL_CODE_MESSAGE
+    },
   },
 
   validations() {
@@ -353,9 +353,9 @@ export default {
           validateCityAndProvince: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityAndProvince),
         },
         province: {
-          required: helpers.withMessage(VALIDATE_PROVINCE_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForMSPContracts)),
+          required: helpers.withMessage(this.stateAddressFieldRequiredValidationMessage, requiredIf(validateMailingAddressForMSPContracts)),
           maxLength: maxLength(25),
-          validateCityAndProvince: helpers.withMessage(VALIDATE_PROVINCE_MESSAGE, validateCityAndProvince),
+          validateCityAndProvince: helpers.withMessage(this.stateAddressFieldInvalidValidationMessage, validateCityAndProvince),
         },
       },
     }
