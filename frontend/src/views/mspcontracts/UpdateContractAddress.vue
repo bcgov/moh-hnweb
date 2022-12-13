@@ -121,11 +121,15 @@ import {
   VALIDATE_PHN_MESSAGE,
   VALIDATE_POSTAL_CODE_MESSAGE,
   VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE,
+  VALIDATE_ZIP_CODE_MESSAGE,
+  VALIDATE_ZIP_CODE_REQUIRED_MESSAGE,
   VALIDATE_TELEPHONE_MESSAGE,
   VALIDATE_CITY_REQUIRED_MESSAGE,
   VALIDATE_CITY_MESSAGE,
   VALIDATE_PROVINCE_REQUIRED_MESSAGE,
   VALIDATE_PROVINCE_MESSAGE,
+  VALIDATE_STATE_MESSAGE,
+  VALIDATE_STATE_REQUIRED_MESSAGE,
 } from '../../util/validators'
 import MspContractsService from '../../services/MspContractsService'
 import { useAlertStore } from '../../stores/alert'
@@ -189,6 +193,30 @@ export default {
         return 'ZIP Code'
       }
       return 'Postal Code'
+    },
+    stateAddressFieldRequiredValidationMessage() {
+      if (this.mailingAddress.country === 'US') {
+        return VALIDATE_STATE_REQUIRED_MESSAGE
+      }
+      return VALIDATE_PROVINCE_REQUIRED_MESSAGE
+    },
+    zipAddressFieldRequiredValidationMessage() {
+      if (this.mailingAddress.country === 'US') {
+        return VALIDATE_ZIP_CODE_REQUIRED_MESSAGE
+      }
+      return VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE
+    },
+    stateAddressFieldInvalidValidationMessage() {
+      if (this.mailingAddress.country === 'US') {
+        return VALIDATE_STATE_MESSAGE
+      }
+      return VALIDATE_PROVINCE_MESSAGE
+    },
+    zipAddressFieldInvalidValidationMessage() {
+      if (this.mailingAddress.country === 'US') {
+        return VALIDATE_ZIP_CODE_MESSAGE
+      }
+      return VALIDATE_POSTAL_CODE_MESSAGE
     },
   },
   methods: {
@@ -316,8 +344,8 @@ export default {
           validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateOptionalAddress),
         },
         postalCode: {
-          required: helpers.withMessage(VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForMSPContracts)),
-          validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
+          required: helpers.withMessage(this.zipAddressFieldRequiredValidationMessage, requiredIf(validateMailingAddressForMSPContracts)),
+          validateMailingPostalCode: helpers.withMessage(this.zipAddressFieldInvalidValidationMessage, validateMailingPostalCode),
         },
         city: {
           required: helpers.withMessage(VALIDATE_CITY_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForMSPContracts)),
