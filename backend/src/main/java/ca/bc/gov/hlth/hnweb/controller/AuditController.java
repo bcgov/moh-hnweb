@@ -42,9 +42,9 @@ import ca.bc.gov.hlth.hnweb.service.AuditService;
 @RequestMapping("/audit")
 @RestController
 public class AuditController extends BaseController {
-	
+
 	private static final String AUDIT_REPORT_PREFIX = "auditreport_";
-			
+
 	private static final String AUDIT_REPORT_EXTENSION = ".csv";
 
 	private static final Logger logger = LoggerFactory.getLogger(AuditController.class);
@@ -63,14 +63,15 @@ public class AuditController extends BaseController {
 	public ResponseEntity<AuditReportResponse> getAuditReport(@Valid @RequestBody AuditReportRequest auditReportRequest,
 			HttpServletRequest request) {
 
-		Page<AffectedParty> pageable = auditService.getAffectedParties(
-				auditReportRequest.getTransactionTypes(), auditReportRequest.getOrganizations(),
-				auditReportRequest.getUserId(), auditReportRequest.getStartDate(), auditReportRequest.getEndDate(),
-				auditReportRequest.getPage(), auditReportRequest.getRows(), auditReportRequest.getSortField(), auditReportRequest.getSortDirection());
+		Page<AffectedParty> pageable = auditService.getAffectedParties(auditReportRequest.getTransactionTypes(),
+				auditReportRequest.getOrganizations(), auditReportRequest.getSpgRoles(), auditReportRequest.getUserId(),
+				auditReportRequest.getStartDate(), auditReportRequest.getEndDate(), auditReportRequest.getPage(),
+				auditReportRequest.getRows(), auditReportRequest.getSortField(), auditReportRequest.getSortDirection());
 		List<AuditRecord> auditReport = convertReport(pageable.getContent());
 
 		int first = auditReportRequest.getPage() * auditReportRequest.getRows();
-		logger.info("Returning {}-{} of {} audit records", first, first + pageable.getNumberOfElements(), pageable.getTotalElements());
+		logger.info("Returning {}-{} of {} audit records", first, first + pageable.getNumberOfElements(),
+				pageable.getTotalElements());
 
 		AuditReportResponse auditReportingResponse = new AuditReportResponse();
 		auditReportingResponse.setRecords(auditReport);
@@ -93,9 +94,10 @@ public class AuditController extends BaseController {
 		ResponseEntity<List<String>> responseEntity = ResponseEntity.ok(organizations);
 		return responseEntity;
 	}
-	
+
 	/**
 	 * Retrieves audit records for download
+	 * 
 	 * @param auditReportRequest
 	 * @param request
 	 * @return
@@ -106,7 +108,9 @@ public class AuditController extends BaseController {
 
 		List<AffectedParty> affectedPartiesForDownload = auditService.getAffectedPartiesForDownload(
 				auditReportRequest.getTransactionTypes(), auditReportRequest.getOrganizations(),
-				auditReportRequest.getUserId(), auditReportRequest.getStartDate(), auditReportRequest.getEndDate(), auditReportRequest.getSortField(), auditReportRequest.getSortDirection());
+				auditReportRequest.getSpgRoles(), auditReportRequest.getUserId(), auditReportRequest.getStartDate(),
+				auditReportRequest.getEndDate(), auditReportRequest.getSortField(),
+				auditReportRequest.getSortDirection());
 		List<AuditRecord> auditReport = convertReport(affectedPartiesForDownload);
 		logger.info("Number of records returned for download : {}", auditReport.size());
 
@@ -126,6 +130,7 @@ public class AuditController extends BaseController {
 		affectedParties.forEach(affectedParty -> {
 			AuditRecord model = new AuditRecord();
 			model.setOrganization(affectedParty.getTransaction().getOrganization());
+			model.setSpgRole(affectedParty.getTransaction().getSpgRole());
 			model.setTransactionId(affectedParty.getTransaction().getTransactionId().toString());
 			model.setType(affectedParty.getTransaction().getType());
 			model.setUserId(affectedParty.getTransaction().getUserId());
@@ -140,7 +145,8 @@ public class AuditController extends BaseController {
 	}
 
 	private List<String> convertOrganization(List<Organization> organizations) {
-		return organizations.stream().filter(org -> StringUtils.isNotBlank(org.getOrganization())).map(org -> org.getOrganization()).collect(Collectors.toList());
+		return organizations.stream().filter(org -> StringUtils.isNotBlank(org.getOrganization()))
+				.map(org -> org.getOrganization()).collect(Collectors.toList());
 	}
 
 	private LocalDateTime convertDate(Date date) {

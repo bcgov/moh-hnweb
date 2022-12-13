@@ -1,5 +1,9 @@
 package ca.bc.gov.hlth.hnweb.security;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Information on the current user obtained from the JWT.
  */
@@ -9,6 +13,7 @@ public class UserInfo {
 	private String organization;
 	private String role;
 	private String sessionState;
+	private List<String> roles;
 
 	public UserInfo() {
 		super();
@@ -20,7 +25,7 @@ public class UserInfo {
 		this.organization = organization;
 		this.role = role;
 	}
-	
+
 	public UserInfo(String username, String userId, String organization, String role, String sessionState) {
 		super();
 		this.username = username;
@@ -55,11 +60,15 @@ public class UserInfo {
 	}
 
 	public String getRole() {
-		return role;
+		return StringUtils.join(this.roles, " ");
 	}
 
-	public void setRole(String role) {
-		this.role = role;
+	public List<String> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
 	}
 
 	public String getSessionState() {
