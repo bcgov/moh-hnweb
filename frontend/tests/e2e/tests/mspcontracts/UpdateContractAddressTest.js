@@ -18,9 +18,14 @@ const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
 const HOME_ADDRESS_REQUIRED_MESSAGE = 'Home Address Line 1 is required'
 const MAILING_ADDRESS_REQUIRED_MESSAGE = 'Mailing Address Line 1 is required'
 const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
+const ZIP_CODE_REQUIRED_MESSAGE = 'ZIP Code is required'
+const INVALID_ZIP_CODE_MESSAGE = 'ZIP Code is invalid'
+const STATE_REQUIRED_MESSAGE = 'State is required'
+const INVALID_STATE_MESSAGE = 'State is invalid'
 const INVALID_POSTAL_CODE_VALIDATION_MESSAGE = 'Postal Code is invalid'
 const PHONE_NUMBER_VALIDATION_MESSAGE = 'Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
 const SUCCESS_MESSAGE = 'RPBS0101 PHONE NUMBER ALREADY EXISTS ON MSP. NO UPDATE DONE\nRPBS0102 ADDRESSES ALREADY EXIST ON MSP. NO UPDATE DONE.'
+const mailingCountryOption = UpdateContractAddress.mailingAddressCountrySelect.find('option')
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/mspcontracts/UpdateContractAddress'
 
@@ -83,6 +88,20 @@ test('Check required fields validation for Mailing Address', async (t) => {
     .contains(POSTAL_CODE_REQUIRED_MESSAGE)
 })
 
+test('Check required message for United States', async (t) => {
+  await t
+    // When I click the submit button
+    .click(UpdateContractAddress.submitButton)
+    .wait(1000)
+    .typeText(UpdateContractAddress.mailingAddress2Input, 'TEST ADDRESS LINE 2')
+    .click(UpdateContractAddress.mailingAddressCountrySelect)
+    .click(mailingCountryOption.withText('United States'))
+    .expect(UpdateContractAddress.errorText.nth(7).textContent)
+    .contains(STATE_REQUIRED_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(9).textContent)
+    .contains(ZIP_CODE_REQUIRED_MESSAGE)
+})
+
 test('Check properly filled form passes validation', async (t) => {
   await t
     // Given the page is filled out correctly
@@ -121,6 +140,22 @@ test('Check PHN, Group Number format validation', async (t) => {
     .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(1).textContent)
     .contains(INVALID_PHN_ERROR_MESSAGE)
+})
+
+test('Check invalid message for United States', async (t) => {
+  await t
+    // When I click the submit button
+    .click(UpdateContractAddress.submitButton)
+    .wait(1000)
+    .typeText(UpdateContractAddress.mailingAddress2Input, 'TEST ADDRESS LINE 2')
+    .typeText(UpdateContractAddress.mailingAddressProvinceInput, '@@@@@@')
+    .typeText(UpdateContractAddress.mailingPostalCodeInput, '@@@@@@')
+    .click(UpdateContractAddress.mailingAddressCountrySelect)
+    .click(mailingCountryOption.withText('United States'))
+    .expect(UpdateContractAddress.errorText.nth(7).textContent)
+    .contains(INVALID_STATE_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(9).textContent)
+    .contains(INVALID_ZIP_CODE_MESSAGE)
 })
 
 test('Check invalid character validation', async (t) => {

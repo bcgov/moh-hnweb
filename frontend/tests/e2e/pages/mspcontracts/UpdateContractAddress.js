@@ -16,7 +16,7 @@ class UpdateContractAddress {
     this.mailingAddressCityInput = Selector('#mailingCity')
     this.mailingAddressProvinceInput = Selector('#mailingProvince')
     this.mailingPostalCodeInput = Selector('#mailingPostalCode')
-
+    this.mailingAddressCountrySelect = Selector('#mailingCountry')
     this.errorText = Selector('div').withAttribute('class', 'error-text')
 
     this.submitButton = Selector('button[type="submit"]')
