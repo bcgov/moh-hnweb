@@ -22,7 +22,7 @@
           <AppInput :e-model="v$.telephone" id="telephone" label="Telephone (Optional)" type="text" v-model.trim="telephone" placeholder="1234567890" />
         </AppCol>
       </AppRow>
-      <AppRow class="flex-gap">
+      <AppRow class="flex-gap-50">
         <AppCol class="col5">
           <AppInput :e-model="v$.homeAddress.addressLine1" id="addressLine1" label="Home Address Line 1" type="text" v-model="homeAddress.addressLine1" />
         </AppCol>
@@ -30,7 +30,7 @@
           <AppInput :e-model="v$.mailingAddress.addressLine1" id="mailingAddress1" label="Mailing Address (if different from home address)" v-model="mailingAddress.addressLine1" />
         </AppCol>
       </AppRow>
-      <AppRow class="flex-gap">
+      <AppRow class="flex-gap-50">
         <AppCol class="col5">
           <AppInput :e-model="v$.homeAddress.addressLine2" id="addressLine2" label="Line 2 (Optional)" type="text" v-model="homeAddress.addressLine2" />
         </AppCol>
@@ -38,14 +38,14 @@
           <AppInput :e-model="v$.mailingAddress.addressLine2" id="mailingAddress2" label="Line 2 (Optional)" v-model="mailingAddress.addressLine2" />
         </AppCol>
       </AppRow>
-      <AppRow class="flex-gap">
+      <AppRow class="flex-gap-50">
         <AppCol class="col5">
           <AppRow>
             <AppCol>
               <AppInput :e-model="v$.homeAddress.city" id="city" label="City" type="text" v-model.trim="homeAddress.city" />
             </AppCol>
             <AppCol>
-              <AppInput :e-model="v$.homeAddress.province" id="province" label="Province" type="text" v-model.trim="homeAddress.province" />
+              <AppInput :e-model="v$.homeAddress.province" id="province" label="Province" type="text" value="British Columbia" disabled="disabled" v-model.trim="homeAddress.province" />
             </AppCol>
           </AppRow>
         </AppCol>
@@ -60,7 +60,7 @@
           </AppRow>
         </AppCol>
       </AppRow>
-      <AppRow class="flex-gap">
+      <AppRow class="flex-gap-50">
         <AppCol class="col5">
           <AppRow>
             <AppCol>
@@ -108,7 +108,8 @@ import {
   validateGroupNumber,
   validatePHN,
   validatePostalCode,
-  validateCityAndProvince,
+  validateMailingZipCode,
+  validateCityOrProvince,
   validateMailingPostalCode,
   validateAddress,
   validateOptionalAddress,
@@ -293,6 +294,12 @@ export default {
       }
       return VALIDATE_POSTAL_CODE_MESSAGE
     },
+    validateZipOrPostalCode(zipOrPostalCode) {
+      if (this.mailingAddress.country === 'US') {
+        return validateMailingZipCode(zipOrPostalCode)
+      }
+      return validateMailingPostalCode(zipOrPostalCode)
+    },
   },
 
   validations() {
@@ -325,12 +332,12 @@ export default {
         city: {
           required,
           maxLength: maxLength(25),
-          validateCityAndProvince: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityAndProvince),
+          validateCityOrProvince: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityOrProvince),
         },
         province: {
           required,
           maxLength: maxLength(25),
-          validateCityAndProvince: helpers.withMessage(VALIDATE_PROVINCE_MESSAGE, validateCityAndProvince),
+          validateCityOrProvince: helpers.withMessage(VALIDATE_PROVINCE_MESSAGE, validateCityOrProvince),
         },
       },
       mailingAddress: {
@@ -345,17 +352,17 @@ export default {
         },
         postalCode: {
           required: helpers.withMessage(this.zipAddressFieldRequiredValidationMessage, requiredIf(validateMailingAddressForMSPContracts)),
-          validateMailingPostalCode: helpers.withMessage(this.zipAddressFieldInvalidValidationMessage, validateMailingPostalCode),
+          validateMailingPostalCode: helpers.withMessage(this.zipAddressFieldInvalidValidationMessage, this.validateZipOrPostalCode),
         },
         city: {
           required: helpers.withMessage(VALIDATE_CITY_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForMSPContracts)),
           maxLength: maxLength(25),
-          validateCityAndProvince: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityAndProvince),
+          validateCityOrProvince: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityOrProvince),
         },
         province: {
           required: helpers.withMessage(this.stateAddressFieldRequiredValidationMessage, requiredIf(validateMailingAddressForMSPContracts)),
           maxLength: maxLength(25),
-          validateCityAndProvince: helpers.withMessage(this.stateAddressFieldInvalidValidationMessage, validateCityAndProvince),
+          validateCityOrProvince: helpers.withMessage(this.stateAddressFieldInvalidValidationMessage, validateCityOrProvince),
         },
       },
     }

@@ -56,6 +56,18 @@ export function validatePostalCode(postalCode) {
 }
 
 /**
+ * Validates that the Zip Code matches the accepted format.
+ * Must be of type NNNNN or NNNNN-NNNN (where "N" is numeric)
+ */
+export function validateMailingZipCode(zipCode) {
+  if (zipCode === undefined || zipCode === '') {
+    return true
+  }
+  var regex = new RegExp(/^[0-9]{5}(?:-[0-9]{4})?$/i)
+  return regex.test(zipCode)
+}
+
+/**
  * Validates that the Postal Code matches the accepted format.
  * Must be of the format ANANAN (where "A" is alpha and "N" is numeric). Must start with one of the "ABCEGHJKLMNPRSTVWXYZ" i.e., be a Canada postal code
  */
@@ -184,18 +196,11 @@ function validateSpecialCharactersForAddress(input, length) {
 /**
  * Validates City / Province for invalid characters
  */
-export function validateCityAndProvince(cityOrProvince) {
+export function validateCityOrProvince(cityOrProvince) {
   if (cityOrProvince === undefined || cityOrProvince === '') {
     return true
   }
-  if (cityOrProvince.length > 25) {
-    return true
-  }
-  var validChars = /^[a-zA-Z ]+$/
-  if (validChars.test(cityOrProvince)) {
-    return true
-  }
-  return false
+  return validateAlphaWithSpaces(cityOrProvince, 25)
 }
 
 /**
@@ -261,6 +266,17 @@ function validateAlpha(input, length) {
     return true
   }
   return !/[^a-zA-Z]/.test(input)
+}
+
+/**
+ * Validate that input is allowed length and that it contains alphabets and spaces
+ */
+function validateAlphaWithSpaces(input, length) {
+  if (input.length > length) {
+    return true
+  }
+  var validChars = /^[a-zA-Z ]+$/
+  return validChars.test(input)
 }
 
 /**

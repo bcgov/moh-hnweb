@@ -74,7 +74,6 @@ export const RELATIONSHIPS = [
 
 // COUNTRY OPTIONS
 export const COUNTRIES = [
-  { text: 'Select', value: '' },
   { text: 'Canada', value: 'CA' },
   { text: 'United States', value: 'US' },
 ]

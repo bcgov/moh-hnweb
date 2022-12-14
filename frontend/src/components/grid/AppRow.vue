@@ -16,8 +16,8 @@ export default {
   padding-bottom: 5px;
   width: 100%;
 }
-.flex-gap {
-  gap: 40px;
+.flex-gap-50 {
+  gap: 50px;
 }
 .row-center {
   justify-content: center;
