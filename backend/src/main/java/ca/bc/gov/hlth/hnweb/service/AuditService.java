@@ -95,6 +95,7 @@ public class AuditService {
 		sortMap.put("affectedPartyId", "identifier");
 		sortMap.put("affectedPartyType", "identifierType");
 		sortMap.put("organization", "transaction.organization");
+		sortMap.put("spgRole", "transaction.spgRole");
 		sortMap.put("transactionStartTime", "transaction.startTime");
 		sortMap.put("type", "transaction.type");
 		sortMap.put("userId", "transaction.userId");

@@ -7,8 +7,8 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col3">
-          <AppLabel>Organization</AppLabel>
+        <AppCol class="col3 checkbox-row">
+          <AppLabel class="checkbox-label">Organization</AppLabel>
           <div class="checkbox-wrapper">
             <label class="checkbox" :for="option" v-for="option in organizationOptions" :key="option">
               {{ option }}
@@ -19,8 +19,8 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col3">
-          <AppLabel>Transaction Types</AppLabel>
+        <AppCol class="col3 checkbox-row">
+          <AppLabel class="checkbox-label">Transaction Types</AppLabel>
           <div class="checkbox-wrapper">
             <label class="checkbox" :for="option" v-for="option in transactionOptions" :key="option">
               {{ option }}
@@ -31,8 +31,8 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col3">
-          <AppLabel>SPG</AppLabel>
+        <AppCol class="col3 checkbox-row">
+          <AppLabel class="checkbox-label">SPG</AppLabel>
           <div class="checkbox-wrapper">
             <label class="checkbox" :for="option" v-for="option in spgOptions" :key="option">
               {{ option }}
@@ -374,6 +374,12 @@ export default {
 </script>
 
 <style scoped>
+.checkbox-row {
+  padding-bottom: 10px;
+}
+.checkbox-label {
+  padding-bottom: 5px;
+}
 .checkbox-wrapper {
   max-height: 125px;
   width: 400px;
