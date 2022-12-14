@@ -169,7 +169,7 @@ export default {
         'UpdateContractAddress',
         'UpdateNumberAndDept',
       ],
-      spgOptions: ['DUMMY', 'E45', 'ELIGIBILITY', 'VISARESIDENT', 'TRAININGHEALTHAUTH', 'PBFUSER', 'AUDITUSER', 'MANAGEMSPPAYEENUMBER'],
+      spgOptions: ['AUDITUSER', 'E45', 'ELIGIBILITY', 'MANAGEMSPPAYEENUMBER', 'PBFUSER', 'PREMIUMADMIN', 'PREMIUMADMINPLUS', 'SOCIALSECTOR', 'TRAININGHEALTHAUTH', 'VISARESIDENT'],
     }
   },
   mounted() {

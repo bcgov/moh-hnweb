@@ -126,7 +126,7 @@ public class AuditService {
 		transaction.setTransactionId(UUID.randomUUID());
 		transaction.setType(type.getValue());
 		transaction.setUserId(userInfo != null ? userInfo.getUsername() : null);
-		transaction.setSpgRole(SecurityUtil.loadSPGBasedOnTask(userInfo, type));
+		transaction.setSpgRole(SecurityUtil.loadSPGBasedOnTransactionType(userInfo, type));
 		return transactionRepository.save(transaction);
 	}
 

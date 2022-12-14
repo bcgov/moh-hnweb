@@ -91,7 +91,7 @@ public class AuditControllerTest extends BaseControllerTest {
 		orgs.add("00000020");
 
 		List<String> spgRoles = new ArrayList<>();
-		spgRoles.add("traininghealthauth");
+		spgRoles.add("TRAININGHEALTHAUTH");
 
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setUserId("hnweb1");
@@ -122,7 +122,7 @@ public class AuditControllerTest extends BaseControllerTest {
 		orgs.add("00000010");
 
 		List<String> spgRoles = new ArrayList<>();
-		spgRoles.add("traininghealthauth");
+		spgRoles.add("TRAININGHEALTHAUTH");
 
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setUserId("hnweb1");
@@ -151,7 +151,7 @@ public class AuditControllerTest extends BaseControllerTest {
 		orgs.add("00000010");
 
 		List<String> spgRoles = new ArrayList<>();
-		spgRoles.add("traininghealthauth");
+		spgRoles.add("TRAININGHEALTHAUTH");
 
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setUserId("hnweb1");
@@ -179,7 +179,7 @@ public class AuditControllerTest extends BaseControllerTest {
 		orgs.add("00000010");
 
 		List<String> spgRoles = new ArrayList<>();
-		spgRoles.add("traininghealthauth");
+		spgRoles.add("TRAININGHEALTHAUTH");
 
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setUserId("hnweb1");
@@ -211,7 +211,7 @@ public class AuditControllerTest extends BaseControllerTest {
 		orgs.add("00000010");
 
 		List<String> spgRoles = new ArrayList<>();
-		spgRoles.add("traininghealthauth");
+		spgRoles.add("TRAININGHEALTHAUTH");
 
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setUserId("hnweb1");
@@ -244,7 +244,7 @@ public class AuditControllerTest extends BaseControllerTest {
 		orgs.add("00000020");
 
 		List<String> spgRoles = new ArrayList<>();
-		spgRoles.add("traininghealthauth");
+		spgRoles.add("TRAININGHEALTHAUTH");
 
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setUserId("hnweb1");
@@ -274,14 +274,14 @@ public class AuditControllerTest extends BaseControllerTest {
 		assertEquals("Affected Party ID Type", reportData.get(6));
 		assertEquals("Transaction ID\r\n" + "CHECK_ELIGIBILITY", reportData.get(7));
 		assertEquals("00000010", reportData.get(8));
-		assertEquals("traininghealthauth", reportData.get(9));
+		assertEquals("TRAININGHEALTHAUTH", reportData.get(9));
 		assertEquals("hnweb1", reportData.get(10));
 		assertEquals("2022-08-05T00:00:00", reportData.get(11));
 		assertEquals("PHN", reportData.get(12));
 
 		// Check the last (40th) record
 		assertEquals("00000010", reportData.get(239));
-		assertEquals("traininghealthauth", reportData.get(240));
+		assertEquals("TRAININGHEALTHAUTH", reportData.get(240));
 		assertEquals("hnweb1", reportData.get(241));
 		assertEquals("2022-08-05T00:00:00", reportData.get(242));
 		assertEquals("PHN", reportData.get(243));
@@ -297,7 +297,7 @@ public class AuditControllerTest extends BaseControllerTest {
 		orgs.add("00000020");
 
 		List<String> spgRoles = new ArrayList<>();
-		spgRoles.add("traininghealthauth");
+		spgRoles.add("TRAININGHEALTHAUTH");
 
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setUserId("hnweb1");
@@ -327,14 +327,14 @@ public class AuditControllerTest extends BaseControllerTest {
 		assertEquals("Affected Party ID Type", reportData.get(6));
 		assertEquals("Transaction ID\r\n" + "PHN_INQUIRY", reportData.get(7));
 		assertEquals("00000010", reportData.get(8));
-		assertEquals("traininghealthauth", reportData.get(9));
+		assertEquals("TRAININGHEALTHAUTH", reportData.get(9));
 		assertEquals("hnweb1", reportData.get(10));
 		assertEquals("2022-08-05T00:00:00", reportData.get(11));
 		assertEquals("PHN", reportData.get(12));
 
 		// Check the last (40th) record
 		assertEquals("00000010", reportData.get(239));
-		assertEquals("traininghealthauth", reportData.get(240));
+		assertEquals("TRAININGHEALTHAUTH", reportData.get(240));
 		assertEquals("hnweb1", reportData.get(241));
 		assertEquals("2022-08-05T00:00:00", reportData.get(242));
 		assertEquals("PHN", reportData.get(243));
@@ -369,7 +369,7 @@ public class AuditControllerTest extends BaseControllerTest {
 			Transaction transaction = new Transaction();
 
 			transaction.setOrganization("00000010");
-			transaction.setSpgRole("traininghealthauth");
+			transaction.setSpgRole("TRAININGHEALTHAUTH");
 			transaction.setServer("server1");
 			transaction.setSessionId("123456");
 			transaction.setSourceIp("0:0:0:0:0:0:0:1");
