@@ -183,7 +183,7 @@ function validateSpecialCharactersForAddress(input, length) {
 /**
  * Validates City / Province for invalid characters
  */
-export function validateCityAndProvince(cityOrProvince) {
+export function validateCityOrProvince(cityOrProvince) {
   if (cityOrProvince === undefined || cityOrProvince === '') {
     return true
   }

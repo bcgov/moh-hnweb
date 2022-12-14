@@ -131,7 +131,7 @@ import {
   validatePHN,
   validatePostalCode,
   validateMailingPostalCode,
-  validateCityAndProvince,
+  validateCityOrProvince,
   validateAddress,
   validateMailingAddressForGroupMember,
   validateOptionalAddress,
@@ -394,12 +394,12 @@ export default {
         city: {
           required,
           maxLength: maxLength(25),
-          validateAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityAndProvince),
+          validateAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityOrProvince),
         },
         province: {
           required,
           maxLength: maxLength(25),
-          validateAddress: helpers.withMessage(VALIDATE_PROVINCE_MESSAGE, validateCityAndProvince),
+          validateAddress: helpers.withMessage(VALIDATE_PROVINCE_MESSAGE, validateCityOrProvince),
         },
       },
       mailingAddress: {
@@ -419,12 +419,12 @@ export default {
         city: {
           required: helpers.withMessage(VALIDATE_CITY_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForGroupMember)),
           maxLength: maxLength(25),
-          validateAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityAndProvince),
+          validateAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityOrProvince),
         },
         province: {
           required: helpers.withMessage(this.stateAddressFieldRequiredValidationMessage, requiredIf(validateMailingAddressForGroupMember)),
           maxLength: maxLength(25),
-          validateAddress: helpers.withMessage(this.stateAddressFieldInvalidValidationMessage, validateCityAndProvince),
+          validateAddress: helpers.withMessage(this.stateAddressFieldInvalidValidationMessage, validateCityOrProvince),
         },
       },
       spousePhn: {
