@@ -22,15 +22,13 @@
       </section>
 
       <section aria-labelledby="helpSection3">
-        <h2 id="helpSection3">Contact the Ministry of Health Help Desk</h2>
-        <p>The Ministry of Health provides support for MSP Direct Monday to Friday, 8:00AM to 4:30PM, excluding statutory holidays.</p>
+        <h2 id="helpSection3">Support</h2>
+        <p>If you have questions about using MSP Direct, contact Health Insurance BC.</p>
+        <p>(604) 683-7520 (Lower Mainland)</p>
+        <p>1-877-955-5656 (Elsewhere in B.C.)</p>
         <p>
-          For further information or support about MSP Direct business services, please contact:
-          <AppLabel>Email</AppLabel><a href="mailto:HLTH.HnetConnection@gov.bc.ca?subject=MSP Direct Help">HLTH.HnetConnection@gov.bc.ca</a>
+          <a href="mailto:HLTH.HnetConnection@gov.bc.ca?subject=MSP Direct Help">HLTH.HnetConnection@gov.bc.ca</a>
         </p>
-        <p>For information about access and/or authentication, please contact:<AppLabel>Email</AppLabel> <a href="mailto:HLTH.Helpdesk@gov.bc.ca?subject=MSP Direct Help">HLTH.Helpdesk@gov.bc.ca</a></p>
-        <p><AppLabel>Local</AppLabel>(250) 952-1234</p>
-        <p><AppLabel>Toll Free Canada Wide</AppLabel>1 (888) 764-2323</p>
       </section>
     </AppCol>
   </AppRow>
