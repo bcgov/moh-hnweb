@@ -151,6 +151,10 @@ import {
   VALIDATE_CITY_MESSAGE,
   VALIDATE_PROVINCE_REQUIRED_MESSAGE,
   VALIDATE_PROVINCE_MESSAGE,
+  VALIDATE_STATE_REQUIRED_MESSAGE,
+  VALIDATE_ZIP_CODE_REQUIRED_MESSAGE,
+  VALIDATE_STATE_MESSAGE,
+  VALIDATE_ZIP_CODE_MESSAGE,
 } from '../../util/validators'
 import GroupMemberService from '../../services/GroupMemberService'
 import { useAlertStore } from '../../stores/alert'
@@ -194,7 +198,7 @@ export default {
         addressLine1: '',
         addressLine2: '',
         postalCode: '',
-        country: '',
+        country: 'CA',
         city: '',
         province: '',
       },
@@ -297,6 +301,30 @@ export default {
       this.alertStore.setErrorAlert(error)
       this.submitting = false
     },
+    stateAddressFieldRequiredValidationMessage() {
+      if (this.mailingAddress.country === 'US') {
+        return VALIDATE_STATE_REQUIRED_MESSAGE
+      }
+      return VALIDATE_PROVINCE_REQUIRED_MESSAGE
+    },
+    zipAddressFieldRequiredValidationMessage() {
+      if (this.mailingAddress.country === 'US') {
+        return VALIDATE_ZIP_CODE_REQUIRED_MESSAGE
+      }
+      return VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE
+    },
+    stateAddressFieldInvalidValidationMessage() {
+      if (this.mailingAddress.country === 'US') {
+        return VALIDATE_STATE_MESSAGE
+      }
+      return VALIDATE_PROVINCE_MESSAGE
+    },
+    zipAddressFieldInvalidValidationMessage() {
+      if (this.mailingAddress.country === 'US') {
+        return VALIDATE_ZIP_CODE_MESSAGE
+      }
+      return VALIDATE_POSTAL_CODE_MESSAGE
+    },
     resetForm() {
       this.groupNumber = ''
       this.phn = ''
@@ -385,8 +413,8 @@ export default {
           validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateOptionalAddress),
         },
         postalCode: {
-          required: helpers.withMessage(VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForGroupMember)),
-          validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
+          required: helpers.withMessage(this.zipAddressFieldRequiredValidationMessage, requiredIf(validateMailingAddressForGroupMember)),
+          validateMailingPostalCode: helpers.withMessage(this.zipAddressFieldInvalidValidationMessage, validateMailingPostalCode),
         },
         city: {
           required: helpers.withMessage(VALIDATE_CITY_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForGroupMember)),
@@ -394,9 +422,9 @@ export default {
           validateAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityAndProvince),
         },
         province: {
-          required: helpers.withMessage(VALIDATE_PROVINCE_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForGroupMember)),
+          required: helpers.withMessage(this.stateAddressFieldRequiredValidationMessage, requiredIf(validateMailingAddressForGroupMember)),
           maxLength: maxLength(25),
-          validateAddress: helpers.withMessage(VALIDATE_PROVINCE_MESSAGE, validateCityAndProvince),
+          validateAddress: helpers.withMessage(this.stateAddressFieldInvalidValidationMessage, validateCityAndProvince),
         },
       },
       spousePhn: {
