@@ -334,11 +334,6 @@ export default {
           maxLength: maxLength(25),
           validateCityOrProvince: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityOrProvince),
         },
-        province: {
-          required,
-          maxLength: maxLength(25),
-          validateCityOrProvince: helpers.withMessage(VALIDATE_PROVINCE_MESSAGE, validateCityOrProvince),
-        },
       },
       mailingAddress: {
         addressLine1: {
