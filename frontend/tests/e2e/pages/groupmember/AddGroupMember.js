@@ -19,6 +19,7 @@ class AddGroupMember {
     this.mailingAddressCityInput = Selector('#mailingAddressCity')
     this.mailingAddressProvinceInput = Selector('#mailingAddressProvince')
     this.mailingPostalCodeInput = Selector('#mailingPostalCode')
+    this.mailingAddressCountrySelect = Selector('#mailingAddressCountry')
     this.spouse = Selector('#spousePhn')
     this.dependentPhn = Selector('#dependentPHN')
     this.dependentList = Selector('#dependentList')

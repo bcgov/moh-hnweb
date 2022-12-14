@@ -22,6 +22,11 @@ const CITY_REQUIRED_MESSAGE = 'City is required'
 const PROVINCE_REQUIRED_MESSAGE = 'Province is required'
 const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
 const INVALID_POSTAL_CODE_VALIDATION_MESSAGE = 'Postal Code is invalid'
+const ZIP_CODE_REQUIRED_MESSAGE = 'ZIP Code is required'
+const STATE_REQUIRED_MESSAGE = 'State is required'
+const INVALID_ZIP_CODE_MESSAGE = 'ZIP Code is invalid'
+const INVALID_STATE_MESSAGE = 'State is invalid'
+const mailingCountryOption = AddGroupMember.mailingAddressCountrySelect.find('option')
 const SUCCESS_MESSAGE = 'RPBS0065 9882807277 COVERAGE ALREADY EXISTS FOR THE PHN/GROUP NUMBER SPECIFIED'
 const PHONE_NUMBER_VALIDATION_MESSAGE = 'Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
 
@@ -87,6 +92,20 @@ test('Check required Mailing Address field validation', async (t) => {
     .contains(PROVINCE_REQUIRED_MESSAGE)
     .expect(AddGroupMember.errorText.nth(9).textContent)
     .contains(POSTAL_CODE_REQUIRED_MESSAGE)
+})
+
+test('Check required message for United States', async (t) => {
+  await t
+    // When I click the submit button
+    .click(AddGroupMember.submitButton)
+    .wait(1000)
+    .typeText(AddGroupMember.mailingAddress2Input, 'TEST ADDRESS LINE 2')
+    .click(AddGroupMember.mailingAddressCountrySelect)
+    .click(mailingCountryOption.withText('United States'))
+    .expect(AddGroupMember.errorText.nth(8).textContent)
+    .contains(STATE_REQUIRED_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(10).textContent)
+    .contains(ZIP_CODE_REQUIRED_MESSAGE)
 })
 
 test('Check properly filled form passes validation', async (t) => {
@@ -187,6 +206,22 @@ test('Check input field length validation', async (t) => {
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
+})
+
+test('Check invalid message for United States', async (t) => {
+  await t
+    // When I click the submit button
+    .click(AddGroupMember.submitButton)
+    .wait(1000)
+    .typeText(AddGroupMember.mailingAddress2Input, 'TEST ADDRESS LINE 2')
+    .typeText(AddGroupMember.mailingAddressProvinceInput, '@@@@@@')
+    .typeText(AddGroupMember.mailingPostalCodeInput, '@@@@@@')
+    .click(AddGroupMember.mailingAddressCountrySelect)
+    .click(mailingCountryOption.withText('United States'))
+    .expect(AddGroupMember.errorText.nth(8).textContent)
+    .contains(INVALID_STATE_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(10).textContent)
+    .contains(INVALID_ZIP_CODE_MESSAGE)
 })
 
 test('Check invalid character validation', async (t) => {
