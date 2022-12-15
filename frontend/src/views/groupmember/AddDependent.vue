@@ -17,17 +17,15 @@
           A dependent <span class="red-text">child who is older than 18 and younger than 25 years of age</span> may still be covered on your group members account as an overage student if they are attending a school or educational institution located within Canada. If yes, click the "YES" button.
         </p>
       </li>
+    </ul>
+    <p><b>Studies Completion Date</b></p>
+    <ul>
       <li>
-        <p><b>Studies Completion Date</b></p>
+        <p>
+          This is a mandatory field if you have selected the "YES" answer above. Enter the date (this year and month) when the dependent's studies in Canada are expected to finish. This date must be at least three months from today's date and can be up to five years in the future. If the dependent
+          is turning 25 during this period, you will be able to confirm them as a student until the month before their 25th birthday.
+        </p>
       </li>
-      <ul>
-        <li>
-          <p>
-            This is a mandatory field if you have selected the "YES" answer above. Enter the date (this year and month) when the dependent's studies in Canada are expected to finish. This date must be at least three months from today's date and can be up to five years in the future. If the dependent
-            is turning 25 during this period, you will be able to confirm them as a student until the month before their 25th birthday.
-          </p>
-        </li>
-      </ul>
       <li>If the transaction was completed, the PHN is displayed. You may wish to use the PHN with Get Contract Periods to verify that the correct dependent has been added as of the correct date</li>
     </ul>
   </AppHelp>
