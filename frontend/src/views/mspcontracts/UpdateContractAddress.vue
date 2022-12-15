@@ -45,7 +45,7 @@
               <AppInput :e-model="v$.homeAddress.city" id="city" label="City" type="text" v-model.trim="homeAddress.city" />
             </AppCol>
             <AppCol>
-              <AppInput :e-model="v$.homeAddress.province" id="province" label="Province" type="text" value="British Columbia" disabled="disabled" v-model.trim="homeAddress.province" />
+              <AppInput :e-model="v$.homeAddress.province" id="province" label="Province" type="text" value="BC" disabled="disabled" v-model.trim="homeAddress.province" />
             </AppCol>
           </AppRow>
         </AppCol>
@@ -165,7 +165,7 @@ export default {
         postalCode: '',
         country: '',
         city: '',
-        province: '',
+        province: 'BC',
       },
       mailingAddress: {
         addressLine1: '',
