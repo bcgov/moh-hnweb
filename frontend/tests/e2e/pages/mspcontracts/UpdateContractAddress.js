@@ -10,6 +10,7 @@ class UpdateContractAddress {
     this.address2Input = Selector('#addressLine2')
     this.homeAddressCityInput = Selector('#city')
     this.homeAddressProvinceInput = Selector('#province')
+    this.homeAddressCountryInput = Selector('#country')
     this.postalCodeInput = Selector('#postalCode')
     this.mailingAddress1Input = Selector('#mailingAddress1')
     this.mailingAddress2Input = Selector('#mailingAddress2')

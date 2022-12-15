@@ -275,6 +275,8 @@ test('Check clear button clears the form', async (t) => {
     .eql('BC')
     .expect(UpdateContractAddress.postalCodeInput.value)
     .eql('')
+    .expect(UpdateContractAddress.homeAddressCountryInput.value)
+    .eql('Canada')
     .expect(UpdateContractAddress.mailingAddress1Input.value)
     .eql('')
     .expect(UpdateContractAddress.mailingAddress2Input.value)
