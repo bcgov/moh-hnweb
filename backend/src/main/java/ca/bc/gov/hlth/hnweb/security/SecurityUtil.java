@@ -32,6 +32,8 @@ public class SecurityUtil {
 	private static final String ORGANIZATION_ID = "id";
 
 	private static final String USER_ROLES = "roles";
+	
+	private static final String UNKNOWN_ROLE = "UNKNOWN";
 
 	private static String KEYCLOAK_CLIENT;
 
@@ -107,7 +109,7 @@ public class SecurityUtil {
 				}
 			}
 		}
-		return "UNKNOWN";
+		return UNKNOWN_ROLE;
 	}
 
 	private static String extractOrganization(Jwt jwt) {

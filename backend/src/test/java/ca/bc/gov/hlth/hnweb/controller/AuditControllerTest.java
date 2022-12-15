@@ -62,7 +62,6 @@ public class AuditControllerTest extends BaseControllerTest {
 
 	@Test
 	public void testGetAuditReport_withoutOptionalParam() {
-		;
 		createAuditReports(2, TransactionType.CHECK_ELIGIBILITY);
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
@@ -108,6 +107,37 @@ public class AuditControllerTest extends BaseControllerTest {
 
 		assertEquals(HttpStatus.OK, auditReport.getStatusCode());
 		assertEquals(1, auditReport.getBody().getRecords().size());
+
+	}
+	
+	@Test
+	public void testGetAuditReports_spgNoResults() {
+		createAuditReports(15, TransactionType.CHECK_ELIGIBILITY);
+
+		List<String> types = new ArrayList<>();
+		types.add(TransactionType.CHECK_ELIGIBILITY.name());
+
+		List<String> orgs = new ArrayList<>();
+		orgs.add("00000010");
+
+		List<String> spgRoles = new ArrayList<>();
+		spgRoles.add("E45");
+		
+		AuditReportRequest auditReportRequest = new AuditReportRequest();
+		auditReportRequest.setUserId("hnweb1");
+		auditReportRequest.setOrganizations(orgs);
+		auditReportRequest.setSpgRoles(spgRoles);
+		auditReportRequest.setTransactionTypes(types);
+		auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
+		auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
+		auditReportRequest.setPage(0);
+		auditReportRequest.setRows(10);
+
+		ResponseEntity<AuditReportResponse> auditReport = auditReportController.getAuditReport(auditReportRequest,
+				createHttpServletRequest());
+
+		assertEquals(HttpStatus.OK, auditReport.getStatusCode());
+		assertEquals(0, auditReport.getBody().getRecords().size());
 
 	}
 
