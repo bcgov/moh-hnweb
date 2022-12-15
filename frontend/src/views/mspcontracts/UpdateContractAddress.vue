@@ -45,7 +45,7 @@
               <AppInput :e-model="v$.homeAddress.city" id="city" label="City" type="text" v-model.trim="homeAddress.city" />
             </AppCol>
             <AppCol>
-              <AppInput :e-model="v$.homeAddress.province" id="province" label="Province" type="text" value="BC" disabled="disabled" v-model.trim="homeAddress.province" />
+              <AppInput :e-model="v$.homeAddress.province" id="province" label="Province" type="text" disabled="disabled" v-model.trim="homeAddress.province" />
             </AppCol>
           </AppRow>
         </AppCol>
@@ -67,7 +67,7 @@
               <AppInput :e-model="v$.homeAddress.postalCode" id="postalCode" label="Postal Code" type="text" v-model.trim="homeAddress.postalCode" />
             </AppCol>
             <AppCol>
-              <AppInput :e-model="v$.homeAddress.country" id="country" label="Country" type="text" value="Canada" disabled="disabled" v-model.trim="homeAddress.country" />
+              <AppInput :e-model="v$.homeAddress.country" id="country" label="Country" type="text" disabled="disabled" v-model.trim="homeAddress.country" />
             </AppCol>
           </AppRow>
         </AppCol>
@@ -163,7 +163,7 @@ export default {
         addressLine1: '',
         addressLine2: '',
         postalCode: '',
-        country: '',
+        country: 'Canada',
         city: '',
         province: 'BC',
       },
@@ -256,13 +256,15 @@ export default {
       this.homeAddress.addressLine1 = ''
       this.homeAddress.addressLine2 = ''
       this.homeAddress.city = ''
-      this.homeAddress.province = ''
+      this.homeAddress.province = 'BC'
+      this.homeAddress.country = 'Canada'
       this.homeAddress.postalCode = ''
       this.mailingAddress.addressLine1 = ''
       this.mailingAddress.addressLine2 = ''
       this.mailingAddress.city = ''
       this.mailingAddress.province = ''
       this.mailingAddress.postalCode = ''
+      this.mailingAddress.country = 'CA'
       this.result = null
       this.v$.$reset()
       this.alertStore.dismissAlert()
