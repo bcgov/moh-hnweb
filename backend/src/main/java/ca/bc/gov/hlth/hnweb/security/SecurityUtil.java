@@ -74,7 +74,7 @@ public class SecurityUtil {
 		}
 		for (String role : roles) {
 			List<String> permissions = rolePermissions.get(role.toLowerCase());
-			if(permissions == null) {
+			if (permissions == null) {
 				continue;
 			}
 			switch (transactionType) {
