@@ -46,7 +46,7 @@ public abstract class BaseController {
 	 * @param identifier The value of the identifier
 	 */
 	protected void addAffectedParty(Transaction transaction, IdentifierType type, String identifier, AffectedPartyDirection direction) {
-		if(identifier == null || identifier.isBlank() || type == null || direction == null) {
+		if (identifier == null || identifier.isBlank() || type == null || direction == null) {
 			return;
 		}
 		auditService.createAffectedParty(transaction, type, identifier, direction);
