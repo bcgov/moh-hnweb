@@ -1,10 +1,10 @@
 <template>
   <AppHelp>
-    <p>Use this screen to add <span class="red-text">or renew</span> a new group member and their dependents <span class="red-text">(if appliable)</span> to your MSP group account.</p>
+    <p>Use this screen to add <span>or renew</span> a new group member and their dependents <span>(if applicable)</span> to your MSP group account.</p>
     <p><b>Before you begin:</b></p>
     <ul>
       <li><p>Use the PHN Inquiry screen to confirm that the employee and dependents are currently eligible for publicly funded health care (Eligible? = Y), and to check student status for any dependent children between 19 and 24.</p></li>
-      <li><p>A group members Home Address must be in British Columbia.</p></li>
+      <li><p>A group member's Home Address must be in British Columbia.</p></li>
       <li><p>NOTE - this screen does not have CITY or PROVINCE fields. Be sure to put them in the last completed line of address i.e., Line 1: 403 1575 Main Street Line 2: Vancouver BC</p></li>
       <li><p>If the transaction was successful, the PHN will be displayed. You may wish to use the PHN with Get Contract Periods to verify that the correct group member has been added as of the correct date.</p></li>
     </ul>
@@ -384,8 +384,3 @@ export default {
   },
 }
 </script>
-<style>
-.red-text {
-  color: red;
-}
-</style>
