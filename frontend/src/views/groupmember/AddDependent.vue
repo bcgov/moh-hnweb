@@ -1,4 +1,32 @@
 <template>
+  <AppHelp>
+    <ul>
+      <li><p>Use this screen to add, or renew, a spouse or child on a group account.</p></li>
+      <li>
+        <p><b>This screen has been enhanced to allow you to also add dependents between the age of 19 and 24 who are studying at a Canadian educational institute.</b></p>
+      </li>
+    </ul>
+    <p><b>Before you begin:</b></p>
+    <ul>
+      <li><p>Use the PHN Inquiry screen to confirm that the dependent is currently eligible for publicly funded health care (Eligible? = Y) and, if they are a dependent between 19 and 24 years of age, check with your group member that their dependent's student status is confirmed.</p></li>
+    </ul>
+    <p><b>Student status</b></p>
+    <ul>
+      <li>
+        <p>A dependent <span>child who is older than 18 and younger than 25 years of age</span> may still be covered on your group member's account as an overage student if they are attending a school or educational institution located within Canada. If yes, click the "YES" button.</p>
+      </li>
+    </ul>
+    <p><b>Studies Completion Date</b></p>
+    <ul>
+      <li>
+        <p>
+          This is a mandatory field if you have selected the "YES" answer above. Enter the date (the year and month) when the dependent's studies in Canada are expected to finish. This date must be at least three months from today's date and can be up to five years into the future. If the dependent
+          is turning 25 during this period, you will be able to confirm them as a student until the month before their 25th birthday.
+        </p>
+      </li>
+      <li>If the transaction was completed, the PHN is displayed. You may wish to use the PHN with Get Contract Periods to verify that the correct dependent has been added as of the correct date</li>
+    </ul>
+  </AppHelp>
   <div id="addGroupMemberDependent" v-if="inputFormActive">
     <form @submit.prevent="submitForm">
       <AppRow>
@@ -55,6 +83,7 @@
 </template>
 
 <script>
+import AppHelp from '../../components/ui/AppHelp.vue'
 import YesNoRadioButtonGroup from '../../components/ui/YesNoRadioButtonGroup.vue'
 import useVuelidate from '@vuelidate/core'
 import { helpers, required, requiredIf } from '@vuelidate/validators'
@@ -67,7 +96,7 @@ import { handleServiceError } from '../../util/utils'
 
 export default {
   name: 'AddDependent',
-  components: { YesNoRadioButtonGroup },
+  components: { YesNoRadioButtonGroup, AppHelp },
   setup() {
     const currentMonth = {
       month: new Date().getMonth(),
