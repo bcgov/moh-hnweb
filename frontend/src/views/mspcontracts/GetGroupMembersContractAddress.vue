@@ -119,7 +119,7 @@ export default {
         }
         /*
           This screen calls the Contract Inquiry endpoint as the results shown here are a subset of those returned for Contract Inquiry. This does not
-          break security as currently all roles with permissions for R37(Get Contract Address) also have permission for R40(Contract Inquiry).
+          break security as currently all roles with permissions for R37(Get Group Member's Contract Address) also have permission for R40(Contract Inquiry).
         */
         this.result = (await MspContractsService.inquireContract({ phn: this.phn, groupNumber: this.groupNumber })).data
         if (this.result.status === 'error') {
