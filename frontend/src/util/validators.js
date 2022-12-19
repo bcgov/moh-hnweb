@@ -56,6 +56,18 @@ export function validatePostalCode(postalCode) {
 }
 
 /**
+ * Validates that the Zip Code matches the accepted format.
+ * Must be of type NNNNN or NNNNN-NNNN (where "N" is numeric)
+ */
+export function validateMailingZipCode(zipCode) {
+  if (zipCode === undefined || zipCode === '') {
+    return true
+  }
+  var regex = new RegExp(/^[0-9]{5}(?:-[0-9]{4})?$/i)
+  return regex.test(zipCode)
+}
+
+/**
  * Validates that the Postal Code matches the accepted format.
  * Must be of the format ANANAN (where "A" is alpha and "N" is numeric). Must start with one of the "ABCEGHJKLMNPRSTVWXYZ" i.e., be a Canada postal code
  */
@@ -187,14 +199,7 @@ export function validateCityOrProvince(cityOrProvince) {
   if (cityOrProvince === undefined || cityOrProvince === '') {
     return true
   }
-  if (cityOrProvince.length > 25) {
-    return true
-  }
-  var validChars = /^[a-zA-Z ]+$/
-  if (validChars.test(cityOrProvince)) {
-    return true
-  }
-  return false
+  return validateAlphaWithSpaces(cityOrProvince, 25)
 }
 
 /**
@@ -202,13 +207,6 @@ export function validateCityOrProvince(cityOrProvince) {
  */
 export function validateMailingAddress() {
   return this.mailingAddress.addressLine2 !== '' || this.mailingAddress.addressLine3 !== '' || this.mailingAddress.addressLine4 !== '' || this.mailingAddress.postalCode !== ''
-}
-
-/**
- * Used to validate that Mailing Address line 1 must be completed if any other Mailing Address(Line 2, city, province, PostalCode) is complete
- */
-export function validateMailingAddressForMSPContracts() {
-  return this.mailingAddress.addressLine2 !== '' || this.mailingAddress.city !== '' || this.mailingAddress.province !== '' || this.mailingAddress.postalCode !== ''
 }
 
 /**
@@ -270,6 +268,17 @@ function validateAlpha(input, length) {
 }
 
 /**
+ * Validate that input is allowed length and that it contains alphabets and spaces
+ */
+function validateAlphaWithSpaces(input, length) {
+  if (input.length > length) {
+    return true
+  }
+  var validChars = /^[a-zA-Z ]+$/
+  return validChars.test(input)
+}
+
+/**
  * Validates that the input is an integer number of the specified length.
  */
 function validateNumber(input, length) {
@@ -325,8 +334,8 @@ export const VALIDATE_ADDRESS_LINE4_MESSAGE = 'Address Line 4 is invalid'
 export const VALIDATE_SURNAME_MESSAGE = 'Surname is invalid'
 export const VALIDATE_FIRST_NAME_MESSAGE = 'First Name is invalid'
 export const VALIDATE_SECOND_NAME_MESSAGE = 'Second Name is invalid'
-export const VALIDATE_CITY_REQUIRED_MESSAGE = 'City is required'
 export const VALIDATE_CITY_MESSAGE = 'City is invalid'
+export const VALIDATE_CITY_REQUIRED_MESSAGE = 'City is required'
 export const VALIDATE_PROVINCE_REQUIRED_MESSAGE = 'Province is required'
 export const VALIDATE_PROVINCE_MESSAGE = 'Province is invalid'
 export const VALIDATE_STATE_REQUIRED_MESSAGE = 'State is required'

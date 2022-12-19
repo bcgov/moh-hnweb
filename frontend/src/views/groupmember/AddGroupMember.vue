@@ -1,4 +1,14 @@
 <template>
+  <AppHelp>
+    <p>Use this screen to add <span>or renew</span> a new group member and their dependents <span>(if applicable)</span> to your MSP group account.</p>
+    <p><b>Before you begin:</b></p>
+    <ul>
+      <li><p>Use the PHN Inquiry screen to confirm that the employee and dependents are currently eligible for publicly funded health care (Eligible? = Y), and to check student status for any dependent children between 19 and 24.</p></li>
+      <li><p>A group member's Home Address must be in British Columbia.</p></li>
+      <li><p>NOTE - this screen does not have CITY or PROVINCE fields. Be sure to put them in the last completed line of address i.e., Line 1: 403 1575 Main Street Line 2: Vancouver BC</p></li>
+      <li><p>If the transaction was successful, the PHN will be displayed. You may wish to use the PHN with Get Contract Periods to verify that the correct group member has been added as of the correct date.</p></li>
+    </ul>
+  </AppHelp>
   <div id="addGroupMember" v-if="addMode">
     <form @submit.prevent="submitForm">
       <AppRow>
@@ -31,7 +41,7 @@
           <AppInput :e-model="v$.telephone" id="telephone" label="Telephone (Optional)" type="text" v-model.trim="telephone" placeholder="1234567890" />
         </AppCol>
       </AppRow>
-      <AppRow class="element-gap">
+      <AppRow class="flex-gap-100">
         <AppCol class="col5">
           <AppInput :e-model="v$.homeAddress.addressLine1" id="addressLine1" label="Home Address Line 1" type="text" v-model="homeAddress.addressLine1" />
         </AppCol>
@@ -39,7 +49,7 @@
           <AppInput :e-model="v$.mailingAddress.addressLine1" id="mailingAddress1" label="Mailing Address (if different from home address)" v-model="mailingAddress.addressLine1" />
         </AppCol>
       </AppRow>
-      <AppRow class="element-gap">
+      <AppRow class="flex-gap-100">
         <AppCol class="col5">
           <AppInput :e-model="v$.homeAddress.addressLine2" id="addressLine2" label="Line 2 (Optional)" type="text" v-model="homeAddress.addressLine2" />
         </AppCol>
@@ -53,7 +63,7 @@
             <AppInput :e-model="v$.homeAddress.city" id="city" label="City" type="text" v-model.trim="homeAddress.city" />
           </AppCol>
           <AppCol class="col5">
-            <AppInput :e-model="v$.homeAddress.province" id="province" label="Province" type="text" v-model.trim="homeAddress.province" />
+            <AppInput :e-model="v$.homeAddress.province" id="province" label="Province" type="text" disabled="disabled" v-model.trim="homeAddress.province" />
           </AppCol>
         </AppRow>
         <AppRow>
@@ -71,7 +81,7 @@
             <AppInput :e-model="v$.homeAddress.postalCode" id="postalCode" label="Postal Code" type="text" v-model.trim="homeAddress.postalCode" />
           </AppCol>
           <AppCol class="col5">
-            <AppInput :e-model="v$.homeAddress.country" id="country" label="Country" type="text" value="Canada" disabled="disabled" v-model.trim="homeAddress.country" />
+            <AppInput :e-model="v$.homeAddress.country" id="country" label="Country" type="text" disabled="disabled" v-model.trim="homeAddress.country" />
           </AppCol>
         </AppRow>
         <AppRow>
@@ -98,9 +108,6 @@
             <AppInput :e-model="v$.spousePhn" id="spousePhn" type="text" v-model.trim="spousePhn" />
           </AppCol>
         </AppRow>
-        <AppRow>
-          <AppCol class="col4"> </AppCol>
-        </AppRow>
       </div>
       <AddListDependent :dependents="dependents" @add-dependent="addDependent" @remove-dependent="removeDependent" />
       <AppRow>
@@ -121,6 +128,7 @@
   </div>
 </template>
 <script>
+import AppHelp from '../../components/ui/AppHelp.vue'
 import useVuelidate from '@vuelidate/core'
 import { required, requiredIf, helpers, maxLength } from '@vuelidate/validators'
 import AddListDependent from '../../components/groupmember/AddListDependent.vue'
@@ -131,6 +139,7 @@ import {
   validatePHN,
   validatePostalCode,
   validateMailingPostalCode,
+  validateMailingZipCode,
   validateCityOrProvince,
   validateAddress,
   validateMailingAddressForGroupMember,
@@ -164,6 +173,7 @@ export default {
   name: 'AddGroupMember',
   components: {
     AddListDependent,
+    AppHelp,
   },
   setup() {
     return {
@@ -190,9 +200,9 @@ export default {
         addressLine1: '',
         addressLine2: '',
         postalCode: '',
-        country: '',
+        country: 'Canada',
         city: '',
-        province: '',
+        province: 'BC',
       },
       mailingAddress: {
         addressLine1: '',
@@ -325,6 +335,13 @@ export default {
       }
       return VALIDATE_POSTAL_CODE_MESSAGE
     },
+    validateZipOrPostalCode(zipOrPostalCode) {
+      if (this.mailingAddress.country === 'US') {
+        return validateMailingZipCode(zipOrPostalCode)
+      }
+      return validateMailingPostalCode(zipOrPostalCode)
+    },
+
     resetForm() {
       this.groupNumber = ''
       this.phn = ''
@@ -335,15 +352,15 @@ export default {
       this.homeAddress.addressLine1 = ''
       this.homeAddress.addressLine2 = ''
       this.homeAddress.city = ''
-      this.homeAddress.province = ''
+      this.homeAddress.province = 'BC'
       this.homeAddress.postalCode = ''
-      this.homeAddress.country = ''
+      this.homeAddress.country = 'Canada'
       this.mailingAddress.addressLine1 = ''
       this.mailingAddress.addressLine2 = ''
       this.mailingAddress.city = ''
       this.mailingAddress.province = ''
       this.mailingAddress.postalCode = ''
-      this.mailingAddress.country = ''
+      this.mailingAddress.country = 'CA'
       this.spousePhn = ''
       this.dependents = []
       this.result = null
@@ -414,7 +431,7 @@ export default {
         },
         postalCode: {
           required: helpers.withMessage(this.zipAddressFieldRequiredValidationMessage, requiredIf(validateMailingAddressForGroupMember)),
-          validateMailingPostalCode: helpers.withMessage(this.zipAddressFieldInvalidValidationMessage, validateMailingPostalCode),
+          validateMailingPostalCode: helpers.withMessage(this.zipAddressFieldInvalidValidationMessage, this.validateZipOrPostalCode),
         },
         city: {
           required: helpers.withMessage(VALIDATE_CITY_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForGroupMember)),
@@ -434,11 +451,3 @@ export default {
   },
 }
 </script>
-<style>
-.flex-nowrap {
-  flex-wrap: nowrap !important;
-}
-.element-gap {
-  gap: 100px;
-}
-</style>

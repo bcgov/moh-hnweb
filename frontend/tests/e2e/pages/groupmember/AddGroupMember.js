@@ -1,4 +1,5 @@
 import { Selector } from 'testcafe'
+import { faRulerHorizontal } from '@fortawesome/free-solid-svg-icons'
 
 class AddGroupMember {
   constructor() {
@@ -14,6 +15,7 @@ class AddGroupMember {
     this.homeAddressCityInput = Selector('#city')
     this.homeAddressProvinceInput = Selector('#province')
     this.postalCodeInput = Selector('#postalCode')
+    this.homeAddressCountryInput = Selector('#country')
     this.mailingAddress1Input = Selector('#mailingAddress1')
     this.mailingAddress2Input = Selector('#mailingAddress2')
     this.mailingAddressCityInput = Selector('#mailingAddressCity')

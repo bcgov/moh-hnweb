@@ -16,10 +16,16 @@ export default {
   padding-bottom: 5px;
   width: 100%;
 }
-.flex-gap {
-  gap: 40px;
-}
+
 .row-center {
   justify-content: center;
+}
+
+.flex-gap-100 {
+  gap: 100px;
+}
+
+.flex-nowrap {
+  flex-wrap: nowrap !important;
 }
 </style>

@@ -65,6 +65,54 @@ test('Check invalid phn, groupNumber format validation', async (t) => {
     .contains(INVALID_PHN_ERROR_MESSAGE)
 })
 
+test('Check max length validation', async (t) => {
+  await t
+    // Given I enter Group Number, Group Member's PHN, Dependent's PHN with more than allowed length
+    .typeText(ExtendCancelDatePage.phnInput, '98732516933')
+    .typeText(ExtendCancelDatePage.groupNumberInput, '48419044')
+    // When I click the submit button
+    .click(ExtendCancelDatePage.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the PHN format
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+    .expect(ExtendCancelDatePage.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(ExtendCancelDatePage.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+})
+
+test('Check alphanumeric validation', async (t) => {
+  await t
+    // Given a PHN entered with an alphanueric format
+    .typeText(ExtendCancelDatePage.phnInput, '98732516AA')
+    .typeText(ExtendCancelDatePage.groupNumberInput, '48abc04')
+    // When I click the submit button
+    .click(ExtendCancelDatePage.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the PHN format
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+    .expect(ExtendCancelDatePage.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(ExtendCancelDatePage.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+})
+
+test('Check special char validation', async (t) => {
+  await t
+    // Given a PHN entered with an special char
+    .typeText(ExtendCancelDatePage.phnInput, '98732516#$')
+    .typeText(ExtendCancelDatePage.groupNumberInput, '48^&*04')
+    // When I click the submit button
+    .click(ExtendCancelDatePage.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the PHN format
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+    .expect(ExtendCancelDatePage.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(ExtendCancelDatePage.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+})
+
 test('Check properly filled form passes validation and validate results, dates cannot be equal', async (t) => {
   await t
     .typeText(ExtendCancelDatePage.groupNumberInput, '4841904')
