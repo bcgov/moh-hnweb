@@ -191,18 +191,11 @@ export function validateMailingAddress() {
 /**
  * Validates City / Province for invalid characters
  */
-export function validateCityAndProvince(cityOrProvince) {
+export function validateCityOrProvince(cityOrProvince) {
   if (cityOrProvince === undefined || cityOrProvince === '') {
     return true
   }
-  if (cityOrProvince.length > 25) {
-    return true
-  }
-  var validChars = /^[a-zA-Z ]+$/
-  if (validChars.test(cityOrProvince)) {
-    return true
-  }
-  return false
+  return validateAlphaWithSpaces(cityOrProvince, 25)
 }
 
 /**
@@ -255,6 +248,17 @@ function validateAlpha(input, length) {
     return true
   }
   return !/[^a-zA-Z]/.test(input)
+}
+
+/**
+ * Validate that input is allowed length and that it contains alphabets and spaces
+ */
+function validateAlphaWithSpaces(input, length) {
+  if (input.length > length) {
+    return true
+  }
+  var validChars = /^[a-zA-Z ]+$/
+  return validChars.test(input)
 }
 
 /**
