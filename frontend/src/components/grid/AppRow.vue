@@ -1,13 +1,12 @@
 <template>
-  <div class="row" >
+  <div class="row">
     <slot></slot>
   </div>
 </template>
 <script>
-  export default {
-    name: 'AppRow'
-  }
-
+export default {
+  name: 'AppRow',
+}
 </script>
 <style scoped>
 .row {
@@ -17,9 +16,16 @@
   padding-bottom: 5px;
   width: 100%;
 }
-  
+
+.flex-gap-100 {
+  gap: 100px;
+}
+
+.flex-nowrap {
+  flex-wrap: nowrap !important;
+}
+
 .row-center {
   justify-content: center;
 }
-
 </style>

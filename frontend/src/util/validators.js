@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-
 import { helpers } from '@vuelidate/validators'
 
 /**
@@ -190,6 +189,16 @@ export function validateMailingAddress() {
 }
 
 /**
+ * Validates City / Province for invalid characters
+ */
+export function validateCityOrProvince(cityOrProvince) {
+  if (cityOrProvince === undefined || cityOrProvince === '') {
+    return true
+  }
+  return validateAlphaWithSpaces(cityOrProvince, 25)
+}
+
+/**
  * Used to validate that Mailing Address line 1 must be completed if any other Mailing Address(Line 2, Line 3, PostalCode) is complete
  */
 export function validateMailingAddressForVisaResident() {
@@ -239,6 +248,17 @@ function validateAlpha(input, length) {
     return true
   }
   return !/[^a-zA-Z]/.test(input)
+}
+
+/**
+ * Validate that input is allowed length and that it contains alphabets and spaces
+ */
+function validateAlphaWithSpaces(input, length) {
+  if (input.length > length) {
+    return true
+  }
+  var validChars = /^[a-zA-Z ]+$/
+  return validChars.test(input)
 }
 
 /**
@@ -298,6 +318,9 @@ export const VALIDATE_SURNAME_MESSAGE = 'Surname is invalid'
 export const VALIDATE_FIRST_NAME_MESSAGE = 'First Name is invalid'
 export const VALIDATE_SECOND_NAME_MESSAGE = 'Second Name is invalid'
 export const VALIDATE_CITY_MESSAGE = 'City is invalid'
+export const VALIDATE_CITY_REQUIRED_MESSAGE = 'City is required'
+export const VALIDATE_PROVINCE_REQUIRED_MESSAGE = 'Province is required'
+export const VALIDATE_PROVINCE_MESSAGE = 'Province is invalid'
 export const VALIDATE_DOB_MESSAGE = 'Date of Birth must not be in the future'
 export const VALIDATE_PHN_MESSAGE = 'PHN format is invalid'
 export const VALIDATE_CONTRACT_NUMBER_MESSAGE = 'MSP Contract Number is invalid'
@@ -305,5 +328,6 @@ export const VALIDATE_GROUP_NUMBER_MESSAGE = 'Group Number is invalid'
 export const VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE = 'Group Member Number is invalid'
 export const VALIDATE_DEPARTMENT_NUMBER_MESSAGE = 'Department Number is invalid'
 export const VALIDATE_POSTAL_CODE_MESSAGE = 'Postal Code is invalid'
+export const VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
 export const VALIDATE_TELEPHONE_MESSAGE = 'Telephone is invalid. Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
 export const VALIDATE_USER_ID_MESSAGE = 'User ID cannot be longer than 100 characters'
