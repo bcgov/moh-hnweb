@@ -15,6 +15,13 @@
         <AppOutput label="Date of Birth" :value="resident?.dateOfBirth" />
       </AppCol>
     </AppRow>
+    <div v-if="deceased">
+      <AppRow class="text-red">
+        <AppCol class="col3">
+          <AppOutput label="Date of Death" :value="resident?.dateOfDeath" />
+        </AppCol>
+      </AppRow>
+    </div>
     <AppRow>
       <AppCol class="col3">
         <AppOutput label="Gender" :value="resident?.gender" />
@@ -244,6 +251,9 @@ export default {
     fullName() {
       return formatPersonName(this.resident)
     },
+    deceased() {
+      return this.resident?.dateOfDeath && this.resident.dateOfDeath != 'N/A'
+    },
   },
   props: {
     submitting: {
@@ -403,3 +413,8 @@ export default {
   },
 }
 </script>
+<style scoped>
+.text-red {
+  color: red;
+}
+</style>

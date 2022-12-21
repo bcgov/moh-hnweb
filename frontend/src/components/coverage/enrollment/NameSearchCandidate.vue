@@ -18,6 +18,7 @@
 <script>
 import { useAlertStore } from '../../../stores/alert'
 import { useStudyPermitHolderStore } from '../../../stores/studyPermitHolder'
+import { DATE_OF_DEATH_MESSAGE } from '../../../util/constants.js'
 
 export default {
   name: 'NameSearchCandidate',
@@ -59,6 +60,9 @@ export default {
       }
       if (this.candidate.dateOfBirth) {
         details = details + ' ' + this.candidate.dateOfBirth
+      }
+      if (this.candidate.dateOfDeath && this.candidate.dateOfDeath != 'N/A') {
+        details = details + ' ' + this.candidate.dateOfDeath
       }
       if (this.candidate.phn) {
         details = details + ' ' + this.candidate.phn
@@ -132,6 +136,9 @@ export default {
       this.submitting = true
       this.studyPermitHolderStore.resident = this.candidate
       this.alertStore.dismissAlert()
+      if (this.candidate.dateOfDeath && this.candidate.dateOfDeath != 'N/A') {
+        this.alertStore.setErrorAlert(DATE_OF_DEATH_MESSAGE)
+      }
       this.$router.push({ name: 'AddVisaResidentWithPHN', query: { pageAction: 'REGISTRATION' } })
       this.submitting = false
     },

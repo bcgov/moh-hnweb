@@ -132,7 +132,10 @@ public class FindCandidatesConverter {
 					String birthDate = V3MessageUtil.convertDateToString(person.getBirthDate());
 					nameSearchResult.setDateOfBirth(birthDate);					
 				}
-
+				
+				String dateOfDeath = person.getDeathDate() != null ? V3MessageUtil.convertDateToString(person.getDeathDate()) : "N/A";	
+				nameSearchResult.setDateOfDeath(dateOfDeath);
+				
 				nameSearchResult.setGender(person.getGender());
 
 				Address physicalAddress = ns.getPerson().getPhysicalAddress();

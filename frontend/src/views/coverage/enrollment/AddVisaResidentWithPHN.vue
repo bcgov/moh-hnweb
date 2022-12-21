@@ -20,6 +20,7 @@ import { useAlertStore } from '../../../stores/alert'
 import { useStudyPermitHolderStore } from '../../../stores/studyPermitHolder'
 import { handleServiceError } from '../../../util/utils'
 import AppHelp from '../../../components/ui/AppHelp.vue'
+import { DATE_OF_DEATH_MESSAGE } from '../../../util/constants.js'
 
 export default {
   name: 'AddVisaResidentWithPHN',
@@ -96,6 +97,7 @@ export default {
             secondName: data.secondName,
             surname: data.surname,
             dateOfBirth: data.dateOfBirth,
+            dateOfDeath: data.dateOfDeath,
             gender: data.gender,
             address1: data.address1,
             address2: data.address2,
@@ -112,6 +114,9 @@ export default {
           },
           status: data.status,
           message: data.message,
+        }
+        if (data?.dateOfDeath) {
+          this.alertStore.setErrorAlert(DATE_OF_DEATH_MESSAGE)
         }
         if (this.getPersonDetailsResult?.status === 'error') {
           this.alertStore.setErrorAlert(this.getPersonDetailsResult?.message)
