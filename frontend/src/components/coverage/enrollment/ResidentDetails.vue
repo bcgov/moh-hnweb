@@ -109,7 +109,7 @@
             <AppInput :e-model="v$.postalCode" id="postalCode" label="Postal Code" type="text" v-model.trim="postalCode" />
           </AppCol>
           <AppCol class="col5">
-            <AppInput :e-model="v$.country" id="country" label="Country" type="text" disabled="disabled" />
+            <AppInput :e-model="v$.country" id="country" label="Country" type="text" disabled="disabled" v-model="country" />
           </AppCol>
         </AppRow>
         <AppRow>
@@ -117,7 +117,7 @@
             <AppInput :e-model="v$.mailingAddressPostalCode" id="mailingAddressPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddressPostalCode" />
           </AppCol>
           <AppCol class="col5">
-            <AppInput :e-model="v$.mailingAddressCountry" id="mailingAddressCountry" label="Country" type="text" disabled="disabled" />
+            <AppInput :e-model="v$.mailingAddressCountry" id="mailingAddressCountry" label="Country" type="text" disabled="disabled" v-model.trim="mailingAddressCountry" />
           </AppCol>
         </AppRow>
       </AppRow>
