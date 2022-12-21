@@ -36,4 +36,8 @@ export default {
   list-style: disc;
   margin-left: 20px;
 }
+
+:slotted(span) {
+  color: red;
+}
 </style>
