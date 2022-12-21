@@ -202,7 +202,7 @@ export function validateCityOrProvince(cityOrProvince) {
  * Used to validate that Mailing Address line 1 must be completed if any other Mailing Address(Line 2, Line 3, PostalCode) is complete
  */
 export function validateMailingAddressForVisaResident() {
-  return this.mailingAddress2 !== '' || this.mailingAddress3 !== '' || this.mailingAddressPostalCode !== ''
+  return this.mailingAddress1 !== '' || this.mailingAddress2 !== '' || this.mailingAddress3 !== '' || this.mailingAddressPostalCode !== ''
 }
 
 /**

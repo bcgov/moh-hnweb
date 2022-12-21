@@ -37,8 +37,6 @@
         <AppCol class="col5">
           <AppInput :e-model="v$.givenName" id="givenName" label="First Name" type="text" v-model.trim="givenName" />
         </AppCol>
-      </AppRow>
-      <AppRow>
         <AppCol class="col5">
           <AppInput :e-model="v$.secondName" id="secondName" label="Second Name" type="text" v-model.trim="secondName" />
         </AppCol>
@@ -107,21 +105,23 @@
           </AppCol>
         </AppRow>
       </AppRow>
-      <AppRow class="flex-gap-100">
-        <AppCol class="col5">
-          <AppInput :e-model="v$.postalCode" id="postalCode" label="Postal Code" type="text" v-model.trim="postalCode" />
-        </AppCol>
-        <AppCol class="col5">
-          <AppInput :e-model="v$.country" id="country" label="Country" type="text" disabled="disabled" />
-        </AppCol>
-      </AppRow>
-      <AppRow class="flex-gap-100">
-        <AppCol class="col5">
-          <AppInput :e-model="v$.mailingAddressPostalCode" id="mailingAddressPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddressPostalCode" />
-        </AppCol>
-        <AppCol class="col5">
-          <AppInput :e-model="v$.mailingAddressCountry" id="mailingAddressCountry" label="Country" type="text" disabled="disabled" />
-        </AppCol>
+      <AppRow class="flex-nowrap">
+        <AppRow>
+          <AppCol class="col5">
+            <AppInput :e-model="v$.postalCode" id="postalCode" label="Postal Code" type="text" v-model.trim="postalCode" />
+          </AppCol>
+          <AppCol class="col5">
+            <AppInput :e-model="v$.country" id="country" label="Country" type="text" disabled="disabled" v-model="country" />
+          </AppCol>
+        </AppRow>
+        <AppRow>
+          <AppCol class="col5">
+            <AppInput :e-model="v$.mailingAddressPostalCode" id="mailingAddressPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddressPostalCode" />
+          </AppCol>
+          <AppCol class="col5">
+            <AppInput :e-model="v$.mailingAddressCountry" id="mailingAddressCountry" label="Country" type="text" disabled="disabled" v-model.trim="mailingAddressCountry" />
+          </AppCol>
+        </AppRow>
       </AppRow>
       <AppRow class="flex-gap-100">
         <AppCol class="col5">
