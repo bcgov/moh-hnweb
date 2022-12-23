@@ -121,7 +121,11 @@ public class GroupMemberController extends BaseController {
 
 			// Handle the group member/employee number
 			UpdateNumberAndDeptResponse empNumberResponse = new UpdateNumberAndDeptResponse();
-			if (StringUtils.isNotBlank(updateNumberAndDeptRequest.getGroupMemberNumber())) {
+			String groupMemberNumber = updateNumberAndDeptRequest.getGroupMemberNumber();
+			if (StringUtils.isNotBlank(groupMemberNumber)) {
+				if(groupMemberNumber.length() >= 6 && groupMemberNumber.substring(0,5).contentEquals("------")) {
+					updateNumberAndDeptRequest.setGroupMemberNumber(StringUtils.EMPTY);
+				}
 				RPBSPEE0Converter rpbspee0Converter = new RPBSPEE0Converter();
 				RPBSPEE0 rpbspee0Request = rpbspee0Converter.convertRequest(updateNumberAndDeptRequest);
 				RPBSPEE0 rpbspee0Response = groupMemberService.updateGroupMemberEmployeeNumber(rpbspee0Request, transaction);
