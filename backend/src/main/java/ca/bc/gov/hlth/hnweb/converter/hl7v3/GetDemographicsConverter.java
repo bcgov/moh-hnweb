@@ -25,7 +25,6 @@ public class GetDemographicsConverter {
 
 	private static final Logger logger = LoggerFactory.getLogger(GetDemographicsConverter.class);
 	private static final String MRN_SOURCE = "MOH_CRS";
-	private static final String NOT_APPLICABLE = "N/A";
 
 	/**
 	 * @param phn
@@ -102,28 +101,23 @@ public class GetDemographicsConverter {
 			GetPersonDetailsResponse personDetailsResponse) {
 		Person person = demographicsResponse.getPerson();
 		// "Documented" should always be shown over a "Declared" name.
-		Name name = person.getDocumentedName();
-		if (name == null) {
-			name = person.getDeclaredName();
-		}
-
+		Name name = person.getDocumentedName() != null ? person.getDocumentedName() : person.getDeclaredName();
 		if (name != null) {
-			personDetailsResponse.setPhn(person.getPhn());
 			personDetailsResponse.setGivenName(name.getFirstGivenName());
 			personDetailsResponse.setSecondName(name.getSecondGivenName());
 			personDetailsResponse.setSurname(name.getSurname());
-
-			if (person.getBirthDate() != null) {
-				String birthDate = V3MessageUtil.convertDateToString(person.getBirthDate());
-				personDetailsResponse.setDateOfBirth(birthDate);
-			}
-			
-			String dateOfDeath = person.getDeathDate() != null ? V3MessageUtil.convertDateToString(person.getDeathDate()) : NOT_APPLICABLE;			
-			personDetailsResponse.setDateOfDeath(dateOfDeath);
-			
-			personDetailsResponse.setGender(person.getGender());
 		}
-		
+
+		if (person.getBirthDate() != null) {
+			String birthDate = V3MessageUtil.convertDateToString(person.getBirthDate());
+			personDetailsResponse.setDateOfBirth(birthDate);
+		}
+
+		personDetailsResponse.setPhn(person.getPhn());
+		String deathDate = person.getDeathDate() != null ? V3MessageUtil.convertDateToString(person.getDeathDate()): "N/A";
+		personDetailsResponse.setDateOfDeath(deathDate);
+		personDetailsResponse.setGender(person.getGender());
+
 		Address physicalAddress = demographicsResponse.getPerson().getPhysicalAddress();
 		if (physicalAddress != null) {
 			personDetailsResponse.setAddress1(physicalAddress.getAddressLine1());
