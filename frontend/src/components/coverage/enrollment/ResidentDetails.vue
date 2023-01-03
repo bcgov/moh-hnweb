@@ -416,5 +416,6 @@ export default {
 <style scoped>
 .text-deceased {
   color: red;
+  font-weight: bold;
 }
 </style>

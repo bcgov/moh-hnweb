@@ -55,15 +55,6 @@ export default {
     },
     formatDetailsLine2() {
       let details = ''
-
-      if (this.candidate.dateOfDeath && this.candidate.dateOfDeath != 'N/A') {
-        details = `${details} <span class = "text-red"> ${this.candidate.dateOfDeath}</span>`
-      }
-
-      return details
-    },
-    formatDetailsLine2() {
-      let details = ''
       if (this.candidate.gender) {
         details = details + this.candidate.gender
       }
