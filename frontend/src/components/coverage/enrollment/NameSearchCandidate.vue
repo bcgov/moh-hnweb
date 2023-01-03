@@ -71,7 +71,7 @@ export default {
         details = details + ' ' + this.candidate.dateOfBirth
       }
       if (this.candidate.dateOfDeath && this.candidate.dateOfDeath != 'N/A') {
-        details = `${details} <span class = "text-red"> ${this.candidate.dateOfDeath}</span>`
+        details = `${details} <span class = "text-deceased"> ${this.candidate.dateOfDeath}</span>`
       }
       if (this.candidate.phn) {
         details = details + ' ' + this.candidate.phn
