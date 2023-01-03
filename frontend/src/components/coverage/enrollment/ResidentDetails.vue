@@ -16,7 +16,7 @@
       </AppCol>
     </AppRow>
     <div v-if="deceased">
-      <AppRow class="text-red">
+      <AppRow class="text-deceased">
         <AppCol class="col3">
           <AppOutput label="Date of Death" :value="resident?.dateOfDeath" />
         </AppCol>
@@ -414,7 +414,7 @@ export default {
 }
 </script>
 <style scoped>
-.text-red {
+.text-deceased {
   color: red;
 }
 </style>

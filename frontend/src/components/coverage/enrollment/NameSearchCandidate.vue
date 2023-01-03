@@ -6,7 +6,7 @@
       </AppCol>
       <AppCol class="col6">
         <span>{{ formatDetailsLine1 }}</span>
-        <span>{{ formatDetailsLine2 }}</span>
+        <span v-html="formatDetailsLine2"></span>
         <span>{{ formatDetailsLine3 }}</span>
       </AppCol>
       <AppCol class="col1">
@@ -55,6 +55,15 @@ export default {
     },
     formatDetailsLine2() {
       let details = ''
+
+      if (this.candidate.dateOfDeath && this.candidate.dateOfDeath != 'N/A') {
+        details = `${details} <span class = "text-red"> ${this.candidate.dateOfDeath}</span>`
+      }
+
+      return details
+    },
+    formatDetailsLine2() {
+      let details = ''
       if (this.candidate.gender) {
         details = details + this.candidate.gender
       }
@@ -62,7 +71,7 @@ export default {
         details = details + ' ' + this.candidate.dateOfBirth
       }
       if (this.candidate.dateOfDeath && this.candidate.dateOfDeath != 'N/A') {
-        details = details + ' ' + this.candidate.dateOfDeath
+        details = `${details} <span class = "text-red"> ${this.candidate.dateOfDeath}</span>`
       }
       if (this.candidate.phn) {
         details = details + ' ' + this.candidate.phn
@@ -73,6 +82,7 @@ export default {
       if (this.candidate.identifierTypeCode) {
         details = details + ' ' + this.candidate.identifierTypeCode
       }
+
       return details
     },
     formatDetailsLine3() {
@@ -145,3 +155,9 @@ export default {
   },
 }
 </script>
+<style>
+.text-deceased {
+  color: red;
+  font-weight: bold;
+}
+</style>
