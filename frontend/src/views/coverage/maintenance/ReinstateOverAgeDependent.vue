@@ -42,9 +42,12 @@
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <YesNoRadioButtonGroup :e-model="v$.isStudent" id="isStudent" label="Is this Dependent attending a Canadian Educational Institution?" v-model="isStudent">
-            <template #tooltip>Click either Yes or No </template>
-          </YesNoRadioButtonGroup>
+          <AppRadioButtonGroup :e-model="v$.isStudent" id="isStudent" label="Is this Dependent attending a Canadian Educational Institution?">
+            <template #tooltip> Click either Yes or No </template>
+            <template #options>
+              <AppRadioButton name="isStudent" v-for="option in this.YES_NO_OPTIONS" :label="option.text" :value="option.value" v-model="isStudent" />
+            </template>
+          </AppRadioButtonGroup>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -73,13 +76,14 @@
 </template>
 
 <script>
-import YesNoRadioButtonGroup from '../../../components/ui/YesNoRadioButtonGroup.vue'
 import useVuelidate from '@vuelidate/core'
 import AppHelp from '../../../components/ui/AppHelp.vue'
+import AppRadioButton from '../../../components/ui/AppRadioButton.vue'
+import AppRadioButtonGroup from '../../../components/ui/AppRadioButtonGroup.vue'
 import { helpers, required, requiredIf } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumber, validatePHN } from '../../../util/validators'
-import { API_DATE_FORMAT, RELATIONSHIPS } from '../../../util/constants'
+import { API_DATE_FORMAT, YES_NO_OPTIONS } from '../../../util/constants'
 import MaintenanceService from '../../../services/MaintenanceService'
 import { useAlertStore } from '../../../stores/alert'
 import AppCol from '../../../components/grid/AppCol.vue'
@@ -87,7 +91,7 @@ import { handleServiceError } from '../../../util/utils'
 
 export default {
   name: 'ReinstateOverAgeDependent',
-  components: { YesNoRadioButtonGroup, AppCol, AppHelp },
+  components: { AppRadioButton, AppRadioButtonGroup, AppCol, AppHelp },
   setup() {
     const currentMonth = {
       month: new Date().getMonth(),
@@ -117,6 +121,10 @@ export default {
         message: '',
       },
     }
+  },
+  created() {
+    // Yes/No radio button options
+    this.YES_NO_OPTIONS = YES_NO_OPTIONS
   },
   computed: {
     // Student End Date should be the last day of the month. In JavaScript this can be done by using day 0 of the next month
