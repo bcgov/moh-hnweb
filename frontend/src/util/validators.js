@@ -198,8 +198,17 @@ function validateSpecialCharactersForAddress(input, length) {
 export function validateCityOrProvince(cityOrProvince) {
   if (cityOrProvince === undefined || cityOrProvince === '') {
     return true
+  } else if (this.otherCountry === true) {
+    return true
   }
   return validateAlphaWithSpaces(cityOrProvince, 25)
+}
+
+export function validateOtherCountry() {
+  if (this.otherCountry) {
+    return true
+  }
+  return false
 }
 
 /**
@@ -340,6 +349,8 @@ export const VALIDATE_PROVINCE_REQUIRED_MESSAGE = 'Province is required'
 export const VALIDATE_PROVINCE_MESSAGE = 'Province is invalid'
 export const VALIDATE_STATE_REQUIRED_MESSAGE = 'State is required'
 export const VALIDATE_STATE_MESSAGE = 'State is invalid'
+export const VALIDATE_OTHER_STATE_REQUIRED_MESSAGE = 'Province / Region / State is required'
+export const VALIDATE_COUNTRY_REQUIRED_MESSAGE = 'Country (Other) is required'
 export const VALIDATE_DOB_MESSAGE = 'Date of Birth must not be in the future'
 export const VALIDATE_PHN_MESSAGE = 'PHN format is invalid'
 export const VALIDATE_CONTRACT_NUMBER_MESSAGE = 'MSP Contract Number is invalid'
@@ -350,5 +361,6 @@ export const VALIDATE_POSTAL_CODE_MESSAGE = 'Postal Code is invalid'
 export const VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
 export const VALIDATE_ZIP_CODE_MESSAGE = 'ZIP Code is invalid'
 export const VALIDATE_ZIP_CODE_REQUIRED_MESSAGE = 'ZIP Code is required'
+export const VALIDATE_OTHER_ZIP_CODE_REQUIRED_MESSAGE = 'Postal / Zip Code is required'
 export const VALIDATE_TELEPHONE_MESSAGE = 'Telephone is invalid. Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
 export const VALIDATE_USER_ID_MESSAGE = 'User ID cannot be longer than 100 characters'

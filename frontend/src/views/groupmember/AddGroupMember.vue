@@ -93,6 +93,11 @@
           </AppCol>
         </AppRow>
       </AppRow>
+      <AppRow v-if="otherCountry">
+        <AppCol class="col5 margin-left-auto margin-right-100">
+          <AppInput :e-model="v$.mailingAddress.countryToSend" id="otherCountry" label="Country (Other)" type="text" v-model.trim="mailingAddress.countryToSend" />
+        </AppCol>
+      </AppRow>
       <div>
         <AppRow>
           <AppCol class="col"><h2>Dependent(s) (Optional)</h2> </AppCol>
@@ -141,6 +146,7 @@ import {
   validateMailingPostalCode,
   validateMailingZipCode,
   validateCityOrProvince,
+  validateOtherCountry,
   validateAddress,
   validateMailingAddressForGroupMember,
   validateOptionalAddress,
@@ -161,7 +167,10 @@ import {
   VALIDATE_PROVINCE_REQUIRED_MESSAGE,
   VALIDATE_PROVINCE_MESSAGE,
   VALIDATE_STATE_REQUIRED_MESSAGE,
+  VALIDATE_OTHER_STATE_REQUIRED_MESSAGE,
+  VALIDATE_COUNTRY_REQUIRED_MESSAGE,
   VALIDATE_ZIP_CODE_REQUIRED_MESSAGE,
+  VALIDATE_OTHER_ZIP_CODE_REQUIRED_MESSAGE,
   VALIDATE_STATE_MESSAGE,
   VALIDATE_ZIP_CODE_MESSAGE,
 } from '../../util/validators'
@@ -189,6 +198,7 @@ export default {
       submitting: false,
       addOk: false,
       addMode: true,
+      otherCountry: false,
       //Add Group Member Fields
       phn: '',
       groupNumber: '',
@@ -208,7 +218,8 @@ export default {
         addressLine1: '',
         addressLine2: '',
         postalCode: '',
-        country: 'CA',
+        country: 'Canada',
+        countryToSend: 'Canada',
         city: '',
         province: '',
       },
@@ -227,16 +238,31 @@ export default {
       return new Date(this.coverageEffectiveDate.year, this.coverageEffectiveDate.month, 1)
     },
     stateAddressField() {
-      if (this.mailingAddress.country === 'US') {
+      if (this.mailingAddress.country === 'United States') {
         return 'State'
+      } else if (this.mailingAddress.country === 'Canada') {
+        return 'Province'
       }
-      return 'Province'
+      return 'Province / Region / State'
     },
     zipAddressField() {
-      if (this.mailingAddress.country === 'US') {
+      if (this.mailingAddress.country === 'United States') {
         return 'ZIP Code'
+      } else if (this.mailingAddress.country === 'Canada') {
+        return 'Postal Code'
       }
-      return 'Postal Code'
+      return 'Postal / Zip Code'
+    },
+  },
+  watch: {
+    'mailingAddress.country'(newValue) {
+      if (newValue === 'Other') {
+        this.mailingAddress.countryToSend = ''
+        this.otherCountry = true
+      } else {
+        this.mailingAddress.countryToSend = newValue
+        this.otherCountry = false
+      }
     },
   },
   methods: {
@@ -263,14 +289,14 @@ export default {
             phone: this.telephone,
             homeAddress: {
               addressLine1: this.homeAddress.addressLine1,
-              addressLine2: this.homeAddress.addressLine2 === '' ? this.homeAddress.city + ' ' + this.homeAddress.province : this.homeAddress.addressLine2,
-              addressLine3: this.homeAddress.addressLine2 === '' ? '' : this.homeAddress.city + ' ' + this.homeAddress.province,
+              addressLine2: this.homeAddress.addressLine2 === '' ? this.homeAddress.city + ' ' + this.homeAddress.province + ' ' + this.homeAddress.country : this.homeAddress.addressLine2,
+              addressLine3: this.homeAddress.addressLine2 === '' ? '' : this.homeAddress.city + ' ' + this.homeAddress.province + ' ' + this.homeAddress.country,
               postalCode: this.homeAddress.postalCode,
             },
             mailingAddress: {
               addressLine1: this.mailingAddress.addressLine1,
-              addressLine2: this.mailingAddress.addressLine2 === '' ? this.mailingAddress.city + ' ' + this.mailingAddress.province : this.mailingAddress.addressLine2,
-              addressLine3: this.mailingAddress.addressLine2 === '' ? '' : this.mailingAddress.city + ' ' + this.mailingAddress.province,
+              addressLine2: this.mailingAddress.addressLine2 === '' ? this.mailingAddress.city + ' ' + this.mailingAddress.province + ' ' + this.mailingAddress.countryToSend : this.mailingAddress.addressLine2,
+              addressLine3: this.mailingAddress.addressLine2 === '' ? '' : this.mailingAddress.city + ' ' + this.mailingAddress.province + ' ' + this.mailingAddress.countryToSend,
               postalCode: this.mailingAddress.postalCode,
             },
             spousePhn: this.spousePhn,
@@ -312,34 +338,40 @@ export default {
       this.submitting = false
     },
     stateAddressFieldRequiredValidationMessage() {
-      if (this.mailingAddress.country === 'US') {
+      if (this.mailingAddress.country === 'United States') {
         return VALIDATE_STATE_REQUIRED_MESSAGE
+      } else if (this.mailingAddress.country === 'Canada') {
+        return VALIDATE_PROVINCE_REQUIRED_MESSAGE
       }
-      return VALIDATE_PROVINCE_REQUIRED_MESSAGE
+      return VALIDATE_OTHER_STATE_REQUIRED_MESSAGE
     },
     zipAddressFieldRequiredValidationMessage() {
-      if (this.mailingAddress.country === 'US') {
+      if (this.mailingAddress.country === 'United States') {
         return VALIDATE_ZIP_CODE_REQUIRED_MESSAGE
+      } else if (this.mailingAddress.country === 'Canada') {
+        return VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE
       }
-      return VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE
+      return VALIDATE_OTHER_ZIP_CODE_REQUIRED_MESSAGE
     },
     stateAddressFieldInvalidValidationMessage() {
-      if (this.mailingAddress.country === 'US') {
+      if (this.mailingAddress.country === 'United States') {
         return VALIDATE_STATE_MESSAGE
       }
       return VALIDATE_PROVINCE_MESSAGE
     },
     zipAddressFieldInvalidValidationMessage() {
-      if (this.mailingAddress.country === 'US') {
+      if (this.mailingAddress.country === 'United States') {
         return VALIDATE_ZIP_CODE_MESSAGE
       }
       return VALIDATE_POSTAL_CODE_MESSAGE
     },
     validateZipOrPostalCode(zipOrPostalCode) {
-      if (this.mailingAddress.country === 'US') {
+      if (this.mailingAddress.country === 'United States') {
         return validateMailingZipCode(zipOrPostalCode)
+      } else if (this.mailingAddress.country === 'Canada') {
+        return validateMailingPostalCode(zipOrPostalCode)
       }
-      return validateMailingPostalCode(zipOrPostalCode)
+      return true
     },
 
     resetForm() {
@@ -360,7 +392,7 @@ export default {
       this.mailingAddress.city = ''
       this.mailingAddress.province = ''
       this.mailingAddress.postalCode = ''
-      this.mailingAddress.country = 'CA'
+      this.mailingAddress.country = 'Canada'
       this.spousePhn = ''
       this.dependents = []
       this.result = null
@@ -443,6 +475,10 @@ export default {
           maxLength: maxLength(25),
           validateAddress: helpers.withMessage(this.stateAddressFieldInvalidValidationMessage, validateCityOrProvince),
         },
+        countryToSend: {
+          required: helpers.withMessage(VALIDATE_COUNTRY_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForGroupMember && validateOtherCountry)),
+          maxLength: maxLength(25),
+        },
       },
       spousePhn: {
         validatePHN: helpers.withMessage(VALIDATE_PHN_MESSAGE, validatePHN),
@@ -451,3 +487,11 @@ export default {
   },
 }
 </script>
+<style>
+.margin-left-auto {
+  margin-left: auto;
+}
+.margin-right-100 {
+  margin-right: 100px;
+}
+</style>
