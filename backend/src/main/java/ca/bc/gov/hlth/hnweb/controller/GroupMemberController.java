@@ -56,6 +56,8 @@ import ca.bc.gov.hlth.hnweb.service.GroupMemberService;
 public class GroupMemberController extends BaseController {
 
 	private static final Logger logger = LoggerFactory.getLogger(GroupMemberController.class);
+	
+	private static final String SIX_DASHES = "------";
 
 	@Autowired
 	private GroupMemberService groupMemberService;
@@ -123,7 +125,7 @@ public class GroupMemberController extends BaseController {
 			UpdateNumberAndDeptResponse empNumberResponse = new UpdateNumberAndDeptResponse();
 			String groupMemberNumber = updateNumberAndDeptRequest.getGroupMemberNumber();
 			if (StringUtils.isNotBlank(groupMemberNumber)) {
-				if(groupMemberNumber.length() >= 6 && groupMemberNumber.substring(0,5).contentEquals("------")) {
+				if(groupMemberNumber.length() >= 6 && groupMemberNumber.substring(0,5).contentEquals(SIX_DASHES)) {
 					updateNumberAndDeptRequest.setGroupMemberNumber(StringUtils.EMPTY);
 				}
 				RPBSPEE0Converter rpbspee0Converter = new RPBSPEE0Converter();
