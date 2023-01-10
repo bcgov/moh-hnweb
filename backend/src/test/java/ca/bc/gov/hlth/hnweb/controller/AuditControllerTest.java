@@ -1,6 +1,7 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import ca.bc.gov.hlth.hnweb.BaseControllerTest;
+import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditOrganization;
 import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditRecord;
 import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditReportRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditReportResponse;
@@ -49,15 +51,49 @@ public class AuditControllerTest extends BaseControllerTest {
 	@Test
 	public void testGetOrganization() throws Exception {
 		createOrganization();
-		ResponseEntity<List<String>> organization = auditReportController.getOrganizations();
+		ResponseEntity<List<AuditOrganization>> response = auditReportController.getOrganizations();
 
-		assertEquals(HttpStatus.OK, organization.getStatusCode());
-		List<String> orgs = organization.getBody();
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		List<AuditOrganization> orgs = response.getBody();
 
 		assertNotNull(orgs);
 		// Check the number of valid records
 		assertEquals(1, orgs.size());
+		
+		AuditOrganization org = orgs.get(0);
 
+		assertEquals("00000010", org.getId());
+		assertEquals("Ministry of Health", org.getName());
+	}
+	
+	@Test
+	public void testGetOrganization_multiple() throws Exception {
+		createOrganization();
+		
+		// Create an additional "older" organization without the Name captured
+		Organization orgNoName = new Organization();
+		orgNoName.setOrganization("00000020");
+		orgNoName.setOrganizationName(null);
+		organizationRepository.save(orgNoName);
+		
+		ResponseEntity<List<AuditOrganization>> response = auditReportController.getOrganizations();
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		List<AuditOrganization> orgs = response.getBody();
+
+		assertNotNull(orgs);
+		// Check the number of valid records
+		assertEquals(2, orgs.size());
+		
+		AuditOrganization org1 = orgs.get(0);
+
+		assertEquals("00000010", org1.getId());
+		assertEquals("Ministry of Health", org1.getName());
+		
+		AuditOrganization org2 = orgs.get(1);
+
+		assertEquals("00000020", org2.getId());
+		assertNull(org2.getName());
 	}
 
 	@Test
@@ -242,22 +278,25 @@ public class AuditControllerTest extends BaseControllerTest {
 		 //Check csv headers and data
 		 assertEquals("Type", reportData.get(0));
 		 assertEquals("Organization", reportData.get(1));
-		 assertEquals("User ID", reportData.get(2));
-		 assertEquals("Transaction Start Time", reportData.get(3));
-		 assertEquals("Affected Party ID", reportData.get(4));
-		 assertEquals("Affected Party ID Type", reportData.get(5));
+		 assertEquals("Organization Name", reportData.get(2));
+		 assertEquals("User ID", reportData.get(3));
+		 assertEquals("Transaction Start Time", reportData.get(4));
+		 assertEquals("Affected Party ID", reportData.get(5));
+		 assertEquals("Affected Party ID Type", reportData.get(6));
 		 assertEquals("Transaction ID\r\n" + 
-		 		"CHECK_ELIGIBILITY", reportData.get(6));		 		 
-		 assertEquals("00000010", reportData.get(7));
-		 assertEquals("hnweb1", reportData.get(8));
-		 assertEquals("2022-08-05T00:00:00", reportData.get(9));
-		 assertEquals("PHN", reportData.get(10));
+		 		"CHECK_ELIGIBILITY", reportData.get(7));		 		 
+		 assertEquals("00000010", reportData.get(8));
+		 assertEquals("Ministry of Health", reportData.get(9));
+		 assertEquals("hnweb1", reportData.get(10));
+		 assertEquals("2022-08-05T00:00:00", reportData.get(11));
+		 assertEquals("800000001", reportData.get(12));
 		 
 		 //Check the last (40th) record
-		 assertEquals("00000010", reportData.get(241));
-		 assertEquals("hnweb1", reportData.get(242));
-		 assertEquals("2022-08-05T00:00:00", reportData.get(243));
-		 assertEquals("PHN", reportData.get(244));
+		 assertEquals("00000010", reportData.get(281));
+		 assertEquals("Ministry of Health", reportData.get(282));
+		 assertEquals("hnweb1", reportData.get(283));
+		 assertEquals("2022-08-05T00:00:00", reportData.get(284));
+		 assertEquals("800000001", reportData.get(285));
 	}
 	
 	@Test
@@ -289,22 +328,25 @@ public class AuditControllerTest extends BaseControllerTest {
 		 //Check csv headers and data
 		 assertEquals("Type", reportData.get(0));
 		 assertEquals("Organization", reportData.get(1));
-		 assertEquals("User ID", reportData.get(2));
-		 assertEquals("Transaction Start Time", reportData.get(3));
-		 assertEquals("Affected Party ID", reportData.get(4));
-		 assertEquals("Affected Party ID Type", reportData.get(5));
+		 assertEquals("Organization Name", reportData.get(2));
+		 assertEquals("User ID", reportData.get(3));
+		 assertEquals("Transaction Start Time", reportData.get(4));
+		 assertEquals("Affected Party ID", reportData.get(5));
+		 assertEquals("Affected Party ID Type", reportData.get(6));
 		 assertEquals("Transaction ID\r\n" + 
-		 		"PHN_INQUIRY", reportData.get(6));		 		 
-		 assertEquals("00000010", reportData.get(7));
-		 assertEquals("hnweb1", reportData.get(8));
-		 assertEquals("2022-08-05T00:00:00", reportData.get(9));
-		 assertEquals("PHN", reportData.get(10));
+		 		"PHN_INQUIRY", reportData.get(7));		 		 
+		 assertEquals("00000010", reportData.get(8));
+		 assertEquals("Ministry of Health", reportData.get(9));
+		 assertEquals("hnweb1", reportData.get(10));
+		 assertEquals("2022-08-05T00:00:00", reportData.get(11));
+		 assertEquals("800000001", reportData.get(12));
 		 
 		 //Check the last (40th) record
-		 assertEquals("00000010", reportData.get(241));
-		 assertEquals("hnweb1", reportData.get(242));
-		 assertEquals("2022-08-05T00:00:00", reportData.get(243));
-		 assertEquals("PHN", reportData.get(244));
+		 assertEquals("00000010", reportData.get(281));
+		 assertEquals("Ministry of Health", reportData.get(282));
+		 assertEquals("hnweb1", reportData.get(283));
+		 assertEquals("2022-08-05T00:00:00", reportData.get(284));
+		 assertEquals("800000001", reportData.get(285));
 	}
 
 	private void read(InputStream input, List<String> reportData) throws IOException {
@@ -327,6 +369,7 @@ public class AuditControllerTest extends BaseControllerTest {
 	private void createOrganization() {
 		Organization org = new Organization();
 		org.setOrganization("00000010");
+		org.setOrganizationName("Ministry of Health");
 		organizationRepository.save(org);
 
 	}
@@ -336,6 +379,7 @@ public class AuditControllerTest extends BaseControllerTest {
 			Transaction transaction = new Transaction();
 
 			transaction.setOrganization("00000010");
+			transaction.setOrganizationName("Ministry of Health");
 			transaction.setServer("server1");
 			transaction.setSessionId("123456");
 			transaction.setSourceIp("0:0:0:0:0:0:0:1");
@@ -347,7 +391,7 @@ public class AuditControllerTest extends BaseControllerTest {
 			transactionRepository.save(transaction);
 
 			AffectedParty affectedParty = new AffectedParty();
-			affectedParty.setIdentifier(IdentifierType.PHN.name());
+			affectedParty.setIdentifier("800000001");
 			affectedParty.setIdentifierType(IdentifierType.PHN.getValue());
 			affectedParty.setDirection(AffectedPartyDirection.INBOUND.getValue());
 			affectedParty.setTransaction(transaction);

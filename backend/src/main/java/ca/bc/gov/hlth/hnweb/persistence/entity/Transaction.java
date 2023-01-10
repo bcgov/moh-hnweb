@@ -63,6 +63,13 @@ public class Transaction {
 	private String organization;
 
 	/**
+	 * Organization Name of the user that initiated the transaction
+	 */
+	@Basic
+	@Column(name = "organization_name")
+	private String organizationName;
+
+	/**
 	 * ID of the user that initiated the transaction
 	 */
 	@Basic
@@ -124,6 +131,14 @@ public class Transaction {
 		this.organization = organization;
 	}
 
+	public String getOrganizationName() {
+		return organizationName;
+	}
+
+	public void setOrganizationName(String organizationName) {
+		this.organizationName = organizationName;
+	}
+
 	public String getUserId() {
 		return userId;
 	}
@@ -139,7 +154,7 @@ public class Transaction {
 	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
-	
+
 	@PrePersist
 	public void prePersist() {
 		if (startTime == null) {

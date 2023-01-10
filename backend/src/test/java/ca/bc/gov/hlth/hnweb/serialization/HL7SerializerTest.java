@@ -30,7 +30,7 @@ public class HL7SerializerTest {
     static void setUp() throws IOException {
    
         mockStatic = Mockito.mockStatic(SecurityUtil.class);
-        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "00000010", "hnweb-user"));
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "00000010", "Ministry of Health", "hnweb-user"));
     }
 
 	private static MockedStatic<SecurityUtil> mockStatic;

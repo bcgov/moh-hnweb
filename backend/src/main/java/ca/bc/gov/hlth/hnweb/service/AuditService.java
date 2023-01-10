@@ -65,7 +65,7 @@ public class AuditService {
 	
 	public static final String  DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 	
-	private static final String[] HEADERS = { "Type", "Organization", "User ID", "Transaction Start Time",
+	private static final String[] HEADERS = { "Type", "Organization", "Organization Name", "User ID", "Transaction Start Time",
 			"Affected Party ID", "Affected Party ID Type", "Transaction ID" };
 
 	private static final CSVFormat FORMAT = CSVFormat.DEFAULT.withHeader(HEADERS);
@@ -95,6 +95,7 @@ public class AuditService {
 		sortMap.put("affectedPartyId", "identifier");
 		sortMap.put("affectedPartyType", "identifierType");
 		sortMap.put("organization", "transaction.organization");
+		sortMap.put("organizationName", "transaction.organizationName");
 		sortMap.put("transactionStartTime", "transaction.startTime");
 		sortMap.put("type", "transaction.type");
 		sortMap.put("userId", "transaction.userId");
@@ -118,6 +119,7 @@ public class AuditService {
 			// Ignore
 		}
 		transaction.setOrganization(userInfo != null ? userInfo.getOrganization(): null);
+		transaction.setOrganizationName(userInfo != null ? userInfo.getOrganizationName(): null);
 		transaction.setServer(getServer());
 		transaction.setSessionId(userInfo != null ? userInfo.getSessionState(): null);
 		transaction.setSourceIp(sourceIP);
@@ -232,7 +234,7 @@ public class AuditService {
 	 * @return list of organization.
 	 */
 	public List<Organization> getOrganizations() {
-		return organizationRepository.findAll(Sort.by("organization"));
+		return organizationRepository.findUnique();
 	}
 
 	/**
@@ -291,7 +293,7 @@ public class AuditService {
 				CSVPrinter printer = new CSVPrinter(new PrintWriter(stream), FORMAT)) {
 			for (AuditRecord auditRecord : auditReports) {
 				 List<String> auditData = Arrays.asList(String.valueOf(auditRecord.getType()),
-						auditRecord.getOrganization(), auditRecord.getUserId(),
+						auditRecord.getOrganization(), auditRecord.getOrganizationName(), auditRecord.getUserId(),
 						convertLocalDateTime(auditRecord.getTransactionStartTime()), auditRecord.getAffectedPartyId(),
 						auditRecord.getAffectedPartyType(), auditRecord.getTransactionId());
 

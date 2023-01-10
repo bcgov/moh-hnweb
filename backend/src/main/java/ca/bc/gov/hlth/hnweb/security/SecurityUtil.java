@@ -30,6 +30,7 @@ public class SecurityUtil {
 	public static final String CLAIM_ORGANIZATION = "org_details";
 	
 	private static final String ORGANIZATION_ID = "id";
+	private static final String ORGANIZATION_NAME = "name";
 	
 	private static final String USER_ROLES = "roles";
 
@@ -45,7 +46,7 @@ public class SecurityUtil {
 		Jwt jwt = (Jwt)auth.getPrincipal();
 		
 		UserInfo userInfo = new UserInfo();
-		userInfo.setOrganization(extractOrganization(jwt));
+		extractOrganization(jwt, userInfo);
 		
 		List<String> roles = loadRoles(jwt);
 		userInfo.setRole(StringUtils.join(roles, " "));
@@ -57,14 +58,14 @@ public class SecurityUtil {
 		return userInfo;
 	}
 	
-	private static String extractOrganization(Jwt jwt) {
+	private static void extractOrganization(Jwt jwt, UserInfo userInfo) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode node = mapper.readTree((String)jwt.getClaim(CLAIM_ORGANIZATION));
-			return node.get(ORGANIZATION_ID).asText();
+			userInfo.setOrganization(node.get(ORGANIZATION_ID).asText());
+			userInfo.setOrganizationName(node.get(ORGANIZATION_NAME).asText());
 		} catch (Exception e) {
 			logger.warn("User {} does not have claim {} set", jwt.getClaim(CLAIM_USERNAME), CLAIM_ORGANIZATION);
-			return null;
 		}
 	}
 	
