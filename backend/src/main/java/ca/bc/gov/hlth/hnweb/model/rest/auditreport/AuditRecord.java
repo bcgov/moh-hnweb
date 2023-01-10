@@ -20,6 +20,16 @@ public class AuditRecord {
 
 	private String transactionId;
 
+	private String spgRole;
+
+	public String getSpgRole() {
+		return spgRole;
+	}
+
+	public void setSpgRole(String spgRole) {
+		this.spgRole = spgRole;
+	}
+
 	public String getType() {
 		return type;
 	}

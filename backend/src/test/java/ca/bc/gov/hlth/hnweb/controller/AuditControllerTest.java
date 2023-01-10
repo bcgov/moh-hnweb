@@ -44,7 +44,7 @@ public class AuditControllerTest extends BaseControllerTest {
 
 	@Autowired
 	private AffectedPartyRepository affectedPartyRepository;
-	
+
 	@Autowired
 	private TransactionRepository transactionRepository;
 
@@ -97,7 +97,7 @@ public class AuditControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testGetAuditReport_withoutOptionalParam() {;
+	public void testGetAuditReport_withoutOptionalParam() {
 		createAuditReports(2, TransactionType.CHECK_ELIGIBILITY);
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
@@ -116,7 +116,7 @@ public class AuditControllerTest extends BaseControllerTest {
 	@Test
 	public void testGetAuditReport_withOptionalParam() {
 		createAuditReports(1, TransactionType.CHECK_ELIGIBILITY);
-		
+
 		List<String> types = new ArrayList<>();
 		types.add(TransactionType.CHECK_ELIGIBILITY.name());
 		types.add(TransactionType.PHN_INQUIRY.name());
@@ -125,15 +125,19 @@ public class AuditControllerTest extends BaseControllerTest {
 		orgs.add("00000010");
 		orgs.add("00000020");
 
+		List<String> spgRoles = new ArrayList<>();
+		spgRoles.add("TRAININGHEALTHAUTH");
+
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setUserId("hnweb1");
 		auditReportRequest.setOrganizations(orgs);
+		auditReportRequest.setSpgRoles(spgRoles);
 		auditReportRequest.setTransactionTypes(types);
 		auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
 		auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
 		auditReportRequest.setPage(0);
 		auditReportRequest.setRows(10);
-		
+
 		ResponseEntity<AuditReportResponse> auditReport = auditReportController.getAuditReport(auditReportRequest,
 				createHttpServletRequest());
 
@@ -143,31 +147,66 @@ public class AuditControllerTest extends BaseControllerTest {
 	}
 	
 	@Test
-	public void testGetAuditReports_firstPage() {
+	public void testGetAuditReports_spgNoResults() {
 		createAuditReports(15, TransactionType.CHECK_ELIGIBILITY);
-		
+
 		List<String> types = new ArrayList<>();
 		types.add(TransactionType.CHECK_ELIGIBILITY.name());
 
 		List<String> orgs = new ArrayList<>();
 		orgs.add("00000010");
 
+		List<String> spgRoles = new ArrayList<>();
+		spgRoles.add("E45");
+		
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setUserId("hnweb1");
 		auditReportRequest.setOrganizations(orgs);
+		auditReportRequest.setSpgRoles(spgRoles);
 		auditReportRequest.setTransactionTypes(types);
 		auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
 		auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
 		auditReportRequest.setPage(0);
 		auditReportRequest.setRows(10);
-		
+
+		ResponseEntity<AuditReportResponse> auditReport = auditReportController.getAuditReport(auditReportRequest,
+				createHttpServletRequest());
+
+		assertEquals(HttpStatus.OK, auditReport.getStatusCode());
+		assertEquals(0, auditReport.getBody().getRecords().size());
+
+	}
+
+	@Test
+	public void testGetAuditReports_firstPage() {
+		createAuditReports(15, TransactionType.CHECK_ELIGIBILITY);
+
+		List<String> types = new ArrayList<>();
+		types.add(TransactionType.CHECK_ELIGIBILITY.name());
+
+		List<String> orgs = new ArrayList<>();
+		orgs.add("00000010");
+
+		List<String> spgRoles = new ArrayList<>();
+		spgRoles.add("TRAININGHEALTHAUTH");
+
+		AuditReportRequest auditReportRequest = new AuditReportRequest();
+		auditReportRequest.setUserId("hnweb1");
+		auditReportRequest.setOrganizations(orgs);
+		auditReportRequest.setSpgRoles(spgRoles);
+		auditReportRequest.setTransactionTypes(types);
+		auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
+		auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
+		auditReportRequest.setPage(0);
+		auditReportRequest.setRows(10);
+
 		ResponseEntity<AuditReportResponse> auditReport = auditReportController.getAuditReport(auditReportRequest,
 				createHttpServletRequest());
 
 		assertEquals(HttpStatus.OK, auditReport.getStatusCode());
 		assertEquals(10, auditReport.getBody().getRecords().size());
 	}
-	
+
 	@Test
 	public void testGetAuditReports_secondPage() {
 		createAuditReports(15, TransactionType.CHECK_ELIGIBILITY);
@@ -177,22 +216,26 @@ public class AuditControllerTest extends BaseControllerTest {
 		List<String> orgs = new ArrayList<>();
 		orgs.add("00000010");
 
+		List<String> spgRoles = new ArrayList<>();
+		spgRoles.add("TRAININGHEALTHAUTH");
+
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setUserId("hnweb1");
 		auditReportRequest.setOrganizations(orgs);
+		auditReportRequest.setSpgRoles(spgRoles);
 		auditReportRequest.setTransactionTypes(types);
 		auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
 		auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
 		auditReportRequest.setPage(1);
 		auditReportRequest.setRows(10);
-		
+
 		ResponseEntity<AuditReportResponse> auditReport = auditReportController.getAuditReport(auditReportRequest,
 				createHttpServletRequest());
 
 		assertEquals(HttpStatus.OK, auditReport.getStatusCode());
 		assertEquals(5, auditReport.getBody().getRecords().size());
 	}
-	
+
 	@Test
 	public void testGetAuditReports_sortAsc() {
 		createAuditReports(5, TransactionType.CHECK_ELIGIBILITY);
@@ -201,26 +244,30 @@ public class AuditControllerTest extends BaseControllerTest {
 		List<String> orgs = new ArrayList<>();
 		orgs.add("00000010");
 
+		List<String> spgRoles = new ArrayList<>();
+		spgRoles.add("TRAININGHEALTHAUTH");
+
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setUserId("hnweb1");
 		auditReportRequest.setOrganizations(orgs);
+		auditReportRequest.setSpgRoles(spgRoles);
 		auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
 		auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
 		auditReportRequest.setPage(0);
 		auditReportRequest.setRows(10);
 		auditReportRequest.setSortDirection("ASC");
 		auditReportRequest.setSortField("type");
-		
+
 		ResponseEntity<AuditReportResponse> auditReport = auditReportController.getAuditReport(auditReportRequest,
 				createHttpServletRequest());
 
 		assertEquals(HttpStatus.OK, auditReport.getStatusCode());
-		
+
 		List<AuditRecord> records = auditReport.getBody().getRecords();
 		assertEquals(10, records.size());
 		assertEquals(TransactionType.CHECK_ELIGIBILITY.name(), records.get(0).getType());
 	}
-	
+
 	@Test
 	public void testGetAuditReports_sortDesc() {
 		createAuditReports(5, TransactionType.CHECK_ELIGIBILITY);
@@ -229,44 +276,52 @@ public class AuditControllerTest extends BaseControllerTest {
 		List<String> orgs = new ArrayList<>();
 		orgs.add("00000010");
 
+		List<String> spgRoles = new ArrayList<>();
+		spgRoles.add("TRAININGHEALTHAUTH");
+
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setUserId("hnweb1");
 		auditReportRequest.setOrganizations(orgs);
+		auditReportRequest.setSpgRoles(spgRoles);
 		auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
 		auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
 		auditReportRequest.setPage(0);
 		auditReportRequest.setRows(10);
 		auditReportRequest.setSortDirection("DESC");
 		auditReportRequest.setSortField("type");
-		
+
 		ResponseEntity<AuditReportResponse> auditReport = auditReportController.getAuditReport(auditReportRequest,
 				createHttpServletRequest());
 
 		assertEquals(HttpStatus.OK, auditReport.getStatusCode());
-		
+
 		List<AuditRecord> records = auditReport.getBody().getRecords();
 		assertEquals(10, records.size());
 		assertEquals(TransactionType.PHN_INQUIRY.name(), records.get(0).getType());
 	}
-	
+
 	@Test
 	public void testGetAuditReport_downloadCSV() throws IOException {
 		createAuditReports(20, TransactionType.CHECK_ELIGIBILITY);
 		createAuditReports(20, TransactionType.PHN_INQUIRY);
-		
+
 		List<String> orgs = new ArrayList<>();
 		orgs.add("00000010");
 		orgs.add("00000020");
 
+		List<String> spgRoles = new ArrayList<>();
+		spgRoles.add("TRAININGHEALTHAUTH");
+
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setUserId("hnweb1");
-		auditReportRequest.setOrganizations(orgs);		
+		auditReportRequest.setOrganizations(orgs);
+		auditReportRequest.setSpgRoles(spgRoles);
 		auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
 		auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
 		auditReportRequest.setSortDirection("ASC");
 		auditReportRequest.setSortField("type");
-		
-		 ResponseEntity<Resource> downloadReport = auditReportController.downloadAuditReport(auditReportRequest,
+
+		ResponseEntity<Resource> downloadReport = auditReportController.downloadAuditReport(auditReportRequest,
 				createHttpServletRequest());
 		 
 		 List<String> reportData = new ArrayList<String>();
@@ -279,44 +334,53 @@ public class AuditControllerTest extends BaseControllerTest {
 		 assertEquals("Type", reportData.get(0));
 		 assertEquals("Organization", reportData.get(1));
 		 assertEquals("Organization Name", reportData.get(2));
-		 assertEquals("User ID", reportData.get(3));
-		 assertEquals("Transaction Start Time", reportData.get(4));
-		 assertEquals("Affected Party ID", reportData.get(5));
-		 assertEquals("Affected Party ID Type", reportData.get(6));
+		 assertEquals("SPG", reportData.get(3));
+		 assertEquals("User ID", reportData.get(4));
+		 assertEquals("Transaction Start Time", reportData.get(5));
+		 assertEquals("Affected Party ID", reportData.get(6));
+		 assertEquals("Affected Party ID Type", reportData.get(7));
 		 assertEquals("Transaction ID\r\n" + 
-		 		"CHECK_ELIGIBILITY", reportData.get(7));		 		 
-		 assertEquals("00000010", reportData.get(8));
-		 assertEquals("Ministry of Health", reportData.get(9));
-		 assertEquals("hnweb1", reportData.get(10));
-		 assertEquals("2022-08-05T00:00:00", reportData.get(11));
-		 assertEquals("800000001", reportData.get(12));
+		 		"CHECK_ELIGIBILITY", reportData.get(8));		 		 
+		 assertEquals("00000010", reportData.get(9));
+		 assertEquals("Ministry of Health", reportData.get(10));
+		 assertEquals("TRAININGHEALTHAUTH", reportData.get(11));
+		 assertEquals("hnweb1", reportData.get(12));
+		 assertEquals("2022-08-05T00:00:00", reportData.get(13));
+		 assertEquals("800000001", reportData.get(14));
+		 assertEquals("PHN", reportData.get(15));
 		 
 		 //Check the last (40th) record
-		 assertEquals("00000010", reportData.get(281));
-		 assertEquals("Ministry of Health", reportData.get(282));
-		 assertEquals("hnweb1", reportData.get(283));
-		 assertEquals("2022-08-05T00:00:00", reportData.get(284));
-		 assertEquals("800000001", reportData.get(285));
+		 assertEquals("00000010", reportData.get(321));
+		 assertEquals("Ministry of Health", reportData.get(322));
+		 assertEquals("TRAININGHEALTHAUTH", reportData.get(323));
+		 assertEquals("hnweb1", reportData.get(324));
+		 assertEquals("2022-08-05T00:00:00", reportData.get(325));
+		 assertEquals("800000001", reportData.get(326));
+		 assertEquals("PHN", reportData.get(327));
 	}
-	
+
 	@Test
 	public void testGetAuditReport_downloadCSV_sortDesc() throws IOException {
 		createAuditReports(20, TransactionType.CHECK_ELIGIBILITY);
 		createAuditReports(20, TransactionType.PHN_INQUIRY);
-		
+
 		List<String> orgs = new ArrayList<>();
 		orgs.add("00000010");
 		orgs.add("00000020");
 
+		List<String> spgRoles = new ArrayList<>();
+		spgRoles.add("TRAININGHEALTHAUTH");
+
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setUserId("hnweb1");
-		auditReportRequest.setOrganizations(orgs);		
+		auditReportRequest.setOrganizations(orgs);
+		auditReportRequest.setSpgRoles(spgRoles);
 		auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
 		auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
 		auditReportRequest.setSortDirection("DESC");
 		auditReportRequest.setSortField("type");
-		
-		 ResponseEntity<Resource> downloadReport = auditReportController.downloadAuditReport(auditReportRequest,
+
+		ResponseEntity<Resource> downloadReport = auditReportController.downloadAuditReport(auditReportRequest,
 				createHttpServletRequest());
 		 
 		 List<String> reportData = new ArrayList<String>();
@@ -329,24 +393,30 @@ public class AuditControllerTest extends BaseControllerTest {
 		 assertEquals("Type", reportData.get(0));
 		 assertEquals("Organization", reportData.get(1));
 		 assertEquals("Organization Name", reportData.get(2));
-		 assertEquals("User ID", reportData.get(3));
-		 assertEquals("Transaction Start Time", reportData.get(4));
-		 assertEquals("Affected Party ID", reportData.get(5));
-		 assertEquals("Affected Party ID Type", reportData.get(6));
+		 assertEquals("SPG", reportData.get(3));
+		 assertEquals("User ID", reportData.get(4));
+		 assertEquals("Transaction Start Time", reportData.get(5));
+		 assertEquals("Affected Party ID", reportData.get(6));
+		 assertEquals("Affected Party ID Type", reportData.get(7));
 		 assertEquals("Transaction ID\r\n" + 
-		 		"PHN_INQUIRY", reportData.get(7));		 		 
-		 assertEquals("00000010", reportData.get(8));
-		 assertEquals("Ministry of Health", reportData.get(9));
-		 assertEquals("hnweb1", reportData.get(10));
-		 assertEquals("2022-08-05T00:00:00", reportData.get(11));
-		 assertEquals("800000001", reportData.get(12));
+		 		"PHN_INQUIRY", reportData.get(8));		 		 
+		 assertEquals("00000010", reportData.get(9));
+		 assertEquals("Ministry of Health", reportData.get(10));
+		 assertEquals("TRAININGHEALTHAUTH", reportData.get(11));
+		 assertEquals("hnweb1", reportData.get(12));
+		 assertEquals("2022-08-05T00:00:00", reportData.get(13));
+		 assertEquals("800000001", reportData.get(14));
+		 assertEquals("PHN", reportData.get(15));
 		 
 		 //Check the last (40th) record
-		 assertEquals("00000010", reportData.get(281));
-		 assertEquals("Ministry of Health", reportData.get(282));
-		 assertEquals("hnweb1", reportData.get(283));
-		 assertEquals("2022-08-05T00:00:00", reportData.get(284));
-		 assertEquals("800000001", reportData.get(285));
+		 assertEquals("00000010", reportData.get(321));
+		 assertEquals("Ministry of Health", reportData.get(322));
+		 assertEquals("TRAININGHEALTHAUTH", reportData.get(323));
+		 assertEquals("hnweb1", reportData.get(324));
+		 assertEquals("2022-08-05T00:00:00", reportData.get(325));
+		 assertEquals("800000001", reportData.get(326));
+		 assertEquals("PHN", reportData.get(327));
+
 	}
 
 	private void read(InputStream input, List<String> reportData) throws IOException {
@@ -373,13 +443,14 @@ public class AuditControllerTest extends BaseControllerTest {
 		organizationRepository.save(org);
 
 	}
-	
+
 	private void createAuditReports(int count, TransactionType transactionType) {
 		for (int i = 0; i < count; i++) {
 			Transaction transaction = new Transaction();
 
 			transaction.setOrganization("00000010");
 			transaction.setOrganizationName("Ministry of Health");
+			transaction.setSpgRole("TRAININGHEALTHAUTH");
 			transaction.setServer("server1");
 			transaction.setSessionId("123456");
 			transaction.setSourceIp("0:0:0:0:0:0:0:1");
@@ -395,7 +466,7 @@ public class AuditControllerTest extends BaseControllerTest {
 			affectedParty.setIdentifierType(IdentifierType.PHN.getValue());
 			affectedParty.setDirection(AffectedPartyDirection.INBOUND.getValue());
 			affectedParty.setTransaction(transaction);
-		
+
 			affectedPartyRepository.save(affectedParty);
 		}
 	}
