@@ -1,12 +1,10 @@
 <template>
   <AppHelp>
-    <ul>
-      <li>
-        Use this screen to extend the coverage cancellation date of an international student on your MSP group account based on their renewed study permit. Any dependents with the same existing cancellation date will automatically have their cancel dates changed along with the study permit holder.
-      </li>
-      <li>If you do not know the PHN, the PHN Lookup screen can be used to find a group member’s PHN.</li>
-      <li>If the transaction is successful, the group members PHN is displayed. You may use the PHN with the Get Contract Periods screen to verify the cancellation date has been correctly changed.</li>
-    </ul>
+    <p>
+      Use this screen to extend the coverage cancellation date of an international student on your MSP group account based on their renewed study permit. Any dependents with the same existing cancellation date will automatically have their cancel dates changed along with the study permit holder.
+    </p>
+    <p>If you do not know the PHN, the PHN Lookup screen can be used to find a group member’s PHN.</p>
+    <p>If the transaction is successful, the group members PHN is displayed. You may use the PHN with the Get Contract Periods screen to verify the cancellation date has been correctly changed.</p>
   </AppHelp>
   <div id="extendCancelDate" v-if="inputFormActive">
     <form @submit.prevent="submitForm">
