@@ -115,7 +115,7 @@ export default {
           status: data.status,
           message: data.message,
         }
-        if (data?.dateOfDeath) {
+        if (data?.dateOfDeath && data.dateOfDeath != 'N/A') {
           this.alertStore.setErrorAlert(DATE_OF_DEATH_MESSAGE)
         }
         if (this.getPersonDetailsResult?.status === 'error') {
