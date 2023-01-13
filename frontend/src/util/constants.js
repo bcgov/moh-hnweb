@@ -71,3 +71,16 @@ export const RELATIONSHIPS = [
   { text: 'Spouse', value: 'S' },
   { text: 'Dependent', value: 'D' },
 ]
+
+// Genders
+export const GENDERS = [
+  { text: 'Male', value: 'M' },
+  { text: 'Female', value: 'F' },
+  { text: 'Unknown', value: 'U' },
+]
+
+// Yes/No
+export const YES_NO_OPTIONS = [
+  { text: 'Yes', value: 'Y' },
+  { text: 'No', value: 'N' },
+]
