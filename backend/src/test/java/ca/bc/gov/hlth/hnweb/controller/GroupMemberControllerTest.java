@@ -7,6 +7,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 import java.time.LocalDate;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -32,7 +33,6 @@ import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
-import io.netty.util.internal.StringUtil;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
 
@@ -109,8 +109,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertEquals("RPBS9014 TRANSACTION COMPLETED", updateNumberAndDeptResponse.getMessage());
         assertEquals("9397105575", updateNumberAndDeptResponse.getPhn());
         assertEquals("2000008", updateNumberAndDeptResponse.getGroupNumber());
-        assertEquals(StringUtil.EMPTY_STRING, updateNumberAndDeptResponse.getDepartmentNumber());
-        assertEquals(StringUtil.EMPTY_STRING, updateNumberAndDeptResponse.getGroupMemberNumber());
+        assertEquals(StringUtils.EMPTY, updateNumberAndDeptResponse.getDepartmentNumber());
+        assertEquals(StringUtils.EMPTY, updateNumberAndDeptResponse.getGroupMemberNumber());
         
 		// Check the client request is sent as expected
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
