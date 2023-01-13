@@ -32,6 +32,7 @@ import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.groupmember.UpdateNumberAndDeptResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
+import io.netty.util.internal.StringUtil;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
 
@@ -41,6 +42,8 @@ public class GroupMemberControllerTest extends BaseControllerTest {
 	private static final String RPBSPEE0_ERROR_PHN_HAS_NO_COVERAGE_IN_GROUP = "        RPBSPEE000000010                                ERRORMSGRPBS9179PHN HAS NO COVERAGE IN GROUP                                            93479840746337109111111   ";
 	private static final String RPBSPED0_SUCCESS = "        RPBSPED000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  98738959276337109111111";
 	private static final String RPBSPEE0_SUCCESS = "        RPBSPEE000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  98738959276337109000000001";
+	private static final String RPBSPEE0_DELETE_SUCCESS = "        RPBSPEE000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  93971055752000008";
+	private static final String RPBSPED0_DELETE_SUCCESS = "        RPBSPED000000010                                RESPONSERPBS9014TRANSACTION SUCCESSFUL                                                  93971055752000008";
 	
 	private static final String RPBSPWC0_ERROR_CANCEL_DATE_MISSING = "        RPBSPWC000000010                                ERRORMSGRPBS0026COVERAGE CANCEL DATE MUST BE ENTERED                                    93479840746337109           ";
 	private static final String RPBSPWC0_ERROR_CANCEL_DAY_INVALID = "        RPBSPWC000000010                                ERRORMSGRPBS1016COVERAGE CANCEL DAY INVALID                                             934798407463371092022-01-01 ";	
@@ -82,6 +85,40 @@ public class GroupMemberControllerTest extends BaseControllerTest {
         assertTransactionCreated(TransactionType.UPDATE_NUMBER_AND_OR_DEPT);
         assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 2);
         assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 0);
+    }
+    
+    @Test
+    public void testUpdateNumberAndDept_deleteGroupMember_Dept() throws InterruptedException {
+    	mockBackEnd.enqueue(new MockResponse()
+        		.setBody(RPBSPED0_DELETE_SUCCESS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+    	mockBackEnd.enqueue(new MockResponse()
+        		.setBody(RPBSPEE0_DELETE_SUCCESS)
+        	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
+    	
+    	UpdateNumberAndDeptRequest updateNumberAndDeptRequest = new UpdateNumberAndDeptRequest();
+    	updateNumberAndDeptRequest.setPhn("9397105575");
+    	updateNumberAndDeptRequest.setGroupNumber("2000008");
+    	updateNumberAndDeptRequest.setDepartmentNumber("------");
+    	updateNumberAndDeptRequest.setGroupMemberNumber("------");
+    	
+    	ResponseEntity<UpdateNumberAndDeptResponse> response = groupMemberController.updateNumberAndDept(updateNumberAndDeptRequest, createHttpServletRequest());
+		
+		UpdateNumberAndDeptResponse updateNumberAndDeptResponse = response.getBody();
+		assertEquals(StatusEnum.SUCCESS, updateNumberAndDeptResponse.getStatus());
+        assertEquals("RPBS9014 TRANSACTION COMPLETED", updateNumberAndDeptResponse.getMessage());
+        assertEquals("9397105575", updateNumberAndDeptResponse.getPhn());
+        assertEquals("2000008", updateNumberAndDeptResponse.getGroupNumber());
+        assertEquals(StringUtil.EMPTY_STRING, updateNumberAndDeptResponse.getDepartmentNumber());
+        assertEquals(StringUtil.EMPTY_STRING, updateNumberAndDeptResponse.getGroupMemberNumber());
+        
+		// Check the client request is sent as expected
+        RecordedRequest recordedRequest = mockBackEnd.takeRequest();        
+        assertEquals(HttpMethod.POST.name(), recordedRequest.getMethod());
+
+        assertTransactionCreated(TransactionType.UPDATE_NUMBER_AND_OR_DEPT);
+        assertAffectedPartyCount(AffectedPartyDirection.INBOUND, 4);
+        assertAffectedPartyCount(AffectedPartyDirection.OUTBOUND, 1);
     }
 
     @Test

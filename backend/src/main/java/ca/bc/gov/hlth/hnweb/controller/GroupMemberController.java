@@ -114,7 +114,11 @@ public class GroupMemberController extends BaseController {
 		try {	
 			// Handle the department number
 			UpdateNumberAndDeptResponse deptNumberResponse = new UpdateNumberAndDeptResponse();
-			if (StringUtils.isNotBlank(updateNumberAndDeptRequest.getDepartmentNumber())) {
+			String deptNumber = updateNumberAndDeptRequest.getDepartmentNumber();
+			if (StringUtils.isNotBlank(deptNumber)) {
+				if(deptNumber.length() >= 6 && deptNumber.substring(0,6).contentEquals(SIX_DASHES)) {
+					updateNumberAndDeptRequest.setDepartmentNumber(StringUtils.EMPTY);
+				}
 				RPBSPED0Converter rpbsped0Converter = new RPBSPED0Converter();
 				RPBSPED0 rpbsped0Request = rpbsped0Converter.convertRequest(updateNumberAndDeptRequest);
 				RPBSPED0 rpbsped0Response = groupMemberService.updateGroupMemberDepartmentNumber(rpbsped0Request, transaction);
@@ -125,7 +129,7 @@ public class GroupMemberController extends BaseController {
 			UpdateNumberAndDeptResponse empNumberResponse = new UpdateNumberAndDeptResponse();
 			String groupMemberNumber = updateNumberAndDeptRequest.getGroupMemberNumber();
 			if (StringUtils.isNotBlank(groupMemberNumber)) {
-				if(groupMemberNumber.length() >= 6 && groupMemberNumber.substring(0,5).contentEquals(SIX_DASHES)) {
+				if(groupMemberNumber.length() >= 6 && groupMemberNumber.substring(0,6).contentEquals(SIX_DASHES)) {
 					updateNumberAndDeptRequest.setGroupMemberNumber(StringUtils.EMPTY);
 				}
 				RPBSPEE0Converter rpbspee0Converter = new RPBSPEE0Converter();
