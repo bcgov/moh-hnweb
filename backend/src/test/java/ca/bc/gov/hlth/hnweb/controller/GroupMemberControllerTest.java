@@ -88,7 +88,7 @@ public class GroupMemberControllerTest extends BaseControllerTest {
     }
     
     @Test
-    public void testUpdateNumberAndDept_deleteGroupMember_Dept() throws InterruptedException {
+    public void testUpdateNumberAndDept_deleteGroupMemberNumberDept() throws InterruptedException {
     	mockBackEnd.enqueue(new MockResponse()
         		.setBody(RPBSPED0_DELETE_SUCCESS)
         	    .addHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN.toString()));
