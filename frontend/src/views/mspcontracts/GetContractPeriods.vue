@@ -154,8 +154,3 @@ export default {
   },
 }
 </script>
-<style>
-.unstyled {
-  list-style-type: none;
-}
-</style>
