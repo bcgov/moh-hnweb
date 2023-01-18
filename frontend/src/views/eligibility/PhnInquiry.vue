@@ -2,13 +2,17 @@
   <AppHelp>
     <p>Use PHN Inquiry to verify an individual's name, birthdate, gender, and to check their eligibility for Medical Services Plan (MSP) coverage.</p>
     <p>"Eligible = Y" means that when checked today, the person is eligible for MSP.</p>
-    <p>EMPLOYERS - if Y and this is a new employee or dependent, you can add them to your group account using Add Employee or Add Employee Dependent.</p>
-    <p>HEALTH AUTHORITIES - although eligible today, a person could subsequently become ineligible for service on today's date. If a fee-for-service claim is involved, you may wish to use the MSP Teleplan system or Claims IVR to verify eligibility.</p>
+    <ul>
+      <li>EMPLOYERS - if Y and this is a new employee or dependent, you can add them to your group account using Add Employee or Add Employee Dependent.</li>
+      <li>HEALTH AUTHORITIES - although eligible today, a person could subsequently become ineligible for service on today's date. If a fee-for-service claim is involved, you may wish to use the MSP Teleplan system or Claims IVR to verify eligibility.</li>
+    </ul>
     <br />
-    <p>"Eligible = N" means the person was enrolled in MSP in the past, but is NOT eligible for publicly funded health care as of today's date. Any 'N' you receive must also be confirmed using the E45 MSP Coverage Status Check business service.</p>
+    <p>"Eligible = N" means the person was enrolled in MSP in the past, but is NOT eligible for publicly funded health care as of today's date. Any 'N' you receive must also be confirmed using the MSP Coverage Status Check business service.</p>
     <p>PHN NOT FOUND error means that the PHN is valid, but the person is not enrolled with the MSP, and is currently not eligible for publicly funded health care services.</p>
-    <p>EMPLOYERS - if this is an employee or dependent who is a new BC resident, they must be enrolled. An MSP application or change form, with copies of foundation documents, must be submitted.</p>
-    <p>HEALTH AUTHORITIES - if this client is a new BC resident, please advise them to enroll with MSP.</p>
+    <ul>
+      <li>EMPLOYERS - if this is an employee or dependent who is a new BC resident, they must be enrolled. An MSP application or change form, with copies of foundation documents, must be submitted.</li>
+      <li>HEALTH AUTHORITIES - if this client is a new BC resident, please advise them to enroll with MSP.</li>
+    </ul>
   </AppHelp>
   <div>
     <p>Enter 1 or more PHNs</p>
