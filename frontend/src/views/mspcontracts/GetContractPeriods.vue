@@ -40,7 +40,7 @@
           <th>Name</th>
           <th>Contract Holder</th>
           <th>Relationship</th>
-          <th>Group Number#</th>
+          <th>Group Number</th>
           <th>Effective</th>
           <th>Cancel</th>
           <th>Reason</th>
