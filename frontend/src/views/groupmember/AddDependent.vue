@@ -40,9 +40,12 @@
       </AppRow>
       <AppRow>
         <AppCol class="col6">
-          <YesNoRadioButtonGroup :e-model="v$.isStudent" id="isStudent" label="Is this Dependent attending a Canadian Educational Institution?" v-model="isStudent">
+          <AppRadioButtonGroup :e-model="v$.isStudent" id="isStudent" label="Is this Dependent attending a Canadian Educational Institution?">
             <template #tooltip> Click either Yes or No </template>
-          </YesNoRadioButtonGroup>
+            <template #options>
+              <AppRadioButton name="isStudent" v-for="option in this.YES_NO_OPTIONS" :label="option.text" :value="option.value" v-model="isStudent" />
+            </template>
+          </AppRadioButtonGroup>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -70,19 +73,20 @@
 
 <script>
 import AppHelp from '../../components/ui/AppHelp.vue'
-import YesNoRadioButtonGroup from '../../components/ui/YesNoRadioButtonGroup.vue'
+import AppRadioButton from '../../components/ui/AppRadioButton.vue'
+import AppRadioButtonGroup from '../../components/ui/AppRadioButtonGroup.vue'
 import useVuelidate from '@vuelidate/core'
 import { helpers, required, requiredIf } from '@vuelidate/validators'
 import dayjs from 'dayjs'
 import { VALIDATE_GROUP_NUMBER_MESSAGE, VALIDATE_PHN_MESSAGE, validateGroupNumber, validatePHN } from '../../util/validators'
-import { API_DATE_FORMAT, RELATIONSHIPS } from '../../util/constants'
+import { API_DATE_FORMAT, RELATIONSHIPS, YES_NO_OPTIONS } from '../../util/constants'
 import GroupMemberService from '../../services/GroupMemberService'
 import { useAlertStore } from '../../stores/alert'
 import { handleServiceError } from '../../util/utils'
 
 export default {
   name: 'AddDependent',
-  components: { YesNoRadioButtonGroup, AppHelp },
+  components: { AppRadioButton, AppRadioButtonGroup, AppHelp },
   setup() {
     const currentMonth = {
       month: new Date().getMonth(),
@@ -116,6 +120,8 @@ export default {
   created() {
     // Dependent Relationship drop down options
     this.relationshipOptions = RELATIONSHIPS
+    // Yes/No radio button options
+    this.YES_NO_OPTIONS = YES_NO_OPTIONS
   },
   computed: {
     // Coverage Effective Date should be the first day of the month. Set entered date to have first day of the month
