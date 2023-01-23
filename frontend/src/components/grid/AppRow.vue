@@ -22,4 +22,10 @@ export default {
 .row-center {
   justify-content: center;
 }
+.flex-gap-100 {
+  gap: 100px;
+}
+.flex-nowrap {
+  flex-wrap: nowrap !important;
+}
 </style>
