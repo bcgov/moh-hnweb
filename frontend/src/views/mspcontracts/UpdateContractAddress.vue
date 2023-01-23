@@ -133,6 +133,8 @@ import {
   VALIDATE_PROVINCE_MESSAGE,
   VALIDATE_STATE_MESSAGE,
   VALIDATE_STATE_REQUIRED_MESSAGE,
+  VALIDATE_OTHER_ZIP_CODE_REQUIRED_MESSAGE,
+  VALIDATE_OTHER_STATE_REQUIRED_MESSAGE,
 } from '../../util/validators'
 import MspContractsService from '../../services/MspContractsService'
 import { useAlertStore } from '../../stores/alert'
@@ -191,6 +193,7 @@ export default {
   },
   computed: {
     regionLabel() {
+      console.log('HI, IN Computed Region: ' + this.mailingAddress.country)
       if (this.mailingAddress.country === 'United States') {
         return 'State'
       } else if (this.mailingAddress.country === 'Canada') {
