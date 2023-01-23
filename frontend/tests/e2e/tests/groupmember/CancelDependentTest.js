@@ -60,6 +60,63 @@ test('Check invalid formats validation', async (t) => {
     .contains(ERROR_MESSAGE)
 })
 
+test('Check max length validation', async (t) => {
+  await t
+    // Given I enter Group Number, Group Member's PHN, Dependent's PHN with more than allowed length
+    .typeText(CancelDependent.phnInput, '93971055755')
+    .typeText(CancelDependent.dependentPhnInput, '93971055755')
+    .typeText(CancelDependent.groupNumberInput, '123333333')
+    // When I click the submit button
+    .click(CancelDependent.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the PHN and Group and Cancel Date formats
+    .expect(CancelDependent.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(CancelDependent.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+    .expect(CancelDependent.errorText.nth(2).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+})
+
+test('Check alphanumeric validation', async (t) => {
+  await t
+    // Given I enter PHN, Dependent PHN, Group Number, and Cancel dates with alphanumeric
+    .typeText(CancelDependent.phnInput, '939710557A')
+    .typeText(CancelDependent.dependentPhnInput, '9A97105575')
+    .typeText(CancelDependent.groupNumberInput, '123AAA')
+    // When I click the submit button
+    .click(CancelDependent.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the PHN and Group and Cancel Date formats
+    .expect(CancelDependent.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(CancelDependent.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+    .expect(CancelDependent.errorText.nth(2).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+})
+
+test('Check special character validation', async (t) => {
+  await t
+    // Given I enter PHN, Dependent PHN, Group Number, and Cancel dates with special chars
+    .typeText(CancelDependent.phnInput, '93971055$%')
+    .typeText(CancelDependent.dependentPhnInput, '93971055#$')
+    .typeText(CancelDependent.groupNumberInput, '123@#')
+    // When I click the submit button
+    .click(CancelDependent.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the PHN and Group and Cancel Date formats
+    .expect(CancelDependent.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(CancelDependent.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+    .expect(CancelDependent.errorText.nth(2).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+})
+
 test('Check properly filled form passes validation', async (t) => {
   await t
     // Given I have a form filled out with data

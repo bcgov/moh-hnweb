@@ -54,6 +54,54 @@ test('Check invalid formats validation', async (t) => {
     .contains(ERROR_MESSAGE)
 })
 
+test('Check maxlength validation', async (t) => {
+  await t
+    // Given I enter Group Number, Group Member's PHN, Dependent's PHN with more than allowed length
+    .typeText(CancelGroupMember.phnInput, '93971055755')
+    .typeText(CancelGroupMember.groupNumberInput, '63371099')
+    // When I click the submit button
+    .click(CancelGroupMember.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the PHN and Group and Cancel Date formats
+    .expect(CancelGroupMember.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(CancelGroupMember.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+})
+
+test('Check alphanmeric validation', async (t) => {
+  await t
+    // Given I enter PHN, Group Number, and Cancel dates with alphanumeric format
+    .typeText(CancelGroupMember.phnInput, 'A397105575')
+    .typeText(CancelGroupMember.groupNumberInput, '633710B')
+    // When I click the submit button
+    .click(CancelGroupMember.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the PHN and Group and Cancel Date formats
+    .expect(CancelGroupMember.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(CancelGroupMember.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+})
+
+test('Check special characters validation', async (t) => {
+  await t
+    // Given I enter PHN, Group Number, and Cancel dates with special chars
+    .typeText(CancelGroupMember.phnInput, '@#$%^&*()!')
+    .typeText(CancelGroupMember.groupNumberInput, '^&^&^&^')
+    // When I click the submit button
+    .click(CancelGroupMember.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the PHN and Group and Cancel Date formats
+    .expect(CancelGroupMember.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(CancelGroupMember.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+})
+
 test('Check properly filled form passes validation', async (t) => {
   await t
     // Given I have a form filled out with data

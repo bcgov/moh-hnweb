@@ -133,3 +133,16 @@ export const COUNTRIES = [
   { text: 'United States', value: 'United States' },
   { text: 'Other', value: 'Other' },
 ]
+
+// Genders
+export const GENDERS = [
+  { text: 'Male', value: 'M' },
+  { text: 'Female', value: 'F' },
+  { text: 'Unknown', value: 'U' },
+]
+
+// Yes/No
+export const YES_NO_OPTIONS = [
+  { text: 'Yes', value: 'Y' },
+  { text: 'No', value: 'N' },
+]
