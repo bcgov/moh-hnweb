@@ -193,7 +193,6 @@ export default {
   },
   computed: {
     regionLabel() {
-      console.log('HI, IN Computed Region: ' + this.mailingAddress.country)
       if (this.mailingAddress.country === 'United States') {
         return 'State'
       } else if (this.mailingAddress.country === 'Canada') {
@@ -220,10 +219,10 @@ export default {
   watch: {
     'mailingAddress.country'(newValue) {
       if (newValue === 'Other') {
-        //     this.mailingAddress.countryToSend = ''
+        this.mailingAddress.province = ''
         this.otherCountry = true
       } else {
-        //    this.mailingAddress.countryToSend = newValue
+        this.mailingAddress.province = ''
         this.otherCountry = false
       }
     },
@@ -412,11 +411,3 @@ export default {
   },
 }
 </script>
-<style>
-.margin-left-auto {
-  margin-left: auto;
-}
-.margin-right-100 {
-  margin-right: 100px;
-}
-</style>
