@@ -11,6 +11,7 @@ public class UserInfo {
 	private String username;
 	private String userId;
 	private String organization;
+	private String organizationName;
 	private String role;
 	private String sessionState;
 	private List<String> roles;
@@ -19,18 +20,20 @@ public class UserInfo {
 		super();
 	}
 
-	public UserInfo(String username, String organization, String role) {
+	public UserInfo(String username, String organization, String organizationName, String role) {
 		super();
 		this.username = username;
 		this.organization = organization;
+		this.organizationName = organizationName;
 		this.role = role;
 	}
 
-	public UserInfo(String username, String userId, String organization, String role, String sessionState) {
+	public UserInfo(String username, String userId, String organization, String organizationName, String role, String sessionState) {
 		super();
 		this.username = username;
 		this.userId = userId;
 		this.organization = organization;
+		this.organizationName = organizationName;
 		this.role = role;
 		this.sessionState = sessionState;
 	}
@@ -59,6 +62,14 @@ public class UserInfo {
 		this.organization = organization;
 	}
 
+	public String getOrganizationName() {
+		return organizationName;
+	}
+
+	public void setOrganizationName(String organizationName) {
+		this.organizationName = organizationName;
+	}
+
 	public String getRole() {
 		return StringUtils.join(this.roles, " ");
 	}
@@ -81,8 +92,8 @@ public class UserInfo {
 
 	@Override
 	public String toString() {
-		return "UserInfo [username=" + username + ", userId=" + userId + ", organization=" + organization + ", role="
-				+ role + ", sessionState=" + sessionState + "]";
+		return "UserInfo [username=" + username + ", userId=" + userId + ", organization=" + organization + ", organizationName="
+				+ organizationName + ", role=" + role + ", sessionState=" + sessionState + "]";
 	}
 
 }

@@ -10,9 +10,9 @@
         <AppCol class="col3 checkbox-row">
           <AppLabel class="checkbox-label">Organization</AppLabel>
           <div class="checkbox-wrapper">
-            <label class="checkbox" :for="option" v-for="option in organizationOptions" :key="option">
-              {{ option }}
-              <input type="checkbox" :id="option" :value="option" v-model="organizations" />
+            <label class="checkbox" :for="option.id" v-for="option in organizationOptions" :key="option.id">
+              {{ option.id }} {{ option.name ? ' - ' : '' }} {{ option.name }}
+              <input type="checkbox" :id="option.id" :value="option.id" v-model="organizations" />
               <span class="checkmark"></span>
             </label>
           </div>
@@ -85,6 +85,7 @@
     >
       <Column field="type" header="Type" :sortable="true"></Column>
       <Column field="organization" header="Organization" :sortable="true"></Column>
+      <Column field="organizationName" header="Organization Name" :sortable="true"></Column>
       <Column field="spgRole" header="SPG" :sortable="true"></Column>
       <Column field="userId" header="User ID" :sortable="true" class="userId"></Column>
       <Column field="transactionStartTime" header="Transaction Start Time" :sortable="true"></Column>
@@ -169,7 +170,7 @@ export default {
         'UpdateContractAddress',
         'UpdateNumberAndDept',
       ],
-      spgOptions: ['AUDITUSER', 'E45', 'ELIGIBILITY', 'MANAGEMSPPAYEENUMBER', 'PBFUSER', 'PREMIUMADMIN', 'PREMIUMADMINPLUS', 'SOCIALSECTOR', 'TRAININGHEALTHAUTH', 'VISARESIDENT'],
+      spgOptions: ['AUDITUSER', 'E45', 'ELIGIBILITY', 'HELPDESK', 'MANAGEMSPPAYEENUMBER', 'PBFUSER', 'PREMIUMADMIN', 'PREMIUMADMINPLUS', 'SOCIALSECTOR', 'TRAININGHEALTHAUTH', 'VISARESIDENT'],
     }
   },
   mounted() {

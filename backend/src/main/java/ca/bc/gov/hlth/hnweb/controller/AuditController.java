@@ -29,9 +29,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nimbusds.oauth2.sdk.util.StringUtils;
-
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
+import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditOrganization;
 import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditRecord;
 import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditReportRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditReportResponse;
@@ -89,10 +88,13 @@ public class AuditController extends BaseController {
 	 * @return list of organization
 	 */
 	@GetMapping("/organizations")
-	public ResponseEntity<List<String>> getOrganizations() {
-		List<String> organizations = convertOrganization(auditService.getOrganizations());
-		ResponseEntity<List<String>> responseEntity = ResponseEntity.ok(organizations);
-		return responseEntity;
+	public ResponseEntity<List<AuditOrganization>> getOrganizations() {
+		List<Organization> organizations = auditService.getOrganizations();
+		List<AuditOrganization> auditOrganizations = organizations.stream()
+                .map(o -> new AuditOrganization(o.getOrganization(), o.getOrganizationName()))
+                .collect(Collectors.toList());
+
+		return ResponseEntity.ok(auditOrganizations);
 	}
 
 	/**
@@ -130,6 +132,7 @@ public class AuditController extends BaseController {
 		affectedParties.forEach(affectedParty -> {
 			AuditRecord model = new AuditRecord();
 			model.setOrganization(affectedParty.getTransaction().getOrganization());
+			model.setOrganizationName(affectedParty.getTransaction().getOrganizationName());
 			model.setSpgRole(affectedParty.getTransaction().getSpgRole());
 			model.setTransactionId(affectedParty.getTransaction().getTransactionId().toString());
 			model.setType(affectedParty.getTransaction().getType());
@@ -142,11 +145,6 @@ public class AuditController extends BaseController {
 
 		});
 		return auditReportResponse;
-	}
-
-	private List<String> convertOrganization(List<Organization> organizations) {
-		return organizations.stream().filter(org -> StringUtils.isNotBlank(org.getOrganization()))
-				.map(org -> org.getOrganization()).collect(Collectors.toList());
 	}
 
 	private LocalDateTime convertDate(Date date) {

@@ -59,7 +59,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
 		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
-        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "3c0fc3b5-45f8-4745-afa9-b7b04978023d", "00000010", "hnweb-user", UUID.randomUUID().toString()));
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "3c0fc3b5-45f8-4745-afa9-b7b04978023d", "00000010", "Ministry of Health", "hnweb-user", UUID.randomUUID().toString()));
 
         PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("9879869673");
@@ -88,7 +88,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
 		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
-        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "3c0fc3b5-45f8-4745-afa9-b7b04978023d", "00000010", "hnweb-user", UUID.randomUUID().toString()));
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "3c0fc3b5-45f8-4745-afa9-b7b04978023d", "00000010", "Ministry of Health", "hnweb-user", UUID.randomUUID().toString()));
 
         PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("9879869673");
@@ -118,7 +118,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
 		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
-        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "e4414a89-8974-4cff-9677-d9d2df6f9cfb", "00000010", "hnweb-user", UUID.randomUUID().toString()));
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "e4414a89-8974-4cff-9677-d9d2df6f9cfb", "00000010", "Ministry of Health", "hnweb-user", UUID.randomUUID().toString()));
 
         PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("9879869673");
@@ -148,7 +148,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
 		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
-        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "e4414a89-8974-4cff-9677-d9d2df6f9cfb", "00000010", "hnweb-user", UUID.randomUUID().toString()));
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "e4414a89-8974-4cff-9677-d9d2df6f9cfb", "00000010", "Ministry of Health", "hnweb-user", UUID.randomUUID().toString()));
 
 		PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("7363117301");
@@ -178,7 +178,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
 
 		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
-        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "924917e3-970a-482d-88b5-244be4c19d70", "00000010", "hnweb-user", UUID.randomUUID().toString()));
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "924917e3-970a-482d-88b5-244be4c19d70", "00000010", "Ministry of Health", "hnweb-user", UUID.randomUUID().toString()));
 
         PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("7363117302");
@@ -203,7 +203,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		//Note, don't enqueue a response as it is never requested and so will remain queued for next test when they are run together.
 		
 		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
-        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "1b85225b-58cc-4430-9dc9-0199057afdff", "00000010", "hnweb-user", UUID.randomUUID().toString()));
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "1b85225b-58cc-4430-9dc9-0199057afdff", "00000010", "Ministry of Health", "hnweb-user", UUID.randomUUID().toString()));
         
         PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("9879869673");
@@ -222,7 +222,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		//Note, don't enqueue a response as it is never requested and so will remain queued for next test when they are run together.
 
 		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
-        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "3c0fc3b5-45f8-4745-afa9-b7b04978023d", "00000010", "hnweb-user", UUID.randomUUID().toString()));
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "3c0fc3b5-45f8-4745-afa9-b7b04978023d", "00000010", "Ministry of Health", "hnweb-user", UUID.randomUUID().toString()));
         
         PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
 		viewPatientRegisterRequest.setPhn("9879869673");

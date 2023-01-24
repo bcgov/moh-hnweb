@@ -63,19 +63,18 @@ public class Transaction {
 	private String organization;
 
 	/**
+	 * Organization Name of the user that initiated the transaction
+	 */
+	@Basic
+	@Column(name = "organization_name")
+	private String organizationName;
+
+	/**
 	 * SPG of the user performing the transaction
 	 */
 	@Basic
 	@Column(name = "spg_role")
 	private String spgRole;
-
-	public String getSpgRole() {
-		return spgRole;
-	}
-
-	public void setSpgRole(String spgRole) {
-		this.spgRole = spgRole;
-	}
 
 	/**
 	 * ID of the user that initiated the transaction
@@ -137,6 +136,22 @@ public class Transaction {
 
 	public void setOrganization(String organization) {
 		this.organization = organization;
+	}
+
+	public String getOrganizationName() {
+		return organizationName;
+	}
+
+	public void setOrganizationName(String organizationName) {
+		this.organizationName = organizationName;
+	}
+
+	public String getSpgRole() {
+		return spgRole;
+	}
+
+	public void setSpgRole(String spgRole) {
+		this.spgRole = spgRole;
 	}
 
 	public String getUserId() {
