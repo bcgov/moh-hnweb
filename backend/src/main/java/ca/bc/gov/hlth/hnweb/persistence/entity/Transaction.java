@@ -63,6 +63,21 @@ public class Transaction {
 	private String organization;
 
 	/**
+	 * SPG of the user performing the transaction
+	 */
+	@Basic
+	@Column(name = "spg_role")
+	private String spgRole;
+
+	public String getSpgRole() {
+		return spgRole;
+	}
+
+	public void setSpgRole(String spgRole) {
+		this.spgRole = spgRole;
+	}
+
+	/**
 	 * ID of the user that initiated the transaction
 	 */
 	@Basic
@@ -139,7 +154,7 @@ public class Transaction {
 	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
-	
+
 	@PrePersist
 	public void prePersist() {
 		if (startTime == null) {
@@ -216,8 +231,9 @@ public class Transaction {
 
 	@Override
 	public String toString() {
-		return "Transaction [transactionId=" + transactionId + ", type=" + type + ", sessionId=" + sessionId + ", server=" + server
-				+ ", sourceIp=" + sourceIp + ", organization=" + organization + ", userId=" + userId + ", startTime=" + startTime + "]";
+		return "Transaction [transactionId=" + transactionId + ", type=" + type + ", sessionId=" + sessionId
+				+ ", server=" + server + ", sourceIp=" + sourceIp + ", organization=" + organization + ", userId="
+				+ userId + ", startTime=" + startTime + "]";
 	}
 
 }
