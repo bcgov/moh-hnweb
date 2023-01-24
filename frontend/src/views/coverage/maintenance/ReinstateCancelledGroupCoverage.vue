@@ -1,10 +1,8 @@
 <template>
   <AppHelp>
-    <ul>
-      <li>Use this screen to reinstate a cancelled group member on your MSP group account. Any dependents with the same cancellation date will automatically be reinstated along with the group member.</li>
-      <li>Before you begin, use the Get Contract Periods screen first to confirm you have the correct cancel date that is currently on file.</li>
-      <li>If the transaction is successful, the PHN is displayed. You may use the PHN with the Get Contract Periods screen to verify the coverage has been correctly reinstated.</li>
-    </ul>
+    <p>Use this screen to reinstate a cancelled group member on your MSP group account. Any dependents with the same cancellation date will automatically be reinstated along with the group member.</p>
+    <p>Before you begin, use the Get Contract Periods screen first to confirm you have the correct cancel date that is currently on file.</p>
+    <p>If the transaction is successful, the PHN is displayed. You may use the PHN with the Get Contract Periods screen to verify the coverage has been correctly reinstated.</p>
   </AppHelp>
   <div id="reinstateCancelledGroupCoverage" v-if="inputFormActive">
     <form @submit.prevent="submitForm">

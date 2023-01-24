@@ -1,7 +1,7 @@
 <template>
   <label class="radio">
     {{ label }}
-    <input type="radio" :checked="isChecked" :value="value" @change="$emit('update:modelValue', $event.target.value)" v-bind="$attrs" />
+    <input type="radio" :name="name" :checked="isChecked" :value="value" @change="$emit('update:modelValue', $event.target.value)" v-bind="$attrs" />
     <span class="dot"></span>
   </label>
 </template>
@@ -13,6 +13,7 @@ export default {
     label: String,
     modelValue: String,
     value: { type: String, default: undefined },
+    name: String,
   },
   computed: {
     isChecked() {

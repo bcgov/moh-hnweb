@@ -246,8 +246,9 @@ public class Transaction {
 
 	@Override
 	public String toString() {
-		return "Transaction [transactionId=" + transactionId + ", type=" + type + ", sessionId=" + sessionId + ", server=" + server
-				+ ", sourceIp=" + sourceIp + ", organization=" + organization + ", userId=" + userId + ", startTime=" + startTime + "]";
+		return "Transaction [transactionId=" + transactionId + ", type=" + type + ", sessionId=" + sessionId
+				+ ", server=" + server + ", sourceIp=" + sourceIp + ", organization=" + organization + ", userId="
+				+ userId + ", startTime=" + startTime + "]";
 	}
 
 }

@@ -150,7 +150,7 @@ test('Check properly filled form passes validation', async (t) => {
     .pressKey('tab')
     .click(ReinstateOverAgeDependentPage.isStudentRadioButton)
     .wait(1000)
-    .typeText(ReinstateOverAgeDependentPage.studentEndDateInput, '202212')
+    .typeText(ReinstateOverAgeDependentPage.studentEndDateInput, '202612')
     .pressKey('tab')
     // When I click the submit button
     .click(ReinstateOverAgeDependentPage.submitButton)
