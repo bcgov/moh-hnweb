@@ -11,6 +11,7 @@ class NameSearch {
 
     this.submitButton = Selector('button[type="submit"]')
     this.addButton = Selector('button[type="button"]').withText('Add')
+    this.createNewPHNButton = Selector('button[type="button"]').withText('Create New PHN')
     this.clearButton = Selector('button[type="button"]')
     this.errorText = Selector('div').withAttribute('class', 'error-text')
     this.numberOfMatchesText = Selector('p').withText('Number of Matches: 10')

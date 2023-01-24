@@ -7,18 +7,16 @@
       </AppTooltip>
     </div>
     <div :class="groupClass">
-      <AppRadioButton v-for="item in this.group" :id="item.value" :label="item.label" :value="item.value" v-model="modelValue" />
+      <slot name="options"></slot>
     </div>
     <div class="error-text" v-for="error in eModel.$errors">{{ error.$message.replace('Value', label) }}</div>
   </div>
 </template>
 <script>
-import AppRadioButton from './AppRadioButton.vue'
 import AppTooltip from './AppTooltip.vue'
 export default {
   name: 'AppRadioButtonGroup',
   components: {
-    AppRadioButton,
     AppTooltip,
   },
   computed: {
@@ -32,16 +30,6 @@ export default {
   props: {
     eModel: Object,
     label: String,
-    modelValue: String,
-    group: Array,
-  },
-  watch: {
-    modelValue: function (val) {
-      //update the model when the radio selection changes.
-      if (val) {
-        this.$emit('update:modelValue', val)
-      }
-    },
   },
 }
 </script>
