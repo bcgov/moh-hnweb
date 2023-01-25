@@ -159,7 +159,6 @@ export default {
       submitting: false,
       updateOk: false,
       updateMode: true,
-      otherCountry: false,
       //Update Contract Address Fields
       phn: '',
       groupNumber: '',
@@ -213,16 +212,13 @@ export default {
         return this.provinceOptions
       }
     },
+    otherCountry() {
+      return this.mailingAddress.country === 'Other'
+    },
   },
   watch: {
-    'mailingAddress.country'(newValue) {
-      if (newValue === 'Other') {
-        this.mailingAddress.province = ''
-        this.otherCountry = true
-      } else {
-        this.mailingAddress.province = ''
-        this.otherCountry = false
-      }
+    'mailingAddress.country'() {
+      this.mailingAddress.province = ''
     },
   },
   methods: {
@@ -246,7 +242,7 @@ export default {
               addressLine1: this.homeAddress.addressLine1,
               addressLine2: this.homeAddress.addressLine2,
               addressLine3: this.homeAddress.addressLine3,
-              addressLine4: this.homeAddress.city !== '' ? this.homeAddress.city + ' ' + this.homeAddress.province : '',
+              addressLine4: this.homeAddress.city + ' ' + this.homeAddress.province,
               postalCode: this.homeAddress.postalCode,
             },
             mailingAddress: {
@@ -341,6 +337,13 @@ export default {
       }
       return true
     },
+    validateMailingCity(city) {
+      if (this.otherCountry) {
+        return true
+      } else {
+        return validateCityOrProvince(city)
+      }
+    },
   },
 
   validations() {
@@ -365,6 +368,10 @@ export default {
         addressLine2: {
           maxLength: maxLength(25),
           validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE2_MESSAGE, validateAddress),
+        },
+        addressLine3: {
+          maxLength: maxLength(25),
+          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateAddress),
         },
         postalCode: {
           required,
@@ -397,12 +404,11 @@ export default {
         city: {
           required: helpers.withMessage(VALIDATE_CITY_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForMSPContracts)),
           maxLength: maxLength(25),
-          validateCityOrProvince: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityOrProvince),
+          validateMailingCity: helpers.withMessage(VALIDATE_CITY_MESSAGE, this.validateMailingCity),
         },
         province: {
           required: helpers.withMessage(this.regionFieldRequiredValidationMessage, requiredIf(validateMailingAddressForMSPContracts)),
           maxLength: maxLength(25),
-          validateCityOrProvince: helpers.withMessage(this.regionFieldInvalidValidationMessage, validateCityOrProvince),
         },
       },
     }

@@ -6,6 +6,7 @@ import { regularAccUser } from '../../roles/roles'
 const ERROR_MESSAGE = 'Please correct errors before submitting'
 const INVALID_ADDRESS_LINE1_MESSAGE = 'Address Line 1 is invalid'
 const INVALID_ADDRESS_LINE2_MESSAGE = 'Address Line 2 is invalid'
+const INVALID_ADDRESS_LINE3_MESSAGE = 'Address Line 3 is invalid'
 const INVALID_CITY_MESSAGE = 'City is invalid'
 const INVALID_PROVINCE_MESSAGE = 'Province is invalid'
 const CITY_REQUIRED_MESSAGE = 'City is required'
@@ -21,12 +22,14 @@ const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
 const ZIP_CODE_REQUIRED_MESSAGE = 'ZIP Code is required'
 const INVALID_ZIP_CODE_MESSAGE = 'ZIP Code is invalid'
 const STATE_REQUIRED_MESSAGE = 'State is required'
+const REGION_REQUIRED_MESSAGE = 'Province / Region / State is required'
+const POSTAL_ZIP_CODE_REQUIRED_MESSAGE = 'Postal / Zip Code is required'
 const INVALID_STATE_MESSAGE = 'State is invalid'
 const INVALID_POSTAL_CODE_VALIDATION_MESSAGE = 'Postal Code is invalid'
 const PHONE_NUMBER_VALIDATION_MESSAGE = 'Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
 const SUCCESS_MESSAGE = 'RPBS0101 PHONE NUMBER ALREADY EXISTS ON MSP. NO UPDATE DONE\nRPBS0102 ADDRESSES ALREADY EXIST ON MSP. NO UPDATE DONE.'
 const mailingCountryOption = UpdateContractAddress.mailingAddressCountrySelect.find('option')
-
+const mailingProvinceOption = UpdateContractAddress.mailingAddressProvinceSelect.find('option')
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/mspcontracts/UpdateContractAddress'
 
 fixture(`UpdateContractAddress Page`).disablePageCaching`Test UpdateContractAddress`
@@ -98,6 +101,20 @@ test('Check required message for United States', async (t) => {
     .contains(ZIP_CODE_REQUIRED_MESSAGE)
 })
 
+test('Check required message for Other Country', async (t) => {
+  await t
+    // When I click the submit button
+    .click(UpdateContractAddress.submitButton)
+    .wait(1000)
+    .typeText(UpdateContractAddress.mailingAddress2Input, 'TEST ADDRESS LINE 2')
+    .click(UpdateContractAddress.mailingAddressCountrySelect)
+    .click(mailingCountryOption.withText('Other'))
+    .expect(UpdateContractAddress.errorText.nth(6).textContent)
+    .contains(REGION_REQUIRED_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(8).textContent)
+    .contains(POSTAL_ZIP_CODE_REQUIRED_MESSAGE)
+})
+
 test('Check properly filled form passes validation', async (t) => {
   await t
     // Given the page is filled out correctly
@@ -142,13 +159,15 @@ test('Check invalid message for United States', async (t) => {
     .click(UpdateContractAddress.submitButton)
     .wait(1000)
     .typeText(UpdateContractAddress.mailingAddress2Input, 'TEST ADDRESS LINE 2')
-    .typeText(UpdateContractAddress.mailingAddressProvinceInput, '@@@@@@')
+    .typeText(UpdateContractAddress.mailingAddressCityInput, '@@@@@@@')
     .typeText(UpdateContractAddress.mailingPostalCodeInput, '@@@@@@')
     .click(UpdateContractAddress.mailingAddressCountrySelect)
     .click(mailingCountryOption.withText('United States'))
-    .expect(UpdateContractAddress.errorText.nth(6).textContent)
-    .contains(INVALID_STATE_MESSAGE)
-    .expect(UpdateContractAddress.errorText.nth(8).textContent)
+    .click(UpdateContractAddress.mailingAddressProvinceSelect)
+    .click(mailingProvinceOption.withText('Alaska'))
+    .expect(UpdateContractAddress.errorText.nth(5).textContent)
+    .contains(INVALID_CITY_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(7).textContent)
     .contains(INVALID_ZIP_CODE_MESSAGE)
 })
 
@@ -161,12 +180,17 @@ test('Check invalid character validation', async (t) => {
     .typeText(UpdateContractAddress.telephoneInput, '780923t#11')
     .typeText(UpdateContractAddress.address1Input, 'Test 111 ST!@#$%')
     .typeText(UpdateContractAddress.address2Input, 'Test 111 ST()_+{}')
+    .typeText(UpdateContractAddress.address3Input, 'Test 111 ST()_+{}')
     .typeText(UpdateContractAddress.homeAddressCityInput, '!@#!@#')
     .typeText(UpdateContractAddress.postalCodeInput, '#$%@#')
     .typeText(UpdateContractAddress.mailingAddress1Input, 'Test 111 ST!@#$%')
     .typeText(UpdateContractAddress.mailingAddress2Input, 'Test 111 ST()_+{}')
+    .typeText(UpdateContractAddress.mailingAddress3Input, 'Test 111 ST()_+{}')
     .typeText(UpdateContractAddress.mailingAddressCityInput, '!@#!@#')
-    .typeText(UpdateContractAddress.mailingAddressProvinceInput, '{}{}{}}')
+    .click(UpdateContractAddress.mailingAddressCountrySelect)
+    .click(mailingCountryOption.withText('Canada'))
+    .click(UpdateContractAddress.mailingAddressProvinceSelect)
+    .click(mailingProvinceOption.withText('British Columbia'))
     .typeText(UpdateContractAddress.mailingPostalCodeInput, '@#$%^&')
     // When I click the submit button
     .click(UpdateContractAddress.submitButton)
@@ -186,18 +210,20 @@ test('Check invalid character validation', async (t) => {
     .expect(UpdateContractAddress.errorText.nth(6).textContent)
     .contains(INVALID_ADDRESS_LINE2_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(7).textContent)
-    .contains(INVALID_CITY_MESSAGE)
+    .contains(INVALID_ADDRESS_LINE3_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(8).textContent)
-    .contains(INVALID_CITY_MESSAGE)
+    .contains(INVALID_ADDRESS_LINE3_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(9).textContent)
-    .contains(INVALID_PROVINCE_MESSAGE)
+    .contains(INVALID_CITY_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(10).textContent)
-    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .contains(INVALID_CITY_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(11).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(12).textContent)
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
 })
 
-test('Check invalid character validation', async (t) => {
+test('Check max length validation', async (t) => {
   await t
     // Given a Group Number entered with an invalid format
     .typeText(UpdateContractAddress.groupNumberInput, '63371099')
@@ -206,12 +232,17 @@ test('Check invalid character validation', async (t) => {
     .typeText(UpdateContractAddress.telephoneInput, '7809231111111')
     .typeText(UpdateContractAddress.address1Input, 'Address Line 1 is tooooooooooooooooooooooooooooooooo long')
     .typeText(UpdateContractAddress.address2Input, 'Address Line 2 is tooooooooooooooooooooooooooooooooo long')
-    .typeText(UpdateContractAddress.homeAddressCityInput, 'Address Line 3 is tooooooooooooooooooooooooooooooooo long')
-    .typeText(UpdateContractAddress.postalCodeInput, 'V8V 8V8')
+    .typeText(UpdateContractAddress.address3Input, 'Address Line 3 is tooooooooooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.homeAddressCityInput, 'City is tooooooooooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.postalCodeInput, 'V80 8V8')
     .typeText(UpdateContractAddress.mailingAddress1Input, 'Mailing Address Line 1 is tooooooooooooooooooooooooooooooooo long')
     .typeText(UpdateContractAddress.mailingAddress2Input, 'Mailing Address Line 2 is tooooooooooooooooooooooooooooooooo long')
-    .typeText(UpdateContractAddress.mailingAddressCityInput, 'Mailing Address Line 3 is tooooooooooooooooooooooooooooooooo long')
-    .typeText(UpdateContractAddress.mailingAddressProvinceInput, 'Mailing Address Line 4 is tooooooooooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.mailingAddress3Input, 'Mailing Address Line 3 is tooooooooooooooooooooooooooooooooo long')
+    .typeText(UpdateContractAddress.mailingAddressCityInput, 'Mailing City3 is tooooooooooooooooooooooooooooooooo long')
+    .click(UpdateContractAddress.mailingAddressCountrySelect)
+    .click(mailingCountryOption.withText('Canada'))
+    .click(UpdateContractAddress.mailingAddressProvinceSelect)
+    .click(mailingProvinceOption.withText('British Columbia'))
     .typeText(UpdateContractAddress.mailingPostalCodeInput, 'T6T 6T6')
     // When I click the submit button
     .click(UpdateContractAddress.submitButton)
@@ -237,8 +268,10 @@ test('Check invalid character validation', async (t) => {
     .expect(UpdateContractAddress.errorText.nth(9).textContent)
     .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(10).textContent)
-    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
     .expect(UpdateContractAddress.errorText.nth(11).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .expect(UpdateContractAddress.errorText.nth(12).textContent)
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
 })
 
@@ -250,12 +283,17 @@ test('Check clear button clears the form', async (t) => {
 
     .typeText(UpdateContractAddress.address1Input, 'Test 111 ST')
     .typeText(UpdateContractAddress.address2Input, 'Test 111 ST')
+    .typeText(UpdateContractAddress.address3Input, 'Test 111 ST')
     .typeText(UpdateContractAddress.homeAddressCityInput, 'Vancouver')
     .typeText(UpdateContractAddress.postalCodeInput, 'V8V8V8')
     .typeText(UpdateContractAddress.mailingAddress1Input, 'Test 222 ST')
     .typeText(UpdateContractAddress.mailingAddress2Input, 'Test 222 ST')
+    .typeText(UpdateContractAddress.mailingAddress3Input, 'Test 222 ST')
     .typeText(UpdateContractAddress.mailingAddressCityInput, 'Test 222 ST')
-    .typeText(UpdateContractAddress.mailingAddressProvinceInput, 'EDMONTON ALBERTA')
+    .click(UpdateContractAddress.mailingAddressProvinceSelect)
+    .click(mailingProvinceOption.withText('British Columbia'))
+    .click(UpdateContractAddress.mailingAddressCountrySelect)
+    .click(mailingCountryOption.withText('United States'))
     .typeText(UpdateContractAddress.mailingPostalCodeInput, 'T6T6T6')
 
     // When I click the clear button
@@ -269,6 +307,8 @@ test('Check clear button clears the form', async (t) => {
     .eql('')
     .expect(UpdateContractAddress.address2Input.value)
     .eql('')
+    .expect(UpdateContractAddress.address3Input.value)
+    .eql('')
     .expect(UpdateContractAddress.homeAddressCityInput.value)
     .eql('')
     .expect(UpdateContractAddress.homeAddressProvinceInput.value)
@@ -281,9 +321,11 @@ test('Check clear button clears the form', async (t) => {
     .eql('')
     .expect(UpdateContractAddress.mailingAddress2Input.value)
     .eql('')
+    .expect(UpdateContractAddress.mailingAddress3Input.value)
+    .eql('')
     .expect(UpdateContractAddress.mailingAddressCityInput.value)
     .eql('')
-    .expect(UpdateContractAddress.mailingAddressProvinceInput.value)
+    .expect(UpdateContractAddress.mailingAddressProvinceSelect.value)
     .eql('')
     .expect(UpdateContractAddress.mailingPostalCodeInput.value)
     .eql('')

@@ -199,17 +199,8 @@ function validateSpecialCharactersForAddress(input, length) {
 export function validateCityOrProvince(cityOrProvince) {
   if (cityOrProvince === undefined || cityOrProvince === '') {
     return true
-  } else if (this.otherCountry === true) {
-    return true
   }
   return validateAlphaWithSpaces(cityOrProvince, 25)
-}
-
-export function validateOtherCountry() {
-  if (this.otherCountry) {
-    return true
-  }
-  return false
 }
 
 /**
