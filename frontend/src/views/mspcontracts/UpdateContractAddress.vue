@@ -9,83 +9,81 @@
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" type="text" v-model.trim="groupNumber" />
+          <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" tabindex="1" type="text" v-model.trim="groupNumber" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.phn" id="phn" label="PHN" type="text" v-model="phn" />
+          <AppInput :e-model="v$.phn" id="phn" label="PHN" tabindex="2" type="text" v-model="phn" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.telephone" id="telephone" label="Telephone (Optional)" type="text" v-model.trim="telephone" placeholder="1234567890" />
+          <AppInput :e-model="v$.telephone" id="telephone" label="Telephone (Optional)" tabindex="3" type="text" v-model.trim="telephone" placeholder="1234567890" />
         </AppCol>
       </AppRow>
       <AppRow class="flex-gap-100">
         <AppCol class="col5">
-          <AppInput :e-model="v$.homeAddress.addressLine1" id="addressLine1" label="Home Address Line 1" type="text" v-model="homeAddress.addressLine1" />
+          <AppInput :e-model="v$.homeAddress.addressLine1" id="addressLine1" label="Home Address Line 1" tabindex="4" type="text" v-model="homeAddress.addressLine1" />
         </AppCol>
         <AppCol class="col5">
-          <AppInput :e-model="v$.mailingAddress.addressLine1" id="mailingAddress1" label="Mailing Address (if different from home address)" v-model="mailingAddress.addressLine1" />
-        </AppCol>
-      </AppRow>
-      <AppRow class="flex-gap-100">
-        <AppCol class="col5">
-          <AppInput :e-model="v$.homeAddress.addressLine2" id="addressLine2" label="Line 2 (Optional)" type="text" v-model="homeAddress.addressLine2" />
-        </AppCol>
-        <AppCol class="col5">
-          <AppInput :e-model="v$.mailingAddress.addressLine2" id="mailingAddress2" label="Line 2 (Optional)" v-model="mailingAddress.addressLine2" />
+          <AppInput :e-model="v$.mailingAddress.addressLine1" id="mailingAddress1" label="Mailing Address (if different from home address)" tabindex="11" type="text" v-model="mailingAddress.addressLine1" />
         </AppCol>
       </AppRow>
       <AppRow class="flex-gap-100">
         <AppCol class="col5">
-          <AppInput :e-model="v$.homeAddress.addressLine3" id="addressLine3" label="Line 3 (Optional)" type="text" v-model="homeAddress.addressLine3" />
+          <AppInput :e-model="v$.homeAddress.addressLine2" id="addressLine2" label="Line 2 (Optional)" tabindex="5" type="text" v-model="homeAddress.addressLine2" />
         </AppCol>
         <AppCol class="col5">
-          <AppInput :e-model="v$.mailingAddress.addressLine3" id="mailingAddress3" label="Line 3 (Optional)" v-model="mailingAddress.addressLine3" />
+          <AppInput :e-model="v$.mailingAddress.addressLine2" id="mailingAddress2" label="Line 2 (Optional)" tabindex="12" type="text" v-model="mailingAddress.addressLine2" />
+        </AppCol>
+      </AppRow>
+      <AppRow class="flex-gap-100">
+        <AppCol class="col5">
+          <AppInput :e-model="v$.homeAddress.addressLine3" id="addressLine3" label="Line 3 (Optional)" tabindex="6" type="text" v-model="homeAddress.addressLine3" />
+        </AppCol>
+        <AppCol class="col5">
+          <AppInput :e-model="v$.mailingAddress.addressLine3" id="mailingAddress3" label="Line 3 (Optional)" tabindex="13" type="text" v-model="mailingAddress.addressLine3" />
         </AppCol>
       </AppRow>
       <AppRow class="flex-nowrap">
         <AppRow>
           <AppCol class="col5">
-            <AppInput :e-model="v$.homeAddress.city" id="city" label="City" type="text" v-model.trim="homeAddress.city" />
+            <AppInput :e-model="v$.homeAddress.city" id="city" label="City" tabindex="7" type="text" v-model.trim="homeAddress.city" />
           </AppCol>
-          <AppCol class="col5">
-            <AppInput :e-model="v$.homeAddress.province" id="province" label="Province" type="text" disabled="disabled" v-model.trim="homeAddress.province" />
-          </AppCol>
+          <AppCol class="col5"> <AppSelect :e-model="v$.homeAddress.province" id="province" label="Province" tabindex="8" type="text" disabled="disabled" v-model.trim="homeAddress.province" :options="provinceOptions" /> </AppCol>
         </AppRow>
         <AppRow>
           <AppCol class="col5">
-            <AppInput :e-model="v$.mailingAddress.city" id="mailingAddressCity" label="City" type="text" v-model.trim="mailingAddress.city" />
+            <AppInput :e-model="v$.mailingAddress.city" id="mailingAddressCity" label="City" tabindex="14" type="text" v-model.trim="mailingAddress.city" />
           </AppCol>
           <AppCol class="col5">
-            <AppInput v-if="otherCountry" :e-model="v$.mailingAddress.province" id="mailingAddressProvince" :label="regionLabel" type="text" v-model.trim="mailingAddress.province" />
-            <AppSelect v-else :e-model="v$.mailingAddress.province" id="mailingAddressProvince" :label="regionLabel" v-model.trim="mailingAddress.province" :options="regionOptions" />
+            <AppInput v-if="otherCountry" :e-model="v$.mailingAddress.province" id="mailingAddressProvince" :label="regionLabel" tabindex="15" type="text" v-model.trim="mailingAddress.province" />
+            <AppSelect v-else :e-model="v$.mailingAddress.province" id="mailingAddressProvince" :label="regionLabel" tabindex="16" v-model.trim="mailingAddress.province" :options="regionOptions" />
           </AppCol>
         </AppRow>
       </AppRow>
       <AppRow class="flex-nowrap">
         <AppRow>
           <AppCol class="col5">
-            <AppInput :e-model="v$.homeAddress.postalCode" id="postalCode" label="Postal Code" type="text" v-model.trim="homeAddress.postalCode" />
+            <AppInput :e-model="v$.homeAddress.postalCode" id="postalCode" label="Postal Code" tabindex="9" type="text" v-model.trim="homeAddress.postalCode" />
           </AppCol>
           <AppCol class="col5">
-            <AppInput :e-model="v$.homeAddress.country" id="country" label="Country" type="text" disabled="disabled" v-model.trim="homeAddress.country" />
+            <AppInput :e-model="v$.homeAddress.country" id="country" label="Country" type="text" tabindex="10" disabled="disabled" v-model.trim="homeAddress.country" />
           </AppCol>
         </AppRow>
         <AppRow>
           <AppCol class="col5">
-            <AppInput :e-model="v$.mailingAddress.postalCode" id="mailingPostalCode" :label="zipLabel" type="text" v-model.trim="mailingAddress.postalCode" />
+            <AppInput :e-model="v$.mailingAddress.postalCode" id="mailingPostalCode" :label="zipLabel" tabindex="17" type="text" v-model.trim="mailingAddress.postalCode" />
           </AppCol>
           <AppCol class="col5">
-            <AppSelect id="mailingAddressCountry" label="Country" v-model="mailingAddress.country" :options="countryOptions" />
+            <AppSelect id="mailingAddressCountry" label="Country" v-model="mailingAddress.country" :options="countryOptions" tabindex="18" />
           </AppCol>
         </AppRow>
       </AppRow>
       <AppRow>
-        <AppButton :submitting="submitting" mode="primary" type="submit">Submit</AppButton>
-        <AppButton @click="resetForm()" mode="secondary" type="button">Clear</AppButton>
+        <AppButton :submitting="submitting" mode="primary" tabindex="18" type="submit">Submit</AppButton>
+        <AppButton @click="resetForm()" mode="secondary" tabindex="19" type="button">Clear</AppButton>
       </AppRow>
     </form>
   </div>
