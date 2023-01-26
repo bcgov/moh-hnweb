@@ -25,6 +25,7 @@ public class GetDemographicsConverter {
 
 	private static final Logger logger = LoggerFactory.getLogger(GetDemographicsConverter.class);
 	private static final String MRN_SOURCE = "MOH_CRS";
+	private static final String NOT_APPLICABLE = "N/A";
 
 	/**
 	 * @param phn
@@ -114,8 +115,8 @@ public class GetDemographicsConverter {
 		}
 
 		personDetailsResponse.setPhn(person.getPhn());
-		String deathDate = person.getDeathDate() != null ? V3MessageUtil.convertDateToString(person.getDeathDate()): "N/A";
-		personDetailsResponse.setDateOfDeath(deathDate);
+		String dateOfDeath = person.getDeathDate() != null ? V3MessageUtil.convertDateToString(person.getDeathDate()): NOT_APPLICABLE;
+		personDetailsResponse.setDateOfDeath(dateOfDeath);
 		personDetailsResponse.setGender(person.getGender());
 
 		Address physicalAddress = demographicsResponse.getPerson().getPhysicalAddress();

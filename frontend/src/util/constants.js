@@ -8,6 +8,10 @@ export const API_DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
 
 export const DEFAULT_ERROR_MESSAGE = 'Please correct errors before submitting'
 
+const HCIM_CONTACT_NO = config.HCIM_CONTACT_NO || import.meta.env.VITE_HCIM_CONTACT_NO
+
+export const DATE_OF_DEATH_MESSAGE = 'A Date of Death was found for this client record retrieved from HCIM.  Please contact HCIM at ' + HCIM_CONTACT_NO + ' (8am to 4:30pm, Mon - Fri) to confirm whether or not this individual is deceased before proceeding with the study permit application.'
+
 export const COVERAGE_END_REASONS = new Map([
   ['OO', 'OPTED OUT'],
   ['OOPM', 'OUT OF PROVINCE MOVE'],

@@ -6,7 +6,7 @@
       </AppCol>
       <AppCol class="col6">
         <span>{{ formatDetailsLine1 }}</span>
-        <span>{{ formatDetailsLine2 }}</span>
+        <span v-html="formatDetailsLine2"></span>
         <span>{{ formatDetailsLine3 }}</span>
       </AppCol>
       <AppCol class="col1">
@@ -18,6 +18,7 @@
 <script>
 import { useAlertStore } from '../../../stores/alert'
 import { useStudyPermitHolderStore } from '../../../stores/studyPermitHolder'
+import { DATE_OF_DEATH_MESSAGE } from '../../../util/constants.js'
 
 export default {
   name: 'NameSearchCandidate',
@@ -60,6 +61,9 @@ export default {
       if (this.candidate.dateOfBirth) {
         details = details + ' ' + this.candidate.dateOfBirth
       }
+      if (this.candidate.dateOfDeath && this.candidate.dateOfDeath != 'N/A') {
+        details = `${details} <span class = "text-deceased"> ${this.candidate.dateOfDeath}</span>`
+      }
       if (this.candidate.phn) {
         details = details + ' ' + this.candidate.phn
       }
@@ -69,6 +73,7 @@ export default {
       if (this.candidate.identifierTypeCode) {
         details = details + ' ' + this.candidate.identifierTypeCode
       }
+
       return details
     },
     formatDetailsLine3() {
@@ -132,9 +137,18 @@ export default {
       this.submitting = true
       this.studyPermitHolderStore.resident = this.candidate
       this.alertStore.dismissAlert()
+      if (this.candidate.dateOfDeath && this.candidate.dateOfDeath != 'N/A') {
+        this.alertStore.setErrorAlert(DATE_OF_DEATH_MESSAGE)
+      }
       this.$router.push({ name: 'AddVisaResidentWithPHN', query: { pageAction: 'REGISTRATION' } })
       this.submitting = false
     },
   },
 }
 </script>
+<style>
+.text-deceased {
+  color: red;
+  font-weight: bold;
+}
+</style>
