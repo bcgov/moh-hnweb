@@ -56,6 +56,8 @@ import ca.bc.gov.hlth.hnweb.service.GroupMemberService;
 public class GroupMemberController extends BaseController {
 
 	private static final Logger logger = LoggerFactory.getLogger(GroupMemberController.class);
+	
+	private static final String SIX_DASHES = "------";
 
 	@Autowired
 	private GroupMemberService groupMemberService;
@@ -112,7 +114,11 @@ public class GroupMemberController extends BaseController {
 		try {	
 			// Handle the department number
 			UpdateNumberAndDeptResponse deptNumberResponse = new UpdateNumberAndDeptResponse();
-			if (StringUtils.isNotBlank(updateNumberAndDeptRequest.getDepartmentNumber())) {
+			String deptNumber = updateNumberAndDeptRequest.getDepartmentNumber();
+			if (StringUtils.isNotBlank(deptNumber)) {
+				if (deptNumber.length() >= 6 && deptNumber.substring(0,6).contentEquals(SIX_DASHES)) {
+					updateNumberAndDeptRequest.setDepartmentNumber(StringUtils.EMPTY);
+				}
 				RPBSPED0Converter rpbsped0Converter = new RPBSPED0Converter();
 				RPBSPED0 rpbsped0Request = rpbsped0Converter.convertRequest(updateNumberAndDeptRequest);
 				RPBSPED0 rpbsped0Response = groupMemberService.updateGroupMemberDepartmentNumber(rpbsped0Request, transaction);
@@ -121,7 +127,11 @@ public class GroupMemberController extends BaseController {
 
 			// Handle the group member/employee number
 			UpdateNumberAndDeptResponse empNumberResponse = new UpdateNumberAndDeptResponse();
-			if (StringUtils.isNotBlank(updateNumberAndDeptRequest.getGroupMemberNumber())) {
+			String groupMemberNumber = updateNumberAndDeptRequest.getGroupMemberNumber();
+			if (StringUtils.isNotBlank(groupMemberNumber)) {
+				if (groupMemberNumber.length() >= 6 && groupMemberNumber.substring(0,6).contentEquals(SIX_DASHES)) {
+					updateNumberAndDeptRequest.setGroupMemberNumber(StringUtils.EMPTY);
+				}
 				RPBSPEE0Converter rpbspee0Converter = new RPBSPEE0Converter();
 				RPBSPEE0 rpbspee0Request = rpbspee0Converter.convertRequest(updateNumberAndDeptRequest);
 				RPBSPEE0 rpbspee0Response = groupMemberService.updateGroupMemberEmployeeNumber(rpbspee0Request, transaction);
