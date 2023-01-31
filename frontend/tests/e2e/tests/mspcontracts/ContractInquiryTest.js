@@ -10,7 +10,7 @@ const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'
 const SUCCESS_MESSAGE = 'RPBS9014 TRANSACTION COMPLETED'
 const WARNING_MESSAGE = 'RPBS0059 MORE THAN 20 PERSONS. PLEASE CONTACT MSP'
-const NO_COVEREAGE_ERROR_MESSAGE = 'RPBS0067 NO COVERAGE FOUND FOR THE PHN ENTERED. PLEASE CONTACT MSP'
+const NO_COVERAGE_ERROR_MESSAGE = 'RPBS0067 NO COVERAGE FOUND FOR THE PHN ENTERED. PLEASE CONTACT MSP'
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/mspContracts/contractInquiry'
 
 fixture(`Contract Inquiry Page`).disablePageCaching`Test Contract Inquiry`
@@ -49,7 +49,7 @@ test('Check invalid phn, groupNumber format validation', async (t) => {
     .contains(INVALID_PHN_ERROR_MESSAGE)
 })
 
-test('Check properly filled form passes validation and validate results', async (t) => {
+test('Check properly filled form passes validation and validate Group Member Details and Demographics', async (t) => {
   await t
     // Given the page is filled out correctly
     .typeText(ContractInquiryPage.groupNumberInput, '6099733')
@@ -59,38 +59,7 @@ test('Check properly filled form passes validation and validate results', async 
     // I expect a success message
     .expect(AlertPage.alertBannerText.textContent)
     .contains(SUCCESS_MESSAGE)
-    // A table with three results
-    .expect(ContractInquiryPage.resultsTable.exists)
-    .ok()
-    .expect(ContractInquiryPage.resultsTable.child('thead').exists)
-    .ok()
-    .expect(ContractInquiryPage.resultsTable.child('tbody').child('tr').count)
-    .eql(3)
-    .expect(ContractInquiryPage.resultsRow1.exists)
-    .ok()
-    .expect(ContractInquiryPage.resultsRow1.child('td').exists)
-    .ok()
-    // A address table with two results
-    .expect(ContractInquiryPage.addressTable.exists)
-    .ok()
-    .expect(ContractInquiryPage.addressTable.child('thead').exists)
-    .ok()
-    .expect(ContractInquiryPage.addressTable.child('tbody').child('tr').count)
-    .eql(2)
-    .expect(ContractInquiryPage.addressRow1.exists)
-    .ok()
-    .expect(ContractInquiryPage.addressRow1.child('td').nth(0).textContent)
-    .eql('Home Address')
-    .expect(ContractInquiryPage.addressRow1.child('td').nth(3).textContent)
-    .eql('KELOWNA BC')
-    .expect(ContractInquiryPage.addressRow1.child('td').exists)
-    .ok()
-    .expect(ContractInquiryPage.addressRow2.child('td').nth(0).textContent)
-    .eql('Mailing Address')
-    .expect(ContractInquiryPage.addressRow2.child('td').nth(3).textContent)
-    .eql('VANCOUVER BC')
-
-    // And a address table with two results
+    // A Group Member Details table with two results
     .expect(ContractInquiryPage.identifierTable.exists)
     .ok()
     .expect(ContractInquiryPage.identifierTable.child('thead').exists)
@@ -100,6 +69,17 @@ test('Check properly filled form passes validation and validate results', async 
     .expect(ContractInquiryPage.identifierRow1.exists)
     .ok()
     .expect(ContractInquiryPage.identifierRow1.child('td').exists)
+    .ok()
+    // A Demographics table with three results
+    .expect(ContractInquiryPage.resultsTable.exists)
+    .ok()
+    .expect(ContractInquiryPage.resultsTable.child('thead').exists)
+    .ok()
+    .expect(ContractInquiryPage.resultsTable.child('tbody').child('tr').count)
+    .eql(3)
+    .expect(ContractInquiryPage.resultsRow1.exists)
+    .ok()
+    .expect(ContractInquiryPage.resultsRow1.child('td').exists)
     .ok()
     // Validate the first row
     .expect(ContractInquiryPage.resultsRow1.child('td').nth(0).textContent)
@@ -115,11 +95,11 @@ test('Check properly filled form passes validation and validate results', async 
     .expect(ContractInquiryPage.resultsRow1.child('td').nth(5).textContent)
     .eql('N')
     .expect(ContractInquiryPage.resultsRow1.child('td').nth(6).textContent)
-    .eql('20221001')
+    .eql('20221201')
     .expect(ContractInquiryPage.resultsRow1.child('td').nth(7).textContent)
-    .eql('20221031')
+    .eql('')
     .expect(ContractInquiryPage.resultsRow1.child('td').nth(8).textContent)
-    .eql('E')
+    .eql(' ')
     // Validate the last row
     .expect(ContractInquiryPage.resultsRow3.child('td').nth(0).textContent)
     .eql('9873102584')
@@ -134,15 +114,62 @@ test('Check properly filled form passes validation and validate results', async 
     .expect(ContractInquiryPage.resultsRow3.child('td').nth(5).textContent)
     .eql('N')
     .expect(ContractInquiryPage.resultsRow3.child('td').nth(6).textContent)
-    .eql('20221001')
+    .eql('20221201')
     .expect(ContractInquiryPage.resultsRow3.child('td').nth(7).textContent)
-    .eql('20221031')
+    .eql('')
     .expect(ContractInquiryPage.resultsRow3.child('td').nth(8).textContent)
-    .eql('E')
+    .eql(' ')
 })
 
-test('Check properly filled form passes validation and validate results when more than 20', async (t) => {
-  // Need new test data
+test('heck properly filled form passes validation and validate Addresses', async (t) => {
+  await t
+    // Given the page is filled out correctly
+    .typeText(ContractInquiryPage.groupNumberInput, '6180442')
+    .typeText(ContractInquiryPage.phnInput, '9872968646')
+    // When I click the submit button
+    .click(ContractInquiryPage.submitButton)
+    // I expect a success message
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(SUCCESS_MESSAGE)
+    // An address table with two results with all fields populated
+    .expect(ContractInquiryPage.addressTable.exists)
+    .ok()
+    .expect(ContractInquiryPage.addressTable.child('thead').exists)
+    .ok()
+    .expect(ContractInquiryPage.addressTable.child('tbody').child('tr').count)
+    .eql(2)
+    .expect(ContractInquiryPage.addressRow1.exists)
+    .ok()
+    .expect(ContractInquiryPage.addressRow1.child('td').nth(0).textContent)
+    .eql('Home Address')
+    .expect(ContractInquiryPage.addressRow1.child('td').nth(1).textContent)
+    .eql('HOME ADDRESS LINE 1')
+    .expect(ContractInquiryPage.addressRow1.child('td').nth(2).textContent)
+    .eql('HOME ADDRESS LINE 2')
+    .expect(ContractInquiryPage.addressRow1.child('td').nth(3).textContent)
+    .eql('HOME ADDRESS LINE 3')
+    .expect(ContractInquiryPage.addressRow1.child('td').nth(4).textContent)
+    .eql('VANCOUVER BC')
+    .expect(ContractInquiryPage.addressRow1.child('td').nth(5).textContent)
+    .eql('V8V8V8')
+    .expect(ContractInquiryPage.addressRow2.exists)
+    .ok()
+    .expect(ContractInquiryPage.addressRow2.child('td').nth(0).textContent)
+    .eql('Mailing Address')
+    .expect(ContractInquiryPage.addressRow2.child('td').nth(1).textContent)
+    .eql('MAIL ADDRESS LINE 1')
+    .expect(ContractInquiryPage.addressRow2.child('td').nth(2).textContent)
+    .eql('MAIL ADDRESS LINE 2')
+    .expect(ContractInquiryPage.addressRow2.child('td').nth(3).textContent)
+    .eql('MAIL ADDRESS LINE 3')
+    .expect(ContractInquiryPage.addressRow2.child('td').nth(4).textContent)
+    .eql('CALGARY AB')
+    .expect(ContractInquiryPage.addressRow2.child('td').nth(5).textContent)
+    .eql('T2G5E6')
+})
+
+// TODO Need new test data - currently returns "RPBS0067 NO COVERAGE FOUND FOR THE PHN ENTERED. PLEASE CONTACT MSP"
+test.skip('Check properly filled form passes validation and validate results when more than 20', async (t) => {
   await t
     // Given the page is filled out correctly
     .typeText(ContractInquiryPage.groupNumberInput, '6243109')
@@ -192,13 +219,13 @@ test('Check properly filled form passes validation and displays no result if cov
   // Need new test data
   await t
     // Given the page is filled out correctly
-    .typeText(ContractInquiryPage.groupNumberInput, '6337109')
-    .typeText(ContractInquiryPage.phnInput, '9873672255')
+    .typeText(ContractInquiryPage.groupNumberInput, '6243109')
+    .typeText(ContractInquiryPage.phnInput, '9332912486')
     // When I click the submit button
     .click(ContractInquiryPage.submitButton)
     // I expect a success message
     .expect(AlertPage.alertBannerText.textContent)
-    .contains(NO_COVEREAGE_ERROR_MESSAGE)
+    .contains(NO_COVERAGE_ERROR_MESSAGE)
 })
 
 test('Check clear button clears the form', async (t) => {

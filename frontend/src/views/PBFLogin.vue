@@ -7,6 +7,7 @@
         <AppButton @click="login('bcsc')" class="btn-xxl" id="bcscLogin">BC Services Card</AppButton>
         <AppButton @click="login('idir')" class="btn-xxl" id="idirLogin">IDIR</AppButton>
         <AppButton @click="login('bceid_business')" id="bceid_businessLogin" class="btn-xxl">BCeID Business</AppButton>
+        <AppButton @click="login('moh_idp')" class="btn-xxl" id="moh_idpLogin" v-if="enableKcLogin">Keycloak</AppButton>
       </section>
     </AppCol>
   </AppRow>
@@ -15,6 +16,9 @@
 <script>
 export default {
   name: 'PBFLogin',
+  computed: {
+    enableKcLogin: () => config.ENABLE_KC_LOGIN || import.meta.env.VITE_ENABLE_KC_LOGIN,
+  },
   methods: {
     login: function (idpHint) {
       const options = {
