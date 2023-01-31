@@ -202,6 +202,9 @@ public class PatientRegistrationController extends BaseController {
 							: patientRegistration.getDeregistrationReasonCode());
 			model.setPayeeNumber(patientRegistration.getPayeeNumber());
 			model.setRegisteredPractitionerNumber(patientRegistration.getRegisteredPractitionerNumber());
+			model.setRegisteredPractitionerFirstName(patientRegistration.getRegisteredPractitionerFirstName());
+			model.setRegisteredPractitionerMiddleName(patientRegistration.getRegisteredPractitionerMiddleName());
+			model.setRegisteredPractitionerSurname(patientRegistration.getRegisteredPractitionerSurname());
 			model.setPhn(patientRegistration.getPhn());
 
 			pateintRegisterModels.add(model);

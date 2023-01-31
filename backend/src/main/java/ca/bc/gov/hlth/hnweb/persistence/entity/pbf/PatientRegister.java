@@ -29,6 +29,15 @@ public class PatientRegister {
 	@Column(name = "registered_practitioner_number", nullable = false)
 	private String registeredPractitionerNumber;
 
+	@Column(name = "registered_practitioner_first_name", nullable = false)
+	private String registeredPractitionerFirstName;
+
+	@Column(name = "registered_practitioner_middle_name", nullable = false)
+	private String registeredPractitionerMiddleName;
+
+	@Column(name = "registered_practitioner_surname", nullable = false)
+	private String registeredPractitionerSurname;
+
 	@Column(name = "effective_date", nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date effectiveDate;
@@ -82,6 +91,30 @@ public class PatientRegister {
 
 	public void setRegisteredPractitionerNumber(String registeredPractitionerNumber) {
 		this.registeredPractitionerNumber = registeredPractitionerNumber;
+	}
+
+	public String getRegisteredPractitionerFirstName() {
+		return registeredPractitionerFirstName;
+	}
+
+	public void setRegisteredPractitionerFirstName(String registeredPractitionerFirstName) {
+		this.registeredPractitionerFirstName = registeredPractitionerFirstName;
+	}
+
+	public String getRegisteredPractitionerMiddleName() {
+		return registeredPractitionerMiddleName;
+	}
+
+	public void setRegisteredPractitionerMiddleName(String registeredPractitionerMiddleName) {
+		this.registeredPractitionerMiddleName = registeredPractitionerMiddleName;
+	}
+
+	public String getRegisteredPractitionerSurname() {
+		return registeredPractitionerSurname;
+	}
+
+	public void setRegisteredPractitionerSurname(String registeredPractitionerSurname) {
+		this.registeredPractitionerSurname = registeredPractitionerSurname;
 	}
 
 	public Date getEffectiveDate() {
@@ -138,6 +171,17 @@ public class PatientRegister {
 
 	public void setArchived(Boolean archived) {
 		this.archived = archived;
+	}
+
+	@Override
+	public String toString() {
+		return "PatientRegister [patientRegisterId=" + patientRegisterId + ", phn=" + phn + ", payeeNumber=" + payeeNumber
+				+ ", registeredPractitionerNumber=" + registeredPractitionerNumber + ", registeredPractitionerFirstName="
+				+ registeredPractitionerFirstName + ", registeredPractitionerMiddleName=" + registeredPractitionerMiddleName
+				+ ", registeredPractitionerSurname=" + registeredPractitionerSurname + ", effectiveDate=" + effectiveDate + ", cancelDate="
+				+ cancelDate + ", administrativeCode=" + administrativeCode + ", registrationReasonCode=" + registrationReasonCode
+				+ ", deregistrationReasonCode=" + deregistrationReasonCode + ", cancelReasonCode=" + cancelReasonCode + ", archived="
+				+ archived + "]";
 	}
 
 }

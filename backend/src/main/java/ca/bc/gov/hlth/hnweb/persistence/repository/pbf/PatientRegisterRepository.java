@@ -13,7 +13,7 @@ public interface PatientRegisterRepository extends JpaRepository<PatientRegister
 	@Query("select p from PatientRegister p where p.payeeNumber in ("
 			+ "select p2.payeeNumber from PBFClinicPayee p1 inner join PBFClinicPayee p2 on p1.reportGroup = "
 			+ "p2.reportGroup where p1.payeeNumber= :payee ) and "
-			+ "p.phn = :phn ")
+			+ "p.phn = :phn order by p.effectiveDate desc" )
 	List<PatientRegister> findPatientRegisterByPayeeClinic(@Param("payee") String payee, @Param("phn") String phn);
 	
 	@Query("select p.payeeNumber from PatientRegister p where p.phn = :phn")
