@@ -239,7 +239,6 @@ export default {
   border-top: 2px solid #999999;
   padding-top: 5px;
 }
-,
 #patientDetail {
   padding-bottom: 20px;
 }
