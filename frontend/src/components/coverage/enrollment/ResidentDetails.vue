@@ -15,6 +15,13 @@
         <AppOutput label="Date of Birth" tabindex="3" :value="resident?.dateOfBirth" />
       </AppCol>
     </AppRow>
+    <div v-if="deceased">
+      <AppRow class="text-deceased">
+        <AppCol class="col3">
+          <AppOutput label="Date of Death" :value="resident?.dateOfDeath" />
+        </AppCol>
+      </AppRow>
+    </div>
     <AppRow>
       <AppCol class="col3">
         <AppOutput label="Gender" :value="resident?.gender" tabindex="4" />
@@ -302,6 +309,9 @@ export default {
     mailingAddressCountry() {
       this.mailingAddressProvince = ''
     },
+    deceased() {
+      return this.resident?.dateOfDeath && this.resident.dateOfDeath != 'N/A'
+    },
   },
   props: {
     submitting: {
@@ -510,3 +520,9 @@ export default {
   },
 }
 </script>
+<style scoped>
+.text-deceased {
+  color: red;
+  font-weight: bold;
+}
+</style>

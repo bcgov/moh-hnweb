@@ -8,6 +8,10 @@ export const API_DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
 
 export const DEFAULT_ERROR_MESSAGE = 'Please correct errors before submitting'
 
+const HCIM_CONTACT_NO = config.HCIM_CONTACT_NO || import.meta.env.VITE_HCIM_CONTACT_NO
+
+export const DATE_OF_DEATH_MESSAGE = 'A Date of Death was found for this client record. If this is incorrect, confirm the correct PHN was entered and contact HCIM at ' + HCIM_CONTACT_NO + ' (8am to 4:30pm, Mon - Fri).'
+
 export const COVERAGE_END_REASONS = new Map([
   ['OO', 'OPTED OUT'],
   ['OOPM', 'OUT OF PROVINCE MOVE'],
@@ -132,4 +136,16 @@ export const COUNTRIES = [
   { text: 'Canada', value: 'Canada' },
   { text: 'United States', value: 'United States' },
   { text: 'Other', value: 'Other' },
+]
+// Genders
+export const GENDERS = [
+  { text: 'Male', value: 'M' },
+  { text: 'Female', value: 'F' },
+  { text: 'Unknown', value: 'U' },
+]
+
+// Yes/No
+export const YES_NO_OPTIONS = [
+  { text: 'Yes', value: 'Y' },
+  { text: 'No', value: 'N' },
 ]

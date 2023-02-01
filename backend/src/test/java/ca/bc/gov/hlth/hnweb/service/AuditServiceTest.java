@@ -58,7 +58,7 @@ public class AuditServiceTest {
 	@BeforeAll
     static void setUp() {
         mockStatic = Mockito.mockStatic(SecurityUtil.class);
-        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "14100f9b-7daa-4938-a833-c8c56a5988e9", "00000010", "hnweb-user", UUID.randomUUID().toString()));
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "14100f9b-7daa-4938-a833-c8c56a5988e9", "00000010", "Ministry of Health", "hnweb-user", UUID.randomUUID().toString()));
     }
 	
     @AfterAll

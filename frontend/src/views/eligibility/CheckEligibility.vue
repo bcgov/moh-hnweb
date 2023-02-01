@@ -1,13 +1,11 @@
 <template>
   <AppHelp>
     <p>Use Check Eligibility to determine if a person is a beneficiary of the Medical Services Plan (MSP) on a particular date of service. Check Eligibility returns a "Yes" or "No" for the Personal Health Number (PHN) submitted.</p>
-    <ul>
-      <li>
-        A "Yes" response means that, when checked today, the person is eligible on the "Date to Check" date. The person could subsequently become ineligible for service on that date. If a fee-for-service claim is involved, you may wish to use the MSP Teleplan system or Claims IVR to verify
-        eligibility.
-      </li>
-      <li>If the response is "No", the screen will return additional information about why the coverage was terminated and instructions that should be provided to the individual. If the individual is subject to alternate billing (RCMP or Armed Forces), this information will also be displayed.</li>
-    </ul>
+    <p>
+      A "Yes" response means that, when checked today, the person is eligible on the "Date to Check" date. The person could subsequently become ineligible for service on that date. If a fee-for-service claim is involved, you may wish to use the MSP Teleplan system or Claims IVR to verify
+      eligibility.
+    </p>
+    <p>If the response is "No", the screen will return additional information about why the coverage was terminated and instructions that should be provided to the individual. If the individual is subject to alternate billing (RCMP or Armed Forces), this information will also be displayed.</p>
   </AppHelp>
   <div>
     <form @submit.prevent="submitForm">

@@ -83,6 +83,63 @@ test('Check invalid formats validation', async (t) => {
     .contains(ERROR_MESSAGE)
 })
 
+test('Check max length validation', async (t) => {
+  await t
+    // Given I enter Group Number, Group Member's PHN, Dependent's PHN with more than allowed length
+    .typeText(ReinstateOverAgeDependentPage.groupNumberInput, '63371099')
+    .typeText(ReinstateOverAgeDependentPage.phnInput, '93878074840')
+    .typeText(ReinstateOverAgeDependentPage.dependentPhnInput, '93878074841')
+    // When I click the submit button
+    .click(ReinstateOverAgeDependentPage.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the Group Number, PHN, Dependent's PHN
+    .expect(ReinstateOverAgeDependentPage.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(ReinstateOverAgeDependentPage.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+    .expect(ReinstateOverAgeDependentPage.errorText.nth(2).textContent)
+    .contains(INVALID_DEPENDENT_PHN_ERROR_MESSAGE)
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+})
+
+test('Check alphanumeric validation', async (t) => {
+  await t
+    // Given I enter Group Number,  PHN, Dependent's PHN with alphanumeric format
+    .typeText(ReinstateOverAgeDependentPage.groupNumberInput, '633710A')
+    .typeText(ReinstateOverAgeDependentPage.phnInput, '9bc7807484')
+    .typeText(ReinstateOverAgeDependentPage.dependentPhnInput, '9387807aa4')
+    // When I click the submit button
+    .click(ReinstateOverAgeDependentPage.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the Group Number, PHN, Dependent's PHN
+    .expect(ReinstateOverAgeDependentPage.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(ReinstateOverAgeDependentPage.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+    .expect(ReinstateOverAgeDependentPage.errorText.nth(2).textContent)
+    .contains(INVALID_DEPENDENT_PHN_ERROR_MESSAGE)
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+})
+
+test('Check special characters validation', async (t) => {
+  await t
+    // Given I enter Group Number,  PHN, Dependent's PHN with special chars
+    .typeText(ReinstateOverAgeDependentPage.groupNumberInput, '633710@')
+    .typeText(ReinstateOverAgeDependentPage.phnInput, '9$%7807484')
+    .typeText(ReinstateOverAgeDependentPage.dependentPhnInput, '9387807&&4')
+    // When I click the submit button
+    .click(ReinstateOverAgeDependentPage.submitButton)
+    // I expect an error message stating the page had errors and an individual error message for the Group Number, PHN, Dependent's PHN
+    .expect(ReinstateOverAgeDependentPage.errorText.nth(0).textContent)
+    .contains(INVALID_GROUP_NUMBER_ERROR_MESSAGE)
+    .expect(ReinstateOverAgeDependentPage.errorText.nth(1).textContent)
+    .contains(INVALID_PHN_ERROR_MESSAGE)
+    .expect(ReinstateOverAgeDependentPage.errorText.nth(2).textContent)
+    .contains(INVALID_DEPENDENT_PHN_ERROR_MESSAGE)
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+})
+
 test('Check properly filled form passes validation', async (t) => {
   await t
     // Given I have a form filled out with data
@@ -93,7 +150,7 @@ test('Check properly filled form passes validation', async (t) => {
     .pressKey('tab')
     .click(ReinstateOverAgeDependentPage.isStudentRadioButton)
     .wait(1000)
-    .typeText(ReinstateOverAgeDependentPage.studentEndDateInput, '202212')
+    .typeText(ReinstateOverAgeDependentPage.studentEndDateInput, '202612')
     .pressKey('tab')
     // When I click the submit button
     .click(ReinstateOverAgeDependentPage.submitButton)

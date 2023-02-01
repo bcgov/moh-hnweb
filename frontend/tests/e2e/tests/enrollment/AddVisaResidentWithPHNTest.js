@@ -87,6 +87,9 @@ test('Check required fields validation for mailing address', async (t) => {
     .click(PersonDetails.submitButton)
     .wait(5000)
     // Given required fields aren't filled out
+    // Mailing Address 1 may alreay have value
+    .selectText(AddVisaResidentWithPHNPage.mailingAddress1Input)
+    .pressKey('delete')
     .typeText(AddVisaResidentWithPHNPage.mailingAddress2Input, 'Test 111 ST')
     // When I click the submit button
     .click(AddVisaResidentWithPHNPage.submitButton)
@@ -167,7 +170,7 @@ test('Check invalid input field character validation', async (t) => {
     .click(AddVisaResidentWithPHNPage.provinceSelect)
     .click(provinceOption.withText('British Columbia'))
     .typeText(AddVisaResidentWithPHNPage.postalCodeInput, '[][][]')
-    .typeText(AddVisaResidentWithPHNPage.mailingAddress1Input, 'Test 111 +_)(*&')
+    .typeText(AddVisaResidentWithPHNPage.mailingAddress1Input, 'Test 111 +_)(*&', { replace: true })
     .typeText(AddVisaResidentWithPHNPage.mailingAddress2Input, 'Test 111 ST @@@@@')
     .typeText(AddVisaResidentWithPHNPage.mailingAddress3Input, '!@#$%^*(9')
     .typeText(AddVisaResidentWithPHNPage.mailingCityInput, 'VICTORIA<>')

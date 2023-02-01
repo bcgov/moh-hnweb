@@ -24,9 +24,12 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <GenderRadioButtonGroup :e-model="v$.gender" id="gender" v-model="gender">
+          <AppRadioButtonGroup :e-model="v$.gender" id="gender" label="Gender">
             <template #tooltip>If you know the gender the client is registered with, select the Male or Female radio button. Or, leave as "Unknown".</template>
-          </GenderRadioButtonGroup>
+            <template #options>
+              <AppRadioButton name="gender" v-for="option in this.GENDERS" :label="option.text" :value="option.value" v-model="gender" />
+            </template>
+          </AppRadioButtonGroup>
         </AppCol>
       </AppRow>
       <AppRow>
@@ -38,24 +41,29 @@
 </template>
 
 <script>
-import GenderRadioButtonGroup from '../../ui/GenderRadioButtonGroup.vue'
 import useVuelidate from '@vuelidate/core'
 import dayjs from 'dayjs'
-import { API_DATE_FORMAT } from '../../../util/constants'
+import { API_DATE_FORMAT, GENDERS } from '../../../util/constants'
 import { validateDOB, validateFirstName, validateSecondName, validateSurname, VALIDATE_DOB_MESSAGE, VALIDATE_FIRST_NAME_MESSAGE, VALIDATE_SECOND_NAME_MESSAGE, VALIDATE_SURNAME_MESSAGE } from '../../../util/validators'
 import { required, helpers, maxLength } from '@vuelidate/validators'
 import { useAlertStore } from '../../../stores/alert'
+import AppRadioButton from '../../ui/AppRadioButton.vue'
+import AppRadioButtonGroup from '../../ui/AppRadioButtonGroup.vue'
 
 export default {
   name: 'NameSearch',
   components: {
-    GenderRadioButtonGroup,
+    AppRadioButton,
+    AppRadioButtonGroup,
   },
   setup() {
     return {
       alertStore: useAlertStore(),
       v$: useVuelidate(),
     }
+  },
+  created() {
+    this.GENDERS = GENDERS
   },
   data() {
     return {
