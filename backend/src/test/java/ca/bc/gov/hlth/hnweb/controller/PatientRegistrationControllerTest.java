@@ -1,10 +1,13 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -22,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.BaseControllerTest;
 import ca.bc.gov.hlth.hnweb.model.rest.StatusEnum;
+import ca.bc.gov.hlth.hnweb.model.rest.enrollment.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegisterModel;
 import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegistrationRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegistrationResponse;
@@ -71,11 +75,34 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		PatientRegistrationResponse patientRegistrationResponse = response.getBody();
 		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse
 				.getPatientRegistrationHistory();
+		
 		// Check the additional message , status and number of valid records
-
 		assertEquals(StatusEnum.SUCCESS, patientRegistrationResponse.getStatus());
 		assertEquals(1, patientRegistrationHistory.size());
-		assertTrue(patientRegistrationResponse.getPersonDetail().getGivenName().equals("Robert"));
+		
+		GetPersonDetailsResponse personDetails = patientRegistrationResponse.getPersonDetail();
+
+		assertEquals("19620624", personDetails.getDateOfBirth());
+		assertEquals("20050605", personDetails.getDateOfDeath());
+		assertEquals("M", personDetails.getGender());
+		assertEquals("Robert", personDetails.getGivenName());
+		assertEquals("9862716574", personDetails.getPhn());
+		assertEquals("Smith", personDetails.getSurname());
+		
+		PatientRegisterModel patientRegister = patientRegistrationHistory.get(0);
+		assertEquals("0", patientRegister.getAdministrativeCode());
+		assertEquals("99991231", patientRegister.getCancelDate());
+		assertEquals("Q", patientRegister.getCancelReasonCode());
+		assertEquals("Registered", patientRegister.getCurrentStatus());
+		assertEquals("N/A", patientRegister.getDeregistrationReasonCode());
+		assertEquals("20210705", patientRegister.getEffectiveDate());
+		assertEquals("T0055", patientRegister.getPayeeNumber());
+		assertEquals("9879869673", patientRegister.getPhn());
+		assertEquals("X2753", patientRegister.getRegisteredPractitionerNumber());
+		assertEquals("John", patientRegister.getRegisteredPractitionerFirstName());
+		assertEquals("W", patientRegister.getRegisteredPractitionerMiddleName());
+		assertEquals("Smith", patientRegister.getRegisteredPractitionerSurname());
+		assertEquals("SL", patientRegister.getRegistrationReasonCode());
 	}
 
 	@Test
@@ -196,7 +223,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testRegistrationHistory_failure_no_payee_mapping_found() {
+	public void testRegistrationHistory_failure_no_payee_mapping_found() throws Exception {
 		createPBFClinicPayee();
 		createPatientRegister();
 
@@ -233,17 +260,22 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		.withMessage("400 BAD_REQUEST \"400 BAD_REQUEST \"Payee field value T0053 does not match the Payee Number mapped to this user\"\"; nested exception is org.springframework.web.server.ResponseStatusException: 400 BAD_REQUEST \"Payee field value T0053 does not match the Payee Number mapped to this user\"");
 	}
 
-	private void createPatientRegister() {
+	private void createPatientRegister() throws ParseException {
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
 
 		PatientRegister patientRegister1 = new PatientRegister();
 		patientRegister1.setAdministrativeCode("0");
-		Date effectiveDate1 = new GregorianCalendar(2021, 7, 5).getTime();
+		Date effectiveDate1 = format.parse("20210705");
 		patientRegister1.setEffectiveDate(effectiveDate1);
-		Date cancelDate1 = new GregorianCalendar(9999, 12, 31).getTime();
+		Date cancelDate1 = format.parse("99991231");
 		patientRegister1.setCancelDate(cancelDate1);
+		patientRegister1.setCancelReasonCode("Q");
 		patientRegister1.setRegistrationReasonCode("SL");
 		patientRegister1.setPayeeNumber("T0055");
 		patientRegister1.setRegisteredPractitionerNumber("X2753");
+		patientRegister1.setRegisteredPractitionerFirstName("John");
+		patientRegister1.setRegisteredPractitionerMiddleName("W");
+		patientRegister1.setRegisteredPractitionerSurname("Smith");
 		patientRegister1.setArchived(Boolean.FALSE);
 		patientRegister1.setPhn("9879869673");
 
@@ -251,49 +283,61 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 
 		PatientRegister patientRegister2 = new PatientRegister();
 		patientRegister2.setAdministrativeCode("0");
-		Date effectiveDate2 = new GregorianCalendar(2021, 7, 5).getTime();
+		Date effectiveDate2 = format.parse("20210705");
 		patientRegister2.setEffectiveDate(effectiveDate2);
-		Date cancelDate2 = new GregorianCalendar(9999, 12, 31).getTime();
+		Date cancelDate2 = format.parse("99991231");
 		patientRegister2.setCancelDate(cancelDate2);
 		patientRegister2.setRegistrationReasonCode("SL");
 		patientRegister2.setPayeeNumber("T0053");
 		patientRegister2.setRegisteredPractitionerNumber("X2753");
+		patientRegister2.setRegisteredPractitionerFirstName("Wendy");
+		patientRegister2.setRegisteredPractitionerMiddleName("B");
+		patientRegister2.setRegisteredPractitionerSurname("Moore");
 		patientRegister2.setArchived(Boolean.FALSE);
 		patientRegister2.setPhn("7108641380");
 
 		PatientRegister patientRegister3 = new PatientRegister();
 		patientRegister3.setAdministrativeCode("0");
-		Date effectiveDate3 = new GregorianCalendar(2021, 7, 5).getTime();
+		Date effectiveDate3 = format.parse("20210705");
 		patientRegister3.setEffectiveDate(effectiveDate3);
-		Date cancelDate3 = new GregorianCalendar(9999, 12, 31).getTime();
+		Date cancelDate3 = format.parse("99991231");
 		patientRegister3.setCancelDate(cancelDate3);
 		patientRegister3.setRegistrationReasonCode("SL");
 		patientRegister3.setPayeeNumber("T0053");
 		patientRegister3.setRegisteredPractitionerNumber("X2753");
+		patientRegister3.setRegisteredPractitionerFirstName("Mike");
+		patientRegister3.setRegisteredPractitionerMiddleName("T");
+		patientRegister3.setRegisteredPractitionerSurname("Jones");
 		patientRegister3.setArchived(Boolean.FALSE);
 		patientRegister3.setPhn("7980823201");
 
 		PatientRegister patientRegister4 = new PatientRegister();
 		patientRegister4.setAdministrativeCode("0");
-		Date effectiveDate4 = new GregorianCalendar(2021, 7, 5).getTime();
+		Date effectiveDate4 = format.parse("20210705");
 		patientRegister4.setEffectiveDate(effectiveDate4);
-		Date cancelDate4 = new GregorianCalendar(9999, 12, 31).getTime();
+		Date cancelDate4 = format.parse("99991231");
 		patientRegister4.setCancelDate(cancelDate4);
 		patientRegister4.setRegistrationReasonCode("SL");
 		patientRegister4.setPayeeNumber("X0058");
 		patientRegister4.setRegisteredPractitionerNumber("X2753");
+		patientRegister4.setRegisteredPractitionerFirstName("Jack");
+		patientRegister4.setRegisteredPractitionerMiddleName("J");
+		patientRegister4.setRegisteredPractitionerSurname("Johnson");
 		patientRegister4.setArchived(Boolean.FALSE);
 		patientRegister4.setPhn("7363117301");
 
 		PatientRegister patientRegister5 = new PatientRegister();
 		patientRegister5.setAdministrativeCode("0");
-		Date effectiveDate5 = new GregorianCalendar(2021, 7, 5).getTime();
+		Date effectiveDate5 = format.parse("20210705");
 		patientRegister5.setEffectiveDate(effectiveDate5);
-		Date cancelDate5 = new GregorianCalendar(9999, 12, 31).getTime();
+		Date cancelDate5 = format.parse("99991231");
 		patientRegister5.setCancelDate(cancelDate5);
 		patientRegister5.setRegistrationReasonCode("SL");
 		patientRegister5.setPayeeNumber("X0059");
 		patientRegister5.setRegisteredPractitionerNumber("X2753");
+		patientRegister5.setRegisteredPractitionerFirstName("Sam");
+		patientRegister5.setRegisteredPractitionerMiddleName("E");
+		patientRegister5.setRegisteredPractitionerSurname("Thomas");
 		patientRegister5.setArchived(Boolean.FALSE);
 		patientRegister5.setPhn("7363117302");
 

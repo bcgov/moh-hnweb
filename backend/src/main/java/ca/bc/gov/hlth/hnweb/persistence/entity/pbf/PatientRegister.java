@@ -29,13 +29,13 @@ public class PatientRegister {
 	@Column(name = "registered_practitioner_number", nullable = false)
 	private String registeredPractitionerNumber;
 
-	@Column(name = "registered_practitioner_first_name", nullable = false)
+	@Column(name = "registered_practitioner_first_name", nullable = true)
 	private String registeredPractitionerFirstName;
 
-	@Column(name = "registered_practitioner_middle_name", nullable = false)
+	@Column(name = "registered_practitioner_middle_name", nullable = true)
 	private String registeredPractitionerMiddleName;
 
-	@Column(name = "registered_practitioner_surname", nullable = false)
+	@Column(name = "registered_practitioner_surname", nullable = true)
 	private String registeredPractitionerSurname;
 
 	@Column(name = "effective_date", nullable = false)
