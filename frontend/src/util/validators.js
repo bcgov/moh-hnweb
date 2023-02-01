@@ -56,6 +56,18 @@ export function validatePostalCode(postalCode) {
 }
 
 /**
+ * Validates that the Zip Code matches the accepted format.
+ * Must be of type NNNNN or NNNNN-NNNN (where "N" is numeric)
+ */
+export function validateMailingZipCode(zipCode) {
+  if (zipCode === undefined || zipCode === '') {
+    return true
+  }
+  var regex = new RegExp(/^[0-9]{5}(?:-[0-9]{4})?$/i)
+  return regex.test(zipCode)
+}
+
+/**
  * Validates that the Postal Code matches the accepted format.
  * Must be of the format ANANAN (where "A" is alpha and "N" is numeric). Must start with one of the "ABCEGHJKLMNPRSTVWXYZ" i.e., be a Canada postal code
  */
@@ -329,5 +341,10 @@ export const VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE = 'Group Member Number is inva
 export const VALIDATE_DEPARTMENT_NUMBER_MESSAGE = 'Department Number is invalid'
 export const VALIDATE_POSTAL_CODE_MESSAGE = 'Postal Code is invalid'
 export const VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
+export const VALIDATE_ZIP_CODE_MESSAGE = 'ZIP Code is invalid'
+export const VALIDATE_ZIP_CODE_REQUIRED_MESSAGE = 'ZIP Code is required'
+export const VALIDATE_OTHER_STATE_REQUIRED_MESSAGE = 'Province / Region / State is required'
+export const VALIDATE_OTHER_ZIP_CODE_REQUIRED_MESSAGE = 'Postal / Zip Code is required'
 export const VALIDATE_TELEPHONE_MESSAGE = 'Telephone is invalid. Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
 export const VALIDATE_USER_ID_MESSAGE = 'User ID cannot be longer than 100 characters'
+export const VALIDATE_STATE_REQUIRED_MESSAGE = 'State is required'
