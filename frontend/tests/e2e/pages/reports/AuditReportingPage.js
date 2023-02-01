@@ -7,6 +7,7 @@ class AuditReportingPage {
     this.checkBoxInput1 = Selector('[for="00000010"]')
     this.checkBoxInput2 = Selector('[for="CheckEligibility"]')
     this.checkBoxInput3 = Selector('[for="PHNInquiry"]')
+    this.checkBoxInput4 = Selector('[for="TRAININGHEALTHAUTH"]')
     this.startDateInput = Selector('#dp-input-startDate')
     this.endDateInput = Selector('#dp-input-endDate')
     this.submitButton = Selector('button[type="submit"]')

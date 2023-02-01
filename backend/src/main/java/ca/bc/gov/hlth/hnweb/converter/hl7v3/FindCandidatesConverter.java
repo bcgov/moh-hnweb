@@ -26,6 +26,7 @@ public class FindCandidatesConverter {
 
 	private static final String IDENTIFIER_TYPE_CODE = "PH";
 	private static final String ASSIGNING_AUTHORITY = "BC";
+	private static final String NOT_APPLICABLE = "N/A";
 	private static final Logger logger = LoggerFactory.getLogger(FindCandidatesConverter.class);
 
 	public FindCandidatesRequest convertRequest(NameSearchRequest nameSearchRequest) {
@@ -132,7 +133,10 @@ public class FindCandidatesConverter {
 					String birthDate = V3MessageUtil.convertDateToString(person.getBirthDate());
 					nameSearchResult.setDateOfBirth(birthDate);					
 				}
-
+				
+				String dateOfDeath = person.getDeathDate() != null ? V3MessageUtil.convertDateToString(person.getDeathDate()) : NOT_APPLICABLE;	
+				nameSearchResult.setDateOfDeath(dateOfDeath);
+				
 				nameSearchResult.setGender(person.getGender());
 
 				Address physicalAddress = ns.getPerson().getPhysicalAddress();

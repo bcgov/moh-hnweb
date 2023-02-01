@@ -43,7 +43,12 @@
       </AppRow>
       <AppRow class="flex-gap-100">
         <AppCol class="col5">
-          <GenderRadioButtonGroup :e-model="v$.gender" id="gender" tabindex="11" label="Gender" v-model="gender" />
+          <AppRadioButtonGroup :e-model="v$.gender" id="gender" label="Gender">
+            <template #tooltip>If you know the gender the client is registered with, select the Male or Female radio button. Or, leave as "Unknown".</template>
+            <template #options>
+              <AppRadioButton name="gender" v-for="option in this.GENDERS" :label="option.text" :value="option.value" v-model="gender" />
+            </template>
+          </AppRadioButtonGroup>
         </AppCol>
       </AppRow>
       <AppRow class="flex-gap-100">
@@ -142,7 +147,8 @@
 </template>
 <script>
 import AppSelect from '../../ui/AppSelect.vue'
-import GenderRadioButtonGroup from '../../ui/GenderRadioButtonGroup.vue'
+import AppRadioButton from '../../ui/AppRadioButton.vue'
+import AppRadioButtonGroup from '../../ui/AppRadioButtonGroup.vue'
 import useVuelidate from '@vuelidate/core'
 import {
   validateGroupNumber,
@@ -185,7 +191,7 @@ import {
 } from '../../../util/validators'
 import { required, requiredIf, helpers, maxLength } from '@vuelidate/validators'
 import dayjs from 'dayjs'
-import { API_DATE_FORMAT, IMMIGRATION_CODES, PROVINCES, PRIOR_RESIDENCES, STATES, COUNTRIES } from '../../../util/constants'
+import { API_DATE_FORMAT, IMMIGRATION_CODES, PROVINCES, PRIOR_RESIDENCES, GENDERS, STATES, COUNTRIES } from '../../../util/constants'
 import { formatPersonName } from '../../../util/utils'
 import { useAlertStore } from '../../../stores/alert'
 
@@ -203,7 +209,8 @@ export default {
   },
   components: {
     AppSelect,
-    GenderRadioButtonGroup,
+    AppRadioButton,
+    AppRadioButtonGroup,
   },
   setup() {
     return {
@@ -222,6 +229,8 @@ export default {
     this.stateOptions = STATES
     // Country Options for mailing country
     this.countryOptions = COUNTRIES
+    // Genders
+    this.GENDERS = GENDERS
   },
   data() {
     return {

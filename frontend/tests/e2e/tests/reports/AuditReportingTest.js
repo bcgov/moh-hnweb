@@ -1,9 +1,8 @@
-import dayjs from 'dayjs'
-
-import { OUTPUT_DATE_FORMAT } from '../../../../src/util/constants'
-import { SITE_UNDER_TEST } from '../../configuration'
 import AlertPage from '../../pages/AlertPage'
 import AuditReportingPage from '../../pages/reports/AuditReportingPage'
+import { OUTPUT_DATE_FORMAT } from '../../../../src/util/constants'
+import { SITE_UNDER_TEST } from '../../configuration'
+import dayjs from 'dayjs'
 import { regularAccUser } from '../../roles/roles'
 
 const ERROR_MESSAGE = 'Please correct errors before submitting'
@@ -81,6 +80,7 @@ test('Check Error message when end date is before start date', async (t) => {
     .click(AuditReportingPage.checkBoxInput1) //Check box
     .click(AuditReportingPage.checkBoxInput2) //Check box
     .click(AuditReportingPage.checkBoxInput3) //Check box
+    .click(AuditReportingPage.checkBoxInput4) //Check box
     .selectText(AuditReportingPage.startDateInput)
     .pressKey('delete')
     .typeText(AuditReportingPage.startDateInput, '20220701')
@@ -103,13 +103,14 @@ test('Check properly filled form passes validation and validate results', async 
     .click(AuditReportingPage.checkBoxInput1) //Check box
     .click(AuditReportingPage.checkBoxInput2) //Check box
     .click(AuditReportingPage.checkBoxInput3) //Check box
+    .click(AuditReportingPage.checkBoxInput4) //Check box
     .selectText(AuditReportingPage.startDateInput)
     .pressKey('delete')
-    .typeText(AuditReportingPage.startDateInput, '20220701')
+    .typeText(AuditReportingPage.startDateInput, '20221207')
     .pressKey('tab')
     .selectText(AuditReportingPage.endDateInput)
     .pressKey('delete')
-    .typeText(AuditReportingPage.endDateInput, '20220708')
+    .typeText(AuditReportingPage.endDateInput, '20221212')
     .pressKey('tab')
     // When I click the submit button
     .click(AuditReportingPage.submitButton)
@@ -123,7 +124,7 @@ test('Check properly filled form passes validation and validate results', async 
     .expect(AuditReportingPage.resultsTable.child('thead').exists)
     .ok()
     .expect(AuditReportingPage.resultsTable.child('tbody').child('tr').count)
-    .eql(2)
+    .eql(1)
     .expect(AuditReportingPage.resultsRow1.exists)
     .ok()
     .expect(AuditReportingPage.resultsRow1.child('td').exists)
@@ -131,19 +132,21 @@ test('Check properly filled form passes validation and validate results', async 
 
     // Validate the first row
     .expect(AuditReportingPage.resultsRow1.child('td').nth(0).textContent)
-    .eql('CheckEligibility')
+    .eql('PHNInquiry')
     .expect(AuditReportingPage.resultsRow1.child('td').nth(1).textContent)
     .eql('00000010')
     .expect(AuditReportingPage.resultsRow1.child('td').nth(2).textContent)
-    .eql('hnweb1')
+    .eql('TRAININGHEALTHAUTH')
     .expect(AuditReportingPage.resultsRow1.child('td').nth(3).textContent)
-    .eql('2022-07-06T22:23:27.699')
+    .eql('hnweb1')
     .expect(AuditReportingPage.resultsRow1.child('td').nth(4).textContent)
-    .eql('9331926919')
+    .eql('2022-12-12T13:53:12.059')
     .expect(AuditReportingPage.resultsRow1.child('td').nth(5).textContent)
-    .eql('PHN')
+    .eql('9873102617')
     .expect(AuditReportingPage.resultsRow1.child('td').nth(6).textContent)
-    .eql('5fa5835f-b5bb-4321-9804-aa84edc64077')
+    .eql('PHN')
+    .expect(AuditReportingPage.resultsRow1.child('td').nth(7).textContent)
+    .eql('d9291fb5-6a30-43ea-bd71-891c02b939d0')
 })
 
 test('Check properly filled form passes validation when no record found', async (t) => {
@@ -153,6 +156,7 @@ test('Check properly filled form passes validation when no record found', async 
     .click(AuditReportingPage.checkBoxInput1) //Check box
     .click(AuditReportingPage.checkBoxInput2) //Check box
     .click(AuditReportingPage.checkBoxInput3) //Check box
+    .click(AuditReportingPage.checkBoxInput4) //Check box
     .selectText(AuditReportingPage.startDateInput)
     .pressKey('delete')
     .typeText(AuditReportingPage.startDateInput, '20220701')
@@ -175,8 +179,13 @@ test('Check clear button clears the form', async (t) => {
     .click(AuditReportingPage.checkBoxInput1) //Check box
     .click(AuditReportingPage.checkBoxInput2) //Check box
     .click(AuditReportingPage.checkBoxInput3) //Check box
+    .click(AuditReportingPage.checkBoxInput4) //Check box
+    .selectText(AuditReportingPage.startDateInput)
+    .pressKey('delete')
     .typeText(AuditReportingPage.startDateInput, '20220701')
     .pressKey('tab')
+    .selectText(AuditReportingPage.endDateInput)
+    .pressKey('delete')
     .typeText(AuditReportingPage.endDateInput, '20220708')
     .pressKey('tab')
     // When I click the Clear button
@@ -189,5 +198,7 @@ test('Check clear button clears the form', async (t) => {
     .expect(AuditReportingPage.checkBoxInput2.checked)
     .notOk()
     .expect(AuditReportingPage.checkBoxInput3.checked)
+    .notOk()
+    .expect(AuditReportingPage.checkBoxInput4.checked)
     .notOk()
 })

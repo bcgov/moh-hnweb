@@ -52,8 +52,8 @@ test('Check invalid phn, groupNumber format validation', async (t) => {
 test('Check properly filled form passes validation and validate results', async (t) => {
   await t
     // Given the page is filled out correctly
-    .typeText(GetGroupMembersContractAddressPage.groupNumberInput, '6099733')
-    .typeText(GetGroupMembersContractAddressPage.phnInput, '9873102617')
+    .typeText(GetGroupMembersContractAddressPage.groupNumberInput, '6180442')
+    .typeText(GetGroupMembersContractAddressPage.phnInput, '9872968646')
     // When I click the submit button
     .click(GetGroupMembersContractAddressPage.submitButton)
     // I expect a success message
@@ -70,7 +70,18 @@ test('Check properly filled form passes validation and validate results', async 
     .ok()
     .expect(GetGroupMembersContractAddressPage.resultsRow1.child('td').exists)
     .ok()
-    // A address table with two results
+    // Validate the first row
+    .expect(GetGroupMembersContractAddressPage.resultsRow1.child('td').nth(0).textContent)
+    .eql('9872968646')
+    .expect(GetGroupMembersContractAddressPage.resultsRow1.child('td').nth(1).textContent)
+    .eql('SURNAME')
+    .expect(GetGroupMembersContractAddressPage.resultsRow1.child('td').nth(2).textContent)
+    .eql('FIRSTNAMESECOND')
+    .expect(GetGroupMembersContractAddressPage.resultsRow1.child('td').nth(3).textContent)
+    .eql('')
+    .expect(GetGroupMembersContractAddressPage.resultsRow1.child('td').nth(4).textContent)
+    .eql('')
+    // A address table with two results with all fields populated
     .expect(GetGroupMembersContractAddressPage.addressTable.exists)
     .ok()
     .expect(GetGroupMembersContractAddressPage.addressTable.child('thead').exists)
@@ -81,29 +92,34 @@ test('Check properly filled form passes validation and validate results', async 
     .ok()
     .expect(GetGroupMembersContractAddressPage.addressRow1.child('td').nth(0).textContent)
     .eql('Home Address')
+    .expect(GetGroupMembersContractAddressPage.addressRow1.child('td').nth(1).textContent)
+    .eql('HOME ADDRESS LINE 1')
+    .expect(GetGroupMembersContractAddressPage.addressRow1.child('td').nth(2).textContent)
+    .eql('HOME ADDRESS LINE 2')
     .expect(GetGroupMembersContractAddressPage.addressRow1.child('td').nth(3).textContent)
-    .eql('KELOWNA BC')
-    .expect(GetGroupMembersContractAddressPage.addressRow1.child('td').exists)
+    .eql('HOME ADDRESS LINE 3')
+    .expect(GetGroupMembersContractAddressPage.addressRow1.child('td').nth(4).textContent)
+    .eql('VANCOUVER BC')
+    .expect(GetGroupMembersContractAddressPage.addressRow1.child('td').nth(5).textContent)
+    .eql('V8V8V8')
+    .expect(GetGroupMembersContractAddressPage.addressRow2.exists)
     .ok()
     .expect(GetGroupMembersContractAddressPage.addressRow2.child('td').nth(0).textContent)
     .eql('Mailing Address')
+    .expect(GetGroupMembersContractAddressPage.addressRow2.child('td').nth(1).textContent)
+    .eql('MAIL ADDRESS LINE 1')
+    .expect(GetGroupMembersContractAddressPage.addressRow2.child('td').nth(2).textContent)
+    .eql('MAIL ADDRESS LINE 2')
     .expect(GetGroupMembersContractAddressPage.addressRow2.child('td').nth(3).textContent)
-    .eql('VANCOUVER BC')
-    // Validate the first row
-    .expect(GetGroupMembersContractAddressPage.resultsRow1.child('td').nth(0).textContent)
-    .eql('9873102617')
-    .expect(GetGroupMembersContractAddressPage.resultsRow1.child('td').nth(1).textContent)
-    .eql('MORRISON')
-    .expect(GetGroupMembersContractAddressPage.resultsRow1.child('td').nth(2).textContent)
-    .eql('MORGAN')
-    .expect(GetGroupMembersContractAddressPage.resultsRow1.child('td').nth(3).textContent)
-    .eql('')
-    .expect(GetGroupMembersContractAddressPage.resultsRow1.child('td').nth(4).textContent)
-    .eql('')
+    .eql('MAIL ADDRESS LINE 3')
+    .expect(GetGroupMembersContractAddressPage.addressRow2.child('td').nth(4).textContent)
+    .eql('CALGARY AB')
+    .expect(GetGroupMembersContractAddressPage.addressRow2.child('td').nth(5).textContent)
+    .eql('T2G5E6')
 })
 
-test('Check properly filled form passes validation and no results shown when more than 20 found', async (t) => {
-  // Need new test data
+// TODO Need new test data - currently returns "RPBS0067 NO COVERAGE FOUND FOR THE PHN ENTERED. PLEASE CONTACT MSP"
+test.skip('Check properly filled form passes validation and no results shown when more than 20 found', async (t) => {
   await t
     // Given the page is filled out correctly
     .typeText(GetGroupMembersContractAddressPage.groupNumberInput, '6243109')
@@ -122,8 +138,8 @@ test('Check properly filled form passes validation and displays no result if cov
   // Need new test data
   await t
     // Given the page is filled out correctly
-    .typeText(GetGroupMembersContractAddressPage.groupNumberInput, '6337109')
-    .typeText(GetGroupMembersContractAddressPage.phnInput, '9873672255')
+    .typeText(GetGroupMembersContractAddressPage.groupNumberInput, '6243109')
+    .typeText(GetGroupMembersContractAddressPage.phnInput, '9332912486')
     // When I click the submit button
     .click(GetGroupMembersContractAddressPage.submitButton)
     // I expect a success message
