@@ -139,7 +139,7 @@
       </AppRow>
 
       <AppRow>
-        <AppButton :submitting="submitting" mode="primary" type="submit" tabindex="32">Submit</AppButton>
+        <AppButton :submitting="submitting" mode="primary" type="submit" tabindex="32" :disabled="deceased">Submit</AppButton>
         <AppButton @click="resetForm" mode="secondary" type="button" tabindex="33">Clear</AppButton>
       </AppRow>
     </form>
@@ -159,6 +159,7 @@ import {
   validateOptionalAddress,
   validateCityOrProvince,
   validateMailingZipCode,
+  validateOtherPostalCode,
   validateMailingAddressForVisaResident,
   VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE,
   VALIDATE_ADDRESS_LINE1_MESSAGE,
@@ -174,10 +175,12 @@ import {
   VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE,
   VALIDATE_PROVINCE_REQUIRED_MESSAGE,
   VALIDATE_OTHER_STATE_REQUIRED_MESSAGE,
+  VALIDATE_OTHER_STATE_MESSAGE,
   VALIDATE_OTHER_ZIP_CODE_REQUIRED_MESSAGE,
   VALIDATE_STATE_REQUIRED_MESSAGE,
   VALIDATE_ZIP_CODE_MESSAGE,
   VALIDATE_ZIP_CODE_REQUIRED_MESSAGE,
+  VALIDATE_OTHER_ZIP_CODE_MESSAGE,
 } from '../../../util/validators'
 import { required, requiredIf, helpers, maxLength } from '@vuelidate/validators'
 import dayjs from 'dayjs'
@@ -304,13 +307,13 @@ export default {
     otherCountry() {
       return this.mailingAddressCountry === 'Other'
     },
+    deceased() {
+      return this.resident?.dateOfDeath && this.resident.dateOfDeath != 'N/A'
+    },
   },
   watch: {
     mailingAddressCountry() {
       this.mailingAddressProvince = ''
-    },
-    deceased() {
-      return this.resident?.dateOfDeath && this.resident.dateOfDeath != 'N/A'
     },
   },
   props: {
@@ -418,8 +421,11 @@ export default {
     zipFieldInvalidValidationMessage() {
       if (this.mailingAddressCountry === 'United States') {
         return VALIDATE_ZIP_CODE_MESSAGE
+      } else if (this.mailingAddressCountry === 'Canada') {
+        return VALIDATE_POSTAL_CODE_MESSAGE
+      } else {
+        return VALIDATE_OTHER_ZIP_CODE_MESSAGE
       }
-      return VALIDATE_POSTAL_CODE_MESSAGE
     },
     validateZipOrPostalCode(zipOrPostalCode) {
       if (this.mailingAddressCountry === 'United States') {
@@ -427,14 +433,16 @@ export default {
       } else if (this.mailingAddressCountry === 'Canada') {
         return validateMailingPostalCode(zipOrPostalCode)
       }
-      return true
+      return validateOtherPostalCode(zipOrPostalCode)
     },
     validateMailingCity(city) {
+      return validateCityOrProvince(city)
+    },
+    validateMailingProvince(province) {
       if (this.otherCountry) {
-        return true
-      } else {
-        return validateCityOrProvince(city)
+        return validateCityOrProvince(province)
       }
+      return true
     },
   },
   validations() {
@@ -509,6 +517,8 @@ export default {
       },
       mailingAddressProvince: {
         required: helpers.withMessage(this.regionFieldRequiredValidationMessage, requiredIf(validateMailingAddressForVisaResident)),
+        maxLength: maxLength(25),
+        validateCityOrProvince: helpers.withMessage(VALIDATE_OTHER_STATE_MESSAGE, this.validateMailingProvince),
       },
       mailingAddressPostalCode: {
         required: helpers.withMessage(this.zipFieldRequiredValidationMessage, requiredIf(validateMailingAddressForVisaResident)),

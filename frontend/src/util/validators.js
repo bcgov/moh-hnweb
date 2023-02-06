@@ -81,6 +81,13 @@ export function validateMailingPostalCode(postalCode) {
 }
 
 /**
+ * Validates that the Postal Code does not contain invalid characters
+ */
+export function validateOtherPostalCode(postalCode) {
+  return validateSpecialChars(postalCode, 25)
+}
+
+/**
  * Must be of the format ANANAN (where "A" is alpha and "N" is numeric). Must start with "V" i.e., be a British Columbia postal code
  */
 function validatePostalCodeFormat(postalCode) {
@@ -344,7 +351,9 @@ export const VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
 export const VALIDATE_ZIP_CODE_MESSAGE = 'ZIP Code is invalid'
 export const VALIDATE_ZIP_CODE_REQUIRED_MESSAGE = 'ZIP Code is required'
 export const VALIDATE_OTHER_STATE_REQUIRED_MESSAGE = 'Province / Region / State is required'
+export const VALIDATE_OTHER_STATE_MESSAGE = 'Province / Region / State is invalid'
 export const VALIDATE_OTHER_ZIP_CODE_REQUIRED_MESSAGE = 'Postal / Zip Code is required'
+export const VALIDATE_OTHER_ZIP_CODE_MESSAGE = 'Postal / Zip Code is invalid'
 export const VALIDATE_TELEPHONE_MESSAGE = 'Telephone is invalid. Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
 export const VALIDATE_USER_ID_MESSAGE = 'User ID cannot be longer than 100 characters'
 export const VALIDATE_STATE_REQUIRED_MESSAGE = 'State is required'
