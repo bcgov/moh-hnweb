@@ -9,6 +9,7 @@ import { regularAccUser } from '../../roles/roles'
 const immigrationCodeOption = AddVisaResidentWithPHNPage.immigrationCodeSelect.find('option')
 const provinceOption = AddVisaResidentWithPHNPage.provinceSelect.find('option')
 const mailingProvinceOption = AddVisaResidentWithPHNPage.mailingProvinceInput.find('option')
+const mailingCountryOption = AddVisaResidentWithPHNPage.mailingCountryInput.find('option')
 const priorResidenceCodeOption = AddVisaResidentWithPHNPage.priorResidenceCodeInput.find('option')
 
 const INVALID_ADDRESS_LINE1_MESSAGE = 'Address Line 1 is invalid'
@@ -33,8 +34,14 @@ const POSTAL_CODE_REQUIRED_MESSAGE = 'Postal Code is required'
 const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
 const INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE = 'Group Member Number is invalid'
 const INVALID_DEPARTMENT_NUMBER_VALIDATION_MESSAGE = 'Department Number is invalid'
-const INVALID_POSTAL_CODE_VALIDATION_MESSAGE = 'Postal Code is invalid'
 const PHONE_NUMBER_VALIDATION_MESSAGE = 'Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
+const ZIP_CODE_REQUIRED_MESSAGE = 'ZIP Code is required'
+const INVALID_ZIP_CODE_MESSAGE = 'ZIP Code is invalid'
+const STATE_REQUIRED_MESSAGE = 'State is required'
+const REGION_REQUIRED_MESSAGE = 'Province / Region / State is required'
+const POSTAL_ZIP_CODE_REQUIRED_MESSAGE = 'Postal / Zip Code is required'
+const INVALID_STATE_MESSAGE = 'State is invalid'
+const INVALID_POSTAL_CODE_VALIDATION_MESSAGE = 'Postal Code is invalid'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addStudyPermitHolderWithPHN'
 
@@ -128,6 +135,8 @@ test('Check properly filled form passes validation', async (t) => {
     .click(PersonDetails.submitButton)
     .wait(5000)
     // Given the page is filled out correctly
+    .selectText(AddVisaResidentWithPHNPage.coverageEffectiveDateInput)
+    .pressKey('delete')
     .typeText(AddVisaResidentWithPHNPage.groupNumberInput, '6337109')
     .click(AddVisaResidentWithPHNPage.immigrationCodeSelect)
     .click(immigrationCodeOption.withText('Employment Authorization'))
@@ -135,7 +144,7 @@ test('Check properly filled form passes validation', async (t) => {
     .typeText(AddVisaResidentWithPHNPage.visaIssueDateInput, '20210101')
     .typeText(AddVisaResidentWithPHNPage.visaExpiryDateInput, '20221231')
     .typeText(AddVisaResidentWithPHNPage.residenceDateInput, '20191108')
-    .typeText(AddVisaResidentWithPHNPage.coverageEffectiveDateInput, '20210401')
+    .typeText(AddVisaResidentWithPHNPage.coverageEffectiveDateInput, '20220401')
     .typeText(AddVisaResidentWithPHNPage.coverageCancellationDateInput, '20221231')
     .typeText(AddVisaResidentWithPHNPage.telephoneInput, '7802024022')
     .typeText(AddVisaResidentWithPHNPage.address1Input, 'Test 111 ST')
@@ -210,6 +219,40 @@ test('Check invalid input field character validation', async (t) => {
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
+})
+
+test('Check required message for United States', async (t) => {
+  await t
+    .typeText(PersonDetails.phnInput, '9875410727')
+    .click(PersonDetails.submitButton)
+    .wait(1000)
+    // When I click the submit button
+    .click(AddVisaResidentWithPHNPage.submitButton)
+    .wait(1000)
+    .typeText(AddVisaResidentWithPHNPage.mailingAddress2Input, 'TEST ADDRESS LINE 2')
+    .click(AddVisaResidentWithPHNPage.mailingCountryInput)
+    .click(mailingCountryOption.withText('United States'))
+    .expect(AddVisaResidentWithPHNPage.errorText.nth(8).textContent)
+    .contains(STATE_REQUIRED_MESSAGE)
+    .expect(AddVisaResidentWithPHNPage.errorText.nth(9).textContent)
+    .contains(ZIP_CODE_REQUIRED_MESSAGE)
+})
+
+test('Check required message for Other Country', async (t) => {
+  await t
+    .typeText(PersonDetails.phnInput, '9875410727')
+    .click(PersonDetails.submitButton)
+    .wait(1000)
+    // When I click the submit button
+    .click(AddVisaResidentWithPHNPage.submitButton)
+    .wait(1000)
+    .typeText(AddVisaResidentWithPHNPage.mailingAddress2Input, 'TEST ADDRESS LINE 2')
+    .click(AddVisaResidentWithPHNPage.mailingCountryInput)
+    .click(mailingCountryOption.withText('Other'))
+    .expect(AddVisaResidentWithPHNPage.errorText.nth(8).textContent)
+    .contains(REGION_REQUIRED_MESSAGE)
+    .expect(AddVisaResidentWithPHNPage.errorText.nth(9).textContent)
+    .contains(POSTAL_ZIP_CODE_REQUIRED_MESSAGE)
 })
 
 test('Check invalid input field length validation', async (t) => {
