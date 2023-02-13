@@ -20,10 +20,10 @@ public class PatientRegister {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long patientRegisterId;
 
-	@Column(name = "phn")
+	@Column(name = "phn", nullable = false)
 	private String phn;
 
-	@Column(name = "payee_number")
+	@Column(name = "payee_number", nullable = false)
 	private String payeeNumber;
 
 	@Column(name = "registered_practitioner_number", nullable = false)
@@ -42,11 +42,11 @@ public class PatientRegister {
 	@Temporal(TemporalType.DATE)
 	private Date effectiveDate;
 
-	@Column(name = "cancel_date", nullable = false)
+	@Column(name = "cancel_date", nullable = true)
 	@Temporal(TemporalType.DATE)
 	private Date cancelDate;
 
-	@Column(name = "adminstrative_code", nullable = false)
+	@Column(name = "adminstrative_code", nullable = true)
 	private String administrativeCode;
 
 	@Column(name = "registration_reason_code", nullable = true)

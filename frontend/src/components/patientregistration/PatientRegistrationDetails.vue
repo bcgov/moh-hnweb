@@ -24,7 +24,7 @@ export default {
         data = `Practitioner No: ${this.registration.registeredPractitionerNumber}<br/>`
       }
       if (this.registration.registeredPractitionerNumber) {
-        data = `${data}  Practioner Name: ${this.practitionerName}<br/>`
+        data = `${data}  Practitioner Name: ${this.practitionerName}<br/>`
       }
       if (this.registration.registrationReasonCode) {
         data = `${data} Reg Reason: ${this.registration.registrationReasonCode}<br/>`
