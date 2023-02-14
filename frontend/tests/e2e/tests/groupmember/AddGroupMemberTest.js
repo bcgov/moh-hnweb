@@ -5,6 +5,7 @@ import { regularAccUser } from '../../roles/roles'
 
 const INVALID_ADDRESS_LINE1_MESSAGE = 'Address Line 1 is invalid'
 const INVALID_ADDRESS_LINE2_MESSAGE = 'Address Line 2 is invalid'
+const INVALID_ADDRESS_LINE3_MESSAGE = 'Address Line 3 is invalid'
 const INVALID_CITY_MESSAGE = 'City is invalid'
 const INVALID_PROVINCE_MESSAGE = 'Province is invalid'
 const MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE = 'The maximum length allowed is 25'
@@ -27,7 +28,8 @@ const STATE_REQUIRED_MESSAGE = 'State is required'
 const INVALID_ZIP_CODE_MESSAGE = 'ZIP Code is invalid'
 const INVALID_STATE_MESSAGE = 'State is invalid'
 const mailingCountryOption = AddGroupMember.mailingAddressCountrySelect.find('option')
-const SUCCESS_MESSAGE = 'RPBS0065 9882807277 COVERAGE ALREADY EXISTS FOR THE PHN/GROUP NUMBER SPECIFIED'
+const mailingProvinceOption = AddGroupMember.mailingAddressProvinceSelect.find('option')
+const SUCCESS_MESSAGE = 'RPBS0031 9882807277 PHN IS INELIGIBLE. PLEASE FORWARD SOURCE DOCS TO MSP'
 const PHONE_NUMBER_VALIDATION_MESSAGE = 'Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/groupmember/AddGroupMember'
@@ -161,12 +163,15 @@ test('Check input field length validation', async (t) => {
     .typeText(AddGroupMember.telephoneInput, '78077777777777')
     .typeText(AddGroupMember.address1Input, 'Address Line 1 is toooooooooooooooooooooooooooooooo long')
     .typeText(AddGroupMember.address2Input, 'Address Line 2 is toooooooooooooooooooooooooooooooo long')
-    .typeText(AddGroupMember.homeAddressCityInput, 'Address Line 3 is toooooooooooooooooooooooooooooooo long')
+    .typeText(AddGroupMember.address3Input, 'Address Line 3 is toooooooooooooooooooooooooooooooo long')
+    .typeText(AddGroupMember.homeAddressCityInput, 'City is tooooooooooooooooooooooooooooooooooo long')
     .typeText(AddGroupMember.postalCodeInput, 'V8V 8V8')
     .typeText(AddGroupMember.mailingAddress1Input, 'Mailing Address Line 1 is toooooooooooooooooooooooooooooooo long')
     .typeText(AddGroupMember.mailingAddress2Input, 'Mailing Address Line 2 is toooooooooooooooooooooooooooooooo long')
-    .typeText(AddGroupMember.mailingAddressCityInput, 'Mailing Address Line 3 is toooooooooooooooooooooooooooooooo long')
-    .typeText(AddGroupMember.mailingAddressProvinceInput, 'Mailing Address Line 4 is toooooooooooooooooooooooooooooooo long')
+    .typeText(AddGroupMember.mailingAddress3Input, 'Mailing Address Line 3 is toooooooooooooooooooooooooooooooo long')
+    .typeText(AddGroupMember.mailingAddressCityInput, 'Mailing City is tooooooooooooooooooooooooooooooooooooo long')
+    .click(AddGroupMember.mailingAddressProvinceSelect)
+    .click(mailingProvinceOption.withText('British Columbia'))
     .typeText(AddGroupMember.mailingPostalCodeInput, 'V8V 8V8')
     // When I click the submit button
     .click(AddGroupMember.submitButton)
@@ -196,8 +201,10 @@ test('Check input field length validation', async (t) => {
     .expect(AddGroupMember.errorText.nth(11).textContent)
     .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
     .expect(AddGroupMember.errorText.nth(12).textContent)
-    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .contains(MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE)
     .expect(AddGroupMember.errorText.nth(13).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(14).textContent)
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
@@ -209,13 +216,12 @@ test('Check invalid message for United States', async (t) => {
     .click(AddGroupMember.submitButton)
     .wait(1000)
     .typeText(AddGroupMember.mailingAddress2Input, 'TEST ADDRESS LINE 2')
-    .typeText(AddGroupMember.mailingAddressProvinceInput, '@@@@@@')
     .typeText(AddGroupMember.mailingPostalCodeInput, '@@@@@@')
     .click(AddGroupMember.mailingAddressCountrySelect)
     .click(mailingCountryOption.withText('United States'))
-    .expect(AddGroupMember.errorText.nth(7).textContent)
-    .contains(INVALID_STATE_MESSAGE)
-    .expect(AddGroupMember.errorText.nth(9).textContent)
+    .click(AddGroupMember.mailingAddressProvinceSelect)
+    .click(mailingProvinceOption.withText('Arizona'))
+    .expect(AddGroupMember.errorText.nth(8).textContent)
     .contains(INVALID_ZIP_CODE_MESSAGE)
 })
 
@@ -232,12 +238,16 @@ test('Check invalid character validation', async (t) => {
     .typeText(AddGroupMember.telephoneInput, '7807777@@')
     .typeText(AddGroupMember.address1Input, 'Test 111 ST!@#$%')
     .typeText(AddGroupMember.address2Input, 'Test 111 ST()_+{}')
+    .typeText(AddGroupMember.address3Input, 'Test 111 ST()_+{}')
     .typeText(AddGroupMember.homeAddressCityInput, '!@#!@#')
     .typeText(AddGroupMember.postalCodeInput, '@@@@@@@')
     .typeText(AddGroupMember.mailingAddress1Input, 'Test 111 ST!@#$%')
     .typeText(AddGroupMember.mailingAddress2Input, 'Test 111 ST()_+{}')
+    .typeText(AddGroupMember.mailingAddress3Input, 'Test 111 ST()_+{}')
     .typeText(AddGroupMember.mailingAddressCityInput, '!@#!@#')
-    .typeText(AddGroupMember.mailingAddressProvinceInput, '{}{}{}}')
+    .click(AddGroupMember.mailingAddressProvinceSelect)
+    .click(mailingProvinceOption.withText('British Columbia'))
+
     .typeText(AddGroupMember.mailingPostalCodeInput, '$%^&*(')
     // When I click the submit button
     .click(AddGroupMember.submitButton)
@@ -261,14 +271,16 @@ test('Check invalid character validation', async (t) => {
     .expect(AddGroupMember.errorText.nth(8).textContent)
     .contains(INVALID_ADDRESS_LINE2_MESSAGE)
     .expect(AddGroupMember.errorText.nth(9).textContent)
-    .contains(INVALID_CITY_MESSAGE)
+    .contains(INVALID_ADDRESS_LINE3_MESSAGE)
     .expect(AddGroupMember.errorText.nth(10).textContent)
-    .contains(INVALID_CITY_MESSAGE)
+    .contains(INVALID_ADDRESS_LINE3_MESSAGE)
     .expect(AddGroupMember.errorText.nth(11).textContent)
-    .contains(INVALID_PROVINCE_MESSAGE)
+    .contains(INVALID_CITY_MESSAGE)
     .expect(AddGroupMember.errorText.nth(12).textContent)
-    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .contains(INVALID_CITY_MESSAGE)
     .expect(AddGroupMember.errorText.nth(13).textContent)
+    .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
+    .expect(AddGroupMember.errorText.nth(14).textContent)
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
@@ -326,7 +338,8 @@ test('Check clear button clears the form', async (t) => {
     .typeText(AddGroupMember.mailingAddress1Input, 'Test 222 ST')
     .typeText(AddGroupMember.mailingAddress2Input, 'Test 222 ST')
     .typeText(AddGroupMember.mailingAddressCityInput, 'EDMONTON')
-    .typeText(AddGroupMember.mailingAddressProvinceInput, 'ALBERTA')
+    .click(AddGroupMember.mailingAddressProvinceSelect)
+    .click(mailingProvinceOption.withText('British Columbia'))
     .typeText(AddGroupMember.mailingPostalCodeInput, 'T6T6T6')
     // When I click the clear button
     .click(AddGroupMember.clearButton)
@@ -346,7 +359,7 @@ test('Check clear button clears the form', async (t) => {
     .expect(AddGroupMember.homeAddressCityInput.value)
     .eql('')
     .expect(AddGroupMember.homeAddressProvinceInput.value)
-    .eql('BC')
+    .eql('')
     .expect(AddGroupMember.homeAddressCountryInput.value)
     .eql('Canada')
     .expect(AddGroupMember.postalCodeInput.value)
@@ -359,7 +372,7 @@ test('Check clear button clears the form', async (t) => {
     .eql('')
     .expect(AddGroupMember.mailingAddressCityInput.value)
     .eql('')
-    .expect(AddGroupMember.mailingAddressProvinceInput.value)
+    .expect(AddGroupMember.mailingAddressProvinceSelect.value)
     .eql('')
     .expect(AddGroupMember.mailingPostalCodeInput.value)
     .eql('')
