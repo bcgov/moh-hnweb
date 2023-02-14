@@ -7,7 +7,7 @@
       <li>HEALTH AUTHORITIES - although eligible today, a person could subsequently become ineligible for service on today's date. If a fee-for-service claim is involved, you may wish to use the MSP Teleplan system or Claims IVR to verify eligibility.</li>
     </ul>
     <br />
-    <p>"Eligible = N" means the person was enrolled in MSP in the past, but is NOT eligible for publicly funded health care as of today's date. Any 'N' you receive must also be confirmed using the E45 MSP Coverage Status Check business service.</p>
+    <p>"Eligible = N" means the person was enrolled in MSP in the past, but is NOT eligible for publicly funded health care as of today's date. Any 'N' you receive must also be confirmed using the MSP Coverage Status Check business service.</p>
     <p>PHN NOT FOUND error means that the PHN is valid, but the person is not enrolled with the MSP, and is currently not eligible for publicly funded health care services.</p>
     <ul>
       <li>EMPLOYERS - if this is an employee or dependent who is a new BC resident, they must be enrolled. An MSP application or change form, with copies of foundation documents, must be submitted.</li>

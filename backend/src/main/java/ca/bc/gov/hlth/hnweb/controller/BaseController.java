@@ -2,6 +2,7 @@ package ca.bc.gov.hlth.hnweb.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,10 @@ public abstract class BaseController {
 	 * @param identifier The value of the identifier
 	 */
 	protected void addAffectedParty(Transaction transaction, IdentifierType type, String identifier, AffectedPartyDirection direction) {
+		if (StringUtils.isEmpty(identifier)) {
+			logger.info("Unable to audit transaction for identifier type {} due to a possible {} failure", type, direction);
+			return;
+		}
 		auditService.createAffectedParty(transaction, type, identifier, direction);
 	}
 	

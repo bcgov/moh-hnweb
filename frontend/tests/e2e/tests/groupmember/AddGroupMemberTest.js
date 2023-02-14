@@ -359,7 +359,7 @@ test('Check clear button clears the form', async (t) => {
     .expect(AddGroupMember.homeAddressCityInput.value)
     .eql('')
     .expect(AddGroupMember.homeAddressProvinceInput.value)
-    .eql('')
+    .eql('BC')
     .expect(AddGroupMember.homeAddressCountryInput.value)
     .eql('Canada')
     .expect(AddGroupMember.postalCodeInput.value)
@@ -377,7 +377,7 @@ test('Check clear button clears the form', async (t) => {
     .expect(AddGroupMember.mailingPostalCodeInput.value)
     .eql('')
     .expect(AddGroupMember.mailingAddressCountrySelect.value)
-    .eql('CA')
+    .eql('Canada')
     .expect(AddGroupMember.coverageEffectiveDateInput.value)
     .eql(undefined)
 

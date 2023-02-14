@@ -15,6 +15,13 @@
         <AppOutput label="Date of Birth" :value="resident?.dateOfBirth" />
       </AppCol>
     </AppRow>
+    <div v-if="deceased">
+      <AppRow class="text-deceased">
+        <AppCol class="col3">
+          <AppOutput label="Date of Death" :value="resident?.dateOfDeath" />
+        </AppCol>
+      </AppRow>
+    </div>
     <AppRow>
       <AppCol class="col3">
         <AppOutput label="Gender" :value="resident?.gender" />
@@ -134,7 +141,7 @@
       </AppRow>
 
       <AppRow>
-        <AppButton :submitting="submitting" mode="primary" type="submit">Submit</AppButton>
+        <AppButton :submitting="submitting" mode="primary" type="submit" :disabled="deceased">Submit</AppButton>
         <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
       </AppRow>
     </form>
@@ -243,6 +250,9 @@ export default {
     },
     fullName() {
       return formatPersonName(this.resident)
+    },
+    deceased() {
+      return this.resident?.dateOfDeath && this.resident.dateOfDeath != 'N/A'
     },
   },
   props: {
@@ -403,3 +413,9 @@ export default {
   },
 }
 </script>
+<style scoped>
+.text-deceased {
+  color: red;
+  font-weight: bold;
+}
+</style>

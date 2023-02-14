@@ -6,7 +6,8 @@ DROP MATERIALIZED VIEW mspdirect.organization;
 CREATE MATERIALIZED VIEW mspdirect.organization 
 AS
 select DISTINCT
-    t.organization as organization
+    t.organization as organization,
+    t.organization_name as organization_name
 from 
     mspdirect.transaction t
 where organization is not null

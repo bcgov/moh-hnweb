@@ -16,14 +16,14 @@
     "@vitejs/plugin-legacy": "^1.6.2",
     "@vuelidate/core": "^2.0.0-alpha.27",
     "@vuelidate/validators": "^2.0.0-alpha.23",
-    "@vuepic/vue-datepicker": "^3.2.0",
+    "@vuepic/vue-datepicker": "^3.6.7",
     "axios": "^0.23.0",
     "dayjs": "^1.10.7",
     "keycloak-js": "^15.0.2",
     "pinia": "next",
     "primeicons": "^5.0.0",
     "primevue": "^3.16.2",
-    "vue": "3.2.41",
+    "vue": "^3.2.45",
     "vue-router": "4"
   },
   "devDependencies": {
