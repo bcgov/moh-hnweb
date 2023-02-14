@@ -238,7 +238,7 @@ function validateAlpha(input, length) {
   if (input.length > length) {
     return true
   }
-  return !/[^a-zA-Z]/.test(input)
+  return !/[^a-z-\sA-Z]/.test(input)
 }
 
 /**
