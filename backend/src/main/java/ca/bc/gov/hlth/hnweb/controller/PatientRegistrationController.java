@@ -86,6 +86,8 @@ public class PatientRegistrationController extends BaseController {
 		Transaction transaction = transactionStart(request, TransactionType.GET_PATIENT_REGISTRATION);
 		addAffectedParty(transaction, IdentifierType.PHN, patientRegistrationRequest.getPhn(),
 				AffectedPartyDirection.INBOUND);
+		addAffectedParty(transaction, IdentifierType.PAYEE_NUMBER, patientRegistrationRequest.getPayee(),
+				AffectedPartyDirection.INBOUND);
 
 		try {
 			validatePayeeNumberMapping(patientRegistrationRequest);
@@ -122,8 +124,11 @@ public class PatientRegistrationController extends BaseController {
 			ResponseEntity<PatientRegistrationResponse> responseEntity = ResponseEntity.ok(response);
 
 			transactionComplete(transaction);
-			registrationRecords.forEach(record -> addAffectedParty(transaction, IdentifierType.PHN, record.getPhn(),
-					AffectedPartyDirection.OUTBOUND));
+			addAffectedParty(transaction, IdentifierType.PHN, personDetailsResponse.getPhn(), AffectedPartyDirection.OUTBOUND);
+			registrationRecords.forEach(record -> {
+				addAffectedParty(transaction, IdentifierType.PAYEE_NUMBER, record.getPhn(), AffectedPartyDirection.OUTBOUND);
+				addAffectedParty(transaction, IdentifierType.PRACTITIONER_NUMBER, record.getPhn(), AffectedPartyDirection.OUTBOUND);
+			});
 
 			return responseEntity;
 		} catch (Exception e) {

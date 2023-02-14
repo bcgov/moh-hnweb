@@ -10,7 +10,7 @@ import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.PatientRegister;
 
 public interface PatientRegisterRepository extends JpaRepository<PatientRegister, Long> {
 
-	@Query("select p from PatientRegister p where p.payeeNumber in ("
+	@Query("select p from PatientRegister p where archived = false and p.payeeNumber in ("
 			+ "select p2.payeeNumber from PBFClinicPayee p1 inner join PBFClinicPayee p2 on p1.reportGroup = "
 			+ "p2.reportGroup where p1.payeeNumber= :payee ) and "
 			+ "p.phn = :phn order by p.effectiveDate desc" )

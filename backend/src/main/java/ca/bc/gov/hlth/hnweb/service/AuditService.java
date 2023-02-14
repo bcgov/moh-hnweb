@@ -201,6 +201,7 @@ public class AuditService {
 		EventMessage eventMessage = new EventMessage();
 		eventMessage.setErrorCode(Integer.toString(status.value()));
 		eventMessage.setErrorLevel(level);
+		// TODO Need to handle null message text
 		eventMessage.setMessageText(exception.getMessage());
 		eventMessage.setTransactionEvent(transactionEvent);
 		return eventMessageRepository.save(eventMessage);
