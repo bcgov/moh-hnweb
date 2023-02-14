@@ -175,6 +175,45 @@ test('Check properly filled form passes validation', async (t) => {
     .contains(SUCCESS_MESSAGE)
 })
 
+test('Check hyphen and whitespace are allowed for name fields', async (t) => {
+  await t
+    .typeText(NameSearchPage.surnameInput, 'Test-Test')
+    .typeText(NameSearchPage.firstNameInput, 'Test Test')
+    .typeText(NameSearchPage.dateOfBirthInput, '20001108')
+    .click(NameSearchPage.radioButton)
+    .click(NameSearchPage.submitButton)
+    .wait(1000)
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(NO_SEARCH_RESULT)
+    // Given the page is filled out correctly
+    .typeText(AddVisaResidentWithoutPHNPage.groupNumberInput, '6337109')
+    .click(AddVisaResidentWithoutPHNPage.immigrationCodeSelect)
+    .click(immigrationCodeOption.withText('Student Authorization'))
+    .typeText(AddVisaResidentWithoutPHNPage.departmentNumberInput, '123456')
+    .typeText(AddVisaResidentWithoutPHNPage.visaIssueDateInput, '20210101')
+    .click(AddVisaResidentWithoutPHNPage.visaExpiryDateInput)
+    .typeText(AddVisaResidentWithoutPHNPage.visaExpiryDateInput, '20221231')
+
+    .typeText(AddVisaResidentWithoutPHNPage.residenceDateInput, '20210101')
+    .typeText(AddVisaResidentWithoutPHNPage.coverageEffectiveDateInput, '20210101')
+    .typeText(AddVisaResidentWithoutPHNPage.coverageCancellationDateInput, '20201231')
+    .typeText(AddVisaResidentWithoutPHNPage.telephoneInput, '7802024022')
+    .typeText(AddVisaResidentWithoutPHNPage.address1Input, 'Test 111 ST')
+    .typeText(AddVisaResidentWithoutPHNPage.cityInput, 'VICTORIA')
+    .click(AddVisaResidentWithoutPHNPage.provinceSelect)
+    .click(provinceOption.withText('British Columbia'))
+    .typeText(AddVisaResidentWithoutPHNPage.postalCodeInput, 'V8V8V8')
+    .click(AddVisaResidentWithoutPHNPage.priorResidenceCodeInput)
+    .click(priorResidenceCodeOption.withText('British Columbia'))
+
+    // When I click the submit button
+    .click(AddVisaResidentWithoutPHNPage.submitButton)
+    .wait(5000)
+    // I expect a success message
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(SUCCESS_MESSAGE)
+})
+
 test('Check invalid input field characters validation', async (t) => {
   await t
     .typeText(NameSearchPage.surnameInput, 'Test')
