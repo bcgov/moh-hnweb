@@ -51,7 +51,7 @@ export default {
       return name
     },
     regDeRegDate() {
-      return `${this.registration.effectiveDate} <br/> ${this.registration.cancelDate} `
+      return `${this.registration.effectiveDate} <br/> ${this.registration.cancelDate ? this.registration.cancelDate : ''} `
     },
   },
 }

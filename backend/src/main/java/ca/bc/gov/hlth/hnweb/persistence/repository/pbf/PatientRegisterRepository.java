@@ -16,7 +16,7 @@ public interface PatientRegisterRepository extends JpaRepository<PatientRegister
 			+ "p.phn = :phn order by p.effectiveDate desc" )
 	List<PatientRegister> findPatientRegisterByPayeeClinic(@Param("payee") String payee, @Param("phn") String phn);
 	
-	@Query("select p.payeeNumber from PatientRegister p where p.phn = :phn")
+	@Query("select p.payeeNumber from PatientRegister p where p.phn = :phn and p.archived = false")
 	List<String> findPayeeByphn(@Param("phn") String phn);
 		
 }

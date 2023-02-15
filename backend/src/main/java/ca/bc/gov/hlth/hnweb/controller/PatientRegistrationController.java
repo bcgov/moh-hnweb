@@ -126,8 +126,8 @@ public class PatientRegistrationController extends BaseController {
 			transactionComplete(transaction);
 			addAffectedParty(transaction, IdentifierType.PHN, personDetailsResponse.getPhn(), AffectedPartyDirection.OUTBOUND);
 			registrationRecords.forEach(record -> {
-				addAffectedParty(transaction, IdentifierType.PAYEE_NUMBER, record.getPhn(), AffectedPartyDirection.OUTBOUND);
-				addAffectedParty(transaction, IdentifierType.PRACTITIONER_NUMBER, record.getPhn(), AffectedPartyDirection.OUTBOUND);
+				addAffectedParty(transaction, IdentifierType.PAYEE_NUMBER, record.getPayeeNumber(), AffectedPartyDirection.OUTBOUND);
+				addAffectedParty(transaction, IdentifierType.PRACTITIONER_NUMBER, record.getRegisteredPractitionerNumber(), AffectedPartyDirection.OUTBOUND);
 			});
 
 			return responseEntity;
@@ -220,6 +220,9 @@ public class PatientRegistrationController extends BaseController {
 	}
 
 	private String formatDate(Date date) {
+		if (date == null) {
+			return null;
+		}
 		LocalDate localDate = convertDate(date);
 		return localDate.format(DATE_TIME_FORMATTER_yyyyMMdd);
 	}
@@ -231,8 +234,15 @@ public class PatientRegistrationController extends BaseController {
 	private String setPatientRegistrationStatus(Date cancelDate, Date effectiveDate) {
 		String currentStatus = "";
 		LocalDate today = LocalDate.now();
-		LocalDate convertedCancelDate = convertDate(cancelDate);
 		LocalDate convertedEffectiveDate = convertDate(effectiveDate);
+		
+		LocalDate convertedCancelDate = null;
+		if (cancelDate != null) {
+			convertedCancelDate = convertDate(cancelDate);
+		} else {
+			// Default the cancelDate to end of time to simplify logic
+			convertedCancelDate = LocalDate.of(9999, 12, 31);
+		}
 
 		// “Registered” when the current date is greater than or equal to the effective
 		// date and less than or equal to the cancel date.

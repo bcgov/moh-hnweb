@@ -55,6 +55,33 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 	private PBFClinicPayeeRepository pbfClinicPayeeRepository;
 	
 	@Test
+	public void testRegistrationHistory_success_nullCancelDate() throws Exception {
+		createPBFClinicPayee();
+		createPatientRegister();
+		mockBackEnd.enqueue(new MockResponse()
+				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse.xml"))
+				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+
+		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "924917e3-970a-482d-88b5-244be4c19d70", "00000010", "Ministry of Health", "hnweb-user", UUID.randomUUID().toString()));
+
+        PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
+		viewPatientRegisterRequest.setPhn("7363117303");
+		viewPatientRegisterRequest.setPayee("X0053");
+		ResponseEntity<PatientRegistrationResponse> response = patientRegistrationController
+				.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest());
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		PatientRegistrationResponse patientRegistrationResponse = response.getBody();
+		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse
+				.getPatientRegistrationHistory();
+		
+		// Check the additional message , status and number of valid records
+		assertEquals(StatusEnum.SUCCESS, patientRegistrationResponse.getStatus());
+		assertEquals(1, patientRegistrationHistory.size());
+	}
+	
+	@Test
 	public void testRegistrationHistory_success_payeeWithinGroup_DemoRecord() throws Exception {
 		createPBFClinicPayee();
 		createPatientRegister();
@@ -259,6 +286,33 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		.isThrownBy(() -> patientRegistrationController.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest()))
 		.withMessage("400 BAD_REQUEST \"400 BAD_REQUEST \"Payee field value T0053 does not match the Payee Number mapped to this user\"\"; nested exception is org.springframework.web.server.ResponseStatusException: 400 BAD_REQUEST \"Payee field value T0053 does not match the Payee Number mapped to this user\"");
 	}
+	
+	@Test
+	public void testRegistrationHistory_archived() throws Exception {
+		createPBFClinicPayee();
+		createPatientRegister();
+
+		mockBackEnd.enqueue(new MockResponse()
+				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse_Error.xml"))
+				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+
+		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "924917e3-970a-482d-88b5-244be4c19d70", "00000010", "Ministry of Health", "hnweb-user", UUID.randomUUID().toString()));
+
+        PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
+		viewPatientRegisterRequest.setPhn("7363117302");
+		viewPatientRegisterRequest.setPayee("X0053");
+		ResponseEntity<PatientRegistrationResponse> response = patientRegistrationController
+				.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest());
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		PatientRegistrationResponse patientRegistrationResponse = response.getBody();
+		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse
+				.getPatientRegistrationHistory();
+		// Check the additional message , status and number of valid records
+		assertEquals(StatusEnum.WARNING, patientRegistrationResponse.getStatus());
+		assertEquals(0, patientRegistrationHistory.size());
+	}
 
 	private void createPatientRegister() throws ParseException {
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
@@ -333,19 +387,34 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		Date cancelDate5 = format.parse("99991231");
 		patientRegister5.setCancelDate(cancelDate5);
 		patientRegister5.setRegistrationReasonCode("SL");
-		patientRegister5.setPayeeNumber("X0059");
+		patientRegister5.setPayeeNumber("X0053");
 		patientRegister5.setRegisteredPractitionerNumber("X2753");
 		patientRegister5.setRegisteredPractitionerFirstName("Sam");
 		patientRegister5.setRegisteredPractitionerMiddleName("E");
 		patientRegister5.setRegisteredPractitionerSurname("Thomas");
-		patientRegister5.setArchived(Boolean.FALSE);
+		patientRegister5.setArchived(Boolean.TRUE);
 		patientRegister5.setPhn("7363117302");
+		
+		PatientRegister patientRegister6 = new PatientRegister();
+		patientRegister6.setAdministrativeCode("0");
+		Date effectiveDate6 = format.parse("20230101");
+		patientRegister6.setEffectiveDate(effectiveDate6);
+		patientRegister6.setCancelDate(null);
+		patientRegister6.setRegistrationReasonCode("SL");
+		patientRegister6.setPayeeNumber("X0053");
+		patientRegister6.setRegisteredPractitionerNumber("X2753");
+		patientRegister6.setRegisteredPractitionerFirstName("Sam");
+		patientRegister6.setRegisteredPractitionerMiddleName("E");
+		patientRegister6.setRegisteredPractitionerSurname("Thomas");
+		patientRegister6.setArchived(Boolean.FALSE);
+		patientRegister6.setPhn("7363117303");
 
 		patientRegisterRepository.save(patientRegister1);
 		patientRegisterRepository.save(patientRegister2);
 		patientRegisterRepository.save(patientRegister3);
 		patientRegisterRepository.save(patientRegister4);
-
+		patientRegisterRepository.save(patientRegister5);
+		patientRegisterRepository.save(patientRegister6);
 	}
 
 	private void createPBFClinicPayee() {
@@ -377,11 +446,20 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		Date effectiveDate2 = new GregorianCalendar(2021, 7, 5).getTime();
 		payee2.setEffectiveDate(effectiveDate2);
 		payee2.setReportGroup("28579");
+		
+		PBFClinicPayee payee3 = new PBFClinicPayee();
+		payee3.setArchived(Boolean.FALSE);
+		Date cancelDate3 = new GregorianCalendar(9999, 12, 31).getTime();
+		payee3.setCancelDate(cancelDate3);
+		payee3.setPayeeNumber("X0053");
+		Date effectiveDate3 = new GregorianCalendar(2021, 7, 5).getTime();
+		payee3.setEffectiveDate(effectiveDate3);
+		payee3.setReportGroup("28579");
 
 		pbfClinicPayeeRepository.save(payee);
 		pbfClinicPayeeRepository.save(payee1);
 		pbfClinicPayeeRepository.save(payee2);
-		
+		pbfClinicPayeeRepository.save(payee3);
 	}
 
 	/**
