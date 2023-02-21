@@ -54,6 +54,7 @@ test('Check required fields validation', async (t) => {
     .click(NameSearchPage.radioButton)
     .click(NameSearchPage.submitButton)
     .wait(5000)
+    .click(NameSearchPage.createNewPHNButton)
     // Given required fields aren't filled out
 
     // When I click the submit button
@@ -97,6 +98,7 @@ test('Check required fields validation for Mailing Address', async (t) => {
     .click(NameSearchPage.radioButton)
     .click(NameSearchPage.submitButton)
     .wait(5000)
+    .click(NameSearchPage.createNewPHNButton)
     // Given required fields aren't filled out
 
     // When I fill Mailing Address Line 2 and click the submit button
@@ -146,6 +148,7 @@ test('Check properly filled form passes validation', async (t) => {
     .wait(1000)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(NO_SEARCH_RESULT)
+    .click(NameSearchPage.createNewPHNButton)
     // Given the page is filled out correctly
     .typeText(AddVisaResidentWithoutPHNPage.groupNumberInput, '6337109')
     .click(AddVisaResidentWithoutPHNPage.immigrationCodeSelect)
@@ -185,6 +188,7 @@ test('Check hyphen and whitespace are allowed for name fields', async (t) => {
     .wait(1000)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(NO_SEARCH_RESULT)
+    .click(NameSearchPage.createNewPHNButton)
     // Given the page is filled out correctly
     .typeText(AddVisaResidentWithoutPHNPage.groupNumberInput, '6337109')
     .click(AddVisaResidentWithoutPHNPage.immigrationCodeSelect)
@@ -222,6 +226,8 @@ test('Check invalid input field characters validation', async (t) => {
     .click(NameSearchPage.radioButton)
     .click(NameSearchPage.submitButton)
     .wait(1000)
+    .click(NameSearchPage.createNewPHNButton)
+
     // Given all input fileds are entered with an invalid character
     .typeText(AddVisaResidentWithoutPHNPage.groupNumberInput, '$%^%^&**')
     .typeText(AddVisaResidentWithoutPHNPage.groupMemberNumberInput, '$%^#$%^')
@@ -283,6 +289,8 @@ test('Check invalid field length validation', async (t) => {
     .click(NameSearchPage.radioButton)
     .click(NameSearchPage.submitButton)
     .wait(1000)
+    .click(NameSearchPage.createNewPHNButton)
+
     // Given a Group Number entered with an invalid format
     .typeText(AddVisaResidentWithoutPHNPage.groupNumberInput, '9000444000')
     .typeText(AddVisaResidentWithoutPHNPage.groupMemberNumberInput, '9000444000')
@@ -349,6 +357,8 @@ test('Check clear button clears the form', async (t) => {
     .typeText(NameSearchPage.dateOfBirthInput, '20211108')
     .click(NameSearchPage.radioButton)
     .click(NameSearchPage.submitButton)
+    .click(NameSearchPage.createNewPHNButton)
+
     // Given the page is filled out correctly
     .typeText(AddVisaResidentWithoutPHNPage.groupNumberInput, '6337109')
     .click(AddVisaResidentWithoutPHNPage.immigrationCodeSelect)
