@@ -20,7 +20,8 @@ import { useAlertStore } from '../../../stores/alert'
 import { useStudyPermitHolderStore } from '../../../stores/studyPermitHolder'
 import { handleServiceError } from '../../../util/utils'
 import AppHelp from '../../../components/ui/AppHelp.vue'
-import { DATE_OF_DEATH_MESSAGE } from '../../../util/constants.js'
+const HCIM_CONTACT_NO = config.HCIM_CONTACT_NO || import.meta.env.VITE_HCIM_CONTACT_NO
+const DATE_OF_DEATH_MESSAGE = 'A Date of Death was found for this client record. If this is incorrect, confirm the correct PHN was entered and contact HCIM at ' + HCIM_CONTACT_NO + ' (8am to 4:30pm, Mon - Fri).'
 
 export default {
   name: 'AddVisaResidentWithPHN',
