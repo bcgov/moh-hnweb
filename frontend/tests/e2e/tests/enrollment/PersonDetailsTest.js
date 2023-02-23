@@ -7,7 +7,7 @@ import { regularAccUser } from '../../roles/roles'
 const ERROR_MESSAGE = 'Please correct errors before submitting'
 const PHN_REQUIRED_MESSAGE = 'PHN is required'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'
-const DATE_OF_DEATH_MESSAGE = 'A Date of Death was found for this client record retrieved from HCIM.  Please contact HCIM at 250-952-9137 (8am to 4:30pm, Mon - Fri) to confirm whether or not this individual is deceased before proceeding with the study permit application.'
+const DATE_OF_DEATH_MESSAGE = 'A Date of Death was found for this client record. If this is incorrect, confirm the correct PHN was entered and contact HCIM at 250-952-9137 (8am to 4:30pm, Mon - Fri).'
 const ERROR_MESSAGE_PHN_DOES_NOT_EXIST = 'BCHCIM.GD.2.0018  The identifier you used in the Get Demographics transaction does not exist in the EMPI.'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addStudyPermitHolderWithPHN'

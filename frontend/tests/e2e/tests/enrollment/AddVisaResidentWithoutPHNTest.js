@@ -9,7 +9,7 @@ const provinceOption = AddVisaResidentWithoutPHNPage.provinceSelect.find('option
 const priorResidenceCodeOption = AddVisaResidentWithoutPHNPage.priorResidenceCodeInput.find('option')
 
 const ERROR_MESSAGE = 'Please correct errors before submitting'
-const SUCCESS_MESSAGE = 'COVERAGE CANCEL DATE MUST BE AFTER COVERAGE EFFECTIVE DATE'
+const RAPID_MESSAGE = 'COVERAGE CANCEL DATE MUST BE AFTER COVERAGE EFFECTIVE DATE'
 const NO_SEARCH_RESULT = 'BCHCIM.FC.0.0018  No results were returned. Please refine your search criteria, and try again.'
 
 const INVALID_ADDRESS_LINE1_MESSAGE = 'Address Line 1 is invalid'
@@ -54,6 +54,7 @@ test('Check required fields validation', async (t) => {
     .click(NameSearchPage.radioButton)
     .click(NameSearchPage.submitButton)
     .wait(5000)
+    .click(NameSearchPage.createNewPHNButton)
     // Given required fields aren't filled out
 
     // When I click the submit button
@@ -97,6 +98,7 @@ test('Check required fields validation for Mailing Address', async (t) => {
     .click(NameSearchPage.radioButton)
     .click(NameSearchPage.submitButton)
     .wait(5000)
+    .click(NameSearchPage.createNewPHNButton)
     // Given required fields aren't filled out
 
     // When I fill Mailing Address Line 2 and click the submit button
@@ -146,18 +148,22 @@ test('Check properly filled form passes validation', async (t) => {
     .wait(1000)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(NO_SEARCH_RESULT)
+    .click(NameSearchPage.createNewPHNButton)
     // Given the page is filled out correctly
     .typeText(AddVisaResidentWithoutPHNPage.groupNumberInput, '6337109')
     .click(AddVisaResidentWithoutPHNPage.immigrationCodeSelect)
     .click(immigrationCodeOption.withText('Student Authorization'))
     .typeText(AddVisaResidentWithoutPHNPage.departmentNumberInput, '123456')
     .typeText(AddVisaResidentWithoutPHNPage.visaIssueDateInput, '20210101')
-    .click(AddVisaResidentWithoutPHNPage.visaExpiryDateInput)
+    .pressKey('enter')
     .typeText(AddVisaResidentWithoutPHNPage.visaExpiryDateInput, '20221231')
-
+    .pressKey('enter')
     .typeText(AddVisaResidentWithoutPHNPage.residenceDateInput, '20210101')
-    .typeText(AddVisaResidentWithoutPHNPage.coverageEffectiveDateInput, '20210101')
+    .pressKey('enter')
+    .typeText(AddVisaResidentWithoutPHNPage.coverageEffectiveDateInput, '20210101', { replace: true })
+    .pressKey('enter')
     .typeText(AddVisaResidentWithoutPHNPage.coverageCancellationDateInput, '20201231')
+    .pressKey('enter')
     .typeText(AddVisaResidentWithoutPHNPage.telephoneInput, '7802024022')
     .typeText(AddVisaResidentWithoutPHNPage.address1Input, 'Test 111 ST')
     .typeText(AddVisaResidentWithoutPHNPage.cityInput, 'VICTORIA')
@@ -170,9 +176,9 @@ test('Check properly filled form passes validation', async (t) => {
     // When I click the submit button
     .click(AddVisaResidentWithoutPHNPage.submitButton)
     .wait(5000)
-    // I expect a success message
+    // I expect a response from RAPID
     .expect(AlertPage.alertBannerText.textContent)
-    .contains(SUCCESS_MESSAGE)
+    .contains(RAPID_MESSAGE)
 })
 
 test('Check hyphen and whitespace are allowed for name fields', async (t) => {
@@ -185,18 +191,22 @@ test('Check hyphen and whitespace are allowed for name fields', async (t) => {
     .wait(1000)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(NO_SEARCH_RESULT)
+    .click(NameSearchPage.createNewPHNButton)
     // Given the page is filled out correctly
     .typeText(AddVisaResidentWithoutPHNPage.groupNumberInput, '6337109')
     .click(AddVisaResidentWithoutPHNPage.immigrationCodeSelect)
     .click(immigrationCodeOption.withText('Student Authorization'))
     .typeText(AddVisaResidentWithoutPHNPage.departmentNumberInput, '123456')
     .typeText(AddVisaResidentWithoutPHNPage.visaIssueDateInput, '20210101')
-    .click(AddVisaResidentWithoutPHNPage.visaExpiryDateInput)
+    .pressKey('enter')
     .typeText(AddVisaResidentWithoutPHNPage.visaExpiryDateInput, '20221231')
-
+    .pressKey('enter')
     .typeText(AddVisaResidentWithoutPHNPage.residenceDateInput, '20210101')
+    .pressKey('enter')
     .typeText(AddVisaResidentWithoutPHNPage.coverageEffectiveDateInput, '20210101')
+    .pressKey('enter')
     .typeText(AddVisaResidentWithoutPHNPage.coverageCancellationDateInput, '20201231')
+    .pressKey('enter')
     .typeText(AddVisaResidentWithoutPHNPage.telephoneInput, '7802024022')
     .typeText(AddVisaResidentWithoutPHNPage.address1Input, 'Test 111 ST')
     .typeText(AddVisaResidentWithoutPHNPage.cityInput, 'VICTORIA')
@@ -209,9 +219,9 @@ test('Check hyphen and whitespace are allowed for name fields', async (t) => {
     // When I click the submit button
     .click(AddVisaResidentWithoutPHNPage.submitButton)
     .wait(5000)
-    // I expect a success message
+    // I expect a response from RAPID
     .expect(AlertPage.alertBannerText.textContent)
-    .contains(SUCCESS_MESSAGE)
+    .contains(RAPID_MESSAGE)
 })
 
 test('Check invalid input field characters validation', async (t) => {
@@ -222,6 +232,8 @@ test('Check invalid input field characters validation', async (t) => {
     .click(NameSearchPage.radioButton)
     .click(NameSearchPage.submitButton)
     .wait(1000)
+    .click(NameSearchPage.createNewPHNButton)
+
     // Given all input fileds are entered with an invalid character
     .typeText(AddVisaResidentWithoutPHNPage.groupNumberInput, '$%^%^&**')
     .typeText(AddVisaResidentWithoutPHNPage.groupMemberNumberInput, '$%^#$%^')
@@ -283,6 +295,8 @@ test('Check invalid field length validation', async (t) => {
     .click(NameSearchPage.radioButton)
     .click(NameSearchPage.submitButton)
     .wait(1000)
+    .click(NameSearchPage.createNewPHNButton)
+
     // Given a Group Number entered with an invalid format
     .typeText(AddVisaResidentWithoutPHNPage.groupNumberInput, '9000444000')
     .typeText(AddVisaResidentWithoutPHNPage.groupMemberNumberInput, '9000444000')
@@ -349,16 +363,23 @@ test('Check clear button clears the form', async (t) => {
     .typeText(NameSearchPage.dateOfBirthInput, '20211108')
     .click(NameSearchPage.radioButton)
     .click(NameSearchPage.submitButton)
+    .click(NameSearchPage.createNewPHNButton)
+
     // Given the page is filled out correctly
     .typeText(AddVisaResidentWithoutPHNPage.groupNumberInput, '6337109')
     .click(AddVisaResidentWithoutPHNPage.immigrationCodeSelect)
     .click(immigrationCodeOption.withText('Student Authorization'))
     .typeText(AddVisaResidentWithoutPHNPage.dateOfBirthInput, '20211108')
+    .pressKey('enter')
     .typeText(AddVisaResidentWithoutPHNPage.departmentNumberInput, '6337109')
     .typeText(AddVisaResidentWithoutPHNPage.visaIssueDateInput, '20210101')
+    .pressKey('enter')
     .typeText(AddVisaResidentWithoutPHNPage.visaExpiryDateInput, '20221231')
+    .pressKey('enter')
     .typeText(AddVisaResidentWithoutPHNPage.residenceDateInput, '20191108')
+    .pressKey('enter')
     .typeText(AddVisaResidentWithoutPHNPage.coverageCancellationDateInput, '20211231')
+    .pressKey('enter')
     .typeText(AddVisaResidentWithoutPHNPage.telephoneInput, '7802024022')
     .typeText(AddVisaResidentWithoutPHNPage.address1Input, 'Test 111 ST')
     .typeText(AddVisaResidentWithoutPHNPage.cityInput, 'VICTORIA')
