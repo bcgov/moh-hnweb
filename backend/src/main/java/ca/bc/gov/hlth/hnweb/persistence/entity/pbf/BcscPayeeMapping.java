@@ -10,14 +10,14 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "bcsc_payee_mapping", schema = "pbf")
+@Table(name = "bcsc_payee_mapping")
 public class BcscPayeeMapping {
 
 	@Id
 	@Column(name = "bcsc_guid")
 	private String bcscGuid;
 
-	@Column(name = "msp_payee_number")
+	@Column(name = "msp_payee_number", nullable = false)
 	private String payeeNumber;
 
 	public String getBcscGuid() {

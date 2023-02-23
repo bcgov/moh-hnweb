@@ -16,7 +16,7 @@
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.payee" id="payee" label="MSP Payee" type="text" v-model.trim="payee" disabled="true"/>
+          <AppInput :e-model="v$.payee" id="payee" label="MSP Payee" type="text" v-model.trim="payee" disabled="true" />
         </AppCol>
       </AppRow>
       <AppRow>
@@ -39,12 +39,12 @@
         <AppCol class="col2">
           <AppOutput label="Birth Date" :value="result.personDetail.dateOfBirth" />
         </AppCol>
-        <AppCol class="col3">
+        <AppCol class="col2">
           <AppOutput label="Death Date" :value="result.personDetail.dateOfDeath">
             <template #tooltip>Will display death date in ccyymmdd format, or N/A if person is living.</template>
           </AppOutput>
         </AppCol>
-        <AppCol class="col2">
+        <AppCol class="col3">
           <AppOutput label="Gender" :value="gender" />
         </AppCol>
       </AppRow>
@@ -54,9 +54,9 @@
       <p>{{ result.clientInstructions }}</p>
     </AppCard>
     <br />
-    <div id="registrationResult">
+    <div>
       <AppRow>
-        <AppCol class="col2">
+        <AppCol class="col1">
           <AppOutput label="Payee No" />
         </AppCol>
         <AppCol class="col2">
@@ -67,16 +67,16 @@
         <AppCol class="col2">
           <AppOutput label="Current Status" />
         </AppCol>
-        <AppCol class="col3">
-          <AppOutput label="Administration Code" />
+        <AppCol class="col1">
+          <AppOutput label="Admin Code" />
         </AppCol>
-        <AppCol class="col2">
+        <AppCol class="col3">
           <AppOutput label="Registration Data" />
         </AppCol>
       </AppRow>
     </div>
     <div id="registrationData" v-if="result.patientRegistrationHistory.length > 0">
-      <AppRow v-for="registration in result.patientRegistrationHistory">
+      <AppRow v-for="registration in result.patientRegistrationHistory" class="detailsRow">
         <PatientRegistrationDetails :registration="registration" />
       </AppRow>
     </div>
@@ -137,7 +137,7 @@ export default {
       //Check for Not Found error and add a user friendly error message
       if (typeof err === 'object') {
         const errMessage = String(err)
-        if (errMessage.includes("404")) {
+        if (errMessage.includes('404')) {
           err = 'Error: No MSP Payee Number found for this user'
         }
       }
@@ -234,4 +234,12 @@ export default {
   },
 }
 </script>
-<style></style>
+<style scoped>
+.detailsRow {
+  border-top: 2px solid #999999;
+  padding-top: 5px;
+}
+#patientDetail {
+  padding-bottom: 20px;
+}
+</style>

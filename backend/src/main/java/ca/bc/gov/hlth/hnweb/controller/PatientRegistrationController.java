@@ -86,6 +86,8 @@ public class PatientRegistrationController extends BaseController {
 		Transaction transaction = transactionStart(request, TransactionType.GET_PATIENT_REGISTRATION);
 		addAffectedParty(transaction, IdentifierType.PHN, patientRegistrationRequest.getPhn(),
 				AffectedPartyDirection.INBOUND);
+		addAffectedParty(transaction, IdentifierType.PAYEE_NUMBER, patientRegistrationRequest.getPayee(),
+				AffectedPartyDirection.INBOUND);
 
 		try {
 			validatePayeeNumberMapping(patientRegistrationRequest);
@@ -122,8 +124,11 @@ public class PatientRegistrationController extends BaseController {
 			ResponseEntity<PatientRegistrationResponse> responseEntity = ResponseEntity.ok(response);
 
 			transactionComplete(transaction);
-			registrationRecords.forEach(record -> addAffectedParty(transaction, IdentifierType.PHN, record.getPhn(),
-					AffectedPartyDirection.OUTBOUND));
+			addAffectedParty(transaction, IdentifierType.PHN, personDetailsResponse.getPhn(), AffectedPartyDirection.OUTBOUND);
+			registrationRecords.forEach(record -> {
+				addAffectedParty(transaction, IdentifierType.PAYEE_NUMBER, record.getPayeeNumber(), AffectedPartyDirection.OUTBOUND);
+				addAffectedParty(transaction, IdentifierType.PRACTITIONER_NUMBER, record.getRegisteredPractitionerNumber(), AffectedPartyDirection.OUTBOUND);
+			});
 
 			return responseEntity;
 		} catch (Exception e) {
@@ -202,6 +207,9 @@ public class PatientRegistrationController extends BaseController {
 							: patientRegistration.getDeregistrationReasonCode());
 			model.setPayeeNumber(patientRegistration.getPayeeNumber());
 			model.setRegisteredPractitionerNumber(patientRegistration.getRegisteredPractitionerNumber());
+			model.setRegisteredPractitionerFirstName(patientRegistration.getRegisteredPractitionerFirstName());
+			model.setRegisteredPractitionerMiddleName(patientRegistration.getRegisteredPractitionerMiddleName());
+			model.setRegisteredPractitionerSurname(patientRegistration.getRegisteredPractitionerSurname());
 			model.setPhn(patientRegistration.getPhn());
 
 			pateintRegisterModels.add(model);
@@ -212,6 +220,9 @@ public class PatientRegistrationController extends BaseController {
 	}
 
 	private String formatDate(Date date) {
+		if (date == null) {
+			return null;
+		}
 		LocalDate localDate = convertDate(date);
 		return localDate.format(DATE_TIME_FORMATTER_yyyyMMdd);
 	}
@@ -223,8 +234,15 @@ public class PatientRegistrationController extends BaseController {
 	private String setPatientRegistrationStatus(Date cancelDate, Date effectiveDate) {
 		String currentStatus = "";
 		LocalDate today = LocalDate.now();
-		LocalDate convertedCancelDate = convertDate(cancelDate);
 		LocalDate convertedEffectiveDate = convertDate(effectiveDate);
+		
+		LocalDate convertedCancelDate = null;
+		if (cancelDate != null) {
+			convertedCancelDate = convertDate(cancelDate);
+		} else {
+			// Default the cancelDate to end of time to simplify logic
+			convertedCancelDate = LocalDate.of(9999, 12, 31);
+		}
 
 		// “Registered” when the current date is greater than or equal to the effective
 		// date and less than or equal to the cancel date.
