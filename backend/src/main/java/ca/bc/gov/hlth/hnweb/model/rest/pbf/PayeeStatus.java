@@ -4,5 +4,7 @@ public enum PayeeStatus {
     
     ACTIVE,
     CANCELLED,
-    NOT_YET_ACTIVE;
+    NOT_YET_ACTIVE,
+    ARCHIVED,
+    NOT_FOUND;
 }

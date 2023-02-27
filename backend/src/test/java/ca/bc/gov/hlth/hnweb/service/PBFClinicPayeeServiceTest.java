@@ -22,9 +22,16 @@ public class PBFClinicPayeeServiceTest {
     public void testGetPayeeStatus_payee_not_found() {
                 
         PayeeStatus payeeStatus = pbfClinicPayeeService.getPayeeStatus("1234");
-        assertEquals(null, payeeStatus);
+        assertEquals(PayeeStatus.NOT_FOUND, payeeStatus);
     }
 
+    @Test
+    public void testGetPayeeStatus_payee_archived() {
+                
+        PayeeStatus payeeStatus = pbfClinicPayeeService.getPayeeStatus("00053");
+        assertEquals(PayeeStatus.ARCHIVED, payeeStatus);
+    }
+    
     @Test
     public void testGetPayeeStatus_payee_is_active_no_cancel_date() {
                 
@@ -47,13 +54,6 @@ public class PBFClinicPayeeServiceTest {
     }
     
     @Test
-    public void testGetPayeeStatus_payee_is_active_cancelled_tomorrow() {
-                
-        PayeeStatus payeeStatus = pbfClinicPayeeService.getPayeeStatus("X0053");
-        assertEquals(PayeeStatus.ACTIVE, payeeStatus);
-    }
-    
-    @Test
     public void testGetPayeeStatus_payee_not_yet_active_effective_tomorrow() {
                 
         PayeeStatus payeeStatus = pbfClinicPayeeService.getPayeeStatus("T0055");
@@ -61,9 +61,17 @@ public class PBFClinicPayeeServiceTest {
     }
     
     @Test
-    public void testGetPayeeStatus_payee_is_cancelled_today() {
+    public void testGetPayeeStatus_payee_is_active_cancelled_today() {
                 
         PayeeStatus payeeStatus = pbfClinicPayeeService.getPayeeStatus("T0053");
+        assertEquals(PayeeStatus.ACTIVE, payeeStatus);
+    }
+
+    @Test
+    public void testGetPayeeStatus_payee_not_active_cancelled_yesterday() {
+                
+        PayeeStatus payeeStatus = pbfClinicPayeeService.getPayeeStatus("X0053");
         assertEquals(PayeeStatus.CANCELLED, payeeStatus);
     }
+    
 }
