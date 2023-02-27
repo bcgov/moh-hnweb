@@ -5,6 +5,8 @@ public class BcscPayeeMappingResponse {
 	private String bcscGuid;
 
 	private String payeeNumber;
+	
+    private PayeeStatus payeeStatus;
 
 	public String getBcscGuid() {
 		return bcscGuid;
@@ -22,9 +24,18 @@ public class BcscPayeeMappingResponse {
 		this.payeeNumber = payeeNumber;
 	}
 
-	@Override
-	public String toString() {
-		return "BcscPayeeMapping [bcscGuid=" + bcscGuid + ", payeeNumber=" + payeeNumber + "]";
-	}
+    public PayeeStatus getPayeeStatus() {
+        return payeeStatus;
+    }
 
+    public void setPayeeStatus(PayeeStatus payeeStatus) {
+        this.payeeStatus = payeeStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "BcscPayeeMappingResponse [bcscGuid=" + bcscGuid + ", payeeNumber=" + payeeNumber + ", payeeStatus="
+                + payeeStatus + "]";
+    }
+	
 }

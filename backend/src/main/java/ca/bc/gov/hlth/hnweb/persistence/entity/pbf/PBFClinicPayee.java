@@ -85,4 +85,10 @@ public class PBFClinicPayee {
 		this.archived = archived;
 	}
 
+    @Override
+    public String toString() {
+        return "PBFClinicPayee [pbfClinicPayeeId=" + pbfClinicPayeeId + ", payeeNumber=" + payeeNumber
+                + ", effectiveDate=" + effectiveDate + ", cancelDate=" + cancelDate + ", reportGroup=" + reportGroup
+                + ", archived=" + archived + "]";
+    }
 }
