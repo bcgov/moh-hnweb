@@ -99,8 +99,23 @@ public class BcscPayeeMappingControllerTest {
 		.withMessage("409 CONFLICT \"Entity already exists.\"; nested exception is ca.bc.gov.hlth.hnweb.exception.BcscPayeeMappingException: Entity already exists.");
 	}
 	
+    @Test
+    public void testGetBcscPayeeMapping_success() {
+        
+        String bcscGuid = "14100f9b-7daa-4938-a833-c8c56a5988e9";       
+        final String payeeNumber = "00023";
+        
+        ResponseEntity<BcscPayeeMappingResponse> response = bcscPayeeMappingController.getBcscPayeeMapping(bcscGuid);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        BcscPayeeMappingResponse bcscPayeeMappingResponse = response.getBody();
+        assertNotNull(bcscPayeeMappingResponse);
+        assertEquals(bcscGuid, bcscPayeeMappingResponse.getBcscGuid());
+        assertEquals(payeeNumber, bcscPayeeMappingResponse.getPayeeNumber());
+        assertEquals(PayeeStatus.ACTIVE, bcscPayeeMappingResponse.getPayeeStatus());
+    }
+
 	@Test
-	public void testGetBcscPayeeMapping_success() {
+	public void testGetBcscPayeeMapping_success_archived_payee() {
 		
 		String bcscGuid = "a9c3b536-4598-411a-bda2-4068d6b5cc20";		
 		final String payeeNumber = "00053";
@@ -111,7 +126,7 @@ public class BcscPayeeMappingControllerTest {
 		assertNotNull(bcscPayeeMappingResponse);
 		assertEquals(bcscGuid, bcscPayeeMappingResponse.getBcscGuid());
 		assertEquals(payeeNumber, bcscPayeeMappingResponse.getPayeeNumber());
-		assertEquals(PayeeStatus.ACTIVE, bcscPayeeMappingResponse.getPayeeStatus());
+		assertEquals(PayeeStatus.ARCHIVED, bcscPayeeMappingResponse.getPayeeStatus());
 	}
 
     @Test
@@ -126,7 +141,7 @@ public class BcscPayeeMappingControllerTest {
         assertNotNull(bcscPayeeMappingResponse);
         assertEquals(bcscGuid, bcscPayeeMappingResponse.getBcscGuid());
         assertEquals(payeeNumber, bcscPayeeMappingResponse.getPayeeNumber());
-        assertEquals(null, bcscPayeeMappingResponse.getPayeeStatus());
+        assertEquals(PayeeStatus.NOT_FOUND, bcscPayeeMappingResponse.getPayeeStatus());
     }
 
 	@Test
