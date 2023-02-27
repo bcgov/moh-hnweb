@@ -33,6 +33,7 @@ import ca.bc.gov.hlth.hnweb.model.rest.enrollment.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegisterModel;
 import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegistrationRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegistrationResponse;
+import ca.bc.gov.hlth.hnweb.model.rest.pbf.PayeeStatus;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
@@ -45,6 +46,7 @@ import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
 import ca.bc.gov.hlth.hnweb.service.BcscPayeeMappingService;
 import ca.bc.gov.hlth.hnweb.service.EnrollmentService;
+import ca.bc.gov.hlth.hnweb.service.PBFClinicPayeeService;
 import ca.bc.gov.hlth.hnweb.service.PatientRegistrationService;
 
 /**
@@ -77,7 +79,10 @@ public class PatientRegistrationController extends BaseController {
 	@Autowired
 	private BcscPayeeMappingService bcscPayeeMappingService;	
 
-	@PostMapping("/get-patient-registration")
+    @Autowired
+    private PBFClinicPayeeService pbfClinicPayeeService; 
+    
+    @PostMapping("/get-patient-registration")
 	public ResponseEntity<PatientRegistrationResponse> getPatientRegistration(
 			@Valid @RequestBody PatientRegistrationRequest patientRegistrationRequest, HttpServletRequest request) {
 
@@ -150,10 +155,17 @@ public class PatientRegistrationController extends BaseController {
 			logger.error("No Payee Number mapping was found for the current user");
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Payee Number mapping was found for the current user");
 		}
-		if (!StringUtils.equals(patientRegistrationRequest.getPayee(), bcscPayeeMappingOptional.get().getPayeeNumber())) {
-			logger.error("Payee field value {} does not match the Payee Number mapped to this user", patientRegistrationRequest.getPayee());
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Payee field value %s does not match the Payee Number mapped to this user", patientRegistrationRequest.getPayee()));
+		String mappedPayeeNumber = bcscPayeeMappingOptional.get().getPayeeNumber();
+        String requestPayeeNumber = patientRegistrationRequest.getPayee();
+        if (!StringUtils.equals(requestPayeeNumber, mappedPayeeNumber)) {
+			logger.error("Payee field value {} does not match the Payee Number mapped to this user", requestPayeeNumber);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Payee field value %s does not match the Payee Number mapped to this user", requestPayeeNumber));
 		}
+        PayeeStatus payeeStatus = pbfClinicPayeeService.getPayeeStatus(mappedPayeeNumber);
+        if (PayeeStatus.ACTIVE != payeeStatus) {
+            logger.error("Payee {} is not Active as their status is {}", requestPayeeNumber, payeeStatus);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Payee %s is not Active as their status is %s", requestPayeeNumber, payeeStatus));
+        }
 	}
 
 	private PatientRegistrationResponse handlePatientRegistrationResponse(

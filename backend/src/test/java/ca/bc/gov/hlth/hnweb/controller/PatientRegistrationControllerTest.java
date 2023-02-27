@@ -2,7 +2,6 @@ package ca.bc.gov.hlth.hnweb.controller;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
@@ -287,6 +286,25 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		.withMessage("400 BAD_REQUEST \"400 BAD_REQUEST \"Payee field value T0053 does not match the Payee Number mapped to this user\"\"; nested exception is org.springframework.web.server.ResponseStatusException: 400 BAD_REQUEST \"Payee field value T0053 does not match the Payee Number mapped to this user\"");
 	}
 	
+    @Test
+    public void testRegistrationHistory_failure_inactive_cancelled() throws Exception {
+        createPBFClinicPayee();
+        createPatientRegister();
+
+        //Note, don't enqueue a response as it is never requested and so will remain queued for next test when they are run together.
+
+        //Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "a9c3b536-4598-411a-bda2-4068d6b5cc20", "00000010", "Ministry of Health", "hnweb-user", UUID.randomUUID().toString()));
+        
+        PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
+        viewPatientRegisterRequest.setPhn("9879869673");
+        viewPatientRegisterRequest.setPayee("00053");
+
+        assertThatExceptionOfType(ResponseStatusException.class)
+        .isThrownBy(() -> patientRegistrationController.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest()))
+        .withMessage("400 BAD_REQUEST \"400 BAD_REQUEST \"Payee 00053 is not Active as their status is CANCELLED\"\"; nested exception is org.springframework.web.server.ResponseStatusException: 400 BAD_REQUEST \"Payee 00053 is not Active as their status is CANCELLED\"");
+    }
+    
 	@Test
 	public void testRegistrationHistory_archived() throws Exception {
 		createPBFClinicPayee();
@@ -456,10 +474,20 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		payee3.setEffectiveDate(effectiveDate3);
 		payee3.setReportGroup("28579");
 
+        PBFClinicPayee payee4 = new PBFClinicPayee();
+        payee4.setArchived(Boolean.FALSE);
+        Date cancelDate4 = new GregorianCalendar(2023, 01, 01).getTime();
+        payee4.setCancelDate(cancelDate4);
+        payee4.setPayeeNumber("00053");
+        Date effectiveDate4 = new GregorianCalendar(2021, 7, 5).getTime();
+        payee4.setEffectiveDate(effectiveDate4);
+        payee4.setReportGroup("28579");
+
 		pbfClinicPayeeRepository.save(payee);
 		pbfClinicPayeeRepository.save(payee1);
 		pbfClinicPayeeRepository.save(payee2);
 		pbfClinicPayeeRepository.save(payee3);
+        pbfClinicPayeeRepository.save(payee4);
 	}
 
 	/**
