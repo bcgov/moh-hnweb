@@ -2,6 +2,7 @@ package ca.bc.gov.hlth.hnweb.controller;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.UUID;
@@ -110,7 +111,7 @@ public class BcscPayeeMappingControllerTest {
         assertNotNull(bcscPayeeMappingResponse);
         assertEquals(bcscGuid, bcscPayeeMappingResponse.getBcscGuid());
         assertEquals(payeeNumber, bcscPayeeMappingResponse.getPayeeNumber());
-        assertEquals(true, bcscPayeeMappingResponse.getPayeeIsActive());
+        assertTrue(bcscPayeeMappingResponse.getPayeeIsActive());
     }
 
 	@Test

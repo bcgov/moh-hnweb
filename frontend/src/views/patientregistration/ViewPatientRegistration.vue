@@ -125,7 +125,6 @@ export default {
         additionalInfoMessage: '',
         patientRegistrationHistory: [],
       },
-      showModal: false,
       payeeInactive: false,
     }
   },
@@ -136,11 +135,10 @@ export default {
       const bcscPayeeMapping = (await PatientRegistrationService.getBcscPayeeMapping(userId)).data
       /* If a Payee mapping was found the status will be checked. If there is no active status for a Payee then 
       an error message should be displayed and the field disabled */
-      console.log(`User ${bcscPayeeMapping.bcscGuid} Payee ${bcscPayeeMapping.payeeNumber} is Active: ${bcscPayeeMapping.payeeIsActive}`)
       this.payee = bcscPayeeMapping.payeeNumber
       if (!bcscPayeeMapping.payeeIsActive) {
-        console.log('Deactivating Submit')
         this.payeeInactive = true
+        //TODO (dbarrett) The placeholder <PBF support contact> needs to be updated with actual contact info.
         this.alertStore.setErrorAlert(`Your payee number is not active.  Please contact <PBF support contact> to inquire about activating your payee number`)
       }
     } catch (err) {

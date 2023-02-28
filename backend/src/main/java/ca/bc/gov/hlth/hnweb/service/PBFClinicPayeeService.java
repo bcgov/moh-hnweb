@@ -1,13 +1,10 @@
 package ca.bc.gov.hlth.hnweb.service;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.PBFClinicPayee;
 import ca.bc.gov.hlth.hnweb.persistence.repository.pbf.PBFClinicPayeeRepository;
 
 /**
@@ -29,13 +26,13 @@ public class PBFClinicPayeeService extends BaseService {
      * @return returns true if an active record is found otherwise returns false 
      */
     public boolean getPayeeActiveStatus(String payeeNumber) {
-        List<PBFClinicPayee> pbfClinicPayees = pbfClinicPayeeRepository.findActiveByPayeeNumber(payeeNumber);
+        long activeCount = pbfClinicPayeeRepository.countActivePayeeEntries(payeeNumber);
         
-        if (pbfClinicPayees.size() > 1) {
-            logger.warn("{} active records found for Payee {}.", pbfClinicPayees.size(), payeeNumber);
+        if (activeCount > 1) {
+            logger.warn("{} active records found for Payee {}.", activeCount, payeeNumber);
         }
         
-        return pbfClinicPayees.size() > 0;
+        return activeCount > 0;
     }
 
 }
