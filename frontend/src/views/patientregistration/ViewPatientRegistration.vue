@@ -20,7 +20,7 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppButton :submitting="searching" mode="primary" type="submit">Submit</AppButton>
+        <AppButton :submitting="searching" mode="primary" type="submit" :disabled="payeeInactive">Submit</AppButton>
         <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
       </AppRow>
     </form>
@@ -126,13 +126,23 @@ export default {
         patientRegistrationHistory: [],
       },
       showModal: false,
+      payeeInactive: false,
     }
   },
   async created() {
     try {
+      this.alertStore.dismissAlert()
       const userId = this.$keycloak.tokenParsed?.sub
       const bcscPayeeMapping = (await PatientRegistrationService.getBcscPayeeMapping(userId)).data
+      /* If a Payee mapping was found the status will be checked. If there is no active status for a Payee then 
+      an error message should be displayed and the field disabled */
+      console.log(`User ${bcscPayeeMapping.bcscGuid} Payee ${bcscPayeeMapping.payeeNumber} is Active: ${bcscPayeeMapping.payeeIsActive}`)
       this.payee = bcscPayeeMapping.payeeNumber
+      if (!bcscPayeeMapping.payeeIsActive) {
+        console.log('Deactivating Submit')
+        this.payeeInactive = true
+        this.alertStore.setErrorAlert(`Your payee number is not active.  Please contact <PBF support contact> to inquire about activating your payee number`)
+      }
     } catch (err) {
       //Check for Not Found error and add a user friendly error message
       if (typeof err === 'object') {
