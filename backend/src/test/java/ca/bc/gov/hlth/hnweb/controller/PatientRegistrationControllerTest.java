@@ -302,7 +302,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 
         assertThatExceptionOfType(ResponseStatusException.class)
         .isThrownBy(() -> patientRegistrationController.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest()))
-        .withMessage("400 BAD_REQUEST \"400 BAD_REQUEST \"Payee 00053 is not Active as their status is CANCELLED\"\"; nested exception is org.springframework.web.server.ResponseStatusException: 400 BAD_REQUEST \"Payee 00053 is not Active as their status is CANCELLED\"");
+        .withMessage("400 BAD_REQUEST \"400 BAD_REQUEST \"Payee 00053 is not active\"\"; nested exception is org.springframework.web.server.ResponseStatusException: 400 BAD_REQUEST \"Payee 00053 is not active\"");
     }
     
 	@Test

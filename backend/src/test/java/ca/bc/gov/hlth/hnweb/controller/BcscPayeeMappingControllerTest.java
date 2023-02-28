@@ -17,7 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import ca.bc.gov.hlth.hnweb.model.rest.pbf.BcscPayeeMappingRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.pbf.BcscPayeeMappingResponse;
-import ca.bc.gov.hlth.hnweb.model.rest.pbf.PayeeStatus;
 
 /**
  * Tests for {@link BcscPayeeMappingController}
@@ -111,7 +110,7 @@ public class BcscPayeeMappingControllerTest {
         assertNotNull(bcscPayeeMappingResponse);
         assertEquals(bcscGuid, bcscPayeeMappingResponse.getBcscGuid());
         assertEquals(payeeNumber, bcscPayeeMappingResponse.getPayeeNumber());
-        assertEquals(PayeeStatus.ACTIVE, bcscPayeeMappingResponse.getPayeeStatus());
+        assertEquals(true, bcscPayeeMappingResponse.getPayeeIsActive());
     }
 
 	@Test
@@ -126,7 +125,7 @@ public class BcscPayeeMappingControllerTest {
 		assertNotNull(bcscPayeeMappingResponse);
 		assertEquals(bcscGuid, bcscPayeeMappingResponse.getBcscGuid());
 		assertEquals(payeeNumber, bcscPayeeMappingResponse.getPayeeNumber());
-		assertEquals(PayeeStatus.ARCHIVED, bcscPayeeMappingResponse.getPayeeStatus());
+		assertEquals(false, bcscPayeeMappingResponse.getPayeeIsActive());
 	}
 
     @Test
@@ -141,7 +140,7 @@ public class BcscPayeeMappingControllerTest {
         assertNotNull(bcscPayeeMappingResponse);
         assertEquals(bcscGuid, bcscPayeeMappingResponse.getBcscGuid());
         assertEquals(payeeNumber, bcscPayeeMappingResponse.getPayeeNumber());
-        assertEquals(PayeeStatus.NOT_FOUND, bcscPayeeMappingResponse.getPayeeStatus());
+        assertEquals(false, bcscPayeeMappingResponse.getPayeeIsActive());
     }
 
 	@Test

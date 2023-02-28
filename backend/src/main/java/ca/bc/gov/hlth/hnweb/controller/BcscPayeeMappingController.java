@@ -100,7 +100,7 @@ public class BcscPayeeMappingController {
 		BcscPayeeMapping bcscPayeeMapping = bcscPayeeMappingOptional.get();
 		BcscPayeeMappingResponse bcscPayeeMappingResponse = mapEntityToRepsonse(bcscPayeeMapping);
 		
-		bcscPayeeMappingResponse.setPayeeStatus(pbfClinicPayeeService.getPayeeStatus(bcscPayeeMapping.getPayeeNumber()));
+		bcscPayeeMappingResponse.setPayeeIsActive(pbfClinicPayeeService.findActiveStatusByPayeeNumber(bcscPayeeMapping.getPayeeNumber()));
 		
 		return ResponseEntity.ok(bcscPayeeMappingResponse);
 	}

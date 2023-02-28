@@ -33,7 +33,6 @@ import ca.bc.gov.hlth.hnweb.model.rest.enrollment.GetPersonDetailsResponse;
 import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegisterModel;
 import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegistrationRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.patientregistration.PatientRegistrationResponse;
-import ca.bc.gov.hlth.hnweb.model.rest.pbf.PayeeStatus;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsRequest;
 import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
@@ -161,10 +160,10 @@ public class PatientRegistrationController extends BaseController {
 			logger.error("Payee field value {} does not match the Payee Number mapped to this user", requestPayeeNumber);
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Payee field value %s does not match the Payee Number mapped to this user", requestPayeeNumber));
 		}
-        PayeeStatus payeeStatus = pbfClinicPayeeService.getPayeeStatus(mappedPayeeNumber);
-        if (PayeeStatus.ACTIVE != payeeStatus) {
-            logger.error("Payee {} is not Active as their status is {}", requestPayeeNumber, payeeStatus);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Payee %s is not Active as their status is %s", requestPayeeNumber, payeeStatus));
+        boolean isActive = pbfClinicPayeeService.findActiveStatusByPayeeNumber(mappedPayeeNumber);
+        if (!isActive) {
+            logger.error("Payee {} is not active", requestPayeeNumber);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Payee %s is not active", requestPayeeNumber));
         }
 	}
 

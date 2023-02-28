@@ -1,12 +1,12 @@
 package ca.bc.gov.hlth.hnweb.service;
 
-import java.util.Date;
+import java.util.List;
 
-import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ca.bc.gov.hlth.hnweb.model.rest.pbf.PayeeStatus;
 import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.PBFClinicPayee;
 import ca.bc.gov.hlth.hnweb.persistence.repository.pbf.PBFClinicPayeeRepository;
 
@@ -17,38 +17,25 @@ import ca.bc.gov.hlth.hnweb.persistence.repository.pbf.PBFClinicPayeeRepository;
 @Service
 public class PBFClinicPayeeService extends BaseService {
 
+    private static final Logger logger = LoggerFactory.getLogger(PBFClinicPayeeService.class);
+
     @Autowired
     private PBFClinicPayeeRepository pbfClinicPayeeRepository;
     
     /**
-     * Determines the status of the payee
+     * Determines the status of the payee by checking if an active record exists in PBFClinicPayee table
      * 
      * @param payeeNumber
-     * @return returns the status of the payee otherwise null if the payee could not be found 
+     * @return returns true if an active record is found otherwise returns false 
      */
-    public PayeeStatus getPayeeStatus(String payeeNumber) {
+    public boolean findActiveStatusByPayeeNumber(String payeeNumber) {
+        List<PBFClinicPayee> pbfClinicPayees = pbfClinicPayeeRepository.findActiveByPayeeNumber(payeeNumber);
         
-        PayeeStatus payeeStatus = null;        
-        Date now = new Date();
-
-        PBFClinicPayee pbfClinicPayee = pbfClinicPayeeRepository.findByPayeeNumber(payeeNumber);
-        
-        if (pbfClinicPayee == null) {
-            payeeStatus = PayeeStatus.NOT_FOUND;
-        } else if (pbfClinicPayee.getArchived()) {
-            payeeStatus = PayeeStatus.ARCHIVED;
-        } else {
-//          [payee cancel date] >= today >= [payee effective date]
-            if (pbfClinicPayee.getCancelDate() != null && pbfClinicPayee.getCancelDate().before(DateUtils.addDays(now, -1))) {
-                payeeStatus = PayeeStatus.CANCELLED;
-            } else if (pbfClinicPayee.getEffectiveDate().after(now)) {
-                payeeStatus = PayeeStatus.NOT_YET_ACTIVE;
-            } else {
-                payeeStatus = PayeeStatus.ACTIVE;
-            }        
+        if (pbfClinicPayees.size() > 1) {
+            logger.warn("{} active records found for Payee {}.", pbfClinicPayees.size(), payeeNumber);
         }
-        
-        return payeeStatus;        
+        logger.info("Found active record: {}", pbfClinicPayees.size() > 0 ? pbfClinicPayees.get(0) : null);
+        return pbfClinicPayees.size() > 0;
     }
 
 }
