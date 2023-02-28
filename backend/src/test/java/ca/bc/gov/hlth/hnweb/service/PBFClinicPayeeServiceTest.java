@@ -19,56 +19,56 @@ public class PBFClinicPayeeServiceTest {
     @Test
     public void testfindActiveStatusByPayeeNumber_payee_not_found() {
                 
-        boolean isActive = pbfClinicPayeeService.findActiveStatusByPayeeNumber("1234");
+        boolean isActive = pbfClinicPayeeService.getPayeeActiveStatus("1234");
         assertEquals(false, isActive);
     }
 
     @Test
     public void testfindActiveStatusByPayeeNumber_payee_archived() {
                 
-        boolean isActive = pbfClinicPayeeService.findActiveStatusByPayeeNumber("00053");
+        boolean isActive = pbfClinicPayeeService.getPayeeActiveStatus("00053");
         assertEquals(false, isActive);
     }
     
     @Test
     public void testfindActiveStatusByPayeeNumber_payee_is_active_no_cancel_date() {
                 
-        boolean isActive = pbfClinicPayeeService.findActiveStatusByPayeeNumber("00023");
+        boolean isActive = pbfClinicPayeeService.getPayeeActiveStatus("00023");
         assertEquals(true, isActive);
     }
     
     @Test
     public void testfindActiveStatusByPayeeNumber_payee_is_active_future_cancel_date() {
                 
-        boolean isActive = pbfClinicPayeeService.findActiveStatusByPayeeNumber("00033");
+        boolean isActive = pbfClinicPayeeService.getPayeeActiveStatus("00033");
         assertEquals(true, isActive);
     }
     
     @Test
     public void testfindActiveStatusByPayeeNumber_payee_is_active_effective_today() {
                 
-        boolean isActive = pbfClinicPayeeService.findActiveStatusByPayeeNumber("00043");
+        boolean isActive = pbfClinicPayeeService.getPayeeActiveStatus("00043");
         assertEquals(true, isActive);
     }
     
     @Test
     public void testfindActiveStatusByPayeeNumber_payee_not_yet_active_effective_tomorrow() {
                 
-        boolean isActive = pbfClinicPayeeService.findActiveStatusByPayeeNumber("T0055");
+        boolean isActive = pbfClinicPayeeService.getPayeeActiveStatus("T0055");
         assertEquals(false, isActive);
     }
     
     @Test
     public void testfindActiveStatusByPayeeNumber_payee_is_active_cancelled_today() {
                 
-        boolean isActive = pbfClinicPayeeService.findActiveStatusByPayeeNumber("T0053");
+        boolean isActive = pbfClinicPayeeService.getPayeeActiveStatus("T0053");
         assertEquals(true, isActive);
     }
 
     @Test
     public void testfindActiveStatusByPayeeNumber_payee_not_active_cancelled_yesterday() {
                 
-        boolean isActive = pbfClinicPayeeService.findActiveStatusByPayeeNumber("X0053");
+        boolean isActive = pbfClinicPayeeService.getPayeeActiveStatus("X0053");
         assertEquals(false, isActive);
     }
     

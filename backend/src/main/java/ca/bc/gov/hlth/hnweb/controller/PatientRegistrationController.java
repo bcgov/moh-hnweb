@@ -160,7 +160,7 @@ public class PatientRegistrationController extends BaseController {
 			logger.error("Payee field value {} does not match the Payee Number mapped to this user", requestPayeeNumber);
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Payee field value %s does not match the Payee Number mapped to this user", requestPayeeNumber));
 		}
-        boolean isActive = pbfClinicPayeeService.findActiveStatusByPayeeNumber(mappedPayeeNumber);
+        boolean isActive = pbfClinicPayeeService.getPayeeActiveStatus(mappedPayeeNumber);
         if (!isActive) {
             logger.error("Payee {} is not active", requestPayeeNumber);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Payee %s is not active", requestPayeeNumber));

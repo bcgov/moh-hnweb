@@ -28,13 +28,13 @@ public class PBFClinicPayeeService extends BaseService {
      * @param payeeNumber
      * @return returns true if an active record is found otherwise returns false 
      */
-    public boolean findActiveStatusByPayeeNumber(String payeeNumber) {
+    public boolean getPayeeActiveStatus(String payeeNumber) {
         List<PBFClinicPayee> pbfClinicPayees = pbfClinicPayeeRepository.findActiveByPayeeNumber(payeeNumber);
         
         if (pbfClinicPayees.size() > 1) {
             logger.warn("{} active records found for Payee {}.", pbfClinicPayees.size(), payeeNumber);
         }
-        logger.info("Found active record: {}", pbfClinicPayees.size() > 0 ? pbfClinicPayees.get(0) : null);
+        
         return pbfClinicPayees.size() > 0;
     }
 
