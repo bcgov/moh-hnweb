@@ -138,8 +138,7 @@ export default {
       this.payee = bcscPayeeMapping.payeeNumber
       if (!bcscPayeeMapping.payeeIsActive) {
         this.payeeInactive = true
-        //TODO (dbarrett) The placeholder <PBF support contact> needs to be updated with actual contact info.
-        this.alertStore.setErrorAlert(`Your payee number is not active.  Please contact <PBF support contact> to inquire about activating your payee number`)
+        this.alertStore.setErrorAlert(`Your payee number is not active.  Please contact ${config.VITE_PBF_SUPPORT_CONTACT_NO || import.meta.env.VITE_PBF_SUPPORT_CONTACT_NO} to inquire about activating your payee number`)
       }
     } catch (err) {
       //Check for Not Found error and add a user friendly error message
