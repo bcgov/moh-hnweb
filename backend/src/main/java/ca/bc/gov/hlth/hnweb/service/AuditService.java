@@ -126,7 +126,7 @@ public class AuditService {
 		transaction.setServer(getServer());
 		transaction.setSessionId(userInfo != null ? userInfo.getSessionState() : null);
 		transaction.setSourceIp(sourceIP);
-		transaction.setSpgRole(SecurityUtil.loadSPGBasedOnTransactionType(userInfo, type));
+		transaction.setSpgRole(userInfo != null ? SecurityUtil.loadSPGBasedOnTransactionType(userInfo, type) : null);
 		transaction.setStartTime(new Date());
 		transaction.setTransactionId(UUID.randomUUID());
 		transaction.setType(type.getValue());
