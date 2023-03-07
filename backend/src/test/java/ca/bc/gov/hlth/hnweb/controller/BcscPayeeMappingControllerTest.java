@@ -2,6 +2,7 @@ package ca.bc.gov.hlth.hnweb.controller;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.UUID;
@@ -24,7 +25,7 @@ import ca.bc.gov.hlth.hnweb.model.rest.pbf.BcscPayeeMappingResponse;
  */
 @SpringBootTest
 @Transactional
-@Sql({ "classpath:scripts/bcsc_payee_mapping.sql" })
+@Sql({ "classpath:scripts/bcsc_payee_mapping.sql", "classpath:scripts/pbf_clinic_payee.sql" })
 public class BcscPayeeMappingControllerTest {
 	
 	@Autowired
@@ -98,19 +99,50 @@ public class BcscPayeeMappingControllerTest {
 		.withMessage("409 CONFLICT \"Entity already exists.\"; nested exception is ca.bc.gov.hlth.hnweb.exception.BcscPayeeMappingException: Entity already exists.");
 	}
 	
+    @Test
+    public void testGetBcscPayeeMapping_success() {
+        
+        String bcscGuid = "14100f9b-7daa-4938-a833-c8c56a5988e9";       
+        final String payeeNumber = "00023";
+        
+        ResponseEntity<BcscPayeeMappingResponse> response = bcscPayeeMappingController.getBcscPayeeMapping(bcscGuid);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        BcscPayeeMappingResponse bcscPayeeMappingResponse = response.getBody();
+        assertNotNull(bcscPayeeMappingResponse);
+        assertEquals(bcscGuid, bcscPayeeMappingResponse.getBcscGuid());
+        assertEquals(payeeNumber, bcscPayeeMappingResponse.getPayeeNumber());
+        assertTrue(bcscPayeeMappingResponse.getPayeeIsActive());
+    }
+
 	@Test
-	public void testGetBcscPayeeMapping_success() {
+	public void testGetBcscPayeeMapping_success_archived_payee() {
 		
 		String bcscGuid = "a9c3b536-4598-411a-bda2-4068d6b5cc20";		
-		String payeeNumber = "00053";
+		final String payeeNumber = "00053";
 		
 		ResponseEntity<BcscPayeeMappingResponse> response = bcscPayeeMappingController.getBcscPayeeMapping(bcscGuid);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		BcscPayeeMappingResponse bcscPayeeMappingResponse = response.getBody();
 		assertNotNull(bcscPayeeMappingResponse);
 		assertEquals(bcscGuid, bcscPayeeMappingResponse.getBcscGuid());
-		assertEquals(payeeNumber, bcscPayeeMappingResponse.getPayeeNumber());		
+		assertEquals(payeeNumber, bcscPayeeMappingResponse.getPayeeNumber());
+		assertEquals(false, bcscPayeeMappingResponse.getPayeeIsActive());
 	}
+
+    @Test
+    public void testGetBcscPayeeMapping_success_no_payee_status() {
+        
+        String bcscGuid = "f33c9e07-6f49-46c2-90c2-6e0013729c9d";       
+        final String payeeNumber = "X0054";
+        
+        ResponseEntity<BcscPayeeMappingResponse> response = bcscPayeeMappingController.getBcscPayeeMapping(bcscGuid);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        BcscPayeeMappingResponse bcscPayeeMappingResponse = response.getBody();
+        assertNotNull(bcscPayeeMappingResponse);
+        assertEquals(bcscGuid, bcscPayeeMappingResponse.getBcscGuid());
+        assertEquals(payeeNumber, bcscPayeeMappingResponse.getPayeeNumber());
+        assertEquals(false, bcscPayeeMappingResponse.getPayeeIsActive());
+    }
 
 	@Test
 	public void testGetBcscPayeeMapping_fail_not_found() {

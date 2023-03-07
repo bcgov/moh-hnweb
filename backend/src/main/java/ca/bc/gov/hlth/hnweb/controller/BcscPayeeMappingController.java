@@ -23,6 +23,7 @@ import ca.bc.gov.hlth.hnweb.model.rest.pbf.BcscPayeeMappingRequest;
 import ca.bc.gov.hlth.hnweb.model.rest.pbf.BcscPayeeMappingResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.BcscPayeeMapping;
 import ca.bc.gov.hlth.hnweb.service.BcscPayeeMappingService;
+import ca.bc.gov.hlth.hnweb.service.PBFClinicPayeeService;
 
 /**
  * Controller to handle CRUD requests for maintaining BC Services Card (BCSC) Users to their PBF MSP Payee Number mappings.
@@ -36,6 +37,9 @@ public class BcscPayeeMappingController {
 
 	@Autowired
 	private BcscPayeeMappingService bcscPayeeMappingService;
+		
+	@Autowired
+    private PBFClinicPayeeService pbfClinicPayeeService;
 	
 	/** 
 	 * Create a BCSC User to MSP Payee Number mapping
@@ -93,7 +97,11 @@ public class BcscPayeeMappingController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Entity not found for ID %s", id));
 		}
 
-		BcscPayeeMappingResponse bcscPayeeMappingResponse = mapEntityToRepsonse(bcscPayeeMappingOptional.get());		
+		BcscPayeeMapping bcscPayeeMapping = bcscPayeeMappingOptional.get();
+		BcscPayeeMappingResponse bcscPayeeMappingResponse = mapEntityToRepsonse(bcscPayeeMapping);
+		
+		bcscPayeeMappingResponse.setPayeeIsActive(pbfClinicPayeeService.getPayeeActiveStatus(bcscPayeeMapping.getPayeeNumber()));
+		
 		return ResponseEntity.ok(bcscPayeeMappingResponse);
 	}
 	
