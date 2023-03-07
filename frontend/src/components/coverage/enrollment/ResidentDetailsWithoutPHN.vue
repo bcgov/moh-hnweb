@@ -180,6 +180,7 @@ import {
   VALIDATE_POSTAL_CODE_MESSAGE,
   VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE,
   VALIDATE_PROVINCE_REQUIRED_MESSAGE,
+  validateMailingPostalCode,
 } from '../../../util/validators'
 import { required, requiredIf, helpers, maxLength } from '@vuelidate/validators'
 import dayjs from 'dayjs'
@@ -439,7 +440,7 @@ export default {
       },
       mailingAddressPostalCode: {
         required: helpers.withMessage(VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForVisaResident)),
-        validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validatePostalCode),
+        validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
       },
       priorResidenceCode: { required },
       otherProvinceHealthcareNumber: {},
