@@ -138,7 +138,7 @@ export default {
       this.payee = bcscPayeeMapping.payeeNumber
       if (!bcscPayeeMapping.payeeIsActive) {
         this.payeeInactive = true
-        this.alertStore.setErrorAlert(`Your payee number is not active.  Please contact ${config.VITE_PBF_SUPPORT_CONTACT_NO || import.meta.env.VITE_PBF_SUPPORT_CONTACT_NO} to inquire about activating your payee number`)
+        this.alertStore.setErrorAlert(`Payee ${bcscPayeeMapping.payeeNumber} is not an active PBF clinic.  Please email ${config.VITE_PBF_SUPPORT_CONTACT_NO || import.meta.env.VITE_PBF_SUPPORT_CONTACT_NO} if this is incorrect`)
       }
     } catch (err) {
       //Check for Not Found error and add a user friendly error message
