@@ -41,7 +41,7 @@ import okhttp3.mockwebserver.MockResponse;
  * JUnit test class for PatientRegistrationController
  *
  */
-@Sql({ "classpath:scripts/bcsc_payee_mapping.sql" })
+@Sql({ "classpath:scripts/user_payee_mapping.sql" })
 public class PatientRegistrationControllerTest extends BaseControllerTest {
 
 	@Autowired
