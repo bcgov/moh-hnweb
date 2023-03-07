@@ -104,8 +104,7 @@
             <AppInput :e-model="v$.mailingAddressCity" id="mailingAddressCity" label="City" type="text" tabindex="25" v-model.trim="mailingAddressCity" />
           </AppCol>
           <AppCol class="col5">
-            <AppInput v-if="otherCountry" :e-model="v$.mailingAddressProvince" id="mailingAddressProvince" :label="regionLabel" type="text" tabindex="26" v-model.trim="mailingAddressProvince" />
-            <AppSelect v-else :e-model="v$.mailingAddressProvince" id="mailingAddressProvince" :label="regionLabel" tabindex="27" v-model.trim="mailingAddressProvince" :options="regionOptions" />
+            <AppSelect :e-model="v$.mailingAddressProvince" id="mailingAddressProvince" label="Province" tabindex="27" v-model.trim="mailingAddressProvince" :options="provinceOptions" />
           </AppCol>
         </AppRow>
       </AppRow>
@@ -120,10 +119,10 @@
         </AppRow>
         <AppRow>
           <AppCol class="col5">
-            <AppInput :e-model="v$.mailingAddressPostalCode" id="mailingAddressPostalCode" :label="zipLabel" type="text" tabindex="28" v-model.trim="mailingAddressPostalCode" />
+            <AppInput :e-model="v$.mailingAddressPostalCode" id="mailingAddressPostalCode" label="Postal Code" type="text" tabindex="28" v-model.trim="mailingAddressPostalCode" />
           </AppCol>
           <AppCol class="col5">
-            <AppSelect id="mailingAddressCountry" label="Country" v-model="mailingAddressCountry" :options="countryOptions" tabindex="29" />
+            <AppInput id="mailingAddressCountry" label="Country" v-model="mailingAddressCountry" disabled="disabled" tabindex="29" />
           </AppCol>
         </AppRow>
       </AppRow>
@@ -153,13 +152,10 @@ import {
   validateGroupMemberNumber,
   validateDepartmentNumber,
   validateTelephone,
-  validateMailingPostalCode,
   validatePostalCode,
   validateAddress,
   validateOptionalAddress,
   validateCityOrProvince,
-  validateMailingZipCode,
-  validateOtherPostalCode,
   validateMailingAddressForVisaResident,
   VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE,
   VALIDATE_ADDRESS_LINE1_MESSAGE,
@@ -174,13 +170,7 @@ import {
   VALIDATE_POSTAL_CODE_MESSAGE,
   VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE,
   VALIDATE_PROVINCE_REQUIRED_MESSAGE,
-  VALIDATE_OTHER_STATE_REQUIRED_MESSAGE,
-  VALIDATE_OTHER_STATE_MESSAGE,
-  VALIDATE_OTHER_ZIP_CODE_REQUIRED_MESSAGE,
-  VALIDATE_STATE_REQUIRED_MESSAGE,
-  VALIDATE_ZIP_CODE_MESSAGE,
-  VALIDATE_ZIP_CODE_REQUIRED_MESSAGE,
-  VALIDATE_OTHER_ZIP_CODE_MESSAGE,
+  validateMailingPostalCode,
 } from '../../../util/validators'
 import { required, requiredIf, helpers, maxLength } from '@vuelidate/validators'
 import dayjs from 'dayjs'
@@ -239,10 +229,6 @@ export default {
     this.provinceOptions = PROVINCES
     // Prior Residence drop down options
     this.priorResidenceOptions = PRIOR_RESIDENCES
-    // US State drop down options
-    this.stateOptions = STATES
-    // Country Options for mailing country
-    this.countryOptions = COUNTRIES
 
     //populate data on component load
 
@@ -281,39 +267,8 @@ export default {
         return ''
       }
     },
-    regionLabel() {
-      if (this.mailingAddressCountry === 'United States') {
-        return 'State'
-      } else if (this.mailingAddressCountry === 'Canada') {
-        return 'Province'
-      }
-      return 'Province / Region / State'
-    },
-    zipLabel() {
-      if (this.mailingAddressCountry === 'United States') {
-        return 'ZIP Code'
-      } else if (this.mailingAddressCountry === 'Canada') {
-        return 'Postal Code'
-      }
-      return 'Postal / Zip Code'
-    },
-    regionOptions() {
-      if (this.mailingAddressCountry === 'United States') {
-        return this.stateOptions
-      } else if (this.mailingAddressCountry === 'Canada') {
-        return this.provinceOptions
-      }
-    },
-    otherCountry() {
-      return this.mailingAddressCountry === 'Other'
-    },
     deceased() {
       return this.resident?.dateOfDeath && this.resident.dateOfDeath != 'N/A'
-    },
-  },
-  watch: {
-    mailingAddressCountry() {
-      this.mailingAddressProvince = ''
     },
   },
   props: {
@@ -396,54 +351,6 @@ export default {
       this.v$.$reset()
       this.alertStore.dismissAlert()
     },
-    regionFieldRequiredValidationMessage() {
-      if (this.mailingAddressCountry === 'United States') {
-        return VALIDATE_STATE_REQUIRED_MESSAGE
-      } else if (this.mailingAddressCountry === 'Canada') {
-        return VALIDATE_PROVINCE_REQUIRED_MESSAGE
-      }
-      return VALIDATE_OTHER_STATE_REQUIRED_MESSAGE
-    },
-    zipFieldRequiredValidationMessage() {
-      if (this.mailingAddressCountry === 'United States') {
-        return VALIDATE_ZIP_CODE_REQUIRED_MESSAGE
-      } else if (this.mailingAddressCountry === 'Canada') {
-        return VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE
-      }
-      return VALIDATE_OTHER_ZIP_CODE_REQUIRED_MESSAGE
-    },
-    regionFieldInvalidValidationMessage() {
-      if (this.mailingAddressCountry === 'United States') {
-        return VALIDATE_STATE_MESSAGE
-      }
-      return VALIDATE_PROVINCE_MESSAGE
-    },
-    zipFieldInvalidValidationMessage() {
-      if (this.mailingAddressCountry === 'United States') {
-        return VALIDATE_ZIP_CODE_MESSAGE
-      } else if (this.mailingAddressCountry === 'Canada') {
-        return VALIDATE_POSTAL_CODE_MESSAGE
-      } else {
-        return VALIDATE_OTHER_ZIP_CODE_MESSAGE
-      }
-    },
-    validateZipOrPostalCode(zipOrPostalCode) {
-      if (this.mailingAddressCountry === 'United States') {
-        return validateMailingZipCode(zipOrPostalCode)
-      } else if (this.mailingAddressCountry === 'Canada') {
-        return validateMailingPostalCode(zipOrPostalCode)
-      }
-      return validateOtherPostalCode(zipOrPostalCode)
-    },
-    validateMailingCity(city) {
-      return validateCityOrProvince(city)
-    },
-    validateMailingProvince(province) {
-      if (this.otherCountry) {
-        return validateCityOrProvince(province)
-      }
-      return true
-    },
   },
   validations() {
     return {
@@ -513,16 +420,15 @@ export default {
       mailingAddressCity: {
         required: helpers.withMessage(VALIDATE_CITY_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForVisaResident)),
         maxLength: maxLength(25),
-        validateMailingCity: helpers.withMessage(VALIDATE_CITY_MESSAGE, this.validateMailingCity),
+        validateMailingCity: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityOrProvince),
       },
       mailingAddressProvince: {
-        required: helpers.withMessage(this.regionFieldRequiredValidationMessage, requiredIf(validateMailingAddressForVisaResident)),
+        required: helpers.withMessage(VALIDATE_PROVINCE_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForVisaResident)),
         maxLength: maxLength(25),
-        validateCityOrProvince: helpers.withMessage(VALIDATE_OTHER_STATE_MESSAGE, this.validateMailingProvince),
       },
       mailingAddressPostalCode: {
-        required: helpers.withMessage(this.zipFieldRequiredValidationMessage, requiredIf(validateMailingAddressForVisaResident)),
-        validateMailingPostalCode: helpers.withMessage(this.zipFieldInvalidValidationMessage, this.validateZipOrPostalCode),
+        required: helpers.withMessage(VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForVisaResident)),
+        validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
       },
       priorResidenceCode: { required },
       otherProvinceHealthcareNumber: {},
