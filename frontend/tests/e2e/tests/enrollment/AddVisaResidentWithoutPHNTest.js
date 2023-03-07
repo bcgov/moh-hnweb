@@ -8,8 +8,6 @@ const immigrationCodeOption = AddVisaResidentWithoutPHNPage.immigrationCodeSelec
 const provinceOption = AddVisaResidentWithoutPHNPage.provinceSelect.find('option')
 const priorResidenceCodeOption = AddVisaResidentWithoutPHNPage.priorResidenceCodeInput.find('option')
 const mailingProvinceOption = AddVisaResidentWithoutPHNPage.mailingProvinceInput.find('option')
-const mailingCountryOption = AddVisaResidentWithoutPHNPage.mailingCountryInput.find('option')
-
 const ERROR_MESSAGE = 'Please correct errors before submitting'
 const SUCCESS_MESSAGE = 'COVERAGE CANCEL DATE MUST BE AFTER COVERAGE EFFECTIVE DATE'
 const NO_SEARCH_RESULT = 'BCHCIM.FC.0.0018  No results were returned. Please refine your search criteria, and try again.'
@@ -37,10 +35,6 @@ const INVALID_GROUP_NUMBER_ERROR_MESSAGE = 'Group Number is invalid'
 const INVALID_GROUP_MEMBER_NUMBER_ERROR_MESSAGE = 'Group Member Number is invalid'
 const INVALID_DEPARTMENT_NUMBER_VALIDATION_MESSAGE = 'Department Number is invalid'
 const PHONE_NUMBER_VALIDATION_MESSAGE = 'Only numbers 0 to 9 are valid. Phone Number must be entered as ten (10) numbers in length with no space or hyphen.'
-const ZIP_CODE_REQUIRED_MESSAGE = 'ZIP Code is required'
-const STATE_REQUIRED_MESSAGE = 'State is required'
-const REGION_REQUIRED_MESSAGE = 'Province / Region / State is required'
-const POSTAL_ZIP_CODE_REQUIRED_MESSAGE = 'Postal / Zip Code is required'
 const INVALID_POSTAL_CODE_VALIDATION_MESSAGE = 'Postal Code is invalid'
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/coverage/enrollment/addStudyPermitHolderWithoutPHN'
 
@@ -196,29 +190,6 @@ test('Check properly filled form passes validation', async (t) => {
     .contains(SUCCESS_MESSAGE)
 })
 
-test('Check required message for United States', async (t) => {
-  await t
-    .typeText(NameSearchPage.surnameInput, 'Test')
-    .typeText(NameSearchPage.firstNameInput, 'Test')
-    .typeText(NameSearchPage.dateOfBirthInput, '20001108')
-    .pressKey('enter')
-    .click(NameSearchPage.radioButtonUnknown)
-    .click(NameSearchPage.submitButton)
-    .wait(5000)
-    .click(NameSearchPage.createNewPHNButton)
-    .wait(1000)
-    // When I click the submit button
-    .click(AddVisaResidentWithoutPHNPage.submitButton)
-    .wait(1000)
-    .typeText(AddVisaResidentWithoutPHNPage.mailingAddress2Input, 'TEST ADDRESS LINE 2')
-    .click(AddVisaResidentWithoutPHNPage.mailingCountryInput)
-    .click(mailingCountryOption.withText('United States'))
-    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(11).textContent)
-    .contains(STATE_REQUIRED_MESSAGE)
-    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(13).textContent)
-    .contains(ZIP_CODE_REQUIRED_MESSAGE)
-})
-
 test('Check invalid input field characters validation', async (t) => {
   await t
     .typeText(NameSearchPage.surnameInput, 'Test')
@@ -288,29 +259,6 @@ test('Check invalid input field characters validation', async (t) => {
     .contains(INVALID_POSTAL_CODE_VALIDATION_MESSAGE)
     .expect(AlertPage.alertBannerText.textContent)
     .contains(ERROR_MESSAGE)
-})
-
-test('Check required message for Other Country', async (t) => {
-  await t
-    .typeText(NameSearchPage.surnameInput, 'Test')
-    .typeText(NameSearchPage.firstNameInput, 'Test')
-    .typeText(NameSearchPage.dateOfBirthInput, '20211108')
-    .pressKey('enter')
-    .click(NameSearchPage.radioButtonUnknown)
-    .click(NameSearchPage.submitButton)
-    .wait(5000)
-    .click(NameSearchPage.createNewPHNButton)
-    .wait(1000)
-    // When I click the submit button
-    .click(AddVisaResidentWithoutPHNPage.submitButton)
-    .wait(1000)
-    .typeText(AddVisaResidentWithoutPHNPage.mailingAddress2Input, 'TEST ADDRESS LINE 2')
-    .click(AddVisaResidentWithoutPHNPage.mailingCountryInput)
-    .click(mailingCountryOption.withText('Other'))
-    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(11).textContent)
-    .contains(REGION_REQUIRED_MESSAGE)
-    .expect(AddVisaResidentWithoutPHNPage.errorText.nth(13).textContent)
-    .contains(POSTAL_ZIP_CODE_REQUIRED_MESSAGE)
 })
 
 test('Check invalid field length validation', async (t) => {
