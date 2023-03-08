@@ -38,12 +38,12 @@ import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
-import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.BcscPayeeMapping;
+import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.UserPayeeMapping;
 import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.PatientRegister;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
-import ca.bc.gov.hlth.hnweb.service.BcscPayeeMappingService;
+import ca.bc.gov.hlth.hnweb.service.UserPayeeMappingService;
 import ca.bc.gov.hlth.hnweb.service.EnrollmentService;
 import ca.bc.gov.hlth.hnweb.service.PBFClinicPayeeService;
 import ca.bc.gov.hlth.hnweb.service.PatientRegistrationService;
@@ -76,7 +76,7 @@ public class PatientRegistrationController extends BaseController {
 	private PatientRegistrationService patientRegistrationService;
 	
 	@Autowired
-	private BcscPayeeMappingService bcscPayeeMappingService;	
+	private UserPayeeMappingService userPayeeMappingService;	
 
     @Autowired
     private PBFClinicPayeeService pbfClinicPayeeService; 
@@ -142,19 +142,19 @@ public class PatientRegistrationController extends BaseController {
 	}
 
 	/**
-	 * The Payee number submitted in the request must match the Payee Number mapped to the current user in the BCSC to Payee Number mappings.
+	 * The Payee number submitted in the request must match the Payee Number mapped to the current user in the User to Payee Number mappings.
 	 * 
 	 * @param patientRegistrationRequest
 	 * @throws HNWebException
 	 */
 	private void validatePayeeNumberMapping(PatientRegistrationRequest patientRegistrationRequest) {
 		UserInfo userInfo = SecurityUtil.loadUserInfo();
-		Optional<BcscPayeeMapping> bcscPayeeMappingOptional = bcscPayeeMappingService.find(userInfo.getUserId());
-		if (bcscPayeeMappingOptional.isEmpty()) {
+		Optional<UserPayeeMapping> userPayeeMappingOptional = userPayeeMappingService.find(userInfo.getUserId());
+		if (userPayeeMappingOptional.isEmpty()) {
 			logger.error("No Payee Number mapping was found for the current user");
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Payee Number mapping was found for the current user");
 		}
-		String mappedPayeeNumber = bcscPayeeMappingOptional.get().getPayeeNumber();
+		String mappedPayeeNumber = userPayeeMappingOptional.get().getPayeeNumber();
         String requestPayeeNumber = patientRegistrationRequest.getPayee();
         if (!StringUtils.equals(requestPayeeNumber, mappedPayeeNumber)) {
 			logger.error("Payee field value {} does not match the Payee Number mapped to this user", requestPayeeNumber);
