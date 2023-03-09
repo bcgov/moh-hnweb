@@ -1,17 +1,17 @@
 package ca.bc.gov.hlth.hnweb.exception;
 
 /**
- * enum for possible types of {@link BcscPayeeMappingException}
+ * enum for possible types of {@link UserPayeeMappingException}
  *
  */
-public enum BcscPayeeMappingExceptionType {
+public enum UserPayeeMappingExceptionType {
 
 	ENTITY_ALREADY_EXISTS("Entity already exists."),
 	ENTITY_NOT_FOUND("Entity not found.");
 	
 	private final String message;
 
-	private BcscPayeeMappingExceptionType(String message) {
+	private UserPayeeMappingExceptionType(String message) {
 		this.message = message;
 	}
 

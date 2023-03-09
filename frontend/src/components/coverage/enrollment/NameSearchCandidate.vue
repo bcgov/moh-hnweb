@@ -18,7 +18,6 @@
 <script>
 import { useAlertStore } from '../../../stores/alert'
 import { useStudyPermitHolderStore } from '../../../stores/studyPermitHolder'
-import { DATE_OF_DEATH_MESSAGE } from '../../../util/constants.js'
 
 export default {
   name: 'NameSearchCandidate',
@@ -138,7 +137,8 @@ export default {
       this.studyPermitHolderStore.resident = this.candidate
       this.alertStore.dismissAlert()
       if (this.candidate.dateOfDeath && this.candidate.dateOfDeath != 'N/A') {
-        this.alertStore.setErrorAlert(DATE_OF_DEATH_MESSAGE)
+        const dateOfDeathMessage = `A Date of Death was found for this client record. If this is incorrect, confirm the correct PHN was entered and contact HCIM at ${config.HCIM_CONTACT_NO || import.meta.env.VITE_HCIM_CONTACT_NO} (8am to 4:30pm, Mon - Fri).`
+        this.alertStore.setErrorAlert(dateOfDeathMessage)
       }
       this.$router.push({ name: 'AddVisaResidentWithPHN', query: { pageAction: 'REGISTRATION' } })
       this.submitting = false
