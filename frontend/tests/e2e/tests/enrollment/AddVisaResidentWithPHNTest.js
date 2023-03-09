@@ -17,7 +17,7 @@ const INVALID_ADDRESS_LINE3_MESSAGE = 'Address Line 3 is invalid'
 const ERROR_MESSAGE = 'Please correct errors before submitting'
 const MAX_LENGTH_ADDRESS_VALIDATION_MESSAGE = 'The maximum length allowed is 25'
 const INVALID_City_MESSAGE = 'City is invalid'
-const SUCCESS_MESSAGE = 'HRPB242E INVALID SUBSCRIBER DATA FOUND. PLS CONTACT MSP.'
+const RAPID_MESSAGE = 'COVERAGE CANCEL DATE MUST BE AFTER COVERAGE EFFECTIVE DATE'
 const GROUPNUMBER_REQUIRED_MESSAGE = 'Group Number is required'
 const IMMIGRATION_CODE_REQUIRED_MESSAGE = 'Immigration Code is required'
 const PERMIT_ISSUE_DATE_REQUIRED_MESSAGE = 'Permit Issue Date is required'
@@ -134,11 +134,15 @@ test('Check properly filled form passes validation', async (t) => {
     .click(AddVisaResidentWithPHNPage.immigrationCodeSelect)
     .click(immigrationCodeOption.withText('Employment Authorization'))
     .typeText(AddVisaResidentWithPHNPage.departmentNumberInput, '123456')
+    .pressKey('enter')
     .typeText(AddVisaResidentWithPHNPage.visaIssueDateInput, '20210101')
+    .pressKey('enter')
     .typeText(AddVisaResidentWithPHNPage.visaExpiryDateInput, '20221231')
+    .pressKey('enter')
     .typeText(AddVisaResidentWithPHNPage.residenceDateInput, '20191108')
     .typeText(AddVisaResidentWithPHNPage.coverageEffectiveDateInput, '20220401')
     .typeText(AddVisaResidentWithPHNPage.coverageCancellationDateInput, '20221231')
+    .pressKey('enter')
     .typeText(AddVisaResidentWithPHNPage.telephoneInput, '7802024022')
     .typeText(AddVisaResidentWithPHNPage.address1Input, 'Test 111 ST')
     .typeText(AddVisaResidentWithPHNPage.cityInput, 'VICTORIA')
@@ -152,7 +156,7 @@ test('Check properly filled form passes validation', async (t) => {
     .click(AddVisaResidentWithPHNPage.submitButton)
     // I expect a success message
     .expect(AlertPage.alertBannerText.textContent)
-    .contains(SUCCESS_MESSAGE)
+    .contains(RAPID_MESSAGE)
 })
 
 test('Check invalid input field character validation', async (t) => {

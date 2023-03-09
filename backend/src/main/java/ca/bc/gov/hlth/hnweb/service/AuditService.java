@@ -70,6 +70,8 @@ public class AuditService {
 
 	private static final CSVFormat FORMAT = CSVFormat.DEFAULT.withHeader(HEADERS);
 
+	private static final String MESSAGE_UNKNOWN = "Uknown";
+
 	@Autowired
 	private AffectedPartyRepository affectedPartyRepository;
 
@@ -201,7 +203,7 @@ public class AuditService {
 		EventMessage eventMessage = new EventMessage();
 		eventMessage.setErrorCode(Integer.toString(status.value()));
 		eventMessage.setErrorLevel(level);
-		eventMessage.setMessageText(exception.getMessage());
+		eventMessage.setMessageText(StringUtils.defaultString(exception.getMessage(), MESSAGE_UNKNOWN));
 		eventMessage.setTransactionEvent(transactionEvent);
 		return eventMessageRepository.save(eventMessage);
 	}

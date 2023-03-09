@@ -260,13 +260,13 @@ export function validateSecondName(secondName) {
 }
 
 /**
- * Validate that input is allowed length and that it contains only alphabets
+ * Validate that input is allowed length and that it contains only alphabets, hyphen and whitespace
  */
 function validateAlpha(input, length) {
   if (input.length > length) {
     return true
   }
-  return !/[^a-zA-Z]/.test(input)
+  return !/[^a-z-\sA-Z]/.test(input)
 }
 
 /**
