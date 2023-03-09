@@ -49,7 +49,7 @@ public class AudienceValidator implements OAuth2TokenValidator<Jwt> {
     		// Audit the failure. No audience means the user does not have any MSP Direct roles and should be considered Unauthorized
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
-        	Transaction transaction = auditService.createTransaction(request.getRemoteAddr(), TransactionType.UNKNOWN);    	
+        	Transaction transaction = auditService.createTransaction(jwt, request.getRemoteAddr(), TransactionType.UNKNOWN);    	
         	auditService.createTransactionEvent(transaction, TransactionEventType.UNAUTHORIZED);
         	
         	logger.warn("User {} is missing aud claim {} ", jwt.getClaim(SecurityUtil.CLAIM_USERNAME).toString(), audience);
