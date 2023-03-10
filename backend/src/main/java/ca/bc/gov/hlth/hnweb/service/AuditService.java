@@ -30,6 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import ca.bc.gov.hlth.hnweb.model.rest.auditreport.AuditRecord;
@@ -112,21 +113,30 @@ public class AuditService {
 	 * @return The persisted Transaction
 	 */
 	public Transaction createTransaction(String sourceIP, TransactionType type) {
+		UserInfo userInfo = SecurityUtil.loadUserInfo();
+		return generateTransaction(userInfo, sourceIP, type);
+	}
+
+	/**
+	 * Creates a new {@link Transaction}.
+	 * 
+	 * @param sourceIP Source IP address
+	 * @param type     The type of transaction
+	 * @return The persisted Transaction
+	 */
+	public Transaction createTransaction(Jwt jwt, String sourceIP, TransactionType type) {
+		UserInfo userInfo = SecurityUtil.loadUserInfo(jwt);
+		return generateTransaction(userInfo, sourceIP, type);
+	}
+	
+	private Transaction generateTransaction(UserInfo userInfo, String sourceIP, TransactionType type) {
 		Transaction transaction = new Transaction();
-		UserInfo userInfo = null;
-		try {
-			// This can throw an exception under certain auth failures
-			// E.g. if an empty or invalid token is provided
-			userInfo = SecurityUtil.loadUserInfo();
-		} catch (Exception e) {
-			// Ignore
-		}
 		transaction.setOrganization(userInfo != null ? userInfo.getOrganization(): null);
 		transaction.setOrganizationName(userInfo != null ? userInfo.getOrganizationName(): null);
 		transaction.setServer(getServer());
 		transaction.setSessionId(userInfo != null ? userInfo.getSessionState() : null);
 		transaction.setSourceIp(sourceIP);
-		transaction.setSpgRole(SecurityUtil.loadSPGBasedOnTransactionType(userInfo, type));
+		transaction.setSpgRole(userInfo != null ? SecurityUtil.loadSPGBasedOnTransactionType(userInfo, type) : null);
 		transaction.setStartTime(new Date());
 		transaction.setTransactionId(UUID.randomUUID());
 		transaction.setType(type.getValue());
