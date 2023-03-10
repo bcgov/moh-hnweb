@@ -103,7 +103,7 @@ import { API_DATE_TIME_FORMAT } from '../../util/constants'
 import useVuelidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 import { DEFAULT_ERROR_MESSAGE } from '../../util/constants.js'
-import { validateUserIdLength, VALIDATE_USER_ID_MESSAGE } from '../../util/validators'
+import { validateFutureDate, validateUserIdLength, VALIDATE_USER_ID_MESSAGE } from '../../util/validators'
 import { useAlertStore } from '../../stores/alert'
 import { handleServiceError } from '../../util/utils'
 import AppLabel from '../../components/ui/AppLabel.vue'
@@ -112,6 +112,9 @@ import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
+
+const VALIDATE_END_DATE_MESSAGE = 'End Date must not be in the future'
+const VALIDATE_START_DATE_MESSAGE = 'Start Date must not be in the future'
 
 export default {
   components: { AppLabel, Column, DataTable, AppDownloadLink },
@@ -358,9 +361,11 @@ export default {
       },
       startDate: {
         required,
+        validateFutureDate: helpers.withMessage(VALIDATE_START_DATE_MESSAGE, validateFutureDate),
       },
       endDate: {
         required,
+        validateFutureDate: helpers.withMessage(VALIDATE_END_DATE_MESSAGE, validateFutureDate),
       },
     }
   },

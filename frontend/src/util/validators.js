@@ -92,6 +92,19 @@ export function validateDOB(dateOfBirth) {
 }
 
 /**
+ * Validates that the Date is not in the future.
+ */
+export function validateFutureDate(date) {
+  if (!helpers.req(date)) {
+    return true
+  }
+  if (dayjs(date).isAfter(dayjs().startOf('day'))) {
+    return false
+  }
+  return true
+}
+
+/**
  * Validate Group Member Number. It can be up to nine (9) characters. Any alpha or numeric characters are allowed, except for |^ \ & which are invalid.
  */
 export function validateGroupMemberNumber(groupMemberNumber) {
