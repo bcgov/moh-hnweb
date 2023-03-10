@@ -138,7 +138,7 @@ export default {
       this.payee = userPayeeMapping.payeeNumber
       if (!userPayeeMapping.payeeIsActive) {
         this.payeeInactive = true
-        this.alertStore.setErrorAlert(`Payee ${userPayeeMapping.payeeNumber} is not an active PBF clinic.  Please email ${config.VITE_PBF_SUPPORT_CONTACT_NO || import.meta.env.VITE_PBF_SUPPORT_CONTACT_NO} if this is incorrect`)
+        this.alertStore.setErrorAlert(`Payee ${userPayeeMapping.payeeNumber} is not an active PBF clinic.  Please email ${config.PBF_SUPPORT_CONTACT_NO || import.meta.env.VITE_PBF_SUPPORT_CONTACT_NO} if this is incorrect`)
       }
     } catch (err) {
       //Check for Not Found error and add a user friendly error message
