@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-@Sql({ "classpath:scripts/bcsc_payee_mapping.sql", "classpath:scripts/pbf_clinic_payee.sql" })
+@Sql({ "classpath:scripts/user_payee_mapping.sql", "classpath:scripts/pbf_clinic_payee.sql" })
 public class PBFClinicPayeeServiceTest {
 
     @Autowired

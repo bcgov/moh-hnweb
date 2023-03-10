@@ -132,13 +132,13 @@ export default {
     try {
       this.alertStore.dismissAlert()
       const userId = this.$keycloak.tokenParsed?.sub
-      const bcscPayeeMapping = (await PatientRegistrationService.getBcscPayeeMapping(userId)).data
+      const userPayeeMapping = (await PatientRegistrationService.getUserPayeeMapping(userId)).data
       /* If a Payee mapping was found the status will be checked. If there is no active status for a Payee then 
       an error message should be displayed and the field disabled */
-      this.payee = bcscPayeeMapping.payeeNumber
-      if (!bcscPayeeMapping.payeeIsActive) {
+      this.payee = userPayeeMapping.payeeNumber
+      if (!userPayeeMapping.payeeIsActive) {
         this.payeeInactive = true
-        this.alertStore.setErrorAlert(`Payee ${bcscPayeeMapping.payeeNumber} is not an active PBF clinic.  Please email ${config.PBF_SUPPORT_CONTACT_NO || import.meta.env.VITE_PBF_SUPPORT_CONTACT_NO} if this is incorrect`)
+        this.alertStore.setErrorAlert(`Payee ${userPayeeMapping.payeeNumber} is not an active PBF clinic.  Please email ${config.PBF_SUPPORT_CONTACT_NO || import.meta.env.VITE_PBF_SUPPORT_CONTACT_NO} if this is incorrect`)
       }
     } catch (err) {
       //Check for Not Found error and add a user friendly error message

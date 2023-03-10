@@ -51,10 +51,18 @@ public class SecurityUtil {
 		SecurityUtil.KEYCLOAK_CLIENT = keycloakClient;
 	}
 
-	public static UserInfo loadUserInfo() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Jwt jwt = (Jwt) auth.getPrincipal();
+	public static UserInfo loadUserInfo() {		
+		return loadUserInfo(null);
+	}
 
+	public static UserInfo loadUserInfo(Jwt jwt) {
+		if (jwt == null) {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			if (auth == null) {
+				return null;
+			}
+			jwt = (Jwt) auth.getPrincipal();
+		}
 		UserInfo userInfo = new UserInfo();
 		extractOrganization(jwt, userInfo);
 

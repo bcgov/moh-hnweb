@@ -6,26 +6,26 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * Entity for table bcsc_payee_mapping which contains BCSC Users to MSP Payee Number mappings
+ * Entity for table user_payee_mapping which contains Keycloak Users to MSP Payee Number mappings
  *
  */
 @Entity
-@Table(name = "bcsc_payee_mapping")
-public class BcscPayeeMapping {
+@Table(name = "user_payee_mapping")
+public class UserPayeeMapping {
 
 	@Id
-	@Column(name = "bcsc_guid")
-	private String bcscGuid;
+	@Column(name = "user_guid")
+	private String userGuid;
 
 	@Column(name = "msp_payee_number", nullable = false)
 	private String payeeNumber;
 
-	public String getBcscGuid() {
-		return bcscGuid;
+	public String getUserGuid() {
+		return userGuid;
 	}
 
-	public void setBcscGuid(String bcscGuid) {
-		this.bcscGuid = bcscGuid;
+	public void setUserGuid(String userGuid) {
+		this.userGuid = userGuid;
 	}
 
 	public String getPayeeNumber() {
@@ -38,7 +38,9 @@ public class BcscPayeeMapping {
 
 	@Override
 	public String toString() {
-		return "BcscPayeeMapping [bcscGuid=" + bcscGuid + ", payeeNumber=" + payeeNumber + "]";
+		return "UserPayeeMapping [userGuid=" + userGuid + ", payeeNumber=" + payeeNumber + "]";
 	}
+
+
 
 }
