@@ -44,7 +44,7 @@
 import useVuelidate from '@vuelidate/core'
 import dayjs from 'dayjs'
 import { API_DATE_FORMAT, GENDERS } from '../../../util/constants'
-import { validateDOB, validateFirstName, validateSecondName, validateSurname, VALIDATE_DOB_MESSAGE, VALIDATE_FIRST_NAME_MESSAGE, VALIDATE_SECOND_NAME_MESSAGE, VALIDATE_SURNAME_MESSAGE } from '../../../util/validators'
+import { validateFutureDate, validateFirstName, validateSecondName, validateSurname, VALIDATE_DOB_MESSAGE, VALIDATE_FIRST_NAME_MESSAGE, VALIDATE_SECOND_NAME_MESSAGE, VALIDATE_SURNAME_MESSAGE } from '../../../util/validators'
 import { required, helpers, maxLength } from '@vuelidate/validators'
 import { useAlertStore } from '../../../stores/alert'
 import AppRadioButton from '../../ui/AppRadioButton.vue'
@@ -128,7 +128,7 @@ export default {
       },
       dateOfBirth: {
         required,
-        validateDOB: helpers.withMessage(VALIDATE_DOB_MESSAGE, validateDOB),
+        validateDOB: helpers.withMessage(VALIDATE_DOB_MESSAGE, validateFutureDate),
       },
       gender: {
         required,

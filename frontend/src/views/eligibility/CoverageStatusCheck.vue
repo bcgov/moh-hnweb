@@ -127,7 +127,7 @@ import AppHelp from '../../components/ui/AppHelp.vue'
 import AppTooltip from '../../components/ui/AppTooltip.vue'
 import EligibilityService from '../../services/EligibilityService'
 import useVuelidate from '@vuelidate/core'
-import { validateDOB, validatePHN, VALIDATE_DOB_MESSAGE, VALIDATE_PHN_MESSAGE } from '../../util/validators'
+import { validateFutureDate, validatePHN, VALIDATE_DOB_MESSAGE, VALIDATE_PHN_MESSAGE } from '../../util/validators'
 import { API_DATE_FORMAT, COVERAGE_END_REASONS } from '../../util/constants'
 import { required, helpers } from '@vuelidate/validators'
 import dayjs from 'dayjs'
@@ -305,7 +305,7 @@ export default {
       },
       dateOfBirth: {
         required,
-        validateDOB: helpers.withMessage(VALIDATE_DOB_MESSAGE, validateDOB),
+        validateDOB: helpers.withMessage(VALIDATE_DOB_MESSAGE, validateFutureDate),
       },
       dateOfService: {
         required,
