@@ -79,16 +79,13 @@ function validatePostalCodeFormat(postalCode) {
 }
 
 /**
- * Validates that the Date of Birth is not in the future.
+ * Validates that the Date is not in the future.
  */
-export function validateDOB(dateOfBirth) {
-  if (!helpers.req(dateOfBirth)) {
+export function validateFutureDate(date) {
+  if (!helpers.req(date)) {
     return true
   }
-  if (dayjs(dateOfBirth).isAfter(dayjs().startOf('day'))) {
-    return false
-  }
-  return true
+  return !dayjs(date).isAfter(dayjs(), 'day')
 }
 
 /**

@@ -12,7 +12,7 @@ const INVALID_DOB_ERROR_MESSAGE = 'Date of Birth must not be in the future'
 
 const DOS_REQUIRED_MESSAGE = 'Date Of Service is required'
 const INVALID_PHN_ERROR_MESSAGE = 'PHN format is invalid'
-const SUCCESS_MESSAGE = 'HJMB001I SUCCESSFULLY COMPLETED'
+const SUCCESS_MESSAGE = 'HJMB001I TRANSACTION COMPLETED'
 
 const PAGE_TO_TEST = SITE_UNDER_TEST + '/eligibility/coverageStatusCheck'
 
