@@ -190,9 +190,9 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		assertEquals(StatusEnum.SUCCESS, patientRegistrationResponse.getStatus());
 		assertEquals(1, patientRegistrationHistory.size());
 	}
-
+	
 	@Test
-	public void testRegistrationHistory_success_diffPayeeOutsideGroup() throws Exception {
+	public void testRegistrationHistory_success_newerPayeeOutsideGroup() throws Exception {
 		createPBFClinicPayee();
 		createPatientRegister();
 
@@ -203,8 +203,8 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
         mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "e4414a89-8974-4cff-9677-d9d2df6f9cfb", "00000010", "Ministry of Health", "hnweb-user", UUID.randomUUID().toString()));
 
-		PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
-		viewPatientRegisterRequest.setPhn("7363117301");
+        PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
+		viewPatientRegisterRequest.setPhn("9879869673");
 		viewPatientRegisterRequest.setPayee("T0053");
 		ResponseEntity<PatientRegistrationResponse> response = patientRegistrationController
 				.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest());
@@ -215,10 +215,46 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 				.getPatientRegistrationHistory();
 		
 		// Check the additional message , status and number of valid records
-		String additionalMessage = "Patient is registered with a different MSP Payee number outside of reporting group\nBCHCIM.GD.2.0006 The HL7 message is invalid. Please correct the HL7 message, and resubmit it.Results from Schematron validation";
+		String additionalMessage = "Patient is registered with a different MSP Payee number within the reporting group";
 		assertTrue(patientRegistrationResponse.getAdditionalInfoMessage().contains(additionalMessage));
 		assertEquals(StatusEnum.SUCCESS, patientRegistrationResponse.getStatus());
-		assertEquals(0, patientRegistrationHistory.size());
+		assertEquals(1, patientRegistrationHistory.size());
+	}
+
+	/**
+	 * Tests that a warning message shows when the PHN exists within the reporting group BUT a newer record (via effective date)
+	 * exists outside the reporting group.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testRegistrationHistory_success_diffPayeeOutsideGroup() throws Exception {
+		createPBFClinicPayee();
+		createPatientRegister();
+
+		mockBackEnd.enqueue(new MockResponse()
+				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse.xml"))
+				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+
+		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "e4414a89-8974-4cff-9677-d9d2df6f9cfb", "00000010", "Ministry of Health", "hnweb-user", UUID.randomUUID().toString()));
+
+		PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
+		viewPatientRegisterRequest.setPhn("7363117304");
+		viewPatientRegisterRequest.setPayee("T0053");
+		ResponseEntity<PatientRegistrationResponse> response = patientRegistrationController
+				.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest());
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		PatientRegistrationResponse patientRegistrationResponse = response.getBody();
+		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse
+				.getPatientRegistrationHistory();
+		
+		// Check the additional message , status and number of valid records
+		String additionalMessage = "Patient is registered with a different MSP Payee number outside of reporting group";
+		assertTrue(patientRegistrationResponse.getAdditionalInfoMessage().contains(additionalMessage));
+		assertEquals(StatusEnum.SUCCESS, patientRegistrationResponse.getStatus());
+		assertEquals(1, patientRegistrationHistory.size());
 	}
 
 	@Test
@@ -426,6 +462,34 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		patientRegister6.setRegisteredPractitionerSurname("Thomas");
 		patientRegister6.setArchived(Boolean.FALSE);
 		patientRegister6.setPhn("7363117303");
+		
+		PatientRegister patientRegister7 = new PatientRegister();
+		patientRegister7.setAdministrativeCode("0");
+		Date effectiveDate7 = format.parse("20230101");
+		patientRegister7.setEffectiveDate(effectiveDate7);
+		patientRegister7.setCancelDate(null);
+		patientRegister7.setRegistrationReasonCode("SL");
+		patientRegister7.setPayeeNumber("T0053");
+		patientRegister7.setRegisteredPractitionerNumber("X2753");
+		patientRegister7.setRegisteredPractitionerFirstName("Sam");
+		patientRegister7.setRegisteredPractitionerMiddleName("E");
+		patientRegister7.setRegisteredPractitionerSurname("Thomas");
+		patientRegister7.setArchived(Boolean.FALSE);
+		patientRegister7.setPhn("7363117304");
+		
+		PatientRegister patientRegister8 = new PatientRegister();
+		patientRegister8.setAdministrativeCode("0");
+		Date effectiveDate8 = format.parse("20240101");
+		patientRegister8.setEffectiveDate(effectiveDate8);
+		patientRegister8.setCancelDate(null);
+		patientRegister8.setRegistrationReasonCode("SL");
+		patientRegister8.setPayeeNumber("X0053");
+		patientRegister8.setRegisteredPractitionerNumber("X2753");
+		patientRegister8.setRegisteredPractitionerFirstName("Sam");
+		patientRegister8.setRegisteredPractitionerMiddleName("E");
+		patientRegister8.setRegisteredPractitionerSurname("Thomas");
+		patientRegister8.setArchived(Boolean.FALSE);
+		patientRegister8.setPhn("7363117304");
 
 		patientRegisterRepository.save(patientRegister1);
 		patientRegisterRepository.save(patientRegister2);
@@ -433,6 +497,8 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		patientRegisterRepository.save(patientRegister4);
 		patientRegisterRepository.save(patientRegister5);
 		patientRegisterRepository.save(patientRegister6);
+		patientRegisterRepository.save(patientRegister7);
+		patientRegisterRepository.save(patientRegister8);
 	}
 
 	private void createPBFClinicPayee() {

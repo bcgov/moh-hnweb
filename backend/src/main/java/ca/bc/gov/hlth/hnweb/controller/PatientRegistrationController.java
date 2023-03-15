@@ -47,6 +47,7 @@ import ca.bc.gov.hlth.hnweb.service.UserPayeeMappingService;
 import ca.bc.gov.hlth.hnweb.service.EnrollmentService;
 import ca.bc.gov.hlth.hnweb.service.PBFClinicPayeeService;
 import ca.bc.gov.hlth.hnweb.service.PatientRegistrationService;
+import ca.bc.gov.hlth.hnweb.service.RegistrationResult;
 
 /**
  * Handles request related to R70 Patient Registration.
@@ -106,30 +107,19 @@ public class PatientRegistrationController extends BaseController {
 			PatientRegistrationResponse response = new PatientRegistrationResponse();
 			response.setPersonDetail(personDetailsResponse);
 
-			// Retrieve patient registration history
-			boolean patientRegistrationExist = false;
+			// Retrieve patient registration history			
+			RegistrationResult result = patientRegistrationService.getPatientRegistration(patientRegistrationRequest.getPayee(), patientRegistrationRequest.getPhn());
 
-			List<PatientRegister> registrationRecords = patientRegistrationService
-					.getPatientRegistration(patientRegistrationRequest.getPayee(), patientRegistrationRequest.getPhn());
-
-			String registrationMessage = patientRegistrationService.checkRegistrationDetails(registrationRecords,
-					patientRegistrationRequest.getPayee(), patientRegistrationRequest.getPhn());
-
-			if (!registrationRecords.isEmpty() || StringUtils.isNotBlank(registrationMessage)) {
-				patientRegistrationExist = true;
-
-			}
-
-			List<PatientRegisterModel> registrationHistory = convertPatientRegistration(registrationRecords);
+			List<PatientRegisterModel> registrationHistory = convertPatientRegistration(result.getPatientRegisters());
 			response.setPatientRegistrationHistory(registrationHistory);
 
-			handlePatientRegistrationResponse(response, patientRegistrationExist, registrationMessage);
+			handlePatientRegistrationResponse(response, result);
 
 			ResponseEntity<PatientRegistrationResponse> responseEntity = ResponseEntity.ok(response);
 
 			transactionComplete(transaction);
 			addAffectedParty(transaction, IdentifierType.PHN, personDetailsResponse.getPhn(), AffectedPartyDirection.OUTBOUND);
-			registrationRecords.forEach(record -> {
+			result.getPatientRegisters().forEach(record -> {
 				addAffectedParty(transaction, IdentifierType.PAYEE_NUMBER, record.getPayeeNumber(), AffectedPartyDirection.OUTBOUND);
 				addAffectedParty(transaction, IdentifierType.PRACTITIONER_NUMBER, record.getRegisteredPractitionerNumber(), AffectedPartyDirection.OUTBOUND);
 			});
@@ -168,7 +158,7 @@ public class PatientRegistrationController extends BaseController {
 	}
 
 	private PatientRegistrationResponse handlePatientRegistrationResponse(
-			PatientRegistrationResponse patientRegistrationResponse, boolean registrationExist, String infoMessage) {
+			PatientRegistrationResponse patientRegistrationResponse, RegistrationResult registrationResult) {
 
 		Set<String> messages = new HashSet<>();
 		patientRegistrationResponse.setStatus(StatusEnum.SUCCESS);
@@ -176,9 +166,9 @@ public class PatientRegistrationController extends BaseController {
 
 		GetPersonDetailsResponse personDetailsResponse = patientRegistrationResponse.getPersonDetail();
 
-		if (registrationExist && !StringUtils.isEmpty(infoMessage)) {
-			messages.add(infoMessage);
-		} else if (!registrationExist) {
+		if (registrationResult.exists() && StringUtils.isNotEmpty(registrationResult.getRegistrationMessage())) {
+			messages.add(registrationResult.getRegistrationMessage());
+		} else if (!registrationResult.exists()) {
 			// Check if demographics record found
 			if (personDetailsResponse.getStatus() == StatusEnum.ERROR) {
 				// If no demographics record found, set status as WARNING
