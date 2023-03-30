@@ -1,50 +1,48 @@
 <template>
   <div>
     <form @submit.prevent="registerResident">
-      <AppRow>
-        <AppCol class="col4">
-          <AppInput :e-model="v$.groupNumber" id="groupNumber" size="200" label="Group Number" type="text" v-model.trim="groupNumber" />
+      <AppRow class="flex-gap-100">
+        <AppCol class="col5">
+          <AppInput :e-model="v$.groupNumber" id="groupNumber" size="200" label="Group Number" tabindex="1" type="text" v-model.trim="groupNumber" />
         </AppCol>
-        <AppCol class="col4">
-          <AppSelect :e-model="v$.immigrationCode" id="immigrationCode" label="Immigration Code" v-model="immigrationCode" :options="immigrationCodeOptions" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col4">
-          <AppInput :e-model="v$.groupMemberNumber" id="groupMemberNumber" label="Group Member Number (Optional)" type="text" v-model.trim="groupMemberNumber" />
-        </AppCol>
-        <AppCol class="col4">
-          <AppDateInput :e-model="v$.permitIssueDate" id="permitIssueDate" label="Permit Issue Date" v-model="permitIssueDate" />
+        <AppCol class="col5">
+          <AppSelect :e-model="v$.immigrationCode" id="immigrationCode" label="Immigration Code" tabindex="2" v-model="immigrationCode" :options="immigrationCodeOptions" />
         </AppCol>
       </AppRow>
-      <AppRow>
-        <AppCol class="col4">
-          <AppInput :e-model="v$.departmentNumber" id="departmentNumber" label="Department Number (Optional)" type="text" v-model.trim="departmentNumber" />
+      <AppRow class="flex-gap-100">
+        <AppCol class="col5">
+          <AppInput :e-model="v$.groupMemberNumber" id="groupMemberNumber" label="Group Member Number (Optional)" tabindex="3" type="text" v-model.trim="groupMemberNumber" />
         </AppCol>
-        <AppCol class="col4">
-          <AppDateInput :e-model="v$.permitExpiryDate" id="permitExpiryDate" label="Permit Expiry Date" v-model="permitExpiryDate" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col4">
-          <AppInput :e-model="v$.surname" id="surname" label="Surname" type="text" v-model.trim="surname" />
-        </AppCol>
-        <AppCol class="col4">
-          <AppDateInput :e-model="v$.residenceDate" id="residenceDate" label="Residence Date" v-model="residenceDate" />
+        <AppCol class="col5">
+          <AppDateInput :e-model="v$.permitIssueDate" id="permitIssueDate" label="Permit Issue Date" tabindex="4" v-model="permitIssueDate" />
         </AppCol>
       </AppRow>
-      <AppRow>
-        <AppCol class="col4">
-          <AppInput :e-model="v$.givenName" id="givenName" label="First Name" type="text" v-model.trim="givenName" />
+      <AppRow class="flex-gap-100">
+        <AppCol class="col5">
+          <AppInput :e-model="v$.departmentNumber" id="departmentNumber" label="Department Number (Optional)" tabindex="5" type="text" v-model.trim="departmentNumber" />
+        </AppCol>
+        <AppCol class="col5">
+          <AppDateInput :e-model="v$.permitExpiryDate" id="permitExpiryDate" label="Permit Expiry Date" tabindex="6" v-model="permitExpiryDate" />
         </AppCol>
       </AppRow>
-      <AppRow>
-        <AppCol class="col4">
-          <AppInput :e-model="v$.secondName" id="secondName" label="Second Name" type="text" v-model.trim="secondName" />
+      <AppRow class="flex-gap-100">
+        <AppCol class="col5">
+          <AppInput :e-model="v$.surname" id="surname" label="Surname" tabindex="7" type="text" v-model.trim="surname" />
+        </AppCol>
+        <AppCol class="col5">
+          <AppDateInput :e-model="v$.residenceDate" id="residenceDate" label="Residence Date" tabindex="8" v-model="residenceDate" />
         </AppCol>
       </AppRow>
-      <AppRow>
-        <AppCol class="col4">
+      <AppRow class="flex-gap-100">
+        <AppCol class="col5">
+          <AppInput :e-model="v$.givenName" id="givenName" label="First Name" tabindex="9" type="text" v-model.trim="givenName" />
+        </AppCol>
+        <AppCol class="col5">
+          <AppInput :e-model="v$.secondName" id="secondName" label="Second Name" tabindex="10" type="text" v-model.trim="secondName" />
+        </AppCol>
+      </AppRow>
+      <AppRow class="flex-gap-100">
+        <AppCol class="col5">
           <AppRadioButtonGroup :e-model="v$.gender" id="gender" label="Gender">
             <template #tooltip>If you know the gender the client is registered with, select the Male or Female radio button. Or, leave as "Unknown".</template>
             <template #options>
@@ -53,95 +51,95 @@
           </AppRadioButtonGroup>
         </AppCol>
       </AppRow>
-      <AppRow>
-        <AppCol class="col4">
-          <AppDateInput :e-model="v$.dateOfBirth" id="dateOfBirth" label="Date Of Birth" v-model="dateOfBirth" />
+      <AppRow class="flex-gap-100">
+        <AppCol class="col5">
+          <AppDateInput :e-model="v$.dateOfBirth" id="dateOfBirth" label="Date Of Birth" tabindex="12" v-model="dateOfBirth" />
         </AppCol>
-        <AppCol class="col4">
-          <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" v-model="coverageEffectiveDate" />
+        <AppCol class="col5">
+          <AppDateInput :e-model="v$.coverageEffectiveDate" id="coverageEffectiveDate" label="Coverage Effective Date" tabindex="13" v-model="coverageEffectiveDate" />
         </AppCol>
       </AppRow>
-      <AppRow>
-        <AppCol class="col4">
-          <AppInput :e-model="v$.telephone" id="telephone" label="Telephone (Optional)" type="text" v-model.trim="telephone" placeholder="1234567890" />
+      <AppRow class="flex-gap-100">
+        <AppCol class="col5">
+          <AppInput :e-model="v$.telephone" id="telephone" label="Telephone (Optional)" type="text" tabindex="14" v-model.trim="telephone" placeholder="1234567890" />
         </AppCol>
-        <AppCol class="col4">
-          <AppDateInput :e-model="v$.coverageCancellationDate" id="coverageCancellationDate" label="Coverage Cancellation Date" v-model="coverageCancellationDate" />
+        <AppCol class="col5">
+          <AppDateInput :e-model="v$.coverageCancellationDate" id="coverageCancellationDate" label="Coverage Cancellation Date" tabindex="15" v-model="coverageCancellationDate" />
+        </AppCol>
+      </AppRow>
+
+      <AppRow class="flex-gap-100">
+        <AppCol class="col5">
+          <AppInput :e-model="v$.address1" id="address1" label="Home Address Line 1" type="text" tabindex="16" v-model="address1" />
+        </AppCol>
+        <AppCol class="col5">
+          <AppInput :e-model="v$.mailingAddress1" id="mailingAddress1" label="Mailing Address (if different from home address)" tabindex="23" v-model="mailingAddress1" />
+        </AppCol>
+      </AppRow>
+      <AppRow class="flex-gap-100">
+        <AppCol class="col5">
+          <AppInput :e-model="v$.address2" id="address2" label="Line 2 (Optional)" type="text" tabindex="17" v-model="address2" />
+        </AppCol>
+        <AppCol class="col5">
+          <AppInput :e-model="v$.mailingAddress2" id="mailingAddress2" label="Line 2 (Optional)" tabindex="24" v-model="mailingAddress2" />
+        </AppCol>
+      </AppRow>
+      <AppRow class="flex-gap-100">
+        <AppCol class="col5">
+          <AppInput :e-model="v$.address3" id="address3" label="Line 3 (Optional)" type="text" tabindex="18" v-model="address3" />
+        </AppCol>
+        <AppCol class="col5">
+          <AppInput :e-model="v$.mailingAddress3" id="mailingAddress3" label="Line 3 (Optional)" tabindex="25" v-model="mailingAddress3" />
+        </AppCol>
+      </AppRow>
+      <AppRow class="flex-nowrap">
+        <AppRow>
+          <AppCol class="col5">
+            <AppInput :e-model="v$.city" id="city" label="City" type="text" tabindex="19" v-model.trim="city" />
+          </AppCol>
+          <AppCol class="col5"> <AppSelect :e-model="v$.province" id="province" label="Province" tabindex="20" v-model.trim="province" :options="provinceOptions" /> </AppCol>
+        </AppRow>
+        <AppRow>
+          <AppCol class="col5">
+            <AppInput :e-model="v$.mailingAddressCity" id="mailingAddressCity" label="City" type="text" tabindex="26" v-model.trim="mailingAddressCity" />
+          </AppCol>
+          <AppCol class="col5">
+            <AppSelect :e-model="v$.mailingAddressProvince" id="mailingAddressProvince" label="Province" tabindex="28" v-model.trim="mailingAddressProvince" :options="provinceOptions" />
+          </AppCol>
+        </AppRow>
+      </AppRow>
+      <AppRow class="flex-nowrap">
+        <AppRow>
+          <AppCol class="col5">
+            <AppInput :e-model="v$.postalCode" id="postalCode" label="Postal Code" type="text" tabindex="21" v-model.trim="postalCode" />
+          </AppCol>
+          <AppCol class="col5">
+            <AppInput :e-model="v$.country" id="country" label="Country" type="text" disabled="disabled" tabindex="22" v-model="country" />
+          </AppCol>
+        </AppRow>
+        <AppRow>
+          <AppCol class="col5">
+            <AppInput :e-model="v$.mailingAddressPostalCode" id="mailingAddressPostalCode" label="Postal Code" type="text" tabindex="29" v-model.trim="mailingAddressPostalCode" />
+          </AppCol>
+          <AppCol class="col5">
+            <AppInput :e-model="v$.mailingAddressCountry" id="mailingAddressCountry" label="Country" disabled="disabled" v-model="mailingAddressCountry" tabindex="30" />
+          </AppCol>
+        </AppRow>
+      </AppRow>
+      <AppRow class="flex-gap-100">
+        <AppCol class="col5">
+          <AppSelect :e-model="v$.priorResidenceCode" id="priorResidenceCode" label="Prior Residence Code" tabindex="31" v-model="priorResidenceCode" :options="priorResidenceOptions" />
+        </AppCol>
+      </AppRow>
+      <AppRow class="flex-gap-100">
+        <AppCol class="col5">
+          <AppInput :e-model="v$.otherProvinceHealthcareNumber" id="otherProvinceHealthcareNumber" tabindex="32" label="Other Province Healthcare Number (If Applicable) (Optional)" type="text" v-model.trim="otherProvinceHealthcareNumber" />
         </AppCol>
       </AppRow>
 
       <AppRow>
-        <AppCol class="col7">
-          <AppInput :e-model="v$.address1" id="address1" label="Home Address Line 1" type="text" v-model="address1" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col7">
-          <AppInput :e-model="v$.address2" id="address2" label="Line 2 (Optional)" type="text" v-model="address2" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col7">
-          <AppInput :e-model="v$.address3" id="address3" label="Line 3 (Optional)" type="text" v-model="address3" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col4">
-          <AppInput :e-model="v$.city" id="city" label="City" type="text" v-model.trim="city" />
-        </AppCol>
-        <AppCol class="col4">
-          <AppSelect :e-model="v$.province" id="province" label="Province" v-model="province" :options="provinceOptions" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col4">
-          <AppInput :e-model="v$.postalCode" id="postalCode" label="Postal Code" type="text" v-model.trim="postalCode" />
-        </AppCol>
-      </AppRow>
-
-      <AppRow>
-        <AppCol class="col7">
-          <AppInput :e-model="v$.mailingAddress1" id="mailingAddress1" label="Mailing Address (if different from home address)" v-model="mailingAddress1" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col7">
-          <AppInput :e-model="v$.mailingAddress2" id="mailingAddress2" label="Line 2 (Optional)" v-model="mailingAddress2" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col7">
-          <AppInput :e-model="v$.mailingAddress3" id="mailingAddress3" label="Line 3 (Optional)" v-model="mailingAddress3" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col4">
-          <AppInput :e-model="v$.mailingAddressCity" id="mailingAddressCity" label="City" type="text" v-model.trim="mailingAddressCity" />
-        </AppCol>
-        <AppCol class="col4">
-          <AppSelect :e-model="v$.mailingAddressProvince" id="mailingAddressProvince" label="Province" v-model="mailingAddressProvince" :options="provinceOptions" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col4">
-          <AppInput :e-model="v$.mailingAddressPostalCode" id="mailingAddressPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddressPostalCode" />
-        </AppCol>
-      </AppRow>
-
-      <AppRow>
-        <AppCol class="col4">
-          <AppSelect :e-model="v$.priorResidenceCode" id="priorResidenceCode" label="Prior Residence Code" v-model="priorResidenceCode" :options="priorResidenceOptions" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col4">
-          <AppInput :e-model="v$.otherProvinceHealthcareNumber" id="otherProvinceHealthcareNumber" label="Other Province Healthcare Number (If Applicable) (Optional)" type="text" v-model.trim="otherProvinceHealthcareNumber" />
-        </AppCol>
-      </AppRow>
-
-      <AppRow>
-        <AppButton :submitting="submitting" mode="primary" type="submit">Submit</AppButton>
-        <AppButton @click="resetForm" mode="secondary" type="button">Clear</AppButton>
+        <AppButton :submitting="submitting" mode="primary" type="submit" tabindex="33">Submit</AppButton>
+        <AppButton @click="resetForm" mode="secondary" type="button" tabindex="34">Clear</AppButton>
       </AppRow>
     </form>
   </div>
@@ -157,13 +155,13 @@ import {
   validateDepartmentNumber,
   validateDOB,
   validateTelephone,
-  validateMailingPostalCode,
   validatePostalCode,
-  validateAddress,
-  validateOptionalAddress,
+  validateSurname,
   validateFirstName,
   validateSecondName,
-  validateSurname,
+  validateAddress,
+  validateOptionalAddress,
+  validateCityOrProvince,
   validateMailingAddressForVisaResident,
   VALIDATE_FIRST_NAME_MESSAGE,
   VALIDATE_SECOND_NAME_MESSAGE,
@@ -173,16 +171,20 @@ import {
   VALIDATE_ADDRESS_LINE2_MESSAGE,
   VALIDATE_ADDRESS_LINE3_MESSAGE,
   VALIDATE_CITY_MESSAGE,
+  VALIDATE_CITY_REQUIRED_MESSAGE,
   VALIDATE_GROUP_NUMBER_MESSAGE,
   VALIDATE_GROUP_MEMBER_NUMBER_MESSAGE,
   VALIDATE_DEPARTMENT_NUMBER_MESSAGE,
   VALIDATE_DOB_MESSAGE,
   VALIDATE_TELEPHONE_MESSAGE,
   VALIDATE_POSTAL_CODE_MESSAGE,
+  VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE,
+  VALIDATE_PROVINCE_REQUIRED_MESSAGE,
+  validateMailingPostalCode,
 } from '../../../util/validators'
 import { required, requiredIf, helpers, maxLength } from '@vuelidate/validators'
 import dayjs from 'dayjs'
-import { API_DATE_FORMAT, GENDERS, IMMIGRATION_CODES, PROVINCES, PRIOR_RESIDENCES } from '../../../util/constants'
+import { API_DATE_FORMAT, IMMIGRATION_CODES, PROVINCES, PRIOR_RESIDENCES, GENDERS } from '../../../util/constants'
 import { formatPersonName } from '../../../util/utils'
 import { useAlertStore } from '../../../stores/alert'
 
@@ -216,7 +218,7 @@ export default {
     this.provinceOptions = PROVINCES
     // Prior Residence drop down options
     this.priorResidenceOptions = PRIOR_RESIDENCES
-    // Gender radio button options
+    // Genders
     this.GENDERS = GENDERS
   },
   data() {
@@ -243,12 +245,14 @@ export default {
       city: '',
       province: '',
       postalCode: '',
+      country: 'Canada',
       mailingAddress1: '',
       mailingAddress2: '',
       mailingAddress3: '',
       mailingAddressCity: '',
       mailingAddressProvince: '',
       mailingAddressPostalCode: '',
+      mailingAddressCountry: 'Canada',
       priorResidenceCode: '',
       otherProvinceHealthcareNumber: '',
     }
@@ -305,7 +309,7 @@ export default {
       this.givenName = ''
       this.secondName = ''
       this.surname = ''
-      this.dateOfBirth = ''
+      this.dateOfBirth = null
       this.gender = ''
       this.groupNumber = ''
       this.immigrationCode = ''
@@ -323,12 +327,14 @@ export default {
       this.city = ''
       this.province = ''
       this.postalCode = ''
+      this.country = 'Canada'
       this.mailingAddress1 = ''
       this.mailingAddress2 = ''
       this.mailingAddress3 = ''
       this.mailingAddressCity = ''
       this.mailingAddressProvince = ''
       this.mailingAddressPostalCode = ''
+      this.mailingAddressCountry = 'Canada'
       this.priorResidenceCode = ''
       this.otherProvinceHealthcareNumber = ''
       this.v$.$reset()
@@ -402,8 +408,8 @@ export default {
       },
       city: {
         required,
-        validateAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateAddress),
         maxLength: maxLength(25),
+        validateCityOrProvince: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityOrProvince),
       },
       province: { required },
       postalCode: {
@@ -424,11 +430,16 @@ export default {
         validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateOptionalAddress),
       },
       mailingAddressCity: {
+        required: helpers.withMessage(VALIDATE_CITY_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForVisaResident)),
         maxLength: maxLength(25),
-        validateOptionalAddress: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateOptionalAddress),
+        validateCityOrProvince: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityOrProvince),
       },
-      mailingAddressProvince: {},
+      mailingAddressProvince: {
+        required: helpers.withMessage(VALIDATE_PROVINCE_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForVisaResident)),
+        maxLength: maxLength(25),
+      },
       mailingAddressPostalCode: {
+        required: helpers.withMessage(VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForVisaResident)),
         validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
       },
       priorResidenceCode: { required },
