@@ -49,20 +49,20 @@ export const IMMIGRATION_CODES = [
 export const PRIOR_RESIDENCES = [
   { text: 'Select', value: '' },
   { text: 'Alberta', value: 'AB' },
+  { text: 'British Columbia', value: 'BC' },
   { text: 'Manitoba', value: 'MB' },
   { text: 'New Brunswick', value: 'NB' },
   { text: 'Newfoundland', value: 'NL' },
-  { text: 'Nova Scotia', value: 'NS' },
   { text: 'Northwest Territories', value: 'NT' },
+  { text: 'Nova Scotia', value: 'NS' },
   { text: 'Nunavut', value: 'NU' },
-  { text: 'Other Country', value: 'OC' },
   { text: 'Ontario', value: 'ON' },
   { text: 'P.E.I', value: 'PE' },
   { text: 'Quebec', value: 'QC' },
   { text: 'Saskatchewan', value: 'SK' },
-  { text: 'U.S.A', value: 'US' },
   { text: 'Yukon', value: 'YT' },
-  { text: 'British Columbia', value: 'BC' },
+  { text: 'Other Country', value: 'OC' },
+  { text: 'U.S.A', value: 'US' },
 ]
 
 // Dependent Relationships
