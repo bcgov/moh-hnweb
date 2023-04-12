@@ -170,7 +170,9 @@ export default {
           return 'Male'
         case 'F':
           return 'Female'
-        case 'U':
+        case 'UN':
+          return 'Undifferentiated'
+        case 'UNK':
           return 'Unknown'
         default:
           return ''
