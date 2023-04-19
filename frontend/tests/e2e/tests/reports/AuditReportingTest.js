@@ -1,14 +1,17 @@
-import AlertPage from '../../pages/AlertPage'
-import AuditReportingPage from '../../pages/reports/AuditReportingPage'
+import dayjs from 'dayjs'
+
 import { OUTPUT_DATE_FORMAT } from '../../../../src/util/constants'
 import { SITE_UNDER_TEST } from '../../configuration'
-import dayjs from 'dayjs'
+import AlertPage from '../../pages/AlertPage'
+import AuditReportingPage from '../../pages/reports/AuditReportingPage'
 import { regularAccUser } from '../../roles/roles'
 
 const ERROR_MESSAGE = 'Please correct errors before submitting'
 const USER_ID_EXCEEDS_LENGTH = 'User ID cannot be longer than 100 characters'
 const START_DATE_REQUIRED_MESSAGE = 'Start Date is required'
 const END_DATE_REQUIRED_MESSAGE = 'End Date is required'
+const START_DATE_FUTURE_MESSAGE = 'Start Date must not be in the future'
+const END_DATE_FUTURE_MESSAGE = 'End Date must not be in the future'
 const START_DATE_AFTER_END_DATE = 'Start Date should not be after End Date'
 const DATE_RANGE_EXCEEDS_THREE_MONTH = 'End Date should not be more than 3 months from Start Date'
 const SUCCESS_MESSAGE = 'Transaction completed successfully'
@@ -38,7 +41,8 @@ test('Check required fields validation', async (t) => {
     .expect(AuditReportingPage.errorText.nth(1).textContent)
     .contains(END_DATE_REQUIRED_MESSAGE)
 })
-test('Check user id not exceeds 100 character  validation', async (t) => {
+
+test('Check user id not exceeds 100 character validation', async (t) => {
   await t
     // Given required fields aren't filled out (Start Date, End Date)
     // When I click the submit button
@@ -68,7 +72,7 @@ test('Check Error message when end date exceeds 3 months from start date', async
     .pressKey('tab')
     // When I click the submit button
     .click(AuditReportingPage.submitButton)
-    // I expect a success message
+    // I expect an error message
     .expect(AlertPage.alertBannerText.textContent)
     .contains(DATE_RANGE_EXCEEDS_THREE_MONTH)
 })
@@ -91,9 +95,38 @@ test('Check Error message when end date is before start date', async (t) => {
     .pressKey('tab')
     // When I click the submit button
     .click(AuditReportingPage.submitButton)
-    // I expect a success message
+    // I expect an error message
     .expect(AlertPage.alertBannerText.textContent)
     .contains(START_DATE_AFTER_END_DATE)
+})
+
+test('Check Error message when start date and end date are in the future', async (t) => {
+  let tomorrow = dayjs().add(1, 'day')
+  await t
+    // Given the page is filled out correctly
+    .typeText(AuditReportingPage.userIdInput, 'hnweb1')
+    .click(AuditReportingPage.checkBoxInput1) //Check box
+    .click(AuditReportingPage.checkBoxInput2) //Check box
+    .click(AuditReportingPage.checkBoxInput3) //Check box
+    .click(AuditReportingPage.checkBoxInput4) //Check box
+    .selectText(AuditReportingPage.startDateInput)
+    .pressKey('delete')
+    .typeText(AuditReportingPage.startDateInput, tomorrow.format(OUTPUT_DATE_FORMAT))
+    .pressKey('tab')
+    .selectText(AuditReportingPage.endDateInput)
+    .pressKey('delete')
+    .typeText(AuditReportingPage.endDateInput, tomorrow.format(OUTPUT_DATE_FORMAT))
+    .pressKey('tab')
+    // When I click the submit button
+    .click(AuditReportingPage.submitButton)
+    // I expect an error message stating the page had errors and individual error messages for
+    // the Start Date and End Date fields
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(ERROR_MESSAGE)
+    .expect(AuditReportingPage.errorText.nth(0).textContent)
+    .contains(START_DATE_FUTURE_MESSAGE)
+    .expect(AuditReportingPage.errorText.nth(1).textContent)
+    .contains(END_DATE_FUTURE_MESSAGE)
 })
 
 test('Check properly filled form passes validation and validate results', async (t) => {
@@ -136,16 +169,18 @@ test('Check properly filled form passes validation and validate results', async 
     .expect(AuditReportingPage.resultsRow1.child('td').nth(1).textContent)
     .eql('00000010')
     .expect(AuditReportingPage.resultsRow1.child('td').nth(2).textContent)
-    .eql('TRAININGHEALTHAUTH')
+    .eql('')
     .expect(AuditReportingPage.resultsRow1.child('td').nth(3).textContent)
-    .eql('hnweb1')
+    .eql('TRAININGHEALTHAUTH')
     .expect(AuditReportingPage.resultsRow1.child('td').nth(4).textContent)
-    .eql('2022-12-12T13:53:12.059')
+    .eql('hnweb1')
     .expect(AuditReportingPage.resultsRow1.child('td').nth(5).textContent)
-    .eql('9873102617')
+    .contains('2022-12-12')
     .expect(AuditReportingPage.resultsRow1.child('td').nth(6).textContent)
-    .eql('PHN')
+    .eql('9873102617')
     .expect(AuditReportingPage.resultsRow1.child('td').nth(7).textContent)
+    .eql('PHN')
+    .expect(AuditReportingPage.resultsRow1.child('td').nth(8).textContent)
     .eql('d9291fb5-6a30-43ea-bd71-891c02b939d0')
 })
 

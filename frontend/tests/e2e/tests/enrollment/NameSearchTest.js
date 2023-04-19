@@ -79,6 +79,25 @@ test('Check alpha validation for Name', async (t) => {
     .contains(INVALID_SECOND_NAME_MESSAGE)
 })
 
+test('Check hyphen and whitespace are allowed for name fields ', async (t) => {
+  await t
+    // Given I have a form filled out with data
+    .typeText(NameSearchPage.surnameInput, 'Test-surname')
+    .typeText(NameSearchPage.firstNameInput, 'Test firstname')
+    .typeText(NameSearchPage.secondNameInput, 'Test secondname')
+    .typeText(NameSearchPage.dateOfBirthInput, '20211108')
+    .click(NameSearchPage.radioButton)
+    // When I click the submit button
+    .click(NameSearchPage.submitButton)
+    .wait(5000)
+    // I expect the warning message to display
+    .expect(AlertPage.alertBannerText.textContent)
+    .contains(MAX_RESULTS_MESSAGE)
+    // And the Create New PHN BUtton to be available
+    .expect(NameSearchPage.createNewPHNButton.exists)
+    .ok()
+})
+
 test('Check length validation for Name', async (t) => {
   await t
     // Given I have a form filled out with data

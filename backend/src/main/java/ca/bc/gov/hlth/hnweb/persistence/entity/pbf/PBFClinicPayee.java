@@ -20,14 +20,14 @@ public class PBFClinicPayee {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long pbfClinicPayeeId;
 
-	@Column(name = "payee_number")
+	@Column(name = "payee_number", nullable = false)
 	private String payeeNumber;
 
 	@Column(name = "effective_date", nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date effectiveDate;
 
-	@Column(name = "cancel_date", nullable = false)
+	@Column(name = "cancel_date", nullable = true)
 	@Temporal(TemporalType.DATE)
 	private Date cancelDate;
 
@@ -85,4 +85,10 @@ public class PBFClinicPayee {
 		this.archived = archived;
 	}
 
+    @Override
+    public String toString() {
+        return "PBFClinicPayee [pbfClinicPayeeId=" + pbfClinicPayeeId + ", payeeNumber=" + payeeNumber
+                + ", effectiveDate=" + effectiveDate + ", cancelDate=" + cancelDate + ", reportGroup=" + reportGroup
+                + ", archived=" + archived + "]";
+    }
 }

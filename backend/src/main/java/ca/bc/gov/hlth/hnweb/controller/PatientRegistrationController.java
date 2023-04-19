@@ -38,14 +38,16 @@ import ca.bc.gov.hlth.hnweb.model.v3.GetDemographicsResponse;
 import ca.bc.gov.hlth.hnweb.persistence.entity.AffectedPartyDirection;
 import ca.bc.gov.hlth.hnweb.persistence.entity.IdentifierType;
 import ca.bc.gov.hlth.hnweb.persistence.entity.Transaction;
-import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.BcscPayeeMapping;
+import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.UserPayeeMapping;
 import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.PatientRegister;
 import ca.bc.gov.hlth.hnweb.security.SecurityUtil;
 import ca.bc.gov.hlth.hnweb.security.TransactionType;
 import ca.bc.gov.hlth.hnweb.security.UserInfo;
-import ca.bc.gov.hlth.hnweb.service.BcscPayeeMappingService;
+import ca.bc.gov.hlth.hnweb.service.UserPayeeMappingService;
 import ca.bc.gov.hlth.hnweb.service.EnrollmentService;
+import ca.bc.gov.hlth.hnweb.service.PBFClinicPayeeService;
 import ca.bc.gov.hlth.hnweb.service.PatientRegistrationService;
+import ca.bc.gov.hlth.hnweb.service.RegistrationResult;
 
 /**
  * Handles request related to R70 Patient Registration.
@@ -75,9 +77,12 @@ public class PatientRegistrationController extends BaseController {
 	private PatientRegistrationService patientRegistrationService;
 	
 	@Autowired
-	private BcscPayeeMappingService bcscPayeeMappingService;	
+	private UserPayeeMappingService userPayeeMappingService;	
 
-	@PostMapping("/get-patient-registration")
+    @Autowired
+    private PBFClinicPayeeService pbfClinicPayeeService; 
+    
+    @PostMapping("/get-patient-registration")
 	public ResponseEntity<PatientRegistrationResponse> getPatientRegistration(
 			@Valid @RequestBody PatientRegistrationRequest patientRegistrationRequest, HttpServletRequest request) {
 
@@ -85,6 +90,8 @@ public class PatientRegistrationController extends BaseController {
 
 		Transaction transaction = transactionStart(request, TransactionType.GET_PATIENT_REGISTRATION);
 		addAffectedParty(transaction, IdentifierType.PHN, patientRegistrationRequest.getPhn(),
+				AffectedPartyDirection.INBOUND);
+		addAffectedParty(transaction, IdentifierType.PAYEE_NUMBER, patientRegistrationRequest.getPayee(),
 				AffectedPartyDirection.INBOUND);
 
 		try {
@@ -100,30 +107,22 @@ public class PatientRegistrationController extends BaseController {
 			PatientRegistrationResponse response = new PatientRegistrationResponse();
 			response.setPersonDetail(personDetailsResponse);
 
-			// Retrieve patient registration history
-			boolean patientRegistrationExist = false;
+			// Retrieve patient registration history			
+			RegistrationResult result = patientRegistrationService.getPatientRegistration(patientRegistrationRequest.getPayee(), patientRegistrationRequest.getPhn());
 
-			List<PatientRegister> registrationRecords = patientRegistrationService
-					.getPatientRegistration(patientRegistrationRequest.getPayee(), patientRegistrationRequest.getPhn());
-
-			String registrationMessage = patientRegistrationService.checkRegistrationDetails(registrationRecords,
-					patientRegistrationRequest.getPayee(), patientRegistrationRequest.getPhn());
-
-			if (!registrationRecords.isEmpty() || StringUtils.isNotBlank(registrationMessage)) {
-				patientRegistrationExist = true;
-
-			}
-
-			List<PatientRegisterModel> registrationHistory = convertPatientRegistration(registrationRecords);
+			List<PatientRegisterModel> registrationHistory = convertPatientRegistration(result.getPatientRegisters());
 			response.setPatientRegistrationHistory(registrationHistory);
 
-			handlePatientRegistrationResponse(response, patientRegistrationExist, registrationMessage);
+			handlePatientRegistrationResponse(response, result);
 
 			ResponseEntity<PatientRegistrationResponse> responseEntity = ResponseEntity.ok(response);
 
 			transactionComplete(transaction);
-			registrationRecords.forEach(record -> addAffectedParty(transaction, IdentifierType.PHN, record.getPhn(),
-					AffectedPartyDirection.OUTBOUND));
+			addAffectedParty(transaction, IdentifierType.PHN, personDetailsResponse.getPhn(), AffectedPartyDirection.OUTBOUND);
+			result.getPatientRegisters().forEach(record -> {
+				addAffectedParty(transaction, IdentifierType.PAYEE_NUMBER, record.getPayeeNumber(), AffectedPartyDirection.OUTBOUND);
+				addAffectedParty(transaction, IdentifierType.PRACTITIONER_NUMBER, record.getRegisteredPractitionerNumber(), AffectedPartyDirection.OUTBOUND);
+			});
 
 			return responseEntity;
 		} catch (Exception e) {
@@ -133,26 +132,33 @@ public class PatientRegistrationController extends BaseController {
 	}
 
 	/**
-	 * The Payee number submitted in the request must match the Payee Number mapped to the current user in the BCSC to Payee Number mappings.
+	 * The Payee number submitted in the request must match the Payee Number mapped to the current user in the User to Payee Number mappings.
 	 * 
 	 * @param patientRegistrationRequest
 	 * @throws HNWebException
 	 */
 	private void validatePayeeNumberMapping(PatientRegistrationRequest patientRegistrationRequest) {
 		UserInfo userInfo = SecurityUtil.loadUserInfo();
-		Optional<BcscPayeeMapping> bcscPayeeMappingOptional = bcscPayeeMappingService.find(userInfo.getUserId());
-		if (bcscPayeeMappingOptional.isEmpty()) {
+		Optional<UserPayeeMapping> userPayeeMappingOptional = userPayeeMappingService.find(userInfo.getUserId());
+		if (userPayeeMappingOptional.isEmpty()) {
 			logger.error("No Payee Number mapping was found for the current user");
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Payee Number mapping was found for the current user");
 		}
-		if (!StringUtils.equals(patientRegistrationRequest.getPayee(), bcscPayeeMappingOptional.get().getPayeeNumber())) {
-			logger.error("Payee field value {} does not match the Payee Number mapped to this user", patientRegistrationRequest.getPayee());
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Payee field value %s does not match the Payee Number mapped to this user", patientRegistrationRequest.getPayee()));
+		String mappedPayeeNumber = userPayeeMappingOptional.get().getPayeeNumber();
+        String requestPayeeNumber = patientRegistrationRequest.getPayee();
+        if (!StringUtils.equals(requestPayeeNumber, mappedPayeeNumber)) {
+			logger.error("Payee field value {} does not match the Payee Number mapped to this user", requestPayeeNumber);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Payee field value %s does not match the Payee Number mapped to this user", requestPayeeNumber));
 		}
+        boolean isActive = pbfClinicPayeeService.getPayeeActiveStatus(mappedPayeeNumber);
+        if (!isActive) {
+            logger.error("Payee {} is not active", requestPayeeNumber);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Payee %s is not active", requestPayeeNumber));
+        }
 	}
 
 	private PatientRegistrationResponse handlePatientRegistrationResponse(
-			PatientRegistrationResponse patientRegistrationResponse, boolean registrationExist, String infoMessage) {
+			PatientRegistrationResponse patientRegistrationResponse, RegistrationResult registrationResult) {
 
 		Set<String> messages = new HashSet<>();
 		patientRegistrationResponse.setStatus(StatusEnum.SUCCESS);
@@ -160,9 +166,9 @@ public class PatientRegistrationController extends BaseController {
 
 		GetPersonDetailsResponse personDetailsResponse = patientRegistrationResponse.getPersonDetail();
 
-		if (registrationExist && !StringUtils.isEmpty(infoMessage)) {
-			messages.add(infoMessage);
-		} else if (!registrationExist) {
+		if (registrationResult.exists() && StringUtils.isNotEmpty(registrationResult.getRegistrationMessage())) {
+			messages.add(registrationResult.getRegistrationMessage());
+		} else if (!registrationResult.exists()) {
 			// Check if demographics record found
 			if (personDetailsResponse.getStatus() == StatusEnum.ERROR) {
 				// If no demographics record found, set status as WARNING
@@ -202,6 +208,9 @@ public class PatientRegistrationController extends BaseController {
 							: patientRegistration.getDeregistrationReasonCode());
 			model.setPayeeNumber(patientRegistration.getPayeeNumber());
 			model.setRegisteredPractitionerNumber(patientRegistration.getRegisteredPractitionerNumber());
+			model.setRegisteredPractitionerFirstName(patientRegistration.getRegisteredPractitionerFirstName());
+			model.setRegisteredPractitionerMiddleName(patientRegistration.getRegisteredPractitionerMiddleName());
+			model.setRegisteredPractitionerSurname(patientRegistration.getRegisteredPractitionerSurname());
 			model.setPhn(patientRegistration.getPhn());
 
 			pateintRegisterModels.add(model);
@@ -212,6 +221,9 @@ public class PatientRegistrationController extends BaseController {
 	}
 
 	private String formatDate(Date date) {
+		if (date == null) {
+			return null;
+		}
 		LocalDate localDate = convertDate(date);
 		return localDate.format(DATE_TIME_FORMATTER_yyyyMMdd);
 	}
@@ -223,8 +235,15 @@ public class PatientRegistrationController extends BaseController {
 	private String setPatientRegistrationStatus(Date cancelDate, Date effectiveDate) {
 		String currentStatus = "";
 		LocalDate today = LocalDate.now();
-		LocalDate convertedCancelDate = convertDate(cancelDate);
 		LocalDate convertedEffectiveDate = convertDate(effectiveDate);
+		
+		LocalDate convertedCancelDate = null;
+		if (cancelDate != null) {
+			convertedCancelDate = convertDate(cancelDate);
+		} else {
+			// Default the cancelDate to end of time to simplify logic
+			convertedCancelDate = LocalDate.of(9999, 12, 31);
+		}
 
 		// “Registered” when the current date is greater than or equal to the effective
 		// date and less than or equal to the cancel date.

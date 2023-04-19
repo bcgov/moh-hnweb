@@ -8,10 +8,6 @@ export const API_DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
 
 export const DEFAULT_ERROR_MESSAGE = 'Please correct errors before submitting'
 
-const HCIM_CONTACT_NO = config.HCIM_CONTACT_NO || import.meta.env.VITE_HCIM_CONTACT_NO
-
-export const DATE_OF_DEATH_MESSAGE = 'A Date of Death was found for this client record. If this is incorrect, confirm the correct PHN was entered and contact HCIM at ' + HCIM_CONTACT_NO + ' (8am to 4:30pm, Mon - Fri).'
-
 export const COVERAGE_END_REASONS = new Map([
   ['OO', 'OPTED OUT'],
   ['OOPM', 'OUT OF PROVINCE MOVE'],
@@ -53,20 +49,20 @@ export const IMMIGRATION_CODES = [
 export const PRIOR_RESIDENCES = [
   { text: 'Select', value: '' },
   { text: 'Alberta', value: 'AB' },
+  { text: 'British Columbia', value: 'BC' },
   { text: 'Manitoba', value: 'MB' },
   { text: 'New Brunswick', value: 'NB' },
   { text: 'Newfoundland', value: 'NL' },
-  { text: 'Nova Scotia', value: 'NS' },
   { text: 'Northwest Territories', value: 'NT' },
+  { text: 'Nova Scotia', value: 'NS' },
   { text: 'Nunavut', value: 'NU' },
-  { text: 'Other Country', value: 'OC' },
   { text: 'Ontario', value: 'ON' },
   { text: 'P.E.I', value: 'PE' },
   { text: 'Quebec', value: 'QC' },
   { text: 'Saskatchewan', value: 'SK' },
-  { text: 'U.S.A', value: 'US' },
   { text: 'Yukon', value: 'YT' },
-  { text: 'British Columbia', value: 'BC' },
+  { text: 'Other Country', value: 'OC' },
+  { text: 'U.S.A', value: 'US' },
 ]
 
 // State options

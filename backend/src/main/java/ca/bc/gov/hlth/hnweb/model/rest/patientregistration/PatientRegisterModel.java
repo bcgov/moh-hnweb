@@ -8,6 +8,12 @@ public class PatientRegisterModel {
 
 	private String registeredPractitionerNumber;
 
+	private String registeredPractitionerFirstName;
+
+	private String registeredPractitionerMiddleName;
+
+	private String registeredPractitionerSurname;
+
 	private String effectiveDate;
 
 	private String cancelDate;
@@ -19,7 +25,7 @@ public class PatientRegisterModel {
 	private String deregistrationReasonCode;
 
 	private String cancelReasonCode;
-	
+
 	private String currentStatus;
 
 	public String getPhn() {
@@ -44,6 +50,30 @@ public class PatientRegisterModel {
 
 	public void setRegisteredPractitionerNumber(String registeredPractitionerNumber) {
 		this.registeredPractitionerNumber = registeredPractitionerNumber;
+	}
+
+	public String getRegisteredPractitionerFirstName() {
+		return registeredPractitionerFirstName;
+	}
+
+	public void setRegisteredPractitionerFirstName(String registeredPractitionerFirstName) {
+		this.registeredPractitionerFirstName = registeredPractitionerFirstName;
+	}
+
+	public String getRegisteredPractitionerMiddleName() {
+		return registeredPractitionerMiddleName;
+	}
+
+	public void setRegisteredPractitionerMiddleName(String registeredPractitionerMiddleName) {
+		this.registeredPractitionerMiddleName = registeredPractitionerMiddleName;
+	}
+
+	public String getRegisteredPractitionerSurname() {
+		return registeredPractitionerSurname;
+	}
+
+	public void setRegisteredPractitionerSurname(String registeredPractitionerSurname) {
+		this.registeredPractitionerSurname = registeredPractitionerSurname;
 	}
 
 	public String getEffectiveDate() {
