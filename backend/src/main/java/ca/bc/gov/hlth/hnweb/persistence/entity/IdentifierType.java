@@ -5,7 +5,9 @@ public enum IdentifierType {
 	GROUP_NUMBER("Group Number"),
 	GROUP_MEMBER_NUMBER("Group Member Number"),
 	CONTRACT_NUMBER("Contract Number"),
-	DEPARTMENT_NUMBER("Department Number");
+	DEPARTMENT_NUMBER("Department Number"),
+	PAYEE_NUMBER("Payee Number"),
+	PRACTITIONER_NUMBER("Practitioner Number");
 
 	private String value;
 

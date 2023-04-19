@@ -10,12 +10,22 @@ public class AuditReportRequest {
 	private List<String> organizations;
 
 	private List<String> transactionTypes;
+	
+	private List<String> spgRoles;
 
 	private LocalDate startDate;
 
 	private LocalDate endDate;
 
 	private Integer page = 0;
+
+	public List<String> getSpgRoles() {
+		return spgRoles;
+	}
+
+	public void setSpgRoles(List<String> spgRoles) {
+		this.spgRoles = spgRoles;
+	}
 
 	private Integer rows = 10;
 

@@ -58,7 +58,7 @@ public class AuditServiceTest {
 	@BeforeAll
     static void setUp() {
         mockStatic = Mockito.mockStatic(SecurityUtil.class);
-        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "14100f9b-7daa-4938-a833-c8c56a5988e9", "00000010", "hnweb-user", UUID.randomUUID().toString()));
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "14100f9b-7daa-4938-a833-c8c56a5988e9", "00000010", "Ministry of Health", "hnweb-user", UUID.randomUUID().toString()));
     }
 	
     @AfterAll
@@ -82,6 +82,25 @@ public class AuditServiceTest {
 		assertNotNull(transaction.getTransactionId());
 		assertEquals(TransactionType.CHECK_ELIGIBILITY.getValue(), transaction.getType());
 		assertEquals("unittest", transaction.getUserId());
+	}
+	
+	@Test
+	public void testCreateTransaction_withUserInfoNull() {
+		mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(null);
+		Transaction newTransaction = auditService.createTransaction("0:0:0:0:0:0:0:1", TransactionType.CHECK_ELIGIBILITY);
+
+		Optional<Transaction> optional = transactionRepository.findById(newTransaction.getTransactionId());
+		assertTrue(optional.isPresent());
+		
+		Transaction transaction = optional.get();
+		assertTrue(StringUtils.isEmpty(transaction.getOrganization()));
+		assertNotNull(transaction.getServer());
+		assertTrue(StringUtils.isEmpty(transaction.getSessionId()));
+		assertEquals("0:0:0:0:0:0:0:1", transaction.getSourceIp());
+		assertNotNull(transaction.getStartTime());
+		assertNotNull(transaction.getTransactionId());
+		assertEquals(TransactionType.CHECK_ELIGIBILITY.getValue(), transaction.getType());
+		assertTrue(StringUtils.isEmpty(transaction.getUserId()));
 	}
 
 	@Test

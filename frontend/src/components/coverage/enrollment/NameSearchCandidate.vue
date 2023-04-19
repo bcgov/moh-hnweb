@@ -6,7 +6,7 @@
       </AppCol>
       <AppCol class="col6">
         <span>{{ formatDetailsLine1 }}</span>
-        <span>{{ formatDetailsLine2 }}</span>
+        <span v-html="formatDetailsLine2"></span>
         <span>{{ formatDetailsLine3 }}</span>
       </AppCol>
       <AppCol class="col1">
@@ -60,6 +60,9 @@ export default {
       if (this.candidate.dateOfBirth) {
         details = details + ' ' + this.candidate.dateOfBirth
       }
+      if (this.candidate.dateOfDeath && this.candidate.dateOfDeath != 'N/A') {
+        details = `${details} <span class = "text-deceased"> ${this.candidate.dateOfDeath}</span>`
+      }
       if (this.candidate.phn) {
         details = details + ' ' + this.candidate.phn
       }
@@ -69,6 +72,7 @@ export default {
       if (this.candidate.identifierTypeCode) {
         details = details + ' ' + this.candidate.identifierTypeCode
       }
+
       return details
     },
     formatDetailsLine3() {
@@ -132,9 +136,19 @@ export default {
       this.submitting = true
       this.studyPermitHolderStore.resident = this.candidate
       this.alertStore.dismissAlert()
+      if (this.candidate.dateOfDeath && this.candidate.dateOfDeath != 'N/A') {
+        const dateOfDeathMessage = `A Date of Death was found for this client record. If this is incorrect, confirm the correct PHN was entered and contact HCIM at ${config.HCIM_CONTACT_NO || import.meta.env.VITE_HCIM_CONTACT_NO} (8am to 4:30pm, Mon - Fri).`
+        this.alertStore.setErrorAlert(dateOfDeathMessage)
+      }
       this.$router.push({ name: 'AddVisaResidentWithPHN', query: { pageAction: 'REGISTRATION' } })
       this.submitting = false
     },
   },
 }
 </script>
+<style>
+.text-deceased {
+  color: red;
+  font-weight: bold;
+}
+</style>

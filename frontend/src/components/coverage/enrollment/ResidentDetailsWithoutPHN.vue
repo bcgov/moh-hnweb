@@ -155,7 +155,7 @@ import {
   validateGroupNumber,
   validateGroupMemberNumber,
   validateDepartmentNumber,
-  validateDOB,
+  validateFutureDate,
   validateTelephone,
   validateMailingPostalCode,
   validatePostalCode,
@@ -353,7 +353,7 @@ export default {
       },
       dateOfBirth: {
         required,
-        validateDOB: helpers.withMessage(VALIDATE_DOB_MESSAGE, validateDOB),
+        validateDOB: helpers.withMessage(VALIDATE_DOB_MESSAGE, validateFutureDate),
       },
       gender: {
         required,

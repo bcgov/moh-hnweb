@@ -13,6 +13,8 @@ public class NameSearchResult {
 	private String surname;
 
 	private String dateOfBirth;
+	
+	private String dateOfDeath;
 
 	private String gender;
 
@@ -88,6 +90,14 @@ public class NameSearchResult {
 
 	public void setDateOfBirth(String dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getDateOfDeath() {
+		return dateOfDeath;
+	}
+
+	public void setDateOfDeath(String dateOfDeath) {
+		this.dateOfDeath = dateOfDeath;
 	}
 
 	public String getGender() {

@@ -1,11 +1,14 @@
 package ca.bc.gov.hlth.hnweb.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.PatientRegister;
+import ca.bc.gov.hlth.hnweb.persistence.repository.pbf.PBFClinicPayeeRepository;
 import ca.bc.gov.hlth.hnweb.persistence.repository.pbf.PatientRegisterRepository;
 
 /**
@@ -17,47 +20,50 @@ public class PatientRegistrationService extends BaseService {
 
 	@Autowired
 	private PatientRegisterRepository patientRegisterRepository;
-
-	public List<PatientRegister> getPatientRegistration(String payee, String phn) {
-		return patientRegisterRepository.findPatientRegisterByPayeeClinic(payee, phn);
-	}
-
-	public List<String> getPayeeByPHN(String phn) {
-		return patientRegisterRepository.findPayeeByphn(phn);
-	}
+	
+	@Autowired
+	private PBFClinicPayeeRepository pbfClinicPayeeRepository;
 
 	/**
-	 * This method checks if patient is registered with same MSP Payee number or Payee within/outside reporting group
-	 * @param registrationRecords
-	 * @param payee
-	 * @param phn
-	 * @return message if not registerd with assigned user payee.
+	 * Gets a history of Patient Registration.
+	 * @param payee The user's payee
+	 * @param phn The patient's PHN
+	 * @return The results and message (if applicable)
 	 */
-	public String checkRegistrationDetails(List<PatientRegister> registrationRecords, String payee, String phn) {
-		String registrationMessage = "";
-
-		if (!registrationRecords.isEmpty()) {
-
-			boolean isSamePayeeWithinGroup = registrationRecords.stream()
-					.anyMatch(p -> payee.contentEquals(p.getPayeeNumber()));
-
-			// Check if patient registered with different payee within reporting group
-			if (!isSamePayeeWithinGroup) {
-				registrationMessage = "Patient is registered with a different MSP Payee number within the reporting group";
-			}
-
-		} else {
-			// Check if patient registered with different payee outside of reporting group
-			List<String> payeeList = getPayeeByPHN(phn);
-
-			if (!payeeList.isEmpty()) {
-
-				registrationMessage = "Patient is registered with a different MSP Payee number outside of reporting group";
-
-			}
-
+	public RegistrationResult getPatientRegistration(String payee, String phn) {
+		RegistrationResult result = new RegistrationResult();		
+		List<String> validPayees = pbfClinicPayeeRepository.findPayeeClinicViaReportGroup(payee);
+		
+		// Find all registration records
+		List<PatientRegister> patientRegisters = patientRegisterRepository.findByPhnAndArchivedIsFalseOrderByEffectiveDateDesc(phn);
+		
+		if (patientRegisters.isEmpty()) {
+			return result;
 		}
-		return registrationMessage;
+		
+		// Check the most recent record
+		PatientRegister currentPatientRegister = patientRegisters.get(0);
+		
+		String registrationMessage = null;
+		// If the current payee matches the user's payee do nothing
+		if (!StringUtils.equals(currentPatientRegister.getPayeeNumber(), payee)) {
+
+			if (validPayees.contains(currentPatientRegister.getPayeeNumber())) {
+				// If the current payee belongs to the user's report group show a warning		
+				registrationMessage = "Patient is registered with a different MSP Payee number within the reporting group";
+			} else {
+				// If the current payee is outisde the user's reporting group show a warning			
+				registrationMessage = "Patient is registered with a different MSP Payee number outside of reporting group";
+			}
+			
+		}
+
+		// Filter out records from outside the reporting group
+		List<PatientRegister> filteredPatientRegisters = patientRegisters.stream().filter(pr -> validPayees.contains(pr.getPayeeNumber())).collect(Collectors.toList());
+		
+		result.setPatientRegisters(filteredPatientRegisters);
+		result.setRegistrationMessage(registrationMessage);
+		return result;
 	}
 
 }

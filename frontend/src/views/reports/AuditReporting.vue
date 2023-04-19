@@ -7,24 +7,36 @@
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col3">
-          <AppLabel>Organization</AppLabel>
+        <AppCol class="col3 checkbox-row">
+          <AppLabel class="checkbox-label">Organization</AppLabel>
           <div class="checkbox-wrapper">
-            <label class="checkbox" :for="option" v-for="option in organizationOptions" :key="option">
-              {{ option }}
-              <input type="checkbox" :id="option" :value="option" v-model="organizations" />
+            <label class="checkbox" :for="option.id" v-for="option in organizationOptions" :key="option.id">
+              {{ option.id }} {{ option.name ? ' - ' : '' }} {{ option.name }}
+              <input type="checkbox" :id="option.id" :value="option.id" v-model="organizations" />
               <span class="checkmark"></span>
             </label>
           </div>
         </AppCol>
       </AppRow>
       <AppRow>
-        <AppCol class="col3">
-          <AppLabel>Transaction Types</AppLabel>
+        <AppCol class="col3 checkbox-row">
+          <AppLabel class="checkbox-label">Transaction Types</AppLabel>
           <div class="checkbox-wrapper">
             <label class="checkbox" :for="option" v-for="option in transactionOptions" :key="option">
               {{ option }}
               <input type="checkbox" :id="option" :value="option" v-model="transactionTypes" />
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </AppCol>
+      </AppRow>
+      <AppRow>
+        <AppCol class="col3 checkbox-row">
+          <AppLabel class="checkbox-label">SPG</AppLabel>
+          <div class="checkbox-wrapper">
+            <label class="checkbox" :for="option" v-for="option in spgOptions" :key="option">
+              {{ option }}
+              <input type="checkbox" :id="option" :value="option" v-model="spgRoles" />
               <span class="checkmark"></span>
             </label>
           </div>
@@ -73,6 +85,8 @@
     >
       <Column field="type" header="Type" :sortable="true"></Column>
       <Column field="organization" header="Organization" :sortable="true"></Column>
+      <Column field="organizationName" header="Organization Name" :sortable="true"></Column>
+      <Column field="spgRole" header="SPG" :sortable="true"></Column>
       <Column field="userId" header="User ID" :sortable="true" class="userId"></Column>
       <Column field="transactionStartTime" header="Transaction Start Time" :sortable="true"></Column>
       <Column field="affectedPartyId" header="Affected Party ID" :sortable="true"></Column>
@@ -89,7 +103,7 @@ import { API_DATE_TIME_FORMAT } from '../../util/constants'
 import useVuelidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 import { DEFAULT_ERROR_MESSAGE } from '../../util/constants.js'
-import { validateUserIdLength, VALIDATE_USER_ID_MESSAGE } from '../../util/validators'
+import { validateFutureDate, validateUserIdLength, VALIDATE_USER_ID_MESSAGE } from '../../util/validators'
 import { useAlertStore } from '../../stores/alert'
 import { handleServiceError } from '../../util/utils'
 import AppLabel from '../../components/ui/AppLabel.vue'
@@ -98,6 +112,9 @@ import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
+
+const VALIDATE_END_DATE_MESSAGE = 'End Date must not be in the future'
+const VALIDATE_START_DATE_MESSAGE = 'Start Date must not be in the future'
 
 export default {
   components: { AppLabel, Column, DataTable, AppDownloadLink },
@@ -115,6 +132,7 @@ export default {
       startDate: dayjs().subtract(1, 'month').startOf('month').toDate(),
       endDate: dayjs().subtract(1, 'month').endOf('month').toDate(),
       organizationOptions: [],
+      spgRoles: [],
       transactionTypes: [],
       searchOk: false,
       searching: false,
@@ -155,6 +173,7 @@ export default {
         'UpdateContractAddress',
         'UpdateNumberAndDept',
       ],
+      spgOptions: ['AUDITUSER', 'E45', 'ELIGIBILITY', 'HELPDESK', 'MANAGEMSPPAYEENUMBER', 'PBFUSER', 'PREMIUMADMIN', 'PREMIUMADMINPLUS', 'SOCIALSECTOR', 'TRAININGHEALTHAUTH', 'VISARESIDENT'],
     }
   },
   mounted() {
@@ -197,6 +216,7 @@ export default {
       this.auditReportRequest.transactionTypes = this.transactionTypes
       this.auditReportRequest.startDate = this.startDate
       this.auditReportRequest.endDate = this.endDate
+      this.auditReportRequest.spgRoles = this.spgRoles
     },
     async loadLazyData() {
       this.loading = true
@@ -204,6 +224,7 @@ export default {
         this.result = (
           await AuditService.getAuditReport({
             organizations: this.organizations,
+            spgRoles: this.spgRoles,
             transactionTypes: this.transactionTypes,
             userId: this.userId,
             startDate: this.startDate,
@@ -252,6 +273,7 @@ export default {
       try {
         await AuditService.downloadAuditReport({
           organizations: this.auditReportRequest.organizations,
+          spgRoles: this.auditReportRequest.spgRoles,
           transactionTypes: this.auditReportRequest.transactionTypes,
           userId: this.auditReportRequest.userId,
           startDate: this.auditReportRequest.startDate,
@@ -284,6 +306,7 @@ export default {
     resetForm() {
       this.userId = ''
       this.organizations = []
+      this.spgRoles = []
       this.transactionTypes = []
       this.startDate = dayjs().subtract(1, 'month').startOf('month').toDate()
       this.endDate = dayjs().subtract(1, 'month').endOf('month').toDate()
@@ -338,9 +361,11 @@ export default {
       },
       startDate: {
         required,
+        validateFutureDate: helpers.withMessage(VALIDATE_START_DATE_MESSAGE, validateFutureDate),
       },
       endDate: {
         required,
+        validateFutureDate: helpers.withMessage(VALIDATE_END_DATE_MESSAGE, validateFutureDate),
       },
     }
   },
@@ -355,6 +380,12 @@ export default {
 </script>
 
 <style scoped>
+.checkbox-row {
+  padding-bottom: 10px;
+}
+.checkbox-label {
+  padding-bottom: 5px;
+}
 .checkbox-wrapper {
   max-height: 125px;
   width: 400px;

@@ -10,10 +10,10 @@ class ViewPatientRegistrationPage {
     this.clearButton = Selector('button[type="button"]')
 
     this.patientDemoDetail = Selector('#patientDetail')
-    this.registrationResult = Selector('#registrationResult')
     this.registrationData = Selector('#registrationData')
 
-    this.resultRow1 = Selector('div').withAttribute('class', 'col col2')
+    this.resultRow1 = Selector('div').withAttribute('class', 'row').nth(3)
+    this.resultRow2 = Selector('div').withAttribute('class', 'row detailsRow').nth(0)
 
     this.clientInstructions = Selector('#clientInstructions')
     this.additionalInfoMessage = Selector('div').withAttribute('class', 'info-message')

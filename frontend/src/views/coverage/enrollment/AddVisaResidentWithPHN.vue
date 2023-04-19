@@ -96,6 +96,7 @@ export default {
             secondName: data.secondName,
             surname: data.surname,
             dateOfBirth: data.dateOfBirth,
+            dateOfDeath: data.dateOfDeath,
             gender: data.gender,
             address1: data.address1,
             address2: data.address2,
@@ -112,6 +113,10 @@ export default {
           },
           status: data.status,
           message: data.message,
+        }
+        if (data?.dateOfDeath && data.dateOfDeath != 'N/A') {
+          const dateOfDeathMessage = `A Date of Death was found for this client record. If this is incorrect, confirm the correct PHN was entered and contact HCIM at ${config.HCIM_CONTACT_NO || import.meta.env.VITE_HCIM_CONTACT_NO} (8am to 4:30pm, Mon - Fri).`
+          this.alertStore.setErrorAlert(dateOfDeathMessage)
         }
         if (this.getPersonDetailsResult?.status === 'error') {
           this.alertStore.setErrorAlert(this.getPersonDetailsResult?.message)

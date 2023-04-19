@@ -90,16 +90,13 @@ function validatePostalCodeFormat(postalCode) {
 }
 
 /**
- * Validates that the Date of Birth is not in the future.
+ * Validates that the Date is not in the future.
  */
-export function validateDOB(dateOfBirth) {
-  if (!helpers.req(dateOfBirth)) {
+export function validateFutureDate(date) {
+  if (!helpers.req(date)) {
     return true
   }
-  if (dayjs(dateOfBirth).isAfter(dayjs().startOf('day'))) {
-    return false
-  }
-  return true
+  return !dayjs(date).isAfter(dayjs(), 'day')
 }
 
 /**
@@ -259,13 +256,13 @@ export function validateSecondName(secondName) {
 }
 
 /**
- * Validate that input is allowed length and that it contains only alphabets
+ * Validate that input is allowed length and that it contains only alphabets, hyphen and whitespace
  */
 function validateAlpha(input, length) {
   if (input.length > length) {
     return true
   }
-  return !/[^a-zA-Z]/.test(input)
+  return !/[^a-z-\sA-Z]/.test(input)
 }
 
 /**

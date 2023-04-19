@@ -8,6 +8,8 @@ public class AuditRecord {
 
 	private String organization;
 
+	private String organizationName;
+
 	private String userId;
 
 	private LocalDateTime transactionStartTime;
@@ -17,6 +19,16 @@ public class AuditRecord {
 	private String affectedPartyType;
 
 	private String transactionId;
+
+	private String spgRole;
+
+	public String getSpgRole() {
+		return spgRole;
+	}
+
+	public void setSpgRole(String spgRole) {
+		this.spgRole = spgRole;
+	}
 
 	public String getType() {
 		return type;
@@ -32,6 +44,14 @@ public class AuditRecord {
 
 	public void setOrganization(String organization) {
 		this.organization = organization;
+	}
+
+	public String getOrganizationName() {
+		return organizationName;
+	}
+
+	public void setOrganizationName(String organizationName) {
+		this.organizationName = organizationName;
 	}
 
 	public String getUserId() {
