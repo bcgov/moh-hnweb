@@ -4,7 +4,6 @@
     <p>Before you begin:</p>
     <p>Use the PHN Inquiry screen to confirm that the employee and dependents are currently eligible for publicly funded health care (Eligible? = Y), and to check student status for any dependent children between 19 and 24.</p>
     <p>A group member's Home Address must be in British Columbia.</p>
-    <p>NOTE - this screen does not have CITY or PROVINCE fields. Be sure to put them in the last completed line of address i.e., Line 1: 403 1575 Main Street Line 2: Vancouver BC.</p>
     <p>If the transaction was successful, the PHN will be displayed. You may wish to use the PHN with Get Contract Periods to verify that the correct group member has been added as of the correct date.</p>
   </AppHelp>
   <div id="addGroupMember" v-if="addMode">
