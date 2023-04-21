@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ca.bc.gov.hlth.hnweb.pbf.PBFProperties;
 import ca.bc.gov.hlth.hnweb.persistence.entity.pbf.PatientRegister;
 import ca.bc.gov.hlth.hnweb.persistence.repository.pbf.PBFClinicPayeeRepository;
 import ca.bc.gov.hlth.hnweb.persistence.repository.pbf.PatientRegisterRepository;
@@ -23,6 +24,9 @@ public class PatientRegistrationService extends BaseService {
 	
 	@Autowired
 	private PBFClinicPayeeRepository pbfClinicPayeeRepository;
+	
+	@Autowired
+	private PBFProperties pbfProperties;
 
 	/**
 	 * Gets a history of Patient Registration.
@@ -61,9 +65,26 @@ public class PatientRegistrationService extends BaseService {
 		// Filter out records from outside the reporting group
 		List<PatientRegister> filteredPatientRegisters = patientRegisters.stream().filter(pr -> validPayees.contains(pr.getPayeeNumber())).collect(Collectors.toList());
 		
+		// Populate descriptions
+		filteredPatientRegisters.forEach(pr -> {
+			populateDescriptions(pr);
+		});
+		
 		result.setPatientRegisters(filteredPatientRegisters);
 		result.setRegistrationMessage(registrationMessage);
 		return result;
+	}
+	
+	private void populateDescriptions(PatientRegister patientRegister) {
+		if (StringUtils.isNotEmpty(patientRegister.getCancelReasonCode())) {
+			patientRegister.setCancelReasonDesc(pbfProperties.getCancelReasons().get(patientRegister.getCancelReasonCode()));
+		}
+		if (StringUtils.isNotEmpty(patientRegister.getDeregistrationReasonCode())) {
+			patientRegister.setDeregistrationReasonDesc(pbfProperties.getDeregistrationReasons().get(patientRegister.getDeregistrationReasonCode()));
+		}
+		if (StringUtils.isNotEmpty(patientRegister.getRegistrationReasonCode())) {
+			patientRegister.setRegistrationReasonDesc(pbfProperties.getRegistrationReasons().get(patientRegister.getRegistrationReasonCode()));
+		}
 	}
 
 }

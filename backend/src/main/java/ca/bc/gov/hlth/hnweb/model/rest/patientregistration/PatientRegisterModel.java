@@ -22,9 +22,15 @@ public class PatientRegisterModel {
 
 	private String registrationReasonCode;
 
+	private String registrationReasonDesc;
+
 	private String deregistrationReasonCode;
 
+	private String deregistrationReasonDesc;
+
 	private String cancelReasonCode;
+
+	private String cancelReasonDesc;
 
 	private String currentStatus;
 
@@ -131,4 +137,29 @@ public class PatientRegisterModel {
 	public void setCurrentStatus(String currentStatus) {
 		this.currentStatus = currentStatus;
 	}
+
+	public String getRegistrationReasonDesc() {
+		return registrationReasonDesc;
+	}
+
+	public void setRegistrationReasonDesc(String registrationReasonDesc) {
+		this.registrationReasonDesc = registrationReasonDesc;
+	}
+
+	public String getDeregistrationReasonDesc() {
+		return deregistrationReasonDesc;
+	}
+
+	public void setDeregistrationReasonDesc(String deregistrationReasonDesc) {
+		this.deregistrationReasonDesc = deregistrationReasonDesc;
+	}
+
+	public String getCancelReasonDesc() {
+		return cancelReasonDesc;
+	}
+
+	public void setCancelReasonDesc(String cancelReasonDesc) {
+		this.cancelReasonDesc = cancelReasonDesc;
+	}
+
 }

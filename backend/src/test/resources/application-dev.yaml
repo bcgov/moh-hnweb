@@ -119,3 +119,12 @@ security:
       - AddPermitHolderWOPHN
       - AddPermitHolderWithPHN
       - AuditReporting
+      
+# PBF reason code tables
+pbf:
+  cancelReasons:
+    A: CANCELLED
+  deregistrationReasons:
+    A0: DECEASED
+  registrationReasons:
+    "01": LIVES IN CATCHMENT AREA
