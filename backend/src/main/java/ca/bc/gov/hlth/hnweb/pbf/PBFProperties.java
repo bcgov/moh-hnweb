@@ -1,6 +1,7 @@
 package ca.bc.gov.hlth.hnweb.pbf;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ public class PBFProperties {
 	}
 
 	public void setCancelReasons(Map<String, String> cancelReasons) {
-		this.cancelReasons = cancelReasons;
+		this.cancelReasons = uppercaseKeys(cancelReasons);
 	}
 
 	public Map<String, String> getDeregistrationReasons() {
@@ -32,7 +33,7 @@ public class PBFProperties {
 	}
 
 	public void setDeregistrationReasons(Map<String, String> deregistrationReasons) {
-		this.deregistrationReasons = deregistrationReasons;
+		this.deregistrationReasons = uppercaseKeys(deregistrationReasons);
 	}
 
 	public Map<String, String> getRegistrationReasons() {
@@ -40,7 +41,11 @@ public class PBFProperties {
 	}
 
 	public void setRegistrationReasons(Map<String, String> registrationReasons) {
-		this.registrationReasons = registrationReasons;
+		this.registrationReasons = uppercaseKeys(registrationReasons);
+	}
+	
+	private Map<String, String> uppercaseKeys(Map<String, String> reasons) {
+		return reasons.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toUpperCase(), e -> e.getValue()));
 	}
 
 }

@@ -74,16 +74,16 @@ public class PatientRegistrationService extends BaseService {
 		result.setRegistrationMessage(registrationMessage);
 		return result;
 	}
-	
+
 	private void populateDescriptions(PatientRegister patientRegister) {
 		if (StringUtils.isNotEmpty(patientRegister.getCancelReasonCode())) {
-			patientRegister.setCancelReasonDesc(pbfProperties.getCancelReasons().get(patientRegister.getCancelReasonCode()));
+			patientRegister.setCancelReasonDesc(pbfProperties.getCancelReasons().get(patientRegister.getCancelReasonCode().toUpperCase()));
 		}
 		if (StringUtils.isNotEmpty(patientRegister.getDeregistrationReasonCode())) {
-			patientRegister.setDeregistrationReasonDesc(pbfProperties.getDeregistrationReasons().get(patientRegister.getDeregistrationReasonCode()));
+			patientRegister.setDeregistrationReasonDesc(pbfProperties.getDeregistrationReasons().get(patientRegister.getDeregistrationReasonCode().toUpperCase()));
 		}
 		if (StringUtils.isNotEmpty(patientRegister.getRegistrationReasonCode())) {
-			patientRegister.setRegistrationReasonDesc(pbfProperties.getRegistrationReasons().get(patientRegister.getRegistrationReasonCode()));
+			patientRegister.setRegistrationReasonDesc(pbfProperties.getRegistrationReasons().get(patientRegister.getRegistrationReasonCode().toUpperCase()));
 		}
 	}
 
