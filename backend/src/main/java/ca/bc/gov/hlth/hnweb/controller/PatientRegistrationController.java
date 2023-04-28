@@ -189,7 +189,7 @@ public class PatientRegistrationController extends BaseController {
 	}
 
 	private List<PatientRegisterModel> convertPatientRegistration(List<PatientRegister> patientRegistrations) {
-		List<PatientRegisterModel> pateintRegisterModels = new ArrayList<>();
+		List<PatientRegisterModel> patientRegisterModels = new ArrayList<>();
 		patientRegistrations.forEach(patientRegistration -> {
 			PatientRegisterModel model = new PatientRegisterModel();
 
@@ -201,11 +201,14 @@ public class PatientRegistrationController extends BaseController {
 			model.setRegistrationReasonCode(
 					StringUtils.isEmpty(patientRegistration.getRegistrationReasonCode()) ? NOT_APPLICABLE
 							: patientRegistration.getRegistrationReasonCode());
+			model.setRegistrationReasonDesc(patientRegistration.getRegistrationReasonDesc());
 			model.setCancelReasonCode(StringUtils.isEmpty(patientRegistration.getCancelReasonCode()) ? NOT_APPLICABLE
 					: patientRegistration.getCancelReasonCode());
+			model.setCancelReasonDesc(patientRegistration.getCancelReasonDesc());
 			model.setDeregistrationReasonCode(
 					StringUtils.isEmpty(patientRegistration.getDeregistrationReasonCode()) ? NOT_APPLICABLE
 							: patientRegistration.getDeregistrationReasonCode());
+			model.setDeregistrationReasonDesc(patientRegistration.getDeregistrationReasonDesc());
 			model.setPayeeNumber(patientRegistration.getPayeeNumber());
 			model.setRegisteredPractitionerNumber(patientRegistration.getRegisteredPractitionerNumber());
 			model.setRegisteredPractitionerFirstName(patientRegistration.getRegisteredPractitionerFirstName());
@@ -213,10 +216,10 @@ public class PatientRegistrationController extends BaseController {
 			model.setRegisteredPractitionerSurname(patientRegistration.getRegisteredPractitionerSurname());
 			model.setPhn(patientRegistration.getPhn());
 
-			pateintRegisterModels.add(model);
+			patientRegisterModels.add(model);
 
 		});
-		return pateintRegisterModels;
+		return patientRegisterModels;
 
 	}
 

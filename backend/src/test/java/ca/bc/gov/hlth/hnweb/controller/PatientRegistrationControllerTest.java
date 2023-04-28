@@ -367,16 +367,54 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		assertEquals(StatusEnum.WARNING, patientRegistrationResponse.getStatus());
 		assertEquals(0, patientRegistrationHistory.size());
 	}
+	
+	@Test
+	public void testRegistrationHistory_success_reasonDescriptions() throws Exception {
+		createPBFClinicPayee();
+		createPatientRegister();
+		mockBackEnd.enqueue(new MockResponse()
+				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse.xml"))
+				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+
+		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "924917e3-970a-482d-88b5-244be4c19d70", "00000010", "Ministry of Health", "hnweb-user", UUID.randomUUID().toString()));
+
+        PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
+		viewPatientRegisterRequest.setPhn("7363117305");
+		viewPatientRegisterRequest.setPayee("X0053");
+		ResponseEntity<PatientRegistrationResponse> response = patientRegistrationController
+				.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest());
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		PatientRegistrationResponse patientRegistrationResponse = response.getBody();
+		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse
+				.getPatientRegistrationHistory();
+		
+		// Check the additional message , status and number of valid records
+		assertEquals(StatusEnum.SUCCESS, patientRegistrationResponse.getStatus());
+		assertEquals(1, patientRegistrationHistory.size());
+		
+		PatientRegisterModel patientRegister = patientRegistrationHistory.get(0);
+		assertEquals("0", patientRegister.getAdministrativeCode());
+		assertEquals("99991231", patientRegister.getCancelDate());
+		assertEquals("A", patientRegister.getCancelReasonCode());
+		assertEquals("CANCELLED", patientRegister.getCancelReasonDesc());
+		assertEquals("Registered", patientRegister.getCurrentStatus());
+		assertEquals("A0", patientRegister.getDeregistrationReasonCode());
+		assertEquals("DECEASED", patientRegister.getDeregistrationReasonDesc());
+		assertEquals("01", patientRegister.getRegistrationReasonCode());
+		assertEquals("LIVES IN CATCHMENT AREA", patientRegister.getRegistrationReasonDesc());
+	}
 
 	private void createPatientRegister() throws ParseException {
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+		
+		Date cancelDate = format.parse("99991231");
 
 		PatientRegister patientRegister1 = new PatientRegister();
 		patientRegister1.setAdministrativeCode("0");
-		Date effectiveDate1 = format.parse("20210705");
-		patientRegister1.setEffectiveDate(effectiveDate1);
-		Date cancelDate1 = format.parse("99991231");
-		patientRegister1.setCancelDate(cancelDate1);
+		patientRegister1.setEffectiveDate(format.parse("20210705"));
+		patientRegister1.setCancelDate(cancelDate);
 		patientRegister1.setCancelReasonCode("Q");
 		patientRegister1.setRegistrationReasonCode("SL");
 		patientRegister1.setPayeeNumber("T0055");
@@ -391,10 +429,8 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 
 		PatientRegister patientRegister2 = new PatientRegister();
 		patientRegister2.setAdministrativeCode("0");
-		Date effectiveDate2 = format.parse("20210705");
-		patientRegister2.setEffectiveDate(effectiveDate2);
-		Date cancelDate2 = format.parse("99991231");
-		patientRegister2.setCancelDate(cancelDate2);
+		patientRegister2.setEffectiveDate(format.parse("20210705"));
+		patientRegister2.setCancelDate(cancelDate);
 		patientRegister2.setRegistrationReasonCode("SL");
 		patientRegister2.setPayeeNumber("T0053");
 		patientRegister2.setRegisteredPractitionerNumber("X2753");
@@ -406,10 +442,8 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 
 		PatientRegister patientRegister3 = new PatientRegister();
 		patientRegister3.setAdministrativeCode("0");
-		Date effectiveDate3 = format.parse("20210705");
-		patientRegister3.setEffectiveDate(effectiveDate3);
-		Date cancelDate3 = format.parse("99991231");
-		patientRegister3.setCancelDate(cancelDate3);
+		patientRegister3.setEffectiveDate(format.parse("20210705"));
+		patientRegister3.setCancelDate(cancelDate);
 		patientRegister3.setRegistrationReasonCode("SL");
 		patientRegister3.setPayeeNumber("T0053");
 		patientRegister3.setRegisteredPractitionerNumber("X2753");
@@ -421,10 +455,8 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 
 		PatientRegister patientRegister4 = new PatientRegister();
 		patientRegister4.setAdministrativeCode("0");
-		Date effectiveDate4 = format.parse("20210705");
-		patientRegister4.setEffectiveDate(effectiveDate4);
-		Date cancelDate4 = format.parse("99991231");
-		patientRegister4.setCancelDate(cancelDate4);
+		patientRegister4.setEffectiveDate(format.parse("20210705"));
+		patientRegister4.setCancelDate(cancelDate);
 		patientRegister4.setRegistrationReasonCode("SL");
 		patientRegister4.setPayeeNumber("X0058");
 		patientRegister4.setRegisteredPractitionerNumber("X2753");
@@ -436,10 +468,8 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 
 		PatientRegister patientRegister5 = new PatientRegister();
 		patientRegister5.setAdministrativeCode("0");
-		Date effectiveDate5 = format.parse("20210705");
-		patientRegister5.setEffectiveDate(effectiveDate5);
-		Date cancelDate5 = format.parse("99991231");
-		patientRegister5.setCancelDate(cancelDate5);
+		patientRegister5.setEffectiveDate(format.parse("20210705"));
+		patientRegister5.setCancelDate(cancelDate);
 		patientRegister5.setRegistrationReasonCode("SL");
 		patientRegister5.setPayeeNumber("X0053");
 		patientRegister5.setRegisteredPractitionerNumber("X2753");
@@ -451,8 +481,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		
 		PatientRegister patientRegister6 = new PatientRegister();
 		patientRegister6.setAdministrativeCode("0");
-		Date effectiveDate6 = format.parse("20230101");
-		patientRegister6.setEffectiveDate(effectiveDate6);
+		patientRegister6.setEffectiveDate(format.parse("20230101"));
 		patientRegister6.setCancelDate(null);
 		patientRegister6.setRegistrationReasonCode("SL");
 		patientRegister6.setPayeeNumber("X0053");
@@ -465,8 +494,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		
 		PatientRegister patientRegister7 = new PatientRegister();
 		patientRegister7.setAdministrativeCode("0");
-		Date effectiveDate7 = format.parse("20230101");
-		patientRegister7.setEffectiveDate(effectiveDate7);
+		patientRegister7.setEffectiveDate(format.parse("20230101"));
 		patientRegister7.setCancelDate(null);
 		patientRegister7.setRegistrationReasonCode("SL");
 		patientRegister7.setPayeeNumber("T0053");
@@ -479,8 +507,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		
 		PatientRegister patientRegister8 = new PatientRegister();
 		patientRegister8.setAdministrativeCode("0");
-		Date effectiveDate8 = format.parse("20240101");
-		patientRegister8.setEffectiveDate(effectiveDate8);
+		patientRegister8.setEffectiveDate(format.parse("20240101"));
 		patientRegister8.setCancelDate(null);
 		patientRegister8.setRegistrationReasonCode("SL");
 		patientRegister8.setPayeeNumber("X0053");
@@ -490,6 +517,23 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		patientRegister8.setRegisteredPractitionerSurname("Thomas");
 		patientRegister8.setArchived(Boolean.FALSE);
 		patientRegister8.setPhn("7363117304");
+		
+		// This record is somewhat artificial in that all the reason codes are set
+		// It's just used for testing description mapping
+		PatientRegister patientRegister9 = new PatientRegister();
+		patientRegister9.setAdministrativeCode("0");
+		patientRegister9.setEffectiveDate(format.parse("20230101"));
+		patientRegister9.setCancelDate(cancelDate);
+		patientRegister9.setCancelReasonCode("A");
+		patientRegister9.setDeregistrationReasonCode("A0");
+		patientRegister9.setRegistrationReasonCode("01");
+		patientRegister9.setPayeeNumber("X0053");
+		patientRegister9.setRegisteredPractitionerNumber("X2753");
+		patientRegister9.setRegisteredPractitionerFirstName("Sam");
+		patientRegister9.setRegisteredPractitionerMiddleName("E");
+		patientRegister9.setRegisteredPractitionerSurname("Thomas");
+		patientRegister9.setArchived(Boolean.FALSE);
+		patientRegister9.setPhn("7363117305");
 
 		patientRegisterRepository.save(patientRegister1);
 		patientRegisterRepository.save(patientRegister2);
@@ -499,6 +543,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		patientRegisterRepository.save(patientRegister6);
 		patientRegisterRepository.save(patientRegister7);
 		patientRegisterRepository.save(patientRegister8);
+		patientRegisterRepository.save(patientRegister9);
 	}
 
 	private void createPBFClinicPayee() {

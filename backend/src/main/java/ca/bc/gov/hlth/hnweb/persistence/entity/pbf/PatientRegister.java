@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "patient_register", schema = "pbf")
@@ -60,6 +61,15 @@ public class PatientRegister {
 
 	@Column(name = "archived", nullable = false)
 	private Boolean archived = Boolean.FALSE;
+
+	@Transient
+	private String cancelReasonDesc;
+
+	@Transient
+	private String registrationReasonDesc;
+
+	@Transient
+	private String deregistrationReasonDesc;
 
 	public Long getPatientRegisterId() {
 		return patientRegisterId;
@@ -173,6 +183,30 @@ public class PatientRegister {
 		this.archived = archived;
 	}
 
+	public String getCancelReasonDesc() {
+		return cancelReasonDesc;
+	}
+
+	public void setCancelReasonDesc(String cancelReasonDesc) {
+		this.cancelReasonDesc = cancelReasonDesc;
+	}
+
+	public String getRegistrationReasonDesc() {
+		return registrationReasonDesc;
+	}
+
+	public void setRegistrationReasonDesc(String registrationReasonDesc) {
+		this.registrationReasonDesc = registrationReasonDesc;
+	}
+
+	public String getDeregistrationReasonDesc() {
+		return deregistrationReasonDesc;
+	}
+
+	public void setDeregistrationReasonDesc(String deregistrationReasonDesc) {
+		this.deregistrationReasonDesc = deregistrationReasonDesc;
+	}
+
 	@Override
 	public String toString() {
 		return "PatientRegister [patientRegisterId=" + patientRegisterId + ", phn=" + phn + ", payeeNumber=" + payeeNumber
@@ -181,7 +215,18 @@ public class PatientRegister {
 				+ ", registeredPractitionerSurname=" + registeredPractitionerSurname + ", effectiveDate=" + effectiveDate + ", cancelDate="
 				+ cancelDate + ", administrativeCode=" + administrativeCode + ", registrationReasonCode=" + registrationReasonCode
 				+ ", deregistrationReasonCode=" + deregistrationReasonCode + ", cancelReasonCode=" + cancelReasonCode + ", archived="
-				+ archived + "]";
+				+ archived + ", cancelReasonDes=" + cancelReasonDesc + ", registrationReasonDesc=" + registrationReasonDesc
+				+ ", deregistrationReasonDesc=" + deregistrationReasonDesc + ", getPatientRegisterId()=" + getPatientRegisterId()
+				+ ", getPhn()=" + getPhn() + ", getPayeeNumber()=" + getPayeeNumber() + ", getRegisteredPractitionerNumber()="
+				+ getRegisteredPractitionerNumber() + ", getRegisteredPractitionerFirstName()=" + getRegisteredPractitionerFirstName()
+				+ ", getRegisteredPractitionerMiddleName()=" + getRegisteredPractitionerMiddleName()
+				+ ", getRegisteredPractitionerSurname()=" + getRegisteredPractitionerSurname() + ", getEffectiveDate()="
+				+ getEffectiveDate() + ", getCancelDate()=" + getCancelDate() + ", getAdministrativeCode()=" + getAdministrativeCode()
+				+ ", getRegistrationReasonCode()=" + getRegistrationReasonCode() + ", getDeregistrationReasonCode()="
+				+ getDeregistrationReasonCode() + ", getCancelReasonCode()=" + getCancelReasonCode() + ", getArchived()=" + getArchived()
+				+ ", getCancelReasonDes()=" + getCancelReasonDesc() + ", getRegistrationReasonDesc()=" + getRegistrationReasonDesc()
+				+ ", getDeregistrationReasonDesc()=" + getDeregistrationReasonDesc() + ", getClass()=" + getClass() + ", hashCode()="
+				+ hashCode() + ", toString()=" + super.toString() + "]";
 	}
 
 }

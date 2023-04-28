@@ -5,7 +5,7 @@
   </AppCol>
   <AppCol class="col2"><AppOutput :value="registration.currentStatus" /></AppCol>
   <AppCol class="col1"><AppOutput :value="registration.administrativeCode" /></AppCol>
-  <AppCol class="col3">
+  <AppCol class="col6">
     <div v-html="registrationData" />
   </AppCol>
 </template>
@@ -27,15 +27,42 @@ export default {
         data = `${data}  Practitioner Name: ${this.practitionerName}<br/>`
       }
       if (this.registration.registrationReasonCode) {
-        data = `${data} Reg Reason: ${this.registration.registrationReasonCode}<br/>`
+        data = `${data} Reg Reason: ${this.registrationReason}<br/>`
       }
       if (this.registration.deregistrationReasonCode) {
-        data = `${data} DeReg Reason: ${this.registration.deregistrationReasonCode}<br/>`
+        data = `${data} DeReg Reason: ${this.deregistrationReason}<br/>`
       }
       if (this.registration.cancelReasonCode) {
-        data = `${data} Cancel Reason: ${this.registration.cancelReasonCode}<br/>`
+        data = `${data} Cancel Reason: ${this.cancelReason}<br/>`
       }
       return data
+    },
+    cancelReason() {
+      let cancelReason = this.registration.cancelReasonCode
+      if (cancelReason !== 'N/A') {
+        if (this.registration.cancelReasonDesc) {
+          cancelReason = cancelReason + ' - ' + this.registration.cancelReasonDesc
+        }
+      }
+      return cancelReason
+    },
+    deregistrationReason() {
+      let deregistrationReason = this.registration.deregistrationReasonCode
+      if (deregistrationReason !== 'N/A') {
+        if (this.registration.deregistrationReasonDesc) {
+          deregistrationReason = deregistrationReason + ' - ' + this.registration.deregistrationReasonDesc
+        }
+      }
+      return deregistrationReason
+    },
+    registrationReason() {
+      let registrationReason = this.registration.registrationReasonCode
+      if (registrationReason !== 'N/A') {
+        if (this.registration.registrationReasonDesc) {
+          registrationReason = registrationReason + ' - ' + this.registration.registrationReasonDesc
+        }
+      }
+      return registrationReason
     },
     practitionerName() {
       let name = ''

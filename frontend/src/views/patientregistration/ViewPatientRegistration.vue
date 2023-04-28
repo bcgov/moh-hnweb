@@ -70,7 +70,7 @@
         <AppCol class="col1">
           <AppOutput label="Admin Code" />
         </AppCol>
-        <AppCol class="col3">
+        <AppCol class="col6">
           <AppOutput label="Registration Data" />
         </AppCol>
       </AppRow>
