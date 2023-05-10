@@ -7,11 +7,13 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,7 +56,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 	private PBFClinicPayeeRepository pbfClinicPayeeRepository;
 	
 	@Test
-	public void testRegistrationHistory_success_nullCancelDate() throws Exception {
+	public void testGetRegistrationHistory_success_nullCancelDate() throws Exception {
 		createPBFClinicPayee();
 		createPatientRegister();
 		mockBackEnd.enqueue(new MockResponse()
@@ -81,7 +83,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 	}
 	
 	@Test
-	public void testRegistrationHistory_success_payeeWithinGroup_DemoRecord() throws Exception {
+	public void testGetRegistrationHistory_success_payeeWithinGroup_DemoRecord() throws Exception {
 		createPBFClinicPayee();
 		createPatientRegister();
 		mockBackEnd.enqueue(new MockResponse()
@@ -132,7 +134,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testRegistrationHistory_success_payeeWithinGroup_NoDemoRecord() throws Exception {
+	public void testGetRegistrationHistory_success_payeeWithinGroup_NoDemoRecord() throws Exception {
 		createPBFClinicPayee();
 		createPatientRegister();
 
@@ -162,7 +164,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testRegistrationHistory_success_diffPayeeWithinGroup() throws Exception {
+	public void testGetRegistrationHistory_success_diffPayeeWithinGroup() throws Exception {
 		createPBFClinicPayee();
 		createPatientRegister();
 
@@ -191,8 +193,12 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		assertEquals(1, patientRegistrationHistory.size());
 	}
 	
+	/**
+	 * Tests that a warning message is returned when the PHN exists for the Payee but a newer record exists within the reporting group.
+	 * @throws Exception
+	 */
 	@Test
-	public void testRegistrationHistory_success_newerPayeeOutsideGroup() throws Exception {
+	public void testGetRegistrationHistory_success_newerPayeeInsideGroup() throws Exception {
 		createPBFClinicPayee();
 		createPatientRegister();
 
@@ -222,13 +228,13 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 	}
 
 	/**
-	 * Tests that a warning message shows when the PHN exists within the reporting group BUT a newer record (via effective date)
+	 * Tests that a warning message shows when the PHN exists within the reporting group BUT a newer record
 	 * exists outside the reporting group.
 	 * 
 	 * @throws Exception
 	 */
 	@Test
-	public void testRegistrationHistory_success_diffPayeeOutsideGroup() throws Exception {
+	public void testGetRegistrationHistory_success_newerPayeeOutsideGroup() throws Exception {
 		createPBFClinicPayee();
 		createPatientRegister();
 
@@ -256,9 +262,44 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		assertEquals(StatusEnum.SUCCESS, patientRegistrationResponse.getStatus());
 		assertEquals(1, patientRegistrationHistory.size());
 	}
+	
+	/**
+	 * Tests that a warning message does not show when the PHN exists within the reporting group BUT a newer record
+	 * exists outside the reporting group since the record is cancelled.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testGetRegistrationHistory_success_newerPayeeOutsideGroupCancelled() throws Exception {
+		createPBFClinicPayee();
+		createPatientRegister();
+
+		mockBackEnd.enqueue(new MockResponse()
+				.setBody(TestUtil.convertXMLFileToString("src/test/resources/GetDemographicsResponse.xml"))
+				.addHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE.toString()));
+
+		//Override the base setup of the user to ensure we return the User with the User ID mapped to the this Payee Number 
+        mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "e4414a89-8974-4cff-9677-d9d2df6f9cfb", "00000010", "Ministry of Health", "hnweb-user", UUID.randomUUID().toString()));
+
+		PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
+		viewPatientRegisterRequest.setPhn("7363117305");
+		viewPatientRegisterRequest.setPayee("T0053");
+		ResponseEntity<PatientRegistrationResponse> response = patientRegistrationController
+				.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest());
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		PatientRegistrationResponse patientRegistrationResponse = response.getBody();
+		List<PatientRegisterModel> patientRegistrationHistory = patientRegistrationResponse
+				.getPatientRegistrationHistory();
+		
+		// Check the additional message , status and number of valid records
+		assertEquals("", patientRegistrationResponse.getAdditionalInfoMessage());
+		assertEquals(StatusEnum.SUCCESS, patientRegistrationResponse.getStatus());
+		assertEquals(1, patientRegistrationHistory.size());
+	}
 
 	@Test
-	public void testRegistrationHistory_warning_NoPBFAndDemographicsRecord() throws Exception {
+	public void testGetRegistrationHistory_warning_NoPBFAndDemographicsRecord() throws Exception {
 		createPBFClinicPayee();
 		createPatientRegister();
 
@@ -285,7 +326,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testRegistrationHistory_failure_no_payee_mapping_found() throws Exception {
+	public void testGetRegistrationHistory_failure_no_payee_mapping_found() throws Exception {
 		createPBFClinicPayee();
 		createPatientRegister();
 
@@ -304,7 +345,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testRegistrationHistory_failure_incorrect_payee_mapping_found() throws Exception {
+	public void testGetRegistrationHistory_failure_incorrect_payee_mapping_found() throws Exception {
 		createPBFClinicPayee();
 		createPatientRegister();
 
@@ -323,7 +364,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 	}
 	
     @Test
-    public void testRegistrationHistory_failure_inactive_cancelled() throws Exception {
+    public void testGetRegistrationHistory_failure_inactive_cancelled() throws Exception {
         createPBFClinicPayee();
         createPatientRegister();
 
@@ -342,7 +383,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
     }
     
 	@Test
-	public void testRegistrationHistory_archived() throws Exception {
+	public void testGetRegistrationHistory_archived() throws Exception {
 		createPBFClinicPayee();
 		createPatientRegister();
 
@@ -369,7 +410,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 	}
 	
 	@Test
-	public void testRegistrationHistory_success_reasonDescriptions() throws Exception {
+	public void testGetRegistrationHistory_success_reasonDescriptions() throws Exception {
 		createPBFClinicPayee();
 		createPatientRegister();
 		mockBackEnd.enqueue(new MockResponse()
@@ -380,7 +421,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
         mockStatic.when(SecurityUtil::loadUserInfo).thenReturn(new UserInfo("unittest", "924917e3-970a-482d-88b5-244be4c19d70", "00000010", "Ministry of Health", "hnweb-user", UUID.randomUUID().toString()));
 
         PatientRegistrationRequest viewPatientRegisterRequest = new PatientRegistrationRequest();
-		viewPatientRegisterRequest.setPhn("7363117305");
+		viewPatientRegisterRequest.setPhn("7363117306");
 		viewPatientRegisterRequest.setPayee("X0053");
 		ResponseEntity<PatientRegistrationResponse> response = patientRegistrationController
 				.getPatientRegistration(viewPatientRegisterRequest, createHttpServletRequest());
@@ -409,12 +450,12 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 	private void createPatientRegister() throws ParseException {
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
 		
-		Date cancelDate = format.parse("99991231");
+		Date cancelDate1 = format.parse("99991231");
 
 		PatientRegister patientRegister1 = new PatientRegister();
 		patientRegister1.setAdministrativeCode("0");
 		patientRegister1.setEffectiveDate(format.parse("20210705"));
-		patientRegister1.setCancelDate(cancelDate);
+		patientRegister1.setCancelDate(cancelDate1);
 		patientRegister1.setCancelReasonCode("Q");
 		patientRegister1.setRegistrationReasonCode("SL");
 		patientRegister1.setPayeeNumber("T0055");
@@ -430,7 +471,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		PatientRegister patientRegister2 = new PatientRegister();
 		patientRegister2.setAdministrativeCode("0");
 		patientRegister2.setEffectiveDate(format.parse("20210705"));
-		patientRegister2.setCancelDate(cancelDate);
+		patientRegister2.setCancelDate(cancelDate1);
 		patientRegister2.setRegistrationReasonCode("SL");
 		patientRegister2.setPayeeNumber("T0053");
 		patientRegister2.setRegisteredPractitionerNumber("X2753");
@@ -443,7 +484,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		PatientRegister patientRegister3 = new PatientRegister();
 		patientRegister3.setAdministrativeCode("0");
 		patientRegister3.setEffectiveDate(format.parse("20210705"));
-		patientRegister3.setCancelDate(cancelDate);
+		patientRegister3.setCancelDate(cancelDate1);
 		patientRegister3.setRegistrationReasonCode("SL");
 		patientRegister3.setPayeeNumber("T0053");
 		patientRegister3.setRegisteredPractitionerNumber("X2753");
@@ -456,7 +497,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		PatientRegister patientRegister4 = new PatientRegister();
 		patientRegister4.setAdministrativeCode("0");
 		patientRegister4.setEffectiveDate(format.parse("20210705"));
-		patientRegister4.setCancelDate(cancelDate);
+		patientRegister4.setCancelDate(cancelDate1);
 		patientRegister4.setRegistrationReasonCode("SL");
 		patientRegister4.setPayeeNumber("X0058");
 		patientRegister4.setRegisteredPractitionerNumber("X2753");
@@ -469,7 +510,7 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		PatientRegister patientRegister5 = new PatientRegister();
 		patientRegister5.setAdministrativeCode("0");
 		patientRegister5.setEffectiveDate(format.parse("20210705"));
-		patientRegister5.setCancelDate(cancelDate);
+		patientRegister5.setCancelDate(cancelDate1);
 		patientRegister5.setRegistrationReasonCode("SL");
 		patientRegister5.setPayeeNumber("X0053");
 		patientRegister5.setRegisteredPractitionerNumber("X2753");
@@ -492,6 +533,8 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		patientRegister6.setArchived(Boolean.FALSE);
 		patientRegister6.setPhn("7363117303");
 		
+		// Newer payee exists outside of reporting group
+		// Newer record not cancelled
 		PatientRegister patientRegister7 = new PatientRegister();
 		patientRegister7.setAdministrativeCode("0");
 		patientRegister7.setEffectiveDate(format.parse("20230101"));
@@ -518,22 +561,49 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		patientRegister8.setArchived(Boolean.FALSE);
 		patientRegister8.setPhn("7363117304");
 		
-		// This record is somewhat artificial in that all the reason codes are set
-		// It's just used for testing description mapping
 		PatientRegister patientRegister9 = new PatientRegister();
 		patientRegister9.setAdministrativeCode("0");
 		patientRegister9.setEffectiveDate(format.parse("20230101"));
-		patientRegister9.setCancelDate(cancelDate);
-		patientRegister9.setCancelReasonCode("A");
-		patientRegister9.setDeregistrationReasonCode("A0");
-		patientRegister9.setRegistrationReasonCode("01");
-		patientRegister9.setPayeeNumber("X0053");
+		patientRegister9.setCancelDate(null);
+		patientRegister9.setRegistrationReasonCode("SL");
+		patientRegister9.setPayeeNumber("T0053");
 		patientRegister9.setRegisteredPractitionerNumber("X2753");
 		patientRegister9.setRegisteredPractitionerFirstName("Sam");
 		patientRegister9.setRegisteredPractitionerMiddleName("E");
 		patientRegister9.setRegisteredPractitionerSurname("Thomas");
 		patientRegister9.setArchived(Boolean.FALSE);
 		patientRegister9.setPhn("7363117305");
+		
+		PatientRegister patientRegister10 = new PatientRegister();
+		patientRegister10.setAdministrativeCode("0");
+		patientRegister10.setEffectiveDate(format.parse("20240101"));
+		Date cancelDate2 = DateUtils.truncate(DateUtils.addDays(new Date(), -1), Calendar.DAY_OF_MONTH); 
+		patientRegister10.setCancelDate(cancelDate2);
+		patientRegister10.setRegistrationReasonCode("SL");
+		patientRegister10.setPayeeNumber("X0053");
+		patientRegister10.setRegisteredPractitionerNumber("X2753");
+		patientRegister10.setRegisteredPractitionerFirstName("Sam");
+		patientRegister10.setRegisteredPractitionerMiddleName("E");
+		patientRegister10.setRegisteredPractitionerSurname("Thomas");
+		patientRegister10.setArchived(Boolean.FALSE);
+		patientRegister10.setPhn("7363117305");
+		
+		// This record is somewhat artificial in that all the reason codes are set
+		// It's just used for testing description mapping
+		PatientRegister patientRegister11 = new PatientRegister();
+		patientRegister11.setAdministrativeCode("0");
+		patientRegister11.setEffectiveDate(format.parse("20230101"));
+		patientRegister11.setCancelDate(cancelDate1);
+		patientRegister11.setCancelReasonCode("A");
+		patientRegister11.setDeregistrationReasonCode("A0");
+		patientRegister11.setRegistrationReasonCode("01");
+		patientRegister11.setPayeeNumber("X0053");
+		patientRegister11.setRegisteredPractitionerNumber("X2753");
+		patientRegister11.setRegisteredPractitionerFirstName("Sam");
+		patientRegister11.setRegisteredPractitionerMiddleName("E");
+		patientRegister11.setRegisteredPractitionerSurname("Thomas");
+		patientRegister11.setArchived(Boolean.FALSE);
+		patientRegister11.setPhn("7363117306");
 
 		patientRegisterRepository.save(patientRegister1);
 		patientRegisterRepository.save(patientRegister2);
@@ -544,6 +614,8 @@ public class PatientRegistrationControllerTest extends BaseControllerTest {
 		patientRegisterRepository.save(patientRegister7);
 		patientRegisterRepository.save(patientRegister8);
 		patientRegisterRepository.save(patientRegister9);
+		patientRegisterRepository.save(patientRegister10);
+		patientRegisterRepository.save(patientRegister11);
 	}
 
 	private void createPBFClinicPayee() {
