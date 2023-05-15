@@ -1,4 +1,5 @@
 <template>
+  <AppInfoPanel :visible="displayMessage" :message="additionalInfoMessage" />
   <h1>Patient Registration</h1>
   <AppHelp>
     <p>This shows a patient registration history using a patient's PHN and MSP Payee information.</p>
@@ -81,10 +82,6 @@
       </AppRow>
     </div>
   </div>
-  <br />
-  <Transition>
-    <AppInfoPanel :visible="displayMessage" :message="additionalInfoMessage" @close="handleClose()" />
-  </Transition>
 </template>
 
 <script>

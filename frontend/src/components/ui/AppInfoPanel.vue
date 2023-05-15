@@ -5,11 +5,6 @@
         <span style="white-space: pre-line">{{ message }}</span>
       </p>
     </div>
-    <div class="info-close">
-      <a @click="$emit('close')">
-        <font-awesome-icon icon="times" />
-      </a>
-    </div>
   </div>
 </template>
 
