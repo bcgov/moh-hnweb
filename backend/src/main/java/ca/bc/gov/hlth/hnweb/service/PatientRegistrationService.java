@@ -1,9 +1,12 @@
 package ca.bc.gov.hlth.hnweb.service;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,11 +54,11 @@ public class PatientRegistrationService extends BaseService {
 		String registrationMessage = null;
 		// If the current payee matches the user's payee do nothing
 		if (!StringUtils.equals(currentPatientRegister.getPayeeNumber(), payee)) {
-
+			Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
 			if (validPayees.contains(currentPatientRegister.getPayeeNumber())) {
 				// If the current payee belongs to the user's report group show a warning		
 				registrationMessage = "Patient is registered with a different MSP Payee number within the reporting group";
-			} else {
+			} else if (currentPatientRegister.getCancelDate() == null || !today.after(currentPatientRegister.getCancelDate())) {
 				// If the current payee is outisde the user's reporting group show a warning			
 				registrationMessage = "Patient is registered with a different MSP Payee number outside of reporting group";
 			}
