@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class SecurityUtil {
 	public static final String CLAIM_USERNAME = "preferred_username";
 	private static final String CLAIM_SUB = "sub"; // the Subject claim identifies the principal that is the subject of the JWT
 	public static final String CLAIM_ORGANIZATION = "org_details";
+	public static final String CLAIM_CLIENT_ID = "clientId"; 
 
 	private static final String ORGANIZATION_ID = "id";
 
@@ -36,6 +38,8 @@ public class SecurityUtil {
 	private static final String USER_ROLES = "roles";
 	
 	private static final String UNKNOWN_ROLE = "UNKNOWN";
+
+    private static final String SERVICE_SUFFIX = "-SERVICE";
 
 	private static String KEYCLOAK_CLIENT;
 
@@ -166,6 +170,18 @@ public class SecurityUtil {
 		});
 
 		return permissions;
+	}
+	
+	/**
+	 * Checks if the jwt is generated for a service account. 
+	 * @param jwt
+	 * @return
+	 */
+	public static Boolean isServiceAccount(Jwt jwt) {
+		// This is just a rough check to see if the client is a service account
+		// It's good enough to detect any current MSP Direct API clients
+        return StringUtils.endsWith(jwt.getClaim(SecurityUtil.CLAIM_CLIENT_ID), SERVICE_SUFFIX);
+
 	}
 
 }
