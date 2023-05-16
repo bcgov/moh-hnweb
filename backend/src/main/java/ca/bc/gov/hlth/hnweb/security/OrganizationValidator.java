@@ -37,8 +37,7 @@ public class OrganizationValidator implements OAuth2TokenValidator<Jwt> {
         
         String org = jwt.getClaim(SecurityUtil.CLAIM_ORGANIZATION);
         
-        // Service accounts won't have an Organization so don't validate
-        if (SecurityUtil.isServiceAccount(jwt) || StringUtils.isNotEmpty(org)) {
+        if (StringUtils.isNotEmpty(org)) {
             return OAuth2TokenValidatorResult.success();
         } else {
     		// Audit the failure. Only users with defined Organization should be considered as authorized and able to access MSP Direct.
