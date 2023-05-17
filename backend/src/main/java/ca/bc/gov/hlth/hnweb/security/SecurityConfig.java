@@ -81,10 +81,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .mvcMatchers(HttpMethod.POST, "/msp-contracts/update-contract-address").hasRole("UpdateContractAddress")
             .mvcMatchers(HttpMethod.POST, "/msp-contracts/inquire-contract").hasAnyRole("ContractInquiry", "GetContractAddress")  //inquire-contract endpoint will require this multi role as it is used by both R40 and R37 transactions
             .mvcMatchers(HttpMethod.POST, "/patient-registration/get-patient-registration").hasRole("PatientRegistration")
-            .mvcMatchers(HttpMethod.GET,  "/payee-mapping/").hasAnyRole("PatientRegistration", "ManageMSPPayeeNumber")
+            .mvcMatchers(HttpMethod.GET,  "/payee-mapping/{id}").hasAnyRole("PatientRegistration", "ManageMSPPayeeNumber")
             .mvcMatchers(HttpMethod.POST, "/payee-mapping").hasRole("ManageMSPPayeeNumber")
-            .mvcMatchers(HttpMethod.PUT,  "/payee-mapping/").hasRole("ManageMSPPayeeNumber")
-            .mvcMatchers(HttpMethod.DELETE, "/payee-mapping/").hasRole("ManageMSPPayeeNumber")
+            .mvcMatchers(HttpMethod.PUT,  "/payee-mapping/{id}").hasRole("ManageMSPPayeeNumber")
+            .mvcMatchers(HttpMethod.DELETE, "/payee-mapping/{id}").hasRole("ManageMSPPayeeNumber")
             .mvcMatchers(HttpMethod.GET, "/user/**").fullyAuthenticated()
             .mvcMatchers("/*").denyAll()
             .and()
