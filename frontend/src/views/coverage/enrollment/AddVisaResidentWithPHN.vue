@@ -12,7 +12,7 @@
 <script>
 import useVuelidate from '@vuelidate/core'
 import EnrollmentService from '../../../services/EnrollmentService'
-import { formatPersonName } from '../../../util/utils'
+import { formatPersonName, resolveGender } from '../../../util/utils'
 import ResidentPHN from '../../../components/coverage/enrollment/ResidentPHN.vue'
 import ResidentDetails from '../../../components/coverage/enrollment/ResidentDetails.vue'
 import RegistrationConfirmation from '../../../components/coverage/enrollment/RegistrationConfirmation.vue'
@@ -97,7 +97,7 @@ export default {
             surname: data.surname,
             dateOfBirth: data.dateOfBirth,
             dateOfDeath: data.dateOfDeath,
-            gender: data.gender,
+            gender: resolveGender(data.gender),
             address1: data.address1,
             address2: data.address2,
             address3: data.address2,
