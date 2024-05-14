@@ -95,9 +95,11 @@ export default {
 
         let data = (await EnrollmentService.performNameSearch(searchCriteria)).data
         this.nameSearchResult = {
-          candidates: data.candidates.map((c) => {
-            return { ...c, gender: resolveGender(c.gender) }
-          }),
+          candidates: data.candidates
+            ? data.candidates.map((c) => {
+                return { ...c, gender: resolveGender(c.gender) }
+              })
+            : null,
           status: data.status,
           message: data.message,
         }
