@@ -421,7 +421,8 @@ public class AuditControllerTest extends BaseControllerTest {
 
     @Test
     public void testGetAuditReport_outboundForEnrollSubscriber() throws IOException {
-        createAuditReports(2, TransactionType.ENROLL_SUBSCRIBER, IdentifierType.PHN.getValue(), AffectedPartyDirection.OUTBOUND.getValue());
+//      For R50 z05 no PHN is submitted so only Outbound record is created
+        createAuditReports(1, TransactionType.ENROLL_SUBSCRIBER, IdentifierType.PHN.getValue(), AffectedPartyDirection.OUTBOUND.getValue());
 
         List<String> orgs = new ArrayList<>();
         orgs.add("00000010");
@@ -446,17 +447,57 @@ public class AuditControllerTest extends BaseControllerTest {
         assertEquals(HttpStatus.OK, auditReport.getStatusCode());
 
         List<AuditRecord> records = auditReport.getBody().getRecords();
-        assertEquals(2, records.size());
+        assertEquals(1, records.size());
         assertEquals(TransactionType.ENROLL_SUBSCRIBER.getValue(), records.get(0).getType());
         assertEquals(IdentifierType.PHN.getValue(), records.get(0).getAffectedPartyType());
+        assertEquals(AffectedPartyDirection.OUTBOUND.getValue(), records.get(0).getDirection());
 
     }
 
     @Test
-    public void testGetAuditReport_outboundAndInbound() throws IOException {
-        createAuditReports(2, TransactionType.ENROLL_SUBSCRIBER, IdentifierType.PHN.getValue(), AffectedPartyDirection.OUTBOUND.getValue());
+    public void testGetAuditReport_inboundForEnrollSubscriber() throws IOException {
+//      R50 z06 does not return a PHN, just an ACK so no PHN record is logged for Outbound
         createAuditReports(1, TransactionType.ENROLL_SUBSCRIBER, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
+
+        List<String> orgs = new ArrayList<>();
+        orgs.add("00000010");
+
+        List<String> spgRoles = new ArrayList<>();
+        spgRoles.add("TRAININGHEALTHAUTH");
+
+        AuditReportRequest auditReportRequest = new AuditReportRequest();
+        auditReportRequest.setUserId("hnweb1");
+        auditReportRequest.setOrganizations(orgs);
+        auditReportRequest.setSpgRoles(spgRoles);
+        auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
+        auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
+        auditReportRequest.setPage(0);
+        auditReportRequest.setRows(10);
+        auditReportRequest.setSortDirection("DESC");
+        auditReportRequest.setSortField("type");
+
+        ResponseEntity<AuditReportResponse> auditReport = auditReportController.getAuditReport(auditReportRequest,
+                createHttpServletRequest());
+
+        assertEquals(HttpStatus.OK, auditReport.getStatusCode());
+
+        List<AuditRecord> records = auditReport.getBody().getRecords();
+        assertEquals(1, records.size());
+        assertEquals(TransactionType.ENROLL_SUBSCRIBER.getValue(), records.get(0).getType());
+        assertEquals(IdentifierType.PHN.getValue(), records.get(0).getAffectedPartyType());
+        assertEquals(AffectedPartyDirection.INBOUND.getValue(), records.get(0).getDirection());
+
+    }
+
+    @Test
+    public void testGetAuditReport_outboundAndInbound_filtered() throws IOException {
+//      R50 z06 does not return a PHN, just an ACK so no PHN record is logged for Outbound
+        createAuditReports(1, TransactionType.ENROLL_SUBSCRIBER, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());        
+//      For R50 z05 no PHN is submitted so only Outbound record is created        
+        createAuditReports(1, TransactionType.ENROLL_SUBSCRIBER, IdentifierType.PHN.getValue(), AffectedPartyDirection.OUTBOUND.getValue());
+//        Add some other types, these should not get returned due to filtering
         createAuditReports(3, TransactionType.CHECK_ELIGIBILITY, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
+        createAuditReports(3, TransactionType.CHECK_ELIGIBILITY, IdentifierType.PHN.getValue(), AffectedPartyDirection.OUTBOUND.getValue());
 
         List<String> orgs = new ArrayList<>();
         orgs.add("00000010");
@@ -485,15 +526,20 @@ public class AuditControllerTest extends BaseControllerTest {
         assertEquals(HttpStatus.OK, auditReport.getStatusCode());
 
         List<AuditRecord> records = auditReport.getBody().getRecords();
-        assertEquals(3, records.size());
+        assertEquals(2, records.size());
 
     }
 
     @Test
-    public void testGetAuditReport_outboundAndInboundAll() throws IOException {
-        createAuditReports(2, TransactionType.ENROLL_SUBSCRIBER, IdentifierType.PHN.getValue(), AffectedPartyDirection.OUTBOUND.getValue());
-        createAuditReports(1, TransactionType.ENROLL_SUBSCRIBER, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
+    public void testGetAuditReport_outboundNotReturnedForAllTypes() throws IOException {
+//      R50 z06 does not return a PHN, just an ACK so no PHN record is logged for Outbound
+        createAuditReports(1, TransactionType.ENROLL_SUBSCRIBER, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());        
+//      For R50 z05 no PHN is submitted so only Outbound record is created        
+        createAuditReports(1, TransactionType.ENROLL_SUBSCRIBER, IdentifierType.PHN.getValue(), AffectedPartyDirection.OUTBOUND.getValue());
+//        Add some other types, only the Inbound should get returned for these types
         createAuditReports(3, TransactionType.CHECK_ELIGIBILITY, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
+        createAuditReports(3, TransactionType.CHECK_ELIGIBILITY, IdentifierType.PHN.getValue(), AffectedPartyDirection.OUTBOUND.getValue());
+
 
         List<String> orgs = new ArrayList<>();
         orgs.add("00000010");
@@ -518,7 +564,7 @@ public class AuditControllerTest extends BaseControllerTest {
         assertEquals(HttpStatus.OK, auditReport.getStatusCode());
 
         List<AuditRecord> records = auditReport.getBody().getRecords();
-        assertEquals(6, records.size());
+        assertEquals(5, records.size());
 
     }
 
