@@ -9,8 +9,10 @@
       <AppRow>
         <AppCol class="col3 checkbox-row">
           <AppLabel class="checkbox-label">Organization</AppLabel>
+          <AppInput @input="filterOrganizations($event)" id="organizationFilter" placeholder="Type org name or ID to filter list" type="text" v-model.trim="organizationFilter" />
+
           <div class="checkbox-wrapper">
-            <label class="checkbox" :for="option.id" v-for="option in organizationOptions" :key="option.id">
+            <label class="checkbox" :for="option.id" v-for="option in organizationOptionsFiltered" :key="option.id">
               {{ option.id }} {{ option.name ? ' - ' : '' }} {{ option.name }}
               <input type="checkbox" :id="option.id" :value="option.id" v-model="organizations" />
               <span class="checkmark"></span>
@@ -132,6 +134,8 @@ export default {
       startDate: dayjs().subtract(1, 'month').startOf('month').toDate(),
       endDate: dayjs().subtract(1, 'month').endOf('month').toDate(),
       organizationOptions: [],
+      organizationOptionsFiltered: [],
+      organizationFilter: '',
       spgRoles: [],
       transactionTypes: [],
       searchOk: false,
@@ -256,6 +260,12 @@ export default {
         this.searching = false
       }
     },
+    filterOrganizations() {
+      this.organizationOptionsFiltered = this.organizationOptions.filter((oo) => {
+        let organizationDisplayName = oo.id + oo.name
+        return organizationDisplayName.toLocaleLowerCase().includes(this.organizationFilter.toLocaleLowerCase())
+      })
+    },
     onPage(event) {
       this.lazyParams = event
       this.loadLazyData()
@@ -372,6 +382,7 @@ export default {
   async created() {
     try {
       this.organizationOptions = (await AuditService.getOrganizations()).data
+      this.organizationOptionsFiltered = this.organizationOptions
     } catch (err) {
       handleServiceError(err, this.alertStore, this.$router)
     }

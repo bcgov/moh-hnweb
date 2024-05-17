@@ -19,7 +19,7 @@ public interface AffectedPartyPageableRepository extends PagingAndSortingReposit
 			+ "(COALESCE(:type, null) is null or af.transaction.type IN (:type)) and "
 			+ "(COALESCE(:spgRoles, null) is null or af.transaction.spgRole IN (:spgRoles)) and "
 			+ "(COALESCE(:userId, null) is null or :userId = '' or upper(af.transaction.userId)= upper(:userId)) and "
-			+ "(af.direction=:direction) and "
+            + "(af.direction=:direction or (af.transaction.type = 'EnrollSubscriber' AND af.identifierType = 'PHN' AND af.direction = 'Outbound')) and "
 			+ "(date_trunc('day', af.transaction.startTime) between :startDate and :endDate) ")
 	Page<AffectedParty> findByTransactionAndDirection(@Param("type") List<String> type,
 			@Param("organizations") List<String> organizations, @Param("spgRoles") List<String> spgRoles,
@@ -31,7 +31,7 @@ public interface AffectedPartyPageableRepository extends PagingAndSortingReposit
 			+ "(COALESCE(:type, null) is null or af.transaction.type IN (:type)) and "
 			+ "(COALESCE(:spgRoles, null) is null or af.transaction.spgRole IN (:spgRoles)) and "
 			+ "(COALESCE(:userId, null) is null or :userId = '' or upper(af.transaction.userId)= upper(:userId)) and "
-			+ "(af.direction=:direction) and "
+            + "(af.direction=:direction or (af.transaction.type = 'EnrollSubscriber' AND af.identifierType = 'PHN' AND af.direction = 'Outbound')) and "
 			+ "(date_trunc('day', af.transaction.startTime) between :startDate and :endDate) ")
 	List<AffectedParty> findByTransactionAndDirection(@Param("type") List<String> type,
 			@Param("organizations") List<String> organizations, @Param("spgRoles") List<String> spgRoles,
