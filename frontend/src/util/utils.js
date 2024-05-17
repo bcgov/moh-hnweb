@@ -48,3 +48,16 @@ export function handleServiceError(err, alertStore, router) {
     alertStore.setErrorAlert(err)
   }
 }
+
+/**
+ * A method to transform the Gender value from anything other than "M" or "F" to "U" as not all systems can 
+ * handle variations such as "*"(masked), "UNK" or "UN".
+ * @param gender 
+ * @returns 
+ */
+export function resolveGender(gender) {
+  if (gender !== 'F' && gender !== 'M') {
+    return 'U'
+  }
+  return gender
+}

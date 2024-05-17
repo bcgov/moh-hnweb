@@ -21,7 +21,7 @@ import ResidentDetailsWithoutPHN from '../../../components/coverage/enrollment/R
 import RegistrationConfirmation from '../../../components/coverage/enrollment/RegistrationConfirmation.vue'
 import { useAlertStore } from '../../../stores/alert'
 import { useStudyPermitHolderStore } from '../../../stores/studyPermitHolder'
-import { handleServiceError } from '../../../util/utils.js'
+import { handleServiceError, resolveGender } from '../../../util/utils.js'
 import AppHelp from '../../../components/ui/AppHelp.vue'
 
 export default {
@@ -93,7 +93,16 @@ export default {
         this.searching = true
         this.alertStore.dismissAlert()
 
-        this.nameSearchResult = (await EnrollmentService.performNameSearch(searchCriteria)).data
+        let data = (await EnrollmentService.performNameSearch(searchCriteria)).data
+        this.nameSearchResult = {
+          candidates: data.candidates
+            ? data.candidates.map((c) => {
+                return { ...c, gender: resolveGender(c.gender) }
+              })
+            : null,
+          status: data.status,
+          message: data.message,
+        }
 
         if (this.nameSearchResult?.status === 'error') {
           this.alertStore.setErrorAlert(this.nameSearchResult?.message)
