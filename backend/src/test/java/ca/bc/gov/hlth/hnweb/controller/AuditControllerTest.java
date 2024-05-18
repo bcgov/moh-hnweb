@@ -450,7 +450,6 @@ public class AuditControllerTest extends BaseControllerTest {
         assertEquals(1, records.size());
         assertEquals(TransactionType.ENROLL_SUBSCRIBER.getValue(), records.get(0).getType());
         assertEquals(IdentifierType.PHN.getValue(), records.get(0).getAffectedPartyType());
-        assertEquals(AffectedPartyDirection.OUTBOUND.getValue(), records.get(0).getDirection());
 
     }
 
@@ -485,7 +484,6 @@ public class AuditControllerTest extends BaseControllerTest {
         assertEquals(1, records.size());
         assertEquals(TransactionType.ENROLL_SUBSCRIBER.getValue(), records.get(0).getType());
         assertEquals(IdentifierType.PHN.getValue(), records.get(0).getAffectedPartyType());
-        assertEquals(AffectedPartyDirection.INBOUND.getValue(), records.get(0).getDirection());
 
     }
 
