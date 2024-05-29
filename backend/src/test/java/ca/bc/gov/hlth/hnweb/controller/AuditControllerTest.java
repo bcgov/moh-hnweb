@@ -1,8 +1,8 @@
 package ca.bc.gov.hlth.hnweb.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -98,7 +98,7 @@ public class AuditControllerTest extends BaseControllerTest {
 
 	@Test
 	public void testGetAuditReport_withoutOptionalParam() {
-		createAuditReports(2, TransactionType.CHECK_ELIGIBILITY);
+		createAuditReports(2, TransactionType.CHECK_ELIGIBILITY, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
 		AuditReportRequest auditReportRequest = new AuditReportRequest();
 		auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
 		auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
@@ -115,11 +115,11 @@ public class AuditControllerTest extends BaseControllerTest {
 
 	@Test
 	public void testGetAuditReport_withOptionalParam() {
-		createAuditReports(1, TransactionType.CHECK_ELIGIBILITY);
+		createAuditReports(1, TransactionType.CHECK_ELIGIBILITY, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
 
 		List<String> types = new ArrayList<>();
-		types.add(TransactionType.CHECK_ELIGIBILITY.name());
-		types.add(TransactionType.PHN_INQUIRY.name());
+		types.add(TransactionType.CHECK_ELIGIBILITY.getValue());
+		types.add(TransactionType.PHN_INQUIRY.getValue());
 
 		List<String> orgs = new ArrayList<>();
 		orgs.add("00000010");
@@ -148,10 +148,10 @@ public class AuditControllerTest extends BaseControllerTest {
 	
 	@Test
 	public void testGetAuditReports_spgNoResults() {
-		createAuditReports(15, TransactionType.CHECK_ELIGIBILITY);
+		createAuditReports(15, TransactionType.CHECK_ELIGIBILITY, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
 
 		List<String> types = new ArrayList<>();
-		types.add(TransactionType.CHECK_ELIGIBILITY.name());
+		types.add(TransactionType.CHECK_ELIGIBILITY.getValue());
 
 		List<String> orgs = new ArrayList<>();
 		orgs.add("00000010");
@@ -179,10 +179,10 @@ public class AuditControllerTest extends BaseControllerTest {
 
 	@Test
 	public void testGetAuditReports_firstPage() {
-		createAuditReports(15, TransactionType.CHECK_ELIGIBILITY);
+		createAuditReports(15, TransactionType.CHECK_ELIGIBILITY, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
 
 		List<String> types = new ArrayList<>();
-		types.add(TransactionType.CHECK_ELIGIBILITY.name());
+		types.add(TransactionType.CHECK_ELIGIBILITY.getValue());
 
 		List<String> orgs = new ArrayList<>();
 		orgs.add("00000010");
@@ -209,9 +209,9 @@ public class AuditControllerTest extends BaseControllerTest {
 
 	@Test
 	public void testGetAuditReports_secondPage() {
-		createAuditReports(15, TransactionType.CHECK_ELIGIBILITY);
+		createAuditReports(15, TransactionType.CHECK_ELIGIBILITY, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
 		List<String> types = new ArrayList<>();
-		types.add(TransactionType.CHECK_ELIGIBILITY.name());
+		types.add(TransactionType.CHECK_ELIGIBILITY.getValue());
 
 		List<String> orgs = new ArrayList<>();
 		orgs.add("00000010");
@@ -238,8 +238,8 @@ public class AuditControllerTest extends BaseControllerTest {
 
 	@Test
 	public void testGetAuditReports_sortAsc() {
-		createAuditReports(5, TransactionType.CHECK_ELIGIBILITY);
-		createAuditReports(5, TransactionType.PHN_INQUIRY);
+		createAuditReports(5, TransactionType.CHECK_ELIGIBILITY, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
+		createAuditReports(5, TransactionType.PHN_INQUIRY, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
 
 		List<String> orgs = new ArrayList<>();
 		orgs.add("00000010");
@@ -265,13 +265,13 @@ public class AuditControllerTest extends BaseControllerTest {
 
 		List<AuditRecord> records = auditReport.getBody().getRecords();
 		assertEquals(10, records.size());
-		assertEquals(TransactionType.CHECK_ELIGIBILITY.name(), records.get(0).getType());
+		assertEquals(TransactionType.CHECK_ELIGIBILITY.getValue(), records.get(0).getType());
 	}
 
 	@Test
 	public void testGetAuditReports_sortDesc() {
-		createAuditReports(5, TransactionType.CHECK_ELIGIBILITY);
-		createAuditReports(5, TransactionType.PHN_INQUIRY);
+		createAuditReports(5, TransactionType.CHECK_ELIGIBILITY, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
+		createAuditReports(5, TransactionType.PHN_INQUIRY, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
 
 		List<String> orgs = new ArrayList<>();
 		orgs.add("00000010");
@@ -297,13 +297,13 @@ public class AuditControllerTest extends BaseControllerTest {
 
 		List<AuditRecord> records = auditReport.getBody().getRecords();
 		assertEquals(10, records.size());
-		assertEquals(TransactionType.PHN_INQUIRY.name(), records.get(0).getType());
+		assertEquals(TransactionType.PHN_INQUIRY.getValue(), records.get(0).getType());
 	}
 
 	@Test
 	public void testGetAuditReport_downloadCSV() throws IOException {
-		createAuditReports(20, TransactionType.CHECK_ELIGIBILITY);
-		createAuditReports(20, TransactionType.PHN_INQUIRY);
+		createAuditReports(20, TransactionType.CHECK_ELIGIBILITY, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
+		createAuditReports(20, TransactionType.PHN_INQUIRY, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
 
 		List<String> orgs = new ArrayList<>();
 		orgs.add("00000010");
@@ -340,7 +340,7 @@ public class AuditControllerTest extends BaseControllerTest {
 		 assertEquals("Affected Party ID", reportData.get(6));
 		 assertEquals("Affected Party ID Type", reportData.get(7));
 		 assertEquals("Transaction ID\r\n" + 
-		 		"CHECK_ELIGIBILITY", reportData.get(8));		 		 
+		 		"CheckEligibility", reportData.get(8));		 		 
 		 assertEquals("00000010", reportData.get(9));
 		 assertEquals("Ministry of Health", reportData.get(10));
 		 assertEquals("TRAININGHEALTHAUTH", reportData.get(11));
@@ -361,8 +361,8 @@ public class AuditControllerTest extends BaseControllerTest {
 
 	@Test
 	public void testGetAuditReport_downloadCSV_sortDesc() throws IOException {
-		createAuditReports(20, TransactionType.CHECK_ELIGIBILITY);
-		createAuditReports(20, TransactionType.PHN_INQUIRY);
+		createAuditReports(20, TransactionType.CHECK_ELIGIBILITY, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
+		createAuditReports(20, TransactionType.PHN_INQUIRY, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
 
 		List<String> orgs = new ArrayList<>();
 		orgs.add("00000010");
@@ -399,7 +399,7 @@ public class AuditControllerTest extends BaseControllerTest {
 		 assertEquals("Affected Party ID", reportData.get(6));
 		 assertEquals("Affected Party ID Type", reportData.get(7));
 		 assertEquals("Transaction ID\r\n" + 
-		 		"PHN_INQUIRY", reportData.get(8));		 		 
+		 		"PHNInquiry", reportData.get(8));		 		 
 		 assertEquals("00000010", reportData.get(9));
 		 assertEquals("Ministry of Health", reportData.get(10));
 		 assertEquals("TRAININGHEALTHAUTH", reportData.get(11));
@@ -418,6 +418,153 @@ public class AuditControllerTest extends BaseControllerTest {
 		 assertEquals("PHN", reportData.get(327));
 
 	}
+
+    @Test
+    public void testGetAuditReport_outboundForEnrollSubscriber() throws IOException {
+//      For R50 z05 no PHN is submitted so only Outbound record is created
+        createAuditReports(1, TransactionType.ENROLL_SUBSCRIBER, IdentifierType.PHN.getValue(), AffectedPartyDirection.OUTBOUND.getValue());
+
+        List<String> orgs = new ArrayList<>();
+        orgs.add("00000010");
+
+        List<String> spgRoles = new ArrayList<>();
+        spgRoles.add("TRAININGHEALTHAUTH");
+
+        AuditReportRequest auditReportRequest = new AuditReportRequest();
+        auditReportRequest.setUserId("hnweb1");
+        auditReportRequest.setOrganizations(orgs);
+        auditReportRequest.setSpgRoles(spgRoles);
+        auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
+        auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
+        auditReportRequest.setPage(0);
+        auditReportRequest.setRows(10);
+        auditReportRequest.setSortDirection("DESC");
+        auditReportRequest.setSortField("type");
+
+        ResponseEntity<AuditReportResponse> auditReport = auditReportController.getAuditReport(auditReportRequest,
+                createHttpServletRequest());
+
+        assertEquals(HttpStatus.OK, auditReport.getStatusCode());
+
+        List<AuditRecord> records = auditReport.getBody().getRecords();
+        assertEquals(1, records.size());
+        assertEquals(TransactionType.ENROLL_SUBSCRIBER.getValue(), records.get(0).getType());
+        assertEquals(IdentifierType.PHN.getValue(), records.get(0).getAffectedPartyType());
+
+    }
+
+    @Test
+    public void testGetAuditReport_inboundForEnrollSubscriber() throws IOException {
+//      R50 z06 does not return a PHN, just an ACK so no PHN record is logged for Outbound
+        createAuditReports(1, TransactionType.ENROLL_SUBSCRIBER, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
+
+        List<String> orgs = new ArrayList<>();
+        orgs.add("00000010");
+
+        List<String> spgRoles = new ArrayList<>();
+        spgRoles.add("TRAININGHEALTHAUTH");
+
+        AuditReportRequest auditReportRequest = new AuditReportRequest();
+        auditReportRequest.setUserId("hnweb1");
+        auditReportRequest.setOrganizations(orgs);
+        auditReportRequest.setSpgRoles(spgRoles);
+        auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
+        auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
+        auditReportRequest.setPage(0);
+        auditReportRequest.setRows(10);
+        auditReportRequest.setSortDirection("DESC");
+        auditReportRequest.setSortField("type");
+
+        ResponseEntity<AuditReportResponse> auditReport = auditReportController.getAuditReport(auditReportRequest,
+                createHttpServletRequest());
+
+        assertEquals(HttpStatus.OK, auditReport.getStatusCode());
+
+        List<AuditRecord> records = auditReport.getBody().getRecords();
+        assertEquals(1, records.size());
+        assertEquals(TransactionType.ENROLL_SUBSCRIBER.getValue(), records.get(0).getType());
+        assertEquals(IdentifierType.PHN.getValue(), records.get(0).getAffectedPartyType());
+
+    }
+
+    @Test
+    public void testGetAuditReport_outboundAndInbound_filtered() throws IOException {
+//      R50 z06 does not return a PHN, just an ACK so no PHN record is logged for Outbound
+        createAuditReports(1, TransactionType.ENROLL_SUBSCRIBER, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());        
+//      For R50 z05 no PHN is submitted so only Outbound record is created        
+        createAuditReports(1, TransactionType.ENROLL_SUBSCRIBER, IdentifierType.PHN.getValue(), AffectedPartyDirection.OUTBOUND.getValue());
+//        Add some other types, these should not get returned due to filtering
+        createAuditReports(3, TransactionType.CHECK_ELIGIBILITY, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
+        createAuditReports(3, TransactionType.CHECK_ELIGIBILITY, IdentifierType.PHN.getValue(), AffectedPartyDirection.OUTBOUND.getValue());
+
+        List<String> orgs = new ArrayList<>();
+        orgs.add("00000010");
+
+        List<String> spgRoles = new ArrayList<>();
+        spgRoles.add("TRAININGHEALTHAUTH");
+
+        List<String> types = new ArrayList<>();
+        types.add(TransactionType.ENROLL_SUBSCRIBER.getValue());
+
+        AuditReportRequest auditReportRequest = new AuditReportRequest();
+        auditReportRequest.setUserId("hnweb1");
+        auditReportRequest.setOrganizations(orgs);
+        auditReportRequest.setSpgRoles(spgRoles);
+        auditReportRequest.setTransactionTypes(types);
+        auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
+        auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
+        auditReportRequest.setPage(0);
+        auditReportRequest.setRows(10);
+        auditReportRequest.setSortDirection("DESC");
+        auditReportRequest.setSortField("type");
+
+        ResponseEntity<AuditReportResponse> auditReport = auditReportController.getAuditReport(auditReportRequest,
+                createHttpServletRequest());
+
+        assertEquals(HttpStatus.OK, auditReport.getStatusCode());
+
+        List<AuditRecord> records = auditReport.getBody().getRecords();
+        assertEquals(2, records.size());
+
+    }
+
+    @Test
+    public void testGetAuditReport_outboundNotReturnedForAllTypes() throws IOException {
+//      R50 z06 does not return a PHN, just an ACK so no PHN record is logged for Outbound
+        createAuditReports(1, TransactionType.ENROLL_SUBSCRIBER, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());        
+//      For R50 z05 no PHN is submitted so only Outbound record is created        
+        createAuditReports(1, TransactionType.ENROLL_SUBSCRIBER, IdentifierType.PHN.getValue(), AffectedPartyDirection.OUTBOUND.getValue());
+//        Add some other types, only the Inbound should get returned for these types
+        createAuditReports(3, TransactionType.CHECK_ELIGIBILITY, IdentifierType.PHN.getValue(), AffectedPartyDirection.INBOUND.getValue());
+        createAuditReports(3, TransactionType.CHECK_ELIGIBILITY, IdentifierType.PHN.getValue(), AffectedPartyDirection.OUTBOUND.getValue());
+
+
+        List<String> orgs = new ArrayList<>();
+        orgs.add("00000010");
+
+        List<String> spgRoles = new ArrayList<>();
+        spgRoles.add("TRAININGHEALTHAUTH");
+
+        AuditReportRequest auditReportRequest = new AuditReportRequest();
+        auditReportRequest.setUserId("hnweb1");
+        auditReportRequest.setOrganizations(orgs);
+        auditReportRequest.setSpgRoles(spgRoles);
+        auditReportRequest.setStartDate(LocalDate.of(2022, 7, 1));
+        auditReportRequest.setEndDate(LocalDate.of(2022, 12, 8));
+        auditReportRequest.setPage(0);
+        auditReportRequest.setRows(10);
+        auditReportRequest.setSortDirection("DESC");
+        auditReportRequest.setSortField("type");
+
+        ResponseEntity<AuditReportResponse> auditReport = auditReportController.getAuditReport(auditReportRequest,
+                createHttpServletRequest());
+
+        assertEquals(HttpStatus.OK, auditReport.getStatusCode());
+
+        List<AuditRecord> records = auditReport.getBody().getRecords();
+        assertEquals(5, records.size());
+
+    }
 
 	private void read(InputStream input, List<String> reportData) throws IOException {
 
@@ -444,7 +591,7 @@ public class AuditControllerTest extends BaseControllerTest {
 
 	}
 
-	private void createAuditReports(int count, TransactionType transactionType) {
+	private void createAuditReports(int count, TransactionType transactionType, String identifierType, String direction) {
 		for (int i = 0; i < count; i++) {
 			Transaction transaction = new Transaction();
 
@@ -457,14 +604,14 @@ public class AuditControllerTest extends BaseControllerTest {
 			transaction.setTransactionId(UUID.randomUUID());
 			Date transactionDate = new GregorianCalendar(2022, 7, 5).getTime();
 			transaction.setStartTime(transactionDate);
-			transaction.setType(transactionType.name());
+			transaction.setType(transactionType.getValue());
 			transaction.setUserId("hnweb1");
 			transactionRepository.save(transaction);
 
 			AffectedParty affectedParty = new AffectedParty();
 			affectedParty.setIdentifier("800000001");
-			affectedParty.setIdentifierType(IdentifierType.PHN.getValue());
-			affectedParty.setDirection(AffectedPartyDirection.INBOUND.getValue());
+			affectedParty.setIdentifierType(identifierType);
+			affectedParty.setDirection(direction);
 			affectedParty.setTransaction(transaction);
 
 			affectedPartyRepository.save(affectedParty);
