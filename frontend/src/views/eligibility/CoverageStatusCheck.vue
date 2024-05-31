@@ -67,7 +67,7 @@
         <AppOutput label="Birth Date" :value="result.dateOfBirth" />
       </AppCol>
       <AppCol class="col3">
-        <AppOutput label="Gender" :value="gender" />
+        <AppOutput label="Gender" :value="result.gender" />
       </AppCol>
     </AppRow>
     <AppRow>
@@ -197,18 +197,6 @@ export default {
     },
     eligibleOnDateOfService() {
       return this.result.eligibleOnDateOfService === 'Y' ? 'YES' : 'NO'
-    },
-    gender() {
-      switch (this.result.gender) {
-        case 'M':
-          return 'MALE'
-        case 'F':
-          return 'FEMALE'
-        case 'U':
-          return 'UNKNOWN'
-        default:
-          return this.result.gender
-      }
     },
     subsidyInsuredService() {
       switch (this.result.subsidyInsuredService) {
