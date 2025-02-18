@@ -74,9 +74,9 @@ export const RELATIONSHIPS = [
 
 // Genders
 export const GENDERS = [
-  { text: 'Male', value: 'M' },
-  { text: 'Female', value: 'F' },
-  { text: 'Unknown', value: 'U' },
+  { text: 'M', value: 'M' },
+  { text: 'F', value: 'F' },
+  { text: 'U', value: 'U' },
 ]
 
 // Yes/No

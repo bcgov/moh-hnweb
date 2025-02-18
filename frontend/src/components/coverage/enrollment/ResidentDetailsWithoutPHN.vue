@@ -46,7 +46,7 @@
       <AppRow>
         <AppCol class="col4">
           <AppRadioButtonGroup :e-model="v$.gender" id="gender" label="Gender">
-            <template #tooltip>If you know the gender the client is registered with, select the Male or Female radio button. Or, leave as "Unknown".</template>
+            <template #tooltip>Please enter the gender as shown on the permit. If the study permit holder has a gender that differs from the one shown on the permit, please contact Health Insurance BC.</template>
             <template #options>
               <AppRadioButton name="gender" v-for="option in this.GENDERS" :label="option.text" :value="option.value" v-model="gender" />
             </template>
