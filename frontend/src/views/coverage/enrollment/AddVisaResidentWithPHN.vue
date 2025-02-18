@@ -106,7 +106,7 @@ export default {
             postalCode: data.postalCode,
             mailingAddress1: data.mailingAddress1,
             mailingAddress2: data.mailingAddress2,
-            mailingAddress3: data.mailingAddress33,
+            mailingAddress3: data.mailingAddress3,
             mailingAddressCity: data.mailingAddressCity,
             mailingAddressProvince: data.mailingAddressProvince,
             mailingAddressPostalCode: data.mailingAddressPostalCode,
