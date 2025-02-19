@@ -89,44 +89,49 @@ export default {
 
       try {
         const data = (await EnrollmentService.getPersonDetails({ phn: phn })).data
-        this.getPersonDetailsResult = {
-          person: {
-            phn: data.phn,
-            givenName: data.givenName,
-            secondName: data.secondName,
-            surname: data.surname,
-            dateOfBirth: data.dateOfBirth,
-            dateOfDeath: data.dateOfDeath,
-            gender: resolveGender(data.gender),
-            address1: data.address1,
-            address2: data.address2,
-            address3: data.address2,
-            city: data.city,
-            province: data.province,
-            postalCode: data.postalCode,
-            mailingAddress1: data.mailingAddress1,
-            mailingAddress2: data.mailingAddress2,
-            mailingAddress3: data.mailingAddress3,
-            mailingAddressCity: data.mailingAddressCity,
-            mailingAddressProvince: data.mailingAddressProvince,
-            mailingAddressPostalCode: data.mailingAddressPostalCode,
-          },
-          status: data.status,
-          message: data.message,
+        if (data.phn) {
+          this.getPersonDetailsResult = {
+            person: {
+              phn: data.phn,
+              givenName: data.givenName,
+              secondName: data.secondName,
+              surname: data.surname,
+              dateOfBirth: data.dateOfBirth,
+              dateOfDeath: data.dateOfDeath,
+              gender: resolveGender(data.gender),
+              address1: data.address1,
+              address2: data.address2,
+              address3: data.address2,
+              city: data.city,
+              province: data.province,
+              postalCode: data.postalCode,
+              mailingAddress1: data.mailingAddress1,
+              mailingAddress2: data.mailingAddress2,
+              mailingAddress3: data.mailingAddress3,
+              mailingAddressCity: data.mailingAddressCity,
+              mailingAddressProvince: data.mailingAddressProvince,
+              mailingAddressPostalCode: data.mailingAddressPostalCode,
+            },
+            status: data.status,
+            message: data.message,
+          }
+          if (data?.dateOfDeath && data.dateOfDeath != 'N/A') {
+            const dateOfDeathMessage = `A Date of Death was found for this client record. If this is incorrect, confirm the correct PHN was entered and contact HCIM at ${config.HCIM_CONTACT_NO || import.meta.env.VITE_HCIM_CONTACT_NO} (8am to 4:30pm, Mon - Fri).`
+            this.alertStore.setErrorAlert(dateOfDeathMessage)
+          }
+          if (this.getPersonDetailsResult?.status === 'error') {
+            this.alertStore.setErrorAlert(this.getPersonDetailsResult?.message)
+            return
+          }
+          if (this.getPersonDetailsResult?.status === 'warning') {
+            this.alertStore.setWarningAlert(this.getPersonDetailsResult?.message)
+          }
+          this.studyPermitHolderStore.resident = this.getPersonDetailsResult.person
+          this.pageAction = this.PAGE_ACTION.REGISTRATION
+        } else {
+          // Empty PHN in the response indicates that no person was found for the provided PHN
+          this.alertStore.setWarningAlert(data.message)
         }
-        if (data?.dateOfDeath && data.dateOfDeath != 'N/A') {
-          const dateOfDeathMessage = `A Date of Death was found for this client record. If this is incorrect, confirm the correct PHN was entered and contact HCIM at ${config.HCIM_CONTACT_NO || import.meta.env.VITE_HCIM_CONTACT_NO} (8am to 4:30pm, Mon - Fri).`
-          this.alertStore.setErrorAlert(dateOfDeathMessage)
-        }
-        if (this.getPersonDetailsResult?.status === 'error') {
-          this.alertStore.setErrorAlert(this.getPersonDetailsResult?.message)
-          return
-        }
-        if (this.getPersonDetailsResult?.status === 'warning') {
-          this.alertStore.setWarningAlert(this.getPersonDetailsResult?.message)
-        }
-        this.studyPermitHolderStore.resident = this.getPersonDetailsResult.person
-        this.pageAction = this.PAGE_ACTION.REGISTRATION
       } catch (err) {
         handleServiceError(err, this.alertStore, this.$router)
       } finally {
