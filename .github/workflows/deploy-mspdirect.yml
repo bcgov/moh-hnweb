@@ -57,9 +57,17 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      # Set up the OpenShift CLI tools required. Note, these used to be included with earlier runner images but that is no longer guaranteed so they must be installed.
+      - name: Install CLI tools from OpenShift Mirror
+        uses: redhat-actions/openshift-tools-installer@v1
+        with:
+          source: "mirror"
+          kam: "latest"
+          oc: "4"
+      
       # 1. Login to OpenShift
       - name: Log in to OpenShift
-        uses: redhat-actions/oc-login@v1
+        uses: redhat-actions/oc-login@v1.3
         with:
           openshift_server_url: ${{ env.OPENSHIFT_SERVER }}
           openshift_token: ${{ env.OPENSHIFT_TOKEN }}
@@ -166,7 +174,7 @@ jobs:
 
       # Login to OpenShift
       - name: Log in to OpenShift
-        uses: redhat-actions/oc-login@v1
+        uses: redhat-actions/oc-login@v1.3
         with:
           openshift_server_url: ${{env.OPENSHIFT_SERVER}}
           openshift_token: ${{env.OPENSHIFT_TOKEN}}
@@ -233,7 +241,7 @@ jobs:
 
       # Login to OpenShift
       - name: Log in to OpenShift
-        uses: redhat-actions/oc-login@v1
+        uses: redhat-actions/oc-login@v1.3
         with:
           openshift_server_url: ${{env.OPENSHIFT_SERVER}}
           openshift_token: ${{env.OPENSHIFT_TOKEN}}
