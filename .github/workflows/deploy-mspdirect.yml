@@ -59,7 +59,7 @@ jobs:
     steps:
       # 1. Login to OpenShift
       - name: Log in to OpenShift
-        uses: redhat-actions/oc-login@v1
+        uses: redhat-actions/oc-login@v1.3
         with:
           openshift_server_url: ${{ env.OPENSHIFT_SERVER }}
           openshift_token: ${{ env.OPENSHIFT_TOKEN }}
