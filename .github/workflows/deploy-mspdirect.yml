@@ -57,6 +57,13 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Install CLI tools from OpenShift Mirror
+        uses: redhat-actions/openshift-tools-installer@v1
+        with:
+          source: "mirror"
+          kam: "latest"
+          oc: "4"
+      
       # 1. Login to OpenShift
       - name: Log in to OpenShift
         uses: redhat-actions/oc-login@v1.3
