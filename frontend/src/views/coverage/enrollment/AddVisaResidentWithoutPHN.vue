@@ -1,11 +1,26 @@
 <template>
   <AppHelp>
-    <p>The purpose of this screen is to search the Health Registry database to determine if a person already has a Personal Health Number (PHN). It is very important that the person is not assigned a new PHN if they already have one.</p>
+   <p v-if="isNameSearch"> First screen instructions </p>
+    <p v-else-if="isNameSearchResults">
+      Second screen instructions 
+    </p>
+     <p v-else-if="isStudentRegistration">
+      Third screen instructions 
+    </p>
+    <p v-else-if="isConfirmation">
+      Fourth screen instructions 
+    </p>
+
+
+    <!--
+        <p>The purpose of this screen is to search the Health Registry database to determine if a person already has a Personal Health Number (PHN). It is very important that the person is not assigned a new PHN if they already have one.</p>
     <p>
       Enter the Surname, First Name, Date of Birth and Gender of the person you wish to add. The screen will either return a list of people to chose from based on the search criteria, with the option to "Add" on the right. When you select "Add" you will be directed to Add Study Permit Holder with
       PHN to fill out the required information.
     </p>
     <p>If no matches are found based on the search criteria, enter the information about the person you wish to add. This will create a PHN for the person and give the option to add another Study Permit Holder.</p>
+  
+  -->
   </AppHelp>
   <NameSearch v-if="isNameSearch" @search-for-candidates="searchForCandidates" :searching="searching" />
   <NameSearchResults v-else-if="isNameSearchResults" :candidates="this.nameSearchResult.candidates" @set-page-action="setPageAction" />
