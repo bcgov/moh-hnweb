@@ -19,7 +19,7 @@
     "@vuepic/vue-datepicker": "^3.6.7",
     "axios": "^0.23.0",
     "dayjs": "^1.10.7",
-    "keycloak-js": "^15.0.2",
+    "keycloak-js": "^26.1.2",
     "pinia": "next",
     "primeicons": "^5.0.0",
     "primevue": "~3.29.2",
