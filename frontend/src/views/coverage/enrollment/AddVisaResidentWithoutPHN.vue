@@ -1,26 +1,36 @@
 <template>
   <AppHelp>
-   <p v-if="isNameSearch"> First screen instructions </p>
-    <p v-else-if="isNameSearchResults">
-      Second screen instructions 
-    </p>
-     <p v-else-if="isStudentRegistration">
-      Third screen instructions 
-    </p>
-    <p v-else-if="isConfirmation">
-      Fourth screen instructions 
-    </p>
-
-
-    <!--
-        <p>The purpose of this screen is to search the Health Registry database to determine if a person already has a Personal Health Number (PHN). It is very important that the person is not assigned a new PHN if they already have one.</p>
-    <p>
-      Enter the Surname, First Name, Date of Birth and Gender of the person you wish to add. The screen will either return a list of people to chose from based on the search criteria, with the option to "Add" on the right. When you select "Add" you will be directed to Add Study Permit Holder with
-      PHN to fill out the required information.
-    </p>
-    <p>If no matches are found based on the search criteria, enter the information about the person you wish to add. This will create a PHN for the person and give the option to add another Study Permit Holder.</p>
-  
-  -->
+   <div v-if="isNameSearch">
+   	<p>The purpose of this screen is to search the Health Registry database to determine if the person already has a Personal Health Number (PHN). It is very important that the person is not assigned a new PHN if they already have one.</p>
+   
+   	<p>Enter the Surname, First Name, Date of Birth and Gender of the person you wish to add. The screen will either return a list of people to choose from based on the search criteria or allow you to add a new person, creating a new PHN for them.</p>
+   </div>
+   <div v-else-if="isNameSearchResults">
+     <p>This screen generates a list of people to choose from to add to your group account, or allows you to add a new person, creating a new PHN for them.</p>
+   
+     <p>Review the list to determine if the person you wish to add already has a PHN. Clicking the option "Add" on the right will direct you add the person to your group account with their PHN and complete the required information.</p>
+   
+     <p>If no matches are found based on the search criteria, click "Create New PHN" for the person you wish to add. This will create a PHN for the person and give you the option to add them to your group account as a study permit holder.</p>
+   </div>
+   <div v-else-if="isStudentRegistration">
+     <p>The purpose of this screen is to enroll study permit holders in MSP and add to your group account.</p>
+   
+     <p>Enter the requested information to complete enrollment for the study permit holder. If required information is not provided, the system will alert you when you click "Submit"</p>
+   
+     <p>Some key points to note when entering information:</p>
+     <ul>
+   	   <li>When entering the "Residence Date", ensure this is the date the student arrived in BC. This date may be different from, either before or after, the issue date of the permit.</li>
+   	   <li>Ensure you provide the coverage effective date upon completion of the mandatory wait period. The wait period is calculated based on the issue date of the permit or their arrival date in BC, whichever is later. The wait period is the balance of the month they establish residency plus two months.</li>
+   	   <li>When entering the "Coverage Cancellation Date", ensure this date is entered as the last day of the month in which the study permit expires. The coverage cancellation date cannot be entered as an earlier date than is stated on the permit, regardless of the student's anticipated study end date.</li>
+   	   <li>Enter the student's Home Address (mandatory). This can be the student's residential address or group's address. Enter a mailing address if applicable.</li>
+   	   <li>If the group address contains additional mailing information (e.g., C/O, International Program, etc.), please enter this information in line 1 of the mailing address and the physical address of the group in line 2.</li>
+     </ul>
+     <br />
+     <p>When you have entered all required information and submitted the student's enrollment, please mail or fax a copy of the study permit to HIBC.</p>
+   </div>
+   <div v-else-if="isConfirmation">
+     <p>You have completed MSP enrollment, please record the PHN and mail or fax a copy of the study permit to HIBC.</p>
+   </div>
   </AppHelp>
   <NameSearch v-if="isNameSearch" @search-for-candidates="searchForCandidates" :searching="searching" />
   <NameSearchResults v-else-if="isNameSearchResults" :candidates="this.nameSearchResult.candidates" @set-page-action="setPageAction" />
