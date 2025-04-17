@@ -4,7 +4,7 @@
    	<p>The purpose of this screen is to retrieve a person's name, address, gender, and date of birth by entering their Personal Health Number (PHN). Once you submit the PHN you can verify this is the correct person you want add to your group account and enroll in MSP.</p>
    </div>
    <div v-else-if="isStudentRegistration">
-     <p>Review the information that has auto populated to verify this is the correct person you would like to add to your group account. Once you have verified, you can enter the requested information to complete MSP enrollment for the study permit holder. If required information is not provided, the system will alert you when you click "Submit"</p>
+     <p>Review the information that has auto populated to verify this is the correct person you would like to add to your group account. Once you have verified, you can enter the requested information to complete MSP enrollment for the study permit holder. If required information is not provided, the system will alert you when you click "Submit".</p>
    
      <p>Some key points to note when entering information:</p>
      <ul>
