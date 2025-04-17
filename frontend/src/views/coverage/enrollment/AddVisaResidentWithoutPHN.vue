@@ -15,7 +15,7 @@
    <div v-else-if="isStudentRegistration">
      <p>The purpose of this screen is to enroll study permit holders in MSP and add to your group account.</p>
    
-     <p>Enter the requested information to complete enrollment for the study permit holder. If required information is not provided, the system will alert you when you click "Submit"</p>
+     <p>Enter the requested information to complete enrollment for the study permit holder. If required information is not provided, the system will alert you when you click "Submit".</p>
    
      <p>Some key points to note when entering information:</p>
      <ul>
