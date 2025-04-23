@@ -1,8 +1,25 @@
 <template>
   <AppHelp>
-    <p>The purpose of this screen is to retrieve a person's name, address, gender, date of birth, and verify this is the correct person you want to enroll in MSP and add to your group.</p>
-    <p>Results displayed include the client's Personal Health Number, name, birthdate, gender, and date of death (if applicable). Enter the additional required information about the person you wish to enroll in MSP and add to your group.</p>
-    <p>Once additional information has been added and submitted, the completed transaction will display the PHN and give the option to add another Study Permit Holder.</p>
+   <div v-if="isPhnSearch">
+   	<p>The purpose of this screen is to retrieve a person's name, address, gender, and date of birth by entering their Personal Health Number (PHN). Once you submit the PHN you can verify this is the correct person you want add to your group account and enroll in MSP.</p>
+   </div>
+   <div v-else-if="isStudentRegistration">
+     <p>Review the information that has auto populated to verify this is the correct person you would like to add to your group account. Once you have verified, you can enter the requested information to complete MSP enrollment for the study permit holder. If required information is not provided, the system will alert you when you click "Submit".</p>
+   
+     <p>Some key points to note when entering information:</p>
+     <ul>
+   	   <li>When entering the "Residence Date", ensure this is the date the student arrived in BC. This date may be different from, either before or after, the issue date of the permit.</li>
+   	   <li>Ensure you provide the coverage effective date upon completion of the mandatory wait period. The wait period is calculated based on the issue date of the permit or their arrival date in BC, whichever is later. The wait period is the balance of the month they establish residency plus two months.</li>
+   	   <li>When entering the "Coverage Cancellation Date", ensure this date is entered as the last day of the month in which the study permit expires. The coverage cancellation date cannot be entered as an earlier date than is stated on the permit, regardless of the student's anticipated study end date.</li>
+   	   <li>Enter the student's Home Address (mandatory). This can be the student's residential address or group's address. Enter a mailing address if applicable.</li>
+   	   <li>If the group address contains additional mailing information (e.g., C/O, International Program, etc.), please enter this information in line 1 of the mailing address and the physical address of the group in line 2.</li>
+     </ul>
+     <br />
+     <p>When you have entered all required information and submitted the student's enrollment, please mail or fax a copy of the study permit to HIBC.</p>
+   </div>
+   <div v-else-if="isConfirmation">
+     <p>You have completed MSP enrollment, please record the PHN and mail or fax a copy of the study permit to HIBC.</p>
+   </div>    
   </AppHelp>
   <ResidentPHN v-if="isPhnSearch" @update-resident="updateResident" :searching="searching" />
   <ResidentDetails v-else-if="isStudentRegistration" @register-resident="registerResident" :submitting="submitting" />
