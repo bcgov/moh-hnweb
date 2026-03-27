@@ -9,78 +9,92 @@
     <form @submit.prevent="submitForm">
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" type="text" v-model.trim="groupNumber" />
+          <AppInput :e-model="v$.groupNumber" id="groupNumber" label="Group Number" tabindex="1" type="text" v-model.trim="groupNumber" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.phn" id="phn" label="PHN" type="text" v-model="phn" />
+          <AppInput :e-model="v$.phn" id="phn" label="PHN" tabindex="2" type="text" v-model="phn" />
         </AppCol>
       </AppRow>
       <AppRow>
         <AppCol class="col3">
-          <AppInput :e-model="v$.telephone" id="telephone" label="Telephone (Optional)" type="text" v-model.trim="telephone" placeholder="1234567890" />
+          <AppInput :e-model="v$.telephone" id="telephone" label="Telephone (Optional)" tabindex="3" type="text" v-model.trim="telephone" placeholder="1234567890" />
         </AppCol>
       </AppRow>
-      <AppRow>
-        <AppCol class="col6">
-          <AppInput :e-model="v$.homeAddress.addressLine1" id="addressLine1" label="Home Address Line 1" type="text" v-model="homeAddress.addressLine1" />
+      <AppRow class="flex-gap-100">
+        <AppCol class="col5">
+          <AppInput :e-model="v$.homeAddress.addressLine1" id="addressLine1" label="Home Address Line 1" tabindex="4" type="text" v-model="homeAddress.addressLine1" />
+        </AppCol>
+        <AppCol class="col5">
+          <AppInput :e-model="v$.mailingAddress.addressLine1" id="mailingAddress1" label="Mailing Address (if different from home address)" tabindex="11" type="text" v-model="mailingAddress.addressLine1" />
         </AppCol>
       </AppRow>
-      <AppRow>
-        <AppCol class="col6">
-          <AppInput :e-model="v$.homeAddress.addressLine2" id="addressLine2" label="Line 2 (Optional)" type="text" v-model="homeAddress.addressLine2" />
+      <AppRow class="flex-gap-100">
+        <AppCol class="col5">
+          <AppInput :e-model="v$.homeAddress.addressLine2" id="addressLine2" label="Line 2 (Optional)" tabindex="5" type="text" v-model="homeAddress.addressLine2" />
+        </AppCol>
+        <AppCol class="col5">
+          <AppInput :e-model="v$.mailingAddress.addressLine2" id="mailingAddress2" label="Line 2 (Optional)" tabindex="12" type="text" v-model="mailingAddress.addressLine2" />
         </AppCol>
       </AppRow>
-      <AppRow>
-        <AppCol class="col6">
-          <AppInput :e-model="v$.homeAddress.addressLine3" id="addressLine3" label="Line 3 (Optional)" type="text" v-model="homeAddress.addressLine3" />
+      <AppRow class="flex-gap-100">
+        <AppCol class="col5">
+          <AppInput :e-model="v$.homeAddress.addressLine3" id="addressLine3" label="Line 3 (Optional)" tabindex="6" type="text" v-model="homeAddress.addressLine3" />
+        </AppCol>
+        <AppCol class="col5">
+          <AppInput :e-model="v$.mailingAddress.addressLine3" id="mailingAddress3" label="Line 3 (Optional)" tabindex="13" type="text" v-model="mailingAddress.addressLine3" />
         </AppCol>
       </AppRow>
-      <AppRow>
-        <AppCol class="col6">
-          <AppInput :e-model="v$.homeAddress.addressLine4" id="addressLine4" label="Line 4 (Optional)" type="text" v-model="homeAddress.addressLine4" />
-        </AppCol>
+      <AppRow class="flex-nowrap">
+        <AppRow>
+          <AppCol class="col5">
+            <AppInput :e-model="v$.homeAddress.city" id="city" label="City" tabindex="7" type="text" v-model.trim="homeAddress.city" />
+          </AppCol>
+          <AppCol class="col5"> <AppSelect :e-model="v$.homeAddress.province" id="province" label="Province" tabindex="8" type="text" disabled="disabled" v-model.trim="homeAddress.province" :options="provinceOptions" /> </AppCol>
+        </AppRow>
+        <AppRow>
+          <AppCol class="col5">
+            <AppInput :e-model="v$.mailingAddress.city" id="mailingAddressCity" label="City" tabindex="14" type="text" v-model.trim="mailingAddress.city" />
+          </AppCol>
+          <AppCol class="col5">
+            <AppInput v-if="otherCountry" :e-model="v$.mailingAddress.province" id="mailingAddressProvince" :label="regionLabel" tabindex="15" type="text" v-model.trim="mailingAddress.province" />
+            <AppSelect v-else :e-model="v$.mailingAddress.province" id="mailingAddressProvince" :label="regionLabel" tabindex="16" v-model.trim="mailingAddress.province" :options="regionOptions" />
+          </AppCol>
+        </AppRow>
+      </AppRow>
+      <AppRow class="flex-nowrap">
+        <AppRow>
+          <AppCol class="col5">
+            <AppInput :e-model="v$.homeAddress.postalCode" id="postalCode" label="Postal Code" tabindex="9" type="text" v-model.trim="homeAddress.postalCode" />
+          </AppCol>
+          <AppCol class="col5">
+            <AppInput :e-model="v$.homeAddress.country" id="country" label="Country" type="text" tabindex="10" disabled="disabled" v-model.trim="homeAddress.country" />
+          </AppCol>
+        </AppRow>
+        <AppRow>
+          <AppCol class="col5">
+            <AppInput :e-model="v$.mailingAddress.postalCode" id="mailingPostalCode" :label="zipLabel" tabindex="17" type="text" v-model.trim="mailingAddress.postalCode" />
+          </AppCol>
+          <AppCol class="col5">
+            <AppSelect id="mailingAddressCountry" label="Country" v-model="mailingAddress.country" :options="countryOptions" tabindex="18" />
+          </AppCol>
+        </AppRow>
       </AppRow>
       <AppRow>
-        <AppCol class="col3">
-          <AppInput :e-model="v$.homeAddress.postalCode" id="postalCode" label="Postal Code" type="text" v-model.trim="homeAddress.postalCode" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col6">
-          <AppInput :e-model="v$.mailingAddress.addressLine1" id="mailingAddress1" label="Mailing Address (if different from home address)" v-model="mailingAddress.addressLine1" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col6">
-          <AppInput :e-model="v$.mailingAddress.addressLine2" id="mailingAddress2" label="Line 2 (Optional)" v-model="mailingAddress.addressLine2" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col6">
-          <AppInput :e-model="v$.mailingAddress.addressLine3" id="mailingAddress3" label="Line 3 (Optional)" v-model="mailingAddress.addressLine3" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col6">
-          <AppInput :e-model="v$.mailingAddress.addressLine4" id="mailingAddress4" label="Line 4 (Optional)" v-model="mailingAddress.addressLine4" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppCol class="col3">
-          <AppInput :e-model="v$.mailingAddress.postalCode" id="mailingPostalCode" label="Postal Code" type="text" v-model.trim="mailingAddress.postalCode" />
-        </AppCol>
-      </AppRow>
-      <AppRow>
-        <AppButton :submitting="submitting" mode="primary" type="submit">Submit</AppButton>
-        <AppButton @click="resetForm()" mode="secondary" type="button">Clear</AppButton>
+        <AppButton :submitting="submitting" mode="primary" tabindex="18" type="submit">Submit</AppButton>
+        <AppButton @click="resetForm()" mode="secondary" tabindex="19" type="button">Clear</AppButton>
       </AppRow>
     </form>
   </div>
   <br />
   <div id="confirmation" v-if="updateOk">
-    <p>PHN: {{ result?.phn }}</p>
+    <p><label>Transaction completed for:</label></p>
+    <ul>
+      <li><label>Group Number: </label>{{ groupNumber }}</li>
+      <li><label>PHN: </label>{{ result?.phn }}</li>
+    </ul>
+    <br />
     <AppButton @click="resetForm" mode="primary" type="button">Update Another Contract Address</AppButton>
   </div>
 </template>
@@ -88,24 +102,37 @@
 import AppHelp from '../../components/ui/AppHelp.vue'
 import useVuelidate from '@vuelidate/core'
 import { required, requiredIf, helpers, maxLength } from '@vuelidate/validators'
+import { COUNTRIES, PROVINCES, STATES } from '../../util/constants'
 import {
   validateGroupNumber,
   validatePHN,
   validatePostalCode,
+  validateMailingZipCode,
+  validateCityOrProvince,
   validateMailingPostalCode,
   validateAddress,
   validateOptionalAddress,
-  validateMailingAddress,
+  validateMailingAddressForMSPContracts,
   validateTelephone,
   VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE,
   VALIDATE_ADDRESS_LINE1_MESSAGE,
   VALIDATE_ADDRESS_LINE2_MESSAGE,
   VALIDATE_ADDRESS_LINE3_MESSAGE,
-  VALIDATE_ADDRESS_LINE4_MESSAGE,
   VALIDATE_GROUP_NUMBER_MESSAGE,
   VALIDATE_PHN_MESSAGE,
   VALIDATE_POSTAL_CODE_MESSAGE,
+  VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE,
+  VALIDATE_ZIP_CODE_MESSAGE,
+  VALIDATE_ZIP_CODE_REQUIRED_MESSAGE,
   VALIDATE_TELEPHONE_MESSAGE,
+  VALIDATE_CITY_REQUIRED_MESSAGE,
+  VALIDATE_CITY_MESSAGE,
+  VALIDATE_PROVINCE_REQUIRED_MESSAGE,
+  VALIDATE_PROVINCE_MESSAGE,
+  VALIDATE_STATE_MESSAGE,
+  VALIDATE_STATE_REQUIRED_MESSAGE,
+  VALIDATE_OTHER_ZIP_CODE_REQUIRED_MESSAGE,
+  VALIDATE_OTHER_STATE_REQUIRED_MESSAGE,
 } from '../../util/validators'
 import MspContractsService from '../../services/MspContractsService'
 import { useAlertStore } from '../../stores/alert'
@@ -122,6 +149,11 @@ export default {
       v$: useVuelidate(),
     }
   },
+  created() {
+    this.countryOptions = COUNTRIES
+    this.provinceOptions = PROVINCES
+    this.stateOptions = STATES
+  },
   data() {
     return {
       submitting: false,
@@ -135,15 +167,19 @@ export default {
         addressLine1: '',
         addressLine2: '',
         addressLine3: '',
-        addressLine4: '',
         postalCode: '',
+        country: 'Canada',
+        city: '',
+        province: 'BC',
       },
       mailingAddress: {
         addressLine1: '',
         addressLine2: '',
         addressLine3: '',
-        addressLine4: '',
         postalCode: '',
+        country: 'Canada',
+        city: '',
+        province: '',
       },
       result: {
         phn: '',
@@ -152,7 +188,39 @@ export default {
       },
     }
   },
-
+  computed: {
+    regionLabel() {
+      if (this.mailingAddress.country === 'United States') {
+        return 'State'
+      } else if (this.mailingAddress.country === 'Canada') {
+        return 'Province'
+      }
+      return 'Province / Region / State'
+    },
+    zipLabel() {
+      if (this.mailingAddress.country === 'United States') {
+        return 'ZIP Code'
+      } else if (this.mailingAddress.country === 'Canada') {
+        return 'Postal Code'
+      }
+      return 'Postal / Zip Code'
+    },
+    regionOptions() {
+      if (this.mailingAddress.country === 'United States') {
+        return this.stateOptions
+      } else if (this.mailingAddress.country === 'Canada') {
+        return this.provinceOptions
+      }
+    },
+    otherCountry() {
+      return this.mailingAddress.country === 'Other'
+    },
+  },
+  watch: {
+    'mailingAddress.country'() {
+      this.mailingAddress.province = ''
+    },
+  },
   methods: {
     async submitForm() {
       this.submitting = true
@@ -174,14 +242,14 @@ export default {
               addressLine1: this.homeAddress.addressLine1,
               addressLine2: this.homeAddress.addressLine2,
               addressLine3: this.homeAddress.addressLine3,
-              addressLine4: this.homeAddress.addressLine4,
+              addressLine4: this.homeAddress.city + ' ' + this.homeAddress.province,
               postalCode: this.homeAddress.postalCode,
             },
             mailingAddress: {
               addressLine1: this.mailingAddress.addressLine1,
               addressLine2: this.mailingAddress.addressLine2,
               addressLine3: this.mailingAddress.addressLine3,
-              addressLine4: this.mailingAddress.addressLine4,
+              addressLine4: this.mailingAddress.city !== '' ? this.mailingAddress.city + ' ' + this.mailingAddress.province : '',
               postalCode: this.mailingAddress.postalCode,
             },
           })
@@ -215,19 +283,66 @@ export default {
       this.homeAddress.addressLine1 = ''
       this.homeAddress.addressLine2 = ''
       this.homeAddress.addressLine3 = ''
-      this.homeAddress.addressLine4 = ''
+      this.homeAddress.city = ''
+      this.homeAddress.province = 'BC'
+      this.homeAddress.country = 'Canada'
       this.homeAddress.postalCode = ''
       this.mailingAddress.addressLine1 = ''
       this.mailingAddress.addressLine2 = ''
       this.mailingAddress.addressLine3 = ''
-      this.mailingAddress.addressLine4 = ''
+      this.mailingAddress.city = ''
+      this.mailingAddress.province = ''
       this.mailingAddress.postalCode = ''
+      this.mailingAddress.country = 'Canada'
       this.result = null
       this.v$.$reset()
       this.alertStore.dismissAlert()
       this.submitting = false
       this.updateOk = false
       this.updateMode = true
+    },
+    regionFieldRequiredValidationMessage() {
+      if (this.mailingAddress.country === 'United States') {
+        return VALIDATE_STATE_REQUIRED_MESSAGE
+      } else if (this.mailingAddress.country === 'Canada') {
+        return VALIDATE_PROVINCE_REQUIRED_MESSAGE
+      }
+      return VALIDATE_OTHER_STATE_REQUIRED_MESSAGE
+    },
+    zipFieldRequiredValidationMessage() {
+      if (this.mailingAddress.country === 'United States') {
+        return VALIDATE_ZIP_CODE_REQUIRED_MESSAGE
+      } else if (this.mailingAddress.country === 'Canada') {
+        return VALIDATE_POSTAL_CODE_REQUIRED_MESSAGE
+      }
+      return VALIDATE_OTHER_ZIP_CODE_REQUIRED_MESSAGE
+    },
+    regionFieldInvalidValidationMessage() {
+      if (this.mailingAddress.country === 'United States') {
+        return VALIDATE_STATE_MESSAGE
+      }
+      return VALIDATE_PROVINCE_MESSAGE
+    },
+    zipFieldInvalidValidationMessage() {
+      if (this.mailingAddress.country === 'United States') {
+        return VALIDATE_ZIP_CODE_MESSAGE
+      }
+      return VALIDATE_POSTAL_CODE_MESSAGE
+    },
+    validateZipOrPostalCode(zipOrPostalCode) {
+      if (this.mailingAddress.country === 'United States') {
+        return validateMailingZipCode(zipOrPostalCode)
+      } else if (this.mailingAddress.country === 'Canada') {
+        return validateMailingPostalCode(zipOrPostalCode)
+      }
+      return true
+    },
+    validateMailingCity(city) {
+      if (this.otherCountry) {
+        return true
+      } else {
+        return validateCityOrProvince(city)
+      }
     },
   },
 
@@ -258,18 +373,19 @@ export default {
           maxLength: maxLength(25),
           validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateAddress),
         },
-        addressLine4: {
-          maxLength: maxLength(25),
-          validateAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE4_MESSAGE, validateAddress),
-        },
         postalCode: {
           required,
           validatePostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validatePostalCode),
         },
+        city: {
+          required,
+          maxLength: maxLength(25),
+          validateCityOrProvince: helpers.withMessage(VALIDATE_CITY_MESSAGE, validateCityOrProvince),
+        },
       },
       mailingAddress: {
         addressLine1: {
-          required: helpers.withMessage(VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE, requiredIf(validateMailingAddress)),
+          required: helpers.withMessage(VALIDATE_ADDRESS_LINE1_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForMSPContracts)),
           maxLength: maxLength(25),
           validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE1_MESSAGE, validateOptionalAddress),
         },
@@ -281,12 +397,18 @@ export default {
           maxLength: maxLength(25),
           validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE3_MESSAGE, validateOptionalAddress),
         },
-        addressLine4: {
-          maxLength: maxLength(25),
-          validateOptionalAddress: helpers.withMessage(VALIDATE_ADDRESS_LINE4_MESSAGE, validateOptionalAddress),
-        },
         postalCode: {
-          validateMailingPostalCode: helpers.withMessage(VALIDATE_POSTAL_CODE_MESSAGE, validateMailingPostalCode),
+          required: helpers.withMessage(this.zipFieldRequiredValidationMessage, requiredIf(validateMailingAddressForMSPContracts)),
+          validateMailingPostalCode: helpers.withMessage(this.zipFieldInvalidValidationMessage, this.validateZipOrPostalCode),
+        },
+        city: {
+          required: helpers.withMessage(VALIDATE_CITY_REQUIRED_MESSAGE, requiredIf(validateMailingAddressForMSPContracts)),
+          maxLength: maxLength(25),
+          validateMailingCity: helpers.withMessage(VALIDATE_CITY_MESSAGE, this.validateMailingCity),
+        },
+        province: {
+          required: helpers.withMessage(this.regionFieldRequiredValidationMessage, requiredIf(validateMailingAddressForMSPContracts)),
+          maxLength: maxLength(25),
         },
       },
     }
