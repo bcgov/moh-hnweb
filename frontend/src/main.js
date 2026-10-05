@@ -1,10 +1,9 @@
 import '@bcgov/bc-sans/css/BCSans.css'
-import 'primevue/resources/themes/saga-blue/theme.css' //theme
-import 'primevue/resources/primevue.min.css' //core css
-import 'primeicons/primeicons.css' //icons
+import 'primeicons/primeicons.css' // icons
 
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config'
+import Aura from '@primevue/themes/aura'
 import { createApp } from 'vue'
 
 import { DraggablePlugin } from '@braks/revue-draggable'
@@ -24,8 +23,6 @@ import keycloak from './keycloak'
 import { createRouter } from './router'
 import UserService from './services/UserService'
 import { useAuthStore } from './stores/auth'
-
-const app = createApp(App)
 
 keycloak.onReady = async function (authenticated) {
   // Only initialize the application after keycloak is ready
@@ -96,7 +93,12 @@ function initApp(permissions, apiAvailable, isPBFUser) {
 
   app.use(DraggablePlugin)
 
-  app.use(PrimeVue)
+  // PrimeVue 5 Theming initialization
+  app.use(PrimeVue, {
+    theme: {
+      preset: Aura
+    }
+  })
 
   app.config.globalProperties.$keycloak = keycloak
 
