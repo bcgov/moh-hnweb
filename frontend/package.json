@@ -1,35 +1,39 @@
 {
   "name": "msp-direct",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
     "test:e2e": "testcafe chrome tests/e2e"
   },
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=10.0.0"
+  },
   "dependencies": {
     "@bcgov/bc-sans": "^1.0.1",
     "@braks/revue-draggable": "^0.4.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
-    "@fortawesome/vue-fontawesome": "prerelease",
-    "@vitejs/plugin-legacy": "^1.6.2",
-    "@vuelidate/core": "^2.0.0-alpha.27",
-    "@vuelidate/validators": "^2.0.0-alpha.23",
-    "@vuepic/vue-datepicker": "^3.6.7",
-    "axios": "^0.23.0",
-    "dayjs": "^1.10.7",
+    "@fortawesome/vue-fontawesome": "^3.0.0",
+    "@vuelidate/core": "^2.0.3",
+    "@vuelidate/validators": "^2.0.3",
+    "@vuepic/vue-datepicker": "^9.0.0",
+    "axios": "^1.7.0",
+    "dayjs": "^1.11.10",
     "keycloak-js": "^26.1.2",
-    "pinia": "next",
+    "pinia": "^2.3.1",
     "primeicons": "^5.0.0",
     "primevue": "~3.29.2",
-    "vue": "^3.2.45",
-    "vue-router": "4"
+    "vue": "^3.5.0",
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^1.9.0",
-    "testcafe": "^2.0.0",
+    "@vitejs/plugin-legacy": "^8.2.3",
+    "@vitejs/plugin-vue": "^6.0.9",
+    "testcafe": "^3.6.0",
     "testcafe-vue-selectors": "^3.1.1",
-    "vite": "^2.5.10"
+    "vite": "^8.3.2"
   }
 }
