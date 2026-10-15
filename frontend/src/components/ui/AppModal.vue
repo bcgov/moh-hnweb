@@ -77,7 +77,7 @@ export default {
   float: right;
 }
 
-:slotted(ul) {
+.modal-body ul {
   list-style: disc;
   margin-left: 20px;
 }
