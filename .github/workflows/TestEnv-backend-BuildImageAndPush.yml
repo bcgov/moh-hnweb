@@ -11,15 +11,15 @@ env:
   IMAGE_TAGS:
 
 on:
-  # Run the workflow on either:
-  #   a push to 'main' branch
-  #   manually through the Action
+  # Run the workflow manually through the Action.
+  # This workflow has been intentionally set to not be triggered automatically on pushes to main
+  # so deployments can be validated in the dev environment first.
   # --------------------------------------------------------------------------
 
-  push:
-    branches: [main]
-    paths:
-      - "backend/**"
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - "backend/**"
 
   workflow_dispatch:
 
